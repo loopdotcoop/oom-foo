@@ -1,13 +1,13 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Lib'
-    , VERSION  = '1.0.0'
+    , VERSION  = '1.0.1'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
-    , EXPORT   = module.exports = {}
 
 
-EXPORT.getJquery311MinJs = function () {
+
+module.exports.getJquery311MinJs = function () {
     return '/*! jQuery v3.1.1 | (c) jQuery Foundation | jquery.org/license */\n'
       + '!function(e,t){"use strict"\n;"object"==typeof module&&"object"==typeo'
       + 'f module.exports?module.exports=e.document?t(e,!0):function(e){\nif(!e'
@@ -1301,7 +1301,7 @@ EXPORT.getJquery311MinJs = function () {
       + '.jQuery===de&&(e.jQuery=_t),de\n},t||(e.jQuery=e.$=de),de});\n'
 }
 
-EXPORT.getTraceurRuntimeMinJs = function () {
+module.exports.getTraceurRuntimeMinJs = function () {
     return '!function(e){"use strict";function r(e){\ne.Reflect=e.Reflect||{},e'
       + '.Reflect.global=e.Reflect.global||e}\nif(!e.$traceurRuntime){r(e);e.$t'
       + 'raceurRuntime={options:{},\nsetupGlobals:r,typeof:function(e){return t'

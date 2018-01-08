@@ -1,4 +1,4 @@
-//// OomFoo //// 1.0.0 //// January 2018 //// https://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.1 //// January 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Node.js: 7.2.0
 //// Rhino:   @TODO get Rhino working
@@ -25,8 +25,8 @@ test('The OomFoo class', () => {
     is('function' === typeof Class, 'OomFoo is a function')
 
     is('OomFoo' === Class.NAME, 'NAME as expected')
-    is('1.0.0' === Class.VERSION, 'VERSION as expected')
-    is('https://oom-foo.loop.coop/' === Class.HOMEPAGE, 'HOMEPAGE as expected')
+    is('1.0.1' === Class.VERSION, 'VERSION as expected')
+    is('http://oom-foo.loop.coop/' === Class.HOMEPAGE, 'HOMEPAGE as expected')
 })
 
 

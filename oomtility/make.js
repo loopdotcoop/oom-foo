@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Make'
-    , VERSION  = '1.0.0'
+    , VERSION  = '1.0.1'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = `\n\n\n\n//\\\\//\\\\ built by ${NAME} ${VERSION}`
@@ -45,7 +45,7 @@ Create Files
 Edit Files
 ----------
 1. support/demo.html                       Link to each usage example
-2. support/ecmaswitch.js                   \`var classFiles = '...'\` updated
+2. support/asset/js/ecmaswitch.js          \`var classFiles = '...'\` updated
 3. support/test.html                       ‘Development ES6’ links
 X. src/main/README.md                      Documentation for each class @TODO move to docs.js
 X. support/docs.html                       Documentation for each class @TODO move to docs.js
@@ -231,8 +231,8 @@ fs.writeFileSync( `dist/test/${projectLC}-universal.5.js`, es5.universal )
 updateDemoFile('support/demo.html', 'support')
 
 
-//// 2. support/ecmaswitch.js                   `var classFiles = '...'` updated
-updateECMASwitch('support/ecmaswitch.js', mains) // `mains` from previous step
+//// 2. support/asset/js/ecmaswitch.js          `var classFiles = '...'` updated
+updateECMASwitch('support/asset/js/ecmaswitch.js', mains)
 
 
 //// 3. support/test.html                       ‘Development ES6’ links

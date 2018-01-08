@@ -27,9 +27,9 @@
 <meta property="og:type"     content="website">
 <meta property="og:locale"   content="en_GB">
 <meta property="og:title"    content="OomFoo">
-<meta property="og:url"      content="https://oom-foo.loop.coop/">
+<meta property="og:url"      content="http://oom-foo.loop.coop/">
 <meta property="og:image"
-       content="https://oom-foo.loop.coop/support/asset/logo/logo1200.png">
+       content="http://oom-foo.loop.coop/support/asset/logo/logo1200.png">
 <meta property="og:description"
        content="Initial test of the oom-hub architecture">
 
@@ -90,7 +90,7 @@
 <h1 style="display:inline">OomFoo
   <span id="version">&hellip;</span> <span id="format"></span>&nbsp;</h1>
 <div style="float:right">
-  <a href="index.html">Home</a> &nbsp;
+  <a href="index.html" id="home-link">Home</a> &nbsp;
   <a href="https://github.com/loopdotcoop/oom-foo">Repo</a> &nbsp;
   <a href="https://www.npmjs.com/package/oom-foo">NPM</a> &nbsp;
   <a href="support/test.html">Test</a> &nbsp;
@@ -111,13 +111,12 @@
 
 
 <!-- Load the proper format scripts, according to the '#ecmaswitch' menu -->
-<script src="support/ecmaswitch.js"></script>
+<script src="support/asset/js/ecmaswitch.js"></script>
 <script>ECMASwitch.load('./')</script>
 
 <!-- Link to the proper homepage domain, if we’re not already there -->
-<script>if ( 0 > location.href.indexOf(OomModuleTemplate.HOMEPAGE) )
-$('#home').html('<a href="' + OomModuleTemplate.HOMEPAGE + '">Home</a>')
-</script>
+<script>if ( 0 > location.href.indexOf(OOM.OomFoo.HOMEPAGE) )
+$('#home-link').attr('href', OOM.OomFoo.HOMEPAGE)</script>
 
 
 <!-- Display the version and format -->

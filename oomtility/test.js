@@ -1,4 +1,4 @@
-//// OomFoo //// 1.0.0 //// January 2018 //// https://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.1 //// January 2018 //// https://oom-foo.loop.coop/ ///////
 
 if ('function' !== typeof require) {
     console.warn('test.js must be run using Node.js, eg:\n  $ node test.js')
@@ -11,8 +11,8 @@ if ('function' !== typeof require) {
     require('../dist/main/oom-foo.6.js')
 
     //// Load the assertion library and its reporter.
-    require('../lib/test/klud.min.js')
-    require('../lib/test/report.min.js')
+    require('../support/asset/js/klud.min.js')
+    require('../support/asset/js/report.min.js')
 
     //// Run parts of the test-suite compatible with a non-browser runtime.
     require('../dist/test/oom-foo-universal.6.js')

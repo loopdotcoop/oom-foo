@@ -1,17 +1,16 @@
-
 # OomFoo
 
 #### Initial test of the oom-hub architecture
 
-+ __Last update:__  2018/01/07
-+ __Version:__      1.0.0
++ __Last update:__  2018/01/08
++ __Version:__      1.0.1
 
-[Homepage](https://oom-foo.loop.coop/) &nbsp;
+[Homepage](http://oom-foo.loop.coop/) &nbsp;
 [Repo](https://github.com/loopdotcoop/oom-foo) &nbsp;
 [NPM](https://www.npmjs.com/package/oom-foo) &nbsp;
-[Changelog](https://oom-foo.loop.coop/CHANGELOG) &nbsp;
-[Test](https://oom-foo.loop.coop/support/test.html) &nbsp;
-[Demo](https://oom-foo.loop.coop/support/demo.html)
+[Changelog](http://oom-foo.loop.coop/CHANGELOG) &nbsp;
+[Test](http://oom-foo.loop.coop/support/test.html) &nbsp;
+[Demo](http://oom-foo.loop.coop/support/demo.html)
 
 Oom &nbsp;
 🔅 &nbsp;
@@ -49,8 +48,8 @@ Web Audio &nbsp;
 Designed, developed and authored by Rich Plastow for Loop.Coop.
 
 + __Website:__
-  [richplastow.com](https://richplastow.com/)
-  [loop.coop](http://loop.coop/)
+  [richplastow.com](https://richplastow.com/) &nbsp;
+  [loop.coop](https://loop.coop/)
 + __GitHub:__
   [richplastow](https://github.com/richplastow) &nbsp;
   [loopdotcoop](https://github.com/loopdotcoop)

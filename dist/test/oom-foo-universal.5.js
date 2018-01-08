@@ -8,8 +8,8 @@ jQuery(function($) {
     var Class = OOM.OomFoo;
     is('function' === typeof Class, 'OomFoo is a function');
     is('OomFoo' === Class.NAME, 'NAME as expected');
-    is('1.0.0' === Class.VERSION, 'VERSION as expected');
-    is('https://oom-foo.loop.coop/' === Class.HOMEPAGE, 'HOMEPAGE as expected');
+    is('1.0.1' === Class.VERSION, 'VERSION as expected');
+    is('http://oom-foo.loop.coop/' === Class.HOMEPAGE, 'HOMEPAGE as expected');
   });
 });
 //# sourceURL=<compile-source>
@@ -17,4 +17,4 @@ jQuery(function($) {
 
 
 
-//\\//\\ built by Oomtility Make 1.0.0 //\\//\\ http://oomtility.loop.coop //\\//\\
+//\\//\\ built by Oomtility Make 1.0.1 //\\//\\ http://oomtility.loop.coop //\\//\\

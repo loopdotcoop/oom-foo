@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Alias'
-    , VERSION  = '1.0.0'
+    , VERSION  = '1.0.1'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , HELP =
@@ -16,7 +16,7 @@ Basic Usage
 -----------
 $ cd /path/to/your/oom/repo/
 $ node oomtility/alias.js
-${NAME} ${VERSION} added 7 lines to ~/.bash_profile.
+${NAME} ${VERSION} added 8 lines to ~/.bash_profile.
 After reopening your terminal, the following commands will be available:
 $ oomauto   Generates new classes, demos, docs and tests         (runs auto.js)
 $ oombump   Bumps the current version                            (runs bump.js)
@@ -25,6 +25,7 @@ $ oominit   Initialises a new oom repo                           (runs init.js)
 $ oommake   Builds the project, from src/ into dist/             (runs make.js)
 $ oompush   Prompts for a commit-message, then pushes            (runs push.js)
 $ oomtest   Runs unit tests                                      (runs test.js)
+$ oomwrap   Bundles a file into a function                       (runs wrap.js)
 
 Options
 -------
@@ -133,6 +134,7 @@ try {
       , `alias oommake="node oomtility/make.js" ${comment}`
       , `alias oompush="node oomtility/push.js" ${comment}`
       , `alias oomtest="node oomtility/test.js" ${comment}`
+      , `alias oomwrap="node oomtility/wrap.js" ${comment}`
       , ''
     ]) ).join('\n') )
 } catch (e) {
@@ -151,7 +153,7 @@ You should change temporarily change the permissions, eg:
     else return console.warn(`${NAME} ${VERSION} cannot write to ${path}:\n`, e)
 }
 return console.log(
-`${NAME} ${VERSION} added 7 lines to ${path}.
+`${NAME} ${VERSION} added 8 lines to ${path}.
 After reopening your terminal, the following commands will be available:
 $ oomauto   Generates new classes, demos, docs and tests         (runs auto.js)
 $ oombump   Bumps the current version                            (runs bump.js)
@@ -160,6 +162,7 @@ $ oominit   Initialises a new oom repo                           (runs init.js)
 $ oommake   Builds the project, from src/ into dist/             (runs make.js)
 $ oompush   Prompts for a commit-message, then pushes            (runs push.js)
 $ oomtest   Runs unit tests                                      (runs test.js)
+$ oomwrap   Bundles a file into a function                       (runs wrap.js)
 `)
 
 
@@ -167,7 +170,6 @@ $ oomtest   Runs unit tests                                      (runs test.js)
 
 //// UTILITY
 
-////
 function getComment () {
     const now = new Date()
     return [

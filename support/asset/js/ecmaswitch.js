@@ -1,11 +1,11 @@
-//// ECMASwitch //// 1.0.0 //// January 2018 //// ecmaswitch.loop.coop/ ////////
+//// ECMASwitch //// 1.0.1 //// January 2018 //// ecmaswitch.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
 //// Create the namespace-object if it does not already exist and add constants.
 var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}
 ECMASwitch.NAME     = 'ECMASwitch'
-ECMASwitch.VERSION  = '1.0.0'
+ECMASwitch.VERSION  = '1.0.1'
 ECMASwitch.HOMEPAGE = 'http://ecmaswitch.loop.coop/'
 
 //// Polyfill `document` for non-browser contexts.
@@ -37,7 +37,7 @@ ECMASwitch.load = function (path, names) {
       , p = path + ( (3 == f) ? 'src/' : 'dist/' ) // get path to proper format
       , s = // src values
           (1 == f) ? [ // ES5 Minified
-              path + 'lib/traceur-runtime.min.js'
+              path + 'support/asset/js/traceur-runtime.min.js'
             , p + 'main/' + projectLC + '.5.min.js'
           ]
         : (2 == f) ? [ // ES6 Production
@@ -47,15 +47,15 @@ ECMASwitch.load = function (path, names) {
               (p+'main/'+classFiles.replace(/,/g,'.6.js|'+p+'main/')+'.6.js')
              .split('|')
         : [            // ES5 Production (the default, if no cookie’s been set)
-              path + 'lib/traceur-runtime.min.js'
+              path + 'support/asset/js/traceur-runtime.min.js'
             , p + 'main/' + projectLC + '.5.js'
           ]
       , B = '<script src="'  // begin
       , E = '"></'+'script>' // end
     names = names || []
     for (var i=0; i<names.length; i++) if (names[i][f]) s.push( names[i][f] )
-    s.unshift(path + 'lib/polyfill.min.js') //@TODO only load for legacy browsers
-    s.unshift(path + 'lib/jquery-3.1.1.min.js') // start with jQuery
+    s.unshift(path + 'support/asset/js/polyfill.min.js') //@TODO only load for legacy browsers
+    s.unshift(path + 'support/asset/js/jquery-3.1.1.min.js') // jQuery goes 1st
     d.write(B + s.join(E + B) + E)
 }
 
