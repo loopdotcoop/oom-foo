@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Make'
-    , VERSION  = '1.0.1'
+    , VERSION  = '1.0.2'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = `\n\n\n\n//\\\\//\\\\ built by ${NAME} ${VERSION}`

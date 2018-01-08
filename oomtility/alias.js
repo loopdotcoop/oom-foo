@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Alias'
-    , VERSION  = '1.0.1'
+    , VERSION  = '1.0.2'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , HELP =

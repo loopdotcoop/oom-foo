@@ -1,11 +1,11 @@
-//// ECMASwitch //// 1.0.1 //// January 2018 //// ecmaswitch.loop.coop/ ////////
+//// ECMASwitch //// 1.0.2 //// January 2018 //// ecmaswitch.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
 //// Create the namespace-object if it does not already exist and add constants.
 var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}
 ECMASwitch.NAME     = 'ECMASwitch'
-ECMASwitch.VERSION  = '1.0.1'
+ECMASwitch.VERSION  = '1.0.2'
 ECMASwitch.HOMEPAGE = 'http://ecmaswitch.loop.coop/'
 
 //// Polyfill `document` for non-browser contexts.
@@ -55,7 +55,7 @@ ECMASwitch.load = function (path, names) {
     names = names || []
     for (var i=0; i<names.length; i++) if (names[i][f]) s.push( names[i][f] )
     s.unshift(path + 'support/asset/js/polyfill.min.js') //@TODO only load for legacy browsers
-    s.unshift(path + 'support/asset/js/jquery-3.1.1.min.js') // jQuery goes 1st
+    s.unshift(path + 'support/asset/js/jquery-3.2.1.slim.min.js') // load first
     d.write(B + s.join(E + B) + E)
 }
 
