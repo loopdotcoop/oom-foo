@@ -2,13 +2,13 @@
 
 
 
-//// OomFoo //// 1.0.2 //// January 2018 //// http://oom-foo.loop.coop/ ////////
+//// OomFoo //// 1.0.3 //// January 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
 const META = {
     NAME:     { value:'OomFoo' }
-  , VERSION:  { value:'1.0.2' }
+  , VERSION:  { value:'1.0.3' }
   , HOMEPAGE: { value:'http://oom-foo.loop.coop/' }
   , REMARKS:  { value:'Initial test of the oom-hub architecture' }
 }
@@ -213,4 +213,4 @@ function rndCh (s, e) { return String.fromCharCode(Math.random() * (e-s) + s) }
 
 
 
-//\\//\\ built by Oomtility Make 1.0.2 //\\//\\ http://oomtility.loop.coop //\\//\\
+//\\//\\ built by Oomtility Make 1.0.3 //\\//\\ http://oomtility.loop.coop //\\//\\

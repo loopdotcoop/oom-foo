@@ -2,8 +2,8 @@
 
 #### Initial test of the oom-hub architecture
 
-+ __Last update:__  2018/01/08
-+ __Version:__      1.0.2
++ __Last update:__  2018/01/10
++ __Version:__      1.0.3
 
 [Homepage](http://oom-foo.loop.coop/) &nbsp;
 [Repo](https://github.com/loopdotcoop/oom-foo) &nbsp;
@@ -82,15 +82,15 @@ Designed, developed and authored by Rich Plastow for Loop.Coop.
 ## Icon
 
 + __Generator:__    realfavicongenerator.net
-+ __iOS:__          background #FFFFFF, margin 9px
-+ __Android:__      background #FFFFFF, margin 12px, browser-mode
-+ __Metro:__        background #FFFFFF, Big square icon only
-+ __OS X Safari:__  theme color #FFFFFF
-+ __Path:__         /asset/icon @TODO fix this for index.html and support HTMLs
++ __iOS:__          #ff9900, margin 0px, oom-icon-mobile-800x800.png
++ __Android:__      No change, Theme #ff9900, oom-icon-mobile-800x800.png
++ __Metro:__        #ff9900, Big square icon only, oom-icon-640x640-wot.png
++ __OS X Safari:__  theme color #ff9900
++ __Path:__         support/asset/icon
 + __Compression:__  Very high compression factor
 + __Scaling:__      Lanczos
-+ __App Name:__     Oom Module Template
-+ __Post:__         Six PNGs thru tinypng.com
++ __App Name:__     OomFoo
++ __Post:__         Six PNGs thru tinypng.com, and replace safari-pinned-tab.svg
 
 
 

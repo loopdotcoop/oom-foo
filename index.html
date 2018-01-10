@@ -29,21 +29,21 @@
 <meta property="og:title"    content="OomFoo">
 <meta property="og:url"      content="http://oom-foo.loop.coop/">
 <meta property="og:image"
-       content="http://oom-foo.loop.coop/support/asset/logo/logo1200.png">
+       content="http://oom-foo.loop.coop/support/asset/logo/logo-1200x1200.svg">
 <meta property="og:description"
        content="Initial test of the oom-hub architecture">
 
 <!-- From realfavicongenerator.net - see README.md for settings -->
-<link rel="apple-touch-icon" sizes="180x180" href="support/asset/icon/apple-touch.png">
-<link rel="icon" type="image/png" sizes="32x32" href="support/asset/icon/favicon32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="support/asset/icon/favicon16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="support/asset/icon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="support/asset/icon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="support/asset/icon/favicon-16x16.png">
 <link rel="manifest"                  href="support/asset/icon/manifest.json">
-<link rel="mask-icon" color="#FFFFFF" href="support/asset/icon/safari-pinned-tab.svg">
+<link rel="mask-icon" color="#ff9900" href="support/asset/icon/safari-pinned-tab.svg">
 <link rel="shortcut icon"             href="support/asset/icon/favicon.ico">
 <meta name="apple-mobile-web-app-title" content="OomFoo">
 <meta name="application-name"           content="OomFoo">
 <meta name="msapplication-config"       content="support/asset/icon/browserconfig.xml">
-<meta name="theme-color"                content="#FFFFFF">
+<meta name="theme-color"                content="#ff9900">
 
 
 
@@ -52,25 +52,46 @@
 
 <!-- Load fonts as soon as possible -->
 <style type="text/css">
-@font-face { /* latin */
-  font-family: 'Podkova';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Podkova Regular'), local('Podkova-Regular')
-    , url('support/asset/font/podkova.woff2') format('woff2');
+@font-face { font-family: 'Ubuntu'; font-weight: 400; font-style: normal;
+  src: local('Ubuntu Regular'), local('Ubuntu-Regular')
+    , url(support/asset/font/ubuntu-regular.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA
+    , U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2212, U+2215;
+}
+@font-face { font-family: 'Ubuntu'; font-weight: 400; font-style: italic;
+  src: local('Ubuntu Italic'), local('Ubuntu-Italic')
+    , url(support/asset/font/ubuntu-italic.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA
+    , U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2212, U+2215;
+}
+@font-face { font-family: 'Ubuntu'; font-weight: 700; font-style: normal;
+  src: local('Ubuntu Bold'), local('Ubuntu-Bold')
+    , url(support/asset/font/ubuntu-bold.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA
+    , U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2212, U+2215;
+}
+@font-face { font-family: 'Ubuntu'; font-weight: 700; font-style: italic;
+  src: local('Ubuntu Bold Italic'), local('Ubuntu-BoldItalic')
+    , url(support/asset/font/ubuntu-bolditalic.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA
+    , U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2212, U+2215;
+}
+@font-face { font-family: 'Ubuntu Mono'; font-weight: 400; font-style: normal;
+  src: local('Ubuntu Mono'), local('UbuntuMono-Regular')
+    , url(support/asset/font/ubuntumono-regular.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA
     , U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2212, U+2215;
 }
 </style>
 
 <!-- Load styles -->
-<link rel="stylesheet" href="support/asset/css/bootstrap.css">
+<link rel="stylesheet" href="support/asset/css/bootstrap.min.css">
 <link rel="stylesheet" href="support/asset/css/main.css">
 
 
 </head>
 <body>
-
+<div class="container">
 
 
 
@@ -110,6 +131,9 @@
 <!-- CONTENT -->
 
 
+
+<img id="logo" src="support/asset/logo/logo-1200x1200.svg"></img>
+
 <!-- Load the proper format scripts, according to the '#ecmaswitch' menu -->
 <script src="support/asset/js/ecmaswitch.js"></script>
 <script>ECMASwitch.load('./')</script>
@@ -119,6 +143,7 @@
 $('#home-link').attr('href', OOM.OomFoo.HOMEPAGE)</script>
 
 
+
 <!-- Display the version and format -->
 <script>$('#version').html(OOM.OomFoo.VERSION||'(no VERSION)')
 $('#format').html('es5|5 min|6|6 dev'.split('|')[~~document.cookie.split('~')[1]])
@@ -126,5 +151,6 @@ $('#format').html('es5|5 min|6|6 dev'.split('|')[~~document.cookie.split('~')[1]
 
 <!-- End hiding from Internet Explorer 8 and below --><!--<![endif]-->
 
+</div><!--.container -->
 </body>
 </html>

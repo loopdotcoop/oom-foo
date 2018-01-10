@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Wrap'
-    , VERSION  = '1.0.2'
+    , VERSION  = '1.0.3'
     , HOMEPAGE = 'https://oomtility.loop.coop'
     , HELP =
 `
@@ -73,7 +73,7 @@ paths.forEach( path => {
         `//// An ${NAME} of ${path.split('/').pop()} \\\\//\\\\// ${HOMEPAGE} ////`
       , `module.exports.${pathToFnName(path)} = function () { return ''`
     ]
-    ;(fs.readFileSync(path)+'').split('\n').forEach( (line, num) => {
+    ;(fs.readFileSync(path, 'binary')+'').split('\n').forEach( (line, num) => {
         line = line.replace(/\\/g, '\\\\')
         line = line.replace(/'/g, "\\'")
         line = encodeUTF16(line, '•') // avoid edge cases by adding a non-ascii
@@ -98,7 +98,7 @@ paths.forEach( path => {
     })
     out[out.length-1] = out[out.length-1].slice(0, -3) + "'" // no final newline
     out.push('}')
-    console.log( out.join('\n') );
+    console.log( out.join('\n') + '\n\n\n\n' );
 })
 
 
@@ -131,10 +131,10 @@ function getLineLengthReduction (line, pos, len) {
 
 
 //// Similar to `lcToTc()` in ‘init.js’. 'foo/bar-baz.txt' to 'getBarBazTxt'.
-function pathToFnName(path) {
+function pathToFnName (path) {
     return 'get' + (
-            path.split('/').pop().split(/[- .]/g).map(
-            w => w[0].toUpperCase() + w.substr(1)
+        path.split('/').pop().split(/[- .]/g).map(
+            w => w ? w[0].toUpperCase() + w.substr(1) : ''
         ).join('')
     )
 }
