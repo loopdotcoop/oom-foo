@@ -1,4 +1,4 @@
-//// OomFoo //// 1.0.3 //// January 2018 //// https://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.4 //// January 2018 //// https://oom-foo.loop.coop/ ///////
 
 if ('function' !== typeof require) {
     console.warn('test.js must be run using Node.js, eg:\n  $ node test.js')

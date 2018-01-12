@@ -2,8 +2,8 @@
 
 #### Initial test of the oom-hub architecture
 
-+ __Last update:__  2018/01/10
-+ __Version:__      1.0.3
++ __Last update:__  2018/01/12
++ __Version:__      1.0.4
 
 [Homepage](http://oom-foo.loop.coop/) &nbsp;
 [Repo](https://github.com/loopdotcoop/oom-foo) &nbsp;
@@ -64,29 +64,34 @@ Designed, developed and authored by Rich Plastow for Loop.Coop.
 
 ## Module
 
-+ __Languages:__
++ __Locales:__
   - English
 + __Software:__
   - Atom
   - Git
-+ __Standards:__
+  - Adobe Photoshop
+  - Adobe Illustrator
++ __Languages:__
   - HTML5
   - CSS3
   - JavaScript ES6
-+ __Dependencies:__
-  - Bootstrap 4.0.0-beta.2
++ __Bundled Dev Dependencies:__
+  - Bootstrap 4.0.0-beta.3
+  - jQuery 3.2.1 (slim)
+  - Promise Polyfill (for IE11)
+  - ECMASwitch
 
 
 
 
 ## Icon
 
-+ __Generator:__    realfavicongenerator.net
++ __Favicon:__      Upload oom-icon-640x640-got.png to realfavicongenerator.net
 + __iOS:__          #ff9900, margin 0px, oom-icon-mobile-800x800.png
 + __Android:__      No change, Theme #ff9900, oom-icon-mobile-800x800.png
 + __Metro:__        #ff9900, Big square icon only, oom-icon-640x640-wot.png
 + __OS X Safari:__  theme color #ff9900
-+ __Path:__         support/asset/icon
++ __Path:__         /support/asset/icon
 + __Compression:__  Very high compression factor
 + __Scaling:__      Lanczos
 + __App Name:__     OomFoo

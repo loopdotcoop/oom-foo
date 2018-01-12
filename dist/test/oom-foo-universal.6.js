@@ -2,7 +2,7 @@
 
 
 
-//// OomFoo //// 1.0.3 //// January 2018 //// http://oom-foo.loop.coop/ ////////
+//// OomFoo //// 1.0.4 //// January 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Node.js: 7.2.0
 //// Rhino:   @TODO get Rhino working
@@ -29,7 +29,7 @@ test('The OomFoo class', () => {
     is('function' === typeof Class, 'OomFoo is a function')
 
     is('OomFoo' === Class.NAME, 'NAME as expected')
-    is('1.0.3' === Class.VERSION, 'VERSION as expected')
+    is('1.0.4' === Class.VERSION, 'VERSION as expected')
     is('http://oom-foo.loop.coop/' === Class.HOMEPAGE, 'HOMEPAGE as expected')
 })
 
@@ -42,4 +42,4 @@ test('The OomFoo class', () => {
 
 
 
-//\\//\\ built by Oomtility Make 1.0.3 //\\//\\ http://oomtility.loop.coop //\\//\\
+//\\//\\ built by Oomtility Make 1.0.4 //\\//\\ http://oomtility.loop.coop //\\//\\
