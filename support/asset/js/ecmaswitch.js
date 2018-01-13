@@ -1,17 +1,17 @@
-//// ECMASwitch //// 1.0.4 //// January 2018 //// ecmaswitch.loop.coop/ ////////
+//// ECMASwitch //// 1.0.5 //// January 2018 //// ecmaswitch.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
 //// Create the namespace-object if it does not already exist and add constants.
 var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}
 ECMASwitch.NAME     = 'ECMASwitch'
-ECMASwitch.VERSION  = '1.0.4'
+ECMASwitch.VERSION  = '1.0.5'
 ECMASwitch.HOMEPAGE = 'http://ecmaswitch.loop.coop/'
 
 //// Polyfill `document` for non-browser contexts.
 var d = ROOT.document || {
     cookie: '~0~'
-  , write:  x=>{} // @TODO let Node.js translate `<script>` to `require()`
+  , write:  function (x) {} // @TODO Node.js translate`<script>` to `require()`
 }
 
 

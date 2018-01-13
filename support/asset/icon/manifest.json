@@ -12,8 +12,8 @@
             "type": "image/png"
         }
     ],
-    "theme_color": "#ff9900",
-    "background_color": "#ff9900",
+    "theme_color": "#9900ff",
+    "background_color": "#9900ff",
     "start_url": "http://oom-foo.loop.coop/",
     "display": "standalone"
 }

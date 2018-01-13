@@ -2,8 +2,8 @@
 
 #### Initial test of the oom-hub architecture
 
-+ __Last update:__  2018/01/12
-+ __Version:__      1.0.4
++ __Last update:__  2018/01/13
++ __Version:__      1.0.5
 
 [Homepage](http://oom-foo.loop.coop/) &nbsp;
 [Repo](https://github.com/loopdotcoop/oom-foo) &nbsp;
@@ -87,10 +87,10 @@ Designed, developed and authored by Rich Plastow for Loop.Coop.
 ## Icon
 
 + __Favicon:__      Upload oom-icon-640x640-got.png to realfavicongenerator.net
-+ __iOS:__          #ff9900, margin 0px, oom-icon-mobile-800x800.png
-+ __Android:__      No change, Theme #ff9900, oom-icon-mobile-800x800.png
-+ __Metro:__        #ff9900, Big square icon only, oom-icon-640x640-wot.png
-+ __OS X Safari:__  theme color #ff9900
++ __iOS:__          #9900ff, margin 0px, oom-icon-mobile-800x800.png
++ __Android:__      No change, Theme #9900ff, oom-icon-mobile-800x800.png
++ __Metro:__        #9900ff, Big square icon only, oom-icon-640x640-wot.png
++ __OS X Safari:__  theme color #9900ff
 + __Path:__         /support/asset/icon
 + __Compression:__  Very high compression factor
 + __Scaling:__      Lanczos
