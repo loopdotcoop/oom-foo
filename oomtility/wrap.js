@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Wrap'
-    , VERSION  = '1.0.5'
+    , VERSION  = '1.0.6'
     , HOMEPAGE = 'https://oomtility.loop.coop'
     , HELP =
 `

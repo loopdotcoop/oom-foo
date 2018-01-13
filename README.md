@@ -3,7 +3,7 @@
 #### Initial test of the oom-hub architecture
 
 + __Last update:__  2018/01/13
-+ __Version:__      1.0.5
++ __Version:__      1.0.6
 
 [Homepage](http://oom-foo.loop.coop/) &nbsp;
 [Repo](https://github.com/loopdotcoop/oom-foo) &nbsp;

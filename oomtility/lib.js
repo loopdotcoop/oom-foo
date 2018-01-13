@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Lib'
-    , VERSION  = '1.0.5'
+    , VERSION  = '1.0.6'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
 
@@ -75,7 +75,7 @@ function getHtmlTop (config) {
 <!-- STYLE -->
 
 <!-- Load fonts as soon as possible -->
-<style type="text/css">
+<style>
 @font-face { font-family: 'Ubuntu'; font-weight: 400; font-style: normal;
   src: local('Ubuntu Regular'), local('Ubuntu-Regular')
     , url(${pathToSupport}asset/font/ubuntu-regular.woff2) format('woff2');
@@ -121,28 +121,31 @@ function getHtmlTop (config) {
 
 <!-- HEADER -->
 
-<!-- Dropdown menu to select JavaScript format -->
-<select id="ecmaswitch" style="float:right" onchange="document.cookie=
+<!-- Dropdown menu to select JavaScript standard -->
+<select id="ecmaswitch" onchange="document.cookie=
   'ecmaswitch='+this.options[this.selectedIndex].value;location.reload()">
-  <option value="~0~">ES5 Production</option><!-- default -->
-  <option value="~1~">ES5 Minified</option>
-  <option value="~2~">ES6 Production</option>
-  <option value="~3~">ES6 Development</option>
-</select><script>!function(d,f,e){if(e=d.getElementById('ecmaswitch'))f=~~
-  d.cookie.split('~')[1],e.options[f].selected=!0}(document)</script>
+  <option value="~0~">ctrl-alt-0: ES5 Production</option><!-- default -->
+  <option value="~1~">ctrl-alt-1: ES5 Minified</option>
+  <option value="~2~">ctrl-alt-2: ES6 Production</option>
+  <option value="~3~">ctrl-alt-3: ES6 Development</option>
+  <script>!function(d,S,m,s){m=d.scripts[0].parentNode,s=~~d.cookie.split('~')[1
+  ],m[S]=s,d.addEventListener('keypress',function(e){s=e.charCode-48;if(0<=s&&4>
+  s&&e.ctrlKey&&e.altKey)m[S]=s,m.dispatchEvent(new Event('change'))})}(document
+  ,'selectedIndex')</script>
+</select>
 
 <!-- Header and Navigation menu -->
-<h1 style="display:inline">${title}
-  <span id="version">&hellip;</span> <span id="format"></span>&nbsp;</h1>
-<div style="float:right">
+<h1>${title}
+  <span id="version">&hellip;</span> <span id="ecma"></span>&nbsp;</h1>
+<nav>
   <a href="${pathToTop}index.html" id="home-link">Home</a> &nbsp;
-  <a href="${repo}">Repo</a> &nbsp;
-  <a href="${npm}">NPM</a> &nbsp;
   <a href="${pathToSupport}test.html">Test</a> &nbsp;
-  <a href="${pathToSupport}demo.html">Demo</a> &nbsp;&nbsp;
-</div>
+  <a href="${pathToSupport}demo.html">Demo</a> &nbsp;
+  <a href="${repo}">Repo</a> &nbsp;
+  <a href="${npm}">NPM</a> &nbsp;&nbsp;
+</nav>
 
-<h2 style="margin-top:0.2em">${description}</h2>
+<h2>${description}</h2>
 
 <!-- Upgrade message for Internet Explorer 8 and below --><!--[if lte IE 8]>
 <script>document.getElementById('version').innerHTML='Not Supported'</script>
@@ -163,9 +166,9 @@ function getHtmlBottom (config) {
     let { projectTC } = config
     return `
 
-<!-- Display the version and format -->
+<!-- Display the repo version and JavaScript standard -->
 <script>$('#version').html(OOM.${projectTC}.VERSION||'(no VERSION)')
-$('#format').html('es5|5 min|6|6 dev'.split('|')[~~document.cookie.split('~')[1]])
+$('#ecma').html('ES'+['5','5 min','6','6 dev'][~~document.cookie.split('~')[1]])
 </script>
 
 <!-- End hiding from Internet Explorer 8 and below --><!--<![endif]-->
@@ -526,13 +529,23 @@ module.exports.getTestHtml = function (config) {
 module.exports.getMainCss = function (config) {
     return `/*${config.topline.slice(2,-2)}*/
 
-/* FONT */
+/* FONTS */
 
 body {
     font-family: 'Ubuntu', sans-serif;
 }
 pre, tt, code, kbd, samp, var {
     font-family: 'Ubuntu Mono', monospace;
+}
+
+
+/* COLOURS */
+
+body {
+    background: ${config.color};
+}
+.container {
+    background: #fff;
 }
 
 
@@ -557,7 +570,8 @@ pre, tt, code, kbd, samp, var {
 
 module.exports.getIndexHtml = function (config) {
     let {
-        projectTC
+        title
+      , projectTC
     } = config
     return getHtmlTop(
         Object.assign({}, config, {
@@ -567,7 +581,7 @@ module.exports.getIndexHtml = function (config) {
     ) + `
 
 
-<img id="logo" src="support/asset/logo/logo-1200x1200.svg"></img>
+<img id="logo" alt="${title} Logo" src="support/asset/logo/logo-1200x1200.svg">
 
 <!-- Load the proper format scripts, according to the '#ecmaswitch' menu -->
 <script src="support/asset/js/ecmaswitch.js"></script>
@@ -588,14 +602,14 @@ module.exports.getEcmaswitchJs = function (config) {
         projectLC
     } = config
     return '//// '
-+ `ECMASwitch //// 1.0.5 //// January 2018 //// ecmaswitch.loop.coop/ ////////
++ `ECMASwitch //// 1.0.6 //// January 2018 //// ecmaswitch.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
 //// Create the namespace-object if it does not already exist and add constants.
 var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}
 ECMASwitch.NAME     = 'ECMASwitch'
-ECMASwitch.VERSION  = '1.0.5'
+ECMASwitch.VERSION  = '1.0.6'
 ECMASwitch.HOMEPAGE = 'http://ecmaswitch.loop.coop/'
 
 //// Polyfill \`document\` for non-browser contexts.

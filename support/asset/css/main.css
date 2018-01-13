@@ -1,12 +1,22 @@
-/*// OomFoo //// 1.0.5 //// January 2018 //// http://oom-foo.loop.coop/ //////*/
+/*// OomFoo //// 1.0.6 //// January 2018 //// http://oom-foo.loop.coop/ //////*/
 
-/* FONT */
+/* FONTS */
 
 body {
     font-family: 'Ubuntu', sans-serif;
 }
 pre, tt, code, kbd, samp, var {
     font-family: 'Ubuntu Mono', monospace;
+}
+
+
+/* COLOURS */
+
+body {
+    background: #9900ff;
+}
+.container {
+    background: #fff;
 }
 
 
