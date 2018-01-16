@@ -8,7 +8,7 @@ jQuery(function($) {
     var Class = OOM.OomFoo;
     is('function' === typeof Class, 'OomFoo is a function');
     is('OomFoo' === Class.NAME, 'NAME as expected');
-    is('1.0.0' === Class.VERSION, 'VERSION as expected');
+    is('1.0.8' === Class.VERSION, 'VERSION as expected');
     is('http://oom-foo.loop.coop/' === Class.HOMEPAGE, 'HOMEPAGE as expected');
   });
 });

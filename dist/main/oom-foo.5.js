@@ -3,7 +3,7 @@
   'use strict';
   var META = {
     NAME: {value: 'OomFoo'},
-    VERSION: {value: '1.0.0'},
+    VERSION: {value: '1.0.8'},
     HOMEPAGE: {value: 'http://oom-foo.loop.coop/'},
     REMARKS: {value: 'Initial test of the oom-hub architecture'}
   };

@@ -198,7 +198,7 @@ module.exports.getApp6Js = function (config) {
 
 const META = {
     NAME:     { value:'${classname}' }
-  , VERSION:  { value:'${version}' }
+  , VERSION:  { value:'${version}' } // OOMBUMPABLE
   , HOMEPAGE: { value:'${homepage}' }
   , REMARKS:  { value:'${remarks}' }
 }
@@ -439,7 +439,7 @@ test('The ${classname} class', () => {
     is('function' === typeof Class, '${classname} is a function')
 
     is('${classname}' === Class.NAME, 'NAME as expected')
-    is('${version  }' === Class.VERSION, 'VERSION as expected')
+    is('${version  }' === Class.VERSION, 'VERSION as expected') // OOMBUMPABLE
     is('${homepage }' === Class.HOMEPAGE, 'HOMEPAGE as expected')
 })
 
@@ -750,8 +750,8 @@ module.exports.getREADMEMd = function (config) {
 
 #### ${description}
 
-+ __Last update:__  ${date}
-+ __Version:__      ${version}
++ __Last update:__  ${date} <!-- OOMBUMPABLE -->
++ __Version:__      ${version} <!-- OOMBUMPABLE -->
 
 [Homepage](${homepage}) &nbsp;
 [Repo](${repo}) &nbsp;
