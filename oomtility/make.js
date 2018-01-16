@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Make'
-    , VERSION  = '1.0.10'
+    , VERSION  = '1.0.11'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Made by ${NAME} ${VERSION} //\\\\//\\\\ `
@@ -96,7 +96,7 @@ Array.prototype.move = function(from, to) { // stackoverflow.com/a/7180095
     this.splice(to, 0, this.splice(from, 1)[0]) }
 
 //// Declare variables.
-let opt, es6, es5, min, mains, demos, tests, pos, names
+let opt, es6, es5, min, mains, demos, tests, pos, names, writeFileTally = 0
 
 //// Deal with command-line options.
 while ( opt = process.argv.shift() ) {
@@ -128,7 +128,7 @@ mains.forEach( name => {
     es6.push( fs.readFileSync('src/main/' + name)+'' )
 })
 es6 = es6.join('\n\n\n\n') + BYLINE
-fs.writeFileSync( `dist/main/${projectLC}.6.js`, es6 )
+writeFileSyncAndTally( `dist/main/${projectLC}.6.js`, es6 )
 
 
 //// 2. Transpile the new ‘project.6.js’ to ‘project.5.js’
@@ -138,7 +138,7 @@ es5 = es5.replace( // correct a traceur error
   , "efined' : $traceurRuntime.typeof(global)) ? global : this);"
 )
 es5 = removeSourceMapRef(es5)
-fs.writeFileSync(
+writeFileSyncAndTally(
     `dist/main/${projectLC}.5.js`
   , topline + '\n\n' + es5 + BYLINE
 )
@@ -146,7 +146,7 @@ fs.writeFileSync(
 
 //// 3. Minify ‘project.5.js’ to ‘project.5.min.js’
 min = uglify.minify( es5, minConfig(`dist/main/${projectLC}.5.min.js`) )
-fs.writeFileSync(
+writeFileSyncAndTally(
     `dist/main/${projectLC}.5.min.js`
   , topline + '\n\n' + min.code + BYLINE
 )
@@ -173,20 +173,20 @@ demos.forEach( name => {
     )
     names.push( name.slice(0,-5).toLowerCase() ) // 'Ok-demo.6.js' -> 'ok-demo'
 })
-es6.forEach( (orig, i) =>
-    fs.writeFileSync( `dist/demo/${names[i]}.6.js`, orig + BYLINE )
-)
+es6.forEach( (orig, i) => {
+    writeFileSyncAndTally( `dist/demo/${names[i]}.6.js`, orig + BYLINE )
+    })
 
 
 //// 5. Transpile ES6 files in ‘dist/demo/’ to ES5
 es6.forEach( (orig, i) => {
     let es5 = traceur.compile(orig, { blockBinding:true })
     es5 = removeSourceMapRef(es5)
-    fs.writeFileSync(
+    writeFileSyncAndTally(
         `dist/demo/${names[i]}.5.js`
       , topline + '\n\n' + es5 + BYLINE
     )
-})
+    })
 
 
 
@@ -216,7 +216,7 @@ tests.forEach( name => {
 
 //// - ‘dist/test/project-browser.6.js’         (can only be run in a browser)
 es6.browser = es6.browser.join('\n\n\n\n')
-fs.writeFileSync(
+writeFileSyncAndTally(
     `dist/test/${projectLC}-browser.6.js`
   , (es6.browser || `//// ${projectTC} ${projectV} has no browser tests`)
       + BYLINE
@@ -224,7 +224,7 @@ fs.writeFileSync(
 
 //// - ‘dist/test/project-nonbrowser.6.js’      (cannot be run in a browser)
 es6.nonbrowser = es6.nonbrowser.join('\n\n\n\n')
-fs.writeFileSync(
+writeFileSyncAndTally(
     `dist/test/${projectLC}-nonbrowser.6.js`
   , (es6.nonbrowser || `//// ${projectTC} ${projectV} has no nonbrowser tests`)
       + BYLINE
@@ -232,7 +232,7 @@ fs.writeFileSync(
 
 //// - ‘dist/test/project-universal.6.js’       (can run anywhere)
 es6.universal = es6.universal.join('\n\n\n\n')
-fs.writeFileSync(
+writeFileSyncAndTally(
     `dist/test/${projectLC}-universal.6.js`
   , (es6.universal || `//// ${projectTC} ${projectV} has no universal tests`)
       + BYLINE
@@ -244,14 +244,14 @@ es5 = {}
 es5.browser = es6.browser
   ? topline + '\n\n' + traceur.compile(es6.browser, { blockBinding:true })
   : `//// ${projectTC} ${projectV} has no browser tests`
-fs.writeFileSync(
+writeFileSyncAndTally(
     `dist/test/${projectLC}-browser.5.js`
   , removeSourceMapRef(es5.browser) + BYLINE
 )
 es5.universal = es6.universal
   ? topline + '\n\n' + traceur.compile(es6.universal, { blockBinding:true })
   : `//// ${projectTC} ${projectV} has no universal tests`
-fs.writeFileSync(
+writeFileSyncAndTally(
     `dist/test/${projectLC}-universal.5.js`
   , removeSourceMapRef(es5.universal) + BYLINE
 )
@@ -271,6 +271,15 @@ updateECMASwitch('support/asset/js/ecmaswitch.js', mains)
 
 //// 3. support/test.html                       ‘Development ES6’ links
 updateTestFile('support/test.html', tests) // `tests` from previous step
+
+
+
+
+//// FINISH
+
+
+//// Show the result.
+console.log(`Made ${writeFileTally} file${1===writeFileTally?'':'s'}`)
 
 
 
@@ -388,5 +397,12 @@ function removeSourceMapRef (code) {
         return code // not found
     return code.slice(0, sourceMapPos)
 }
+
+//// Basic wrapper round `fs.writeFileSync()`, which keeps a tally.
+function writeFileSyncAndTally (path, content) {
+    fs.writeFileSync(path, content)
+    writeFileTally++
+}
+
 
 }()

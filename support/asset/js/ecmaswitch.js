@@ -1,4 +1,4 @@
-//// ECMASwitch //// 1.0.10 //// January 2018 //// ecmaswitch.loop.coop/ ///////
+//// ECMASwitch //// 1.0.11 //// January 2018 //// ecmaswitch.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 

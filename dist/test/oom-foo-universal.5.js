@@ -1,4 +1,4 @@
-//// OomFoo //// 1.0.10 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.11 //// January 2018 //// http://oom-foo.loop.coop/ ///////
 
 "use strict";
 if ('function' != typeof jQuery)
@@ -10,7 +10,7 @@ jQuery(function($) {
     var Class = OOM.OomFoo;
     is('function' === typeof Class, 'OomFoo is a function');
     is('OomFoo' === Class.NAME, 'NAME as expected');
-    is('1.0.10' === Class.VERSION, 'VERSION as expected');
+    is('1.0.11' === Class.VERSION, 'VERSION as expected');
     is('http://oom-foo.loop.coop/' === Class.HOMEPAGE, 'HOMEPAGE as expected');
   });
 });
@@ -18,4 +18,4 @@ jQuery(function($) {
 
 
 
-//// Made by Oomtility Make 1.0.10 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.0.11 //\\//\\ http://oomtility.loop.coop /////////

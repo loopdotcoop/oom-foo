@@ -11,3 +11,4 @@
 1.0.8 oomtility/init.js starts projects at 1.0.0 and prompts for colour
 1.0.9 oomtility/test.js in line with other Oomtilities
 1.0.10 Tidying and fixing oomtility/make.js
+1.0.11 oomtility/init.js shows a result after a successful run
