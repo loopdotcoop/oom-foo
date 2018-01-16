@@ -1,9 +1,11 @@
+//// OomFoo //// 1.0.10 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
     NAME: {value: 'OomFoo'},
-    VERSION: {value: '1.0.9'},
+    VERSION: {value: '1.0.10'},
     HOMEPAGE: {value: 'http://oom-foo.loop.coop/'},
     REMARKS: {value: 'Initial test of the oom-hub architecture'}
   };
@@ -130,9 +132,8 @@
     return String.fromCharCode(Math.random() * (e - s) + s);
   }
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
-//# sourceURL=<compile-source>
 
 
 
 
-//\\//\\ built by Oomtility Make 1.0.9 //\\//\\ http://oomtility.loop.coop //\\//\\
+//// Made by Oomtility Make 1.0.10 //\\//\\ http://oomtility.loop.coop /////////

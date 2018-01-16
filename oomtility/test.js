@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Test'
-    , VERSION  = '1.0.9'
+    , VERSION  = '1.0.10'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , HELP =
@@ -22,6 +22,8 @@ Basic Usage
 $ cd /path/to/your/oom/repo/  # An Oom repo directory
 $ oomtest --version           # Show the current ${NAME} version
 $ oomtest                     # Run ‘universal’ and ‘nonbrowser’ tests in Node
+$ npm test                    # Same as \`$ oomtest\`
+$ npm test -- --browser       # Same as \`$ oomtest --browser\`
 
 Options
 -------

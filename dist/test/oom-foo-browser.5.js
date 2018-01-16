@@ -1,7 +1,5 @@
-"use strict";
-//# sourceURL=<compile-source>
+//// OomFoo 1.0.10 has no browser tests
 
 
 
-
-//\\//\\ built by Oomtility Make 1.0.9 //\\//\\ http://oomtility.loop.coop //\\//\\
+//// Made by Oomtility Make 1.0.10 //\\//\\ http://oomtility.loop.coop /////////
