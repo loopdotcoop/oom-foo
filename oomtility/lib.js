@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Lib'
-    , VERSION  = '1.0.7'
+    , VERSION  = '1.0.8'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
 
@@ -527,7 +527,7 @@ module.exports.getTestHtml = function (config) {
 
 
 module.exports.getMainCss = function (config) {
-    return `/*${config.topline.slice(2,-2)}*/
+    return `
 
 /* FONTS */
 
@@ -602,14 +602,14 @@ module.exports.getEcmaswitchJs = function (config) {
         projectLC
     } = config
     return '//// '
-+ `ECMASwitch //// 1.0.7 //// January 2018 //// ecmaswitch.loop.coop/ ////////
++ `ECMASwitch //// 1.0.8 //// January 2018 //// ecmaswitch.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
 //// Create the namespace-object if it does not already exist and add constants.
 var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}
 ECMASwitch.NAME     = 'ECMASwitch'
-ECMASwitch.VERSION  = '1.0.7'
+ECMASwitch.VERSION  = '1.0.8'
 ECMASwitch.HOMEPAGE = 'http://ecmaswitch.loop.coop/'
 
 //// Polyfill \`document\` for non-browser contexts.

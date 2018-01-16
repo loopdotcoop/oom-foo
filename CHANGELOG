@@ -8,3 +8,4 @@
 1.0.5 Even better icon
 1.0.6 ctrl-alt-0 to ctrl-alt-3 changes ecmaswitch
 1.0.7 With oomtility/bump.js
+1.0.8 oomtility/init.js starts projects at 1.0.0 and prompts for colour
