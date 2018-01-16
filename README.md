@@ -2,8 +2,8 @@
 
 #### Initial test of the oom-hub architecture
 
-+ __Last update:__  2018/01/13
-+ __Version:__      1.0.6
++ __Last update:__  2018/01/16 <!-- OOMBUMPABLE -->
++ __Version:__      1.0.7 <!-- OOMBUMPABLE -->
 
 [Homepage](http://oom-foo.loop.coop/) &nbsp;
 [Repo](https://github.com/loopdotcoop/oom-foo) &nbsp;
@@ -96,7 +96,3 @@ Designed, developed and authored by Rich Plastow for Loop.Coop.
 + __Scaling:__      Lanczos
 + __App Name:__     OomFoo
 + __Post:__         Six PNGs thru tinypng.com, and replace safari-pinned-tab.svg
-
-
-
-
