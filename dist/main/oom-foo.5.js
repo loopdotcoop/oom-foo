@@ -1,17 +1,17 @@
-//// OomFoo //// 1.0.11 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.12 //// January 2018 //// http://oom-foo.loop.coop/ ///////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
     NAME: {value: 'OomFoo'},
-    VERSION: {value: '1.0.11'},
+    VERSION: {value: '1.0.12'},
     HOMEPAGE: {value: 'http://oom-foo.loop.coop/'},
     REMARKS: {value: 'Initial test of the oom-hub architecture'}
   };
   var OOM = ROOT.OOM = ROOT.OOM || {};
   var TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {};
-  var OomFoo = OOM.OomFoo = ($traceurRuntime.createClass)(function() {
+  var Class = OOM.OomFoo = ($traceurRuntime.createClass)(function() {
     var config = arguments[0] !== (void 0) ? arguments[0] : {};
     var hub = arguments[1] !== (void 0) ? arguments[1] : OOM.hub;
     var $__3 = this;
@@ -43,18 +43,18 @@
       });
     },
     _validateConstructor: function(config) {
-      var pfx = "OomFoo:_validateConstructor(): ";
+      var ME = "OomFoo:_validateConstructor(): ";
       if ('object' !== (typeof config === 'undefined' ? 'undefined' : $traceurRuntime.typeof(config)))
-        throw new Error(pfx + ("config is type " + (typeof config === 'undefined' ? 'undefined' : $traceurRuntime.typeof(config)) + " not object"));
+        throw new Error(ME + ("config is type " + (typeof config === 'undefined' ? 'undefined' : $traceurRuntime.typeof(config)) + " not object"));
       this.validConstructor.forEach(function(valid) {
         if (!TOOLKIT.applyDefault(valid, config))
-          throw new TypeError(pfx + ("config." + valid.name + " is mandatory"));
+          throw new TypeError(ME + ("config." + valid.name + " is mandatory"));
         var err,
             value = config[valid.name];
         if (err = TOOLKIT.validateType(valid, value))
-          throw new TypeError(pfx + ("config." + valid.name + " " + err));
+          throw new TypeError(ME + ("config." + valid.name + " " + err));
         if (err = TOOLKIT.validateRange(valid, value))
-          throw new RangeError(pfx + ("config." + valid.name + " " + err));
+          throw new RangeError(ME + ("config." + valid.name + " " + err));
       });
     },
     get validConstructor() {
@@ -79,7 +79,7 @@
         tooltip: 'An example object parameter, intended as a placeholder',
         devtip: 'You should replace this placeholder with a real parameter',
         form: 'hidden',
-        type: (ROOT.AudioContext || ROOT.webkitAudioContext)
+        type: Date
       }];
     },
     xxx: function(config) {
@@ -94,7 +94,7 @@
           zz = $__5.zz;
     }
   }, {});
-  Object.defineProperties(OomFoo, META);
+  Object.defineProperties(Class, META);
   TOOLKIT.applyDefault = TOOLKIT.applyDefault || (function(valid, config) {
     if (config.hasOwnProperty(valid.name))
       return true;
@@ -104,10 +104,15 @@
     return true;
   });
   TOOLKIT.validateType = TOOLKIT.validateType || (function(valid, value) {
-    if ('string' === typeof valid.type && (typeof value === 'undefined' ? 'undefined' : $traceurRuntime.typeof(value)) !== valid.type)
-      return ("is type " + (typeof value === 'undefined' ? 'undefined' : $traceurRuntime.typeof(value)) + " not " + valid.type);
-    if ('function' === typeof valid.type && !(value instanceof valid.type))
-      return ("is not an instance of " + valid.type.name);
+    switch ($traceurRuntime.typeof(valid.type)) {
+      case 'string':
+        return ((typeof value === 'undefined' ? 'undefined' : $traceurRuntime.typeof(value)) === valid.type) ? null : ("is type " + (typeof value === 'undefined' ? 'undefined' : $traceurRuntime.typeof(value)) + " not " + valid.type);
+      case 'function':
+        return (value instanceof valid.type) ? null : ("is not an instance of " + valid.type.name);
+      case 'object':
+        return (value === valid.type) ? null : "is not the expected object";
+    }
+    throw new TypeError("TOOLKIT.validateType: " + ("valid.type for " + valid.name + " is " + $traceurRuntime.typeof(valid.type)));
   });
   TOOLKIT.validateRange = TOOLKIT.validateRange || (function(valid, value) {
     if (null != valid.min && valid.min > value)
@@ -136,4 +141,4 @@
 
 
 
-//// Made by Oomtility Make 1.0.11 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.0.12 //\\//\\ http://oomtility.loop.coop /////////

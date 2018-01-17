@@ -2,7 +2,7 @@
 
 
 
-//// OomFoo //// 1.0.11 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.12 //// January 2018 //// http://oom-foo.loop.coop/ ///////
 
 //// Node.js: 7.2.0
 //// Rhino:   @TODO get Rhino working
@@ -16,29 +16,51 @@
 
 
 
-if ('function' != typeof jQuery) throw Error('jQuery not found')
+if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
+const Class = OOM.OomFoo
 
 
 
 
 test('The OomFoo class', () => {
+
     is('object' === typeof OOM, 'The OOM namespace object exists')
     is('undefined' === typeof OomFoo, 'OomFoo is not global')
-    let Class = OOM.OomFoo
     is('function' === typeof Class, 'OomFoo is a function')
 
     is('OomFoo' === Class.NAME, 'NAME as expected')
-    is('1.0.11' === Class.VERSION, 'VERSION as expected') // OOMBUMPABLE
+    is('1.0.12' === Class.VERSION, 'VERSION as expected') // OOMBUMPABLE
     is('http://oom-foo.loop.coop/' === Class.HOMEPAGE, 'HOMEPAGE as expected')
 })
 
 
 
 
+test('Successful OomFoo instantiation', () => {
+
+    const instance = new Class({
+        firstParameter: 100
+      , secondParameter: new Date
+    }, getMockHub())
+    is(instance instanceof Class, 'instance as expected')
+
 })
 
 
 
 
-//// Made by Oomtility Make 1.0.11 //\\//\\ http://oomtility.loop.coop /////////
+//// PRIVATE FUNCTIONS
+
+//// Provides a mock of the oom-hub instance.
+function getMockHub () { return { /* @TODO hub API */ } }
+
+
+
+
+})
+
+
+
+
+//// Made by Oomtility Make 1.0.12 //\\//\\ http://oomtility.loop.coop /////////

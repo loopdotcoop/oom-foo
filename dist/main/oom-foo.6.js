@@ -2,13 +2,13 @@
 
 
 
-//// OomFoo //// 1.0.11 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.12 //// January 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
 const META = {
     NAME:     { value:'OomFoo' }
-  , VERSION:  { value:'1.0.11' } // OOMBUMPABLE
+  , VERSION:  { value:'1.0.12' } // OOMBUMPABLE
   , HOMEPAGE: { value:'http://oom-foo.loop.coop/' }
   , REMARKS:  { value:'Initial test of the oom-hub architecture' }
 }
@@ -20,7 +20,7 @@ const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
 
 
 //// Define `OomFoo`, this module’s main entry point.
-const OomFoo = OOM.OomFoo = class {
+const Class = OOM.OomFoo = class {
 
     constructor (config={}, hub=OOM.hub) {
 
@@ -81,17 +81,17 @@ const OomFoo = OOM.OomFoo = class {
     //// valid.
     //// Called by: constructor()
     _validateConstructor (config) {
-        const pfx = `OomFoo:_validateConstructor(): ` // error prefix
+        const ME = `OomFoo:_validateConstructor(): ` // error prefix
         if ('object' !== typeof config)
-            throw new Error(pfx+`config is type ${typeof config} not object`)
+            throw new Error(ME+`config is type ${typeof config} not object`)
         this.validConstructor.forEach( valid => {
             if (! TOOLKIT.applyDefault(valid, config) )
-                throw new TypeError(pfx+`config.${valid.name} is mandatory`)
+                throw new TypeError(ME+`config.${valid.name} is mandatory`)
             let err, value = config[valid.name]
             if ( err = TOOLKIT.validateType(valid, value) )
-                throw new TypeError(pfx+`config.${valid.name} ${err}`)
+                throw new TypeError(ME+`config.${valid.name} ${err}`)
             if ( err = TOOLKIT.validateRange(valid, value) )
-                throw new RangeError(pfx+`config.${valid.name} ${err}`)
+                throw new RangeError(ME+`config.${valid.name} ${err}`)
         })
     }
 
@@ -129,7 +129,7 @@ const OomFoo = OOM.OomFoo = class {
           , devtip:  'You should replace this placeholder with a real parameter'
           , form:    'hidden'
 
-          , type:    (ROOT.AudioContext||ROOT.webkitAudioContext)
+          , type:    Date
         }
     ]}
 
@@ -145,7 +145,7 @@ const OomFoo = OOM.OomFoo = class {
 
 
 //// Add static constants to the `OomFoo` class.
-Object.defineProperties(OomFoo, META)
+Object.defineProperties(Class, META)
 
 
 
@@ -164,10 +164,15 @@ TOOLKIT.applyDefault = TOOLKIT.applyDefault || ( (valid, config) => {
 })
 
 TOOLKIT.validateType = TOOLKIT.validateType || ( (valid, value) => {
-    if ('string' === typeof valid.type && typeof value !== valid.type)
-        return `is type ${typeof value} not ${valid.type}`
-    if ('function' === typeof valid.type && ! (value instanceof valid.type))
-        return `is not an instance of ${valid.type.name}`
+    switch (typeof valid.type) {
+        case 'string':   return (typeof value === valid.type)
+                           ? null : `is type ${typeof value} not ${valid.type}`
+        case 'function': return (value instanceof valid.type)
+                           ? null : `is not an instance of ${valid.type.name}`
+        case 'object':   return (value === valid.type)
+                           ? null : `is not the expected object` }
+    throw new TypeError(`TOOLKIT.validateType: `
+      + `valid.type for ${valid.name} is ${typeof valid.type}`)
 })
 
 TOOLKIT.validateRange = TOOLKIT.validateRange || ( (valid, value) => {
@@ -213,4 +218,4 @@ function rndCh (s, e) { return String.fromCharCode(Math.random() * (e-s) + s) }
 
 
 
-//// Made by Oomtility Make 1.0.11 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.0.12 //\\//\\ http://oomtility.loop.coop /////////

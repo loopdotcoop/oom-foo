@@ -10,6 +10,8 @@ pre, tt, code, kbd, samp, var {
 }
 
 
+
+
 /* COLOURS */
 
 body {
@@ -17,6 +19,16 @@ body {
 }
 .container {
     background: #fff;
+}
+
+
+
+
+/* LAYOUT */
+
+.container {
+    padding-bottom: 1em;
+    border-radius: 0 0 4px 4px;
 }
 
 

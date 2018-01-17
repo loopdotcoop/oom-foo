@@ -12,3 +12,4 @@
 1.0.9 oomtility/test.js in line with other Oomtilities
 1.0.10 Tidying and fixing oomtility/make.js
 1.0.11 oomtility/init.js shows a result after a successful run
+1.0.12 Improved App.6.js and its tests

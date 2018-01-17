@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Lib'
-    , VERSION  = '1.0.11'
+    , VERSION  = '1.0.12'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
 
@@ -210,7 +210,7 @@ const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
 
 
 //// Define \`${classname}\`, this module’s main entry point.
-const ${classname} = OOM.${classname} = class {
+const Class = OOM.${classname} = class {
 
     constructor (config={}, hub=OOM.hub) {
 
@@ -271,17 +271,17 @@ const ${classname} = OOM.${classname} = class {
     //// valid.
     //// Called by: constructor()
     _validateConstructor (config) {
-        const pfx = \`${classname}:_validateConstructor(): \` // error prefix
+        const ME = \`${classname}:_validateConstructor(): \` // error prefix
         if ('object' !== typeof config)
-            throw new Error(pfx+\`config is type \${typeof config} not object\`)
+            throw new Error(ME+\`config is type \${typeof config} not object\`)
         this.validConstructor.forEach( valid => {
             if (! TOOLKIT.applyDefault(valid, config) )
-                throw new TypeError(pfx+\`config.\${valid.name} is mandatory\`)
+                throw new TypeError(ME+\`config.\${valid.name} is mandatory\`)
             let err, value = config[valid.name]
             if ( err = TOOLKIT.validateType(valid, value) )
-                throw new TypeError(pfx+\`config.\${valid.name} \${err}\`)
+                throw new TypeError(ME+\`config.\${valid.name} \${err}\`)
             if ( err = TOOLKIT.validateRange(valid, value) )
-                throw new RangeError(pfx+\`config.\${valid.name} \${err}\`)
+                throw new RangeError(ME+\`config.\${valid.name} \${err}\`)
         })
     }
 
@@ -319,7 +319,7 @@ const ${classname} = OOM.${classname} = class {
           , devtip:  'You should replace this placeholder with a real parameter'
           , form:    'hidden'
 
-          , type:    (ROOT.AudioContext||ROOT.webkitAudioContext)
+          , type:    Date
         }
     ]}
 
@@ -335,7 +335,7 @@ const ${classname} = OOM.${classname} = class {
 
 
 //// Add static constants to the \`${classname}\` class.
-Object.defineProperties(${classname}, META)
+Object.defineProperties(Class, META)
 
 
 
@@ -354,10 +354,15 @@ TOOLKIT.applyDefault = TOOLKIT.applyDefault || ( (valid, config) => {
 })
 
 TOOLKIT.validateType = TOOLKIT.validateType || ( (valid, value) => {
-    if ('string' === typeof valid.type && typeof value !== valid.type)
-        return \`is type \${typeof value} not \${valid.type}\`
-    if ('function' === typeof valid.type && ! (value instanceof valid.type))
-        return \`is not an instance of \${valid.type.name}\`
+    switch (typeof valid.type) {
+        case 'string':   return (typeof value === valid.type)
+                           ? null : \`is type \${typeof value} not \${valid.type}\`
+        case 'function': return (value instanceof valid.type)
+                           ? null : \`is not an instance of \${valid.type.name}\`
+        case 'object':   return (value === valid.type)
+                           ? null : \`is not the expected object\` }
+    throw new TypeError(\`TOOLKIT.validateType: \`
+      + \`valid.type for \${valid.name} is \${typeof valid.type}\`)
 })
 
 TOOLKIT.validateRange = TOOLKIT.validateRange || ( (valid, value) => {
@@ -426,16 +431,17 @@ module.exports.getAppUniversal6Js = function (config) {
 
 
 
-if ('function' != typeof jQuery) throw Error('jQuery not found')
+if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
+const Class = OOM.${classname}
 
 
 
 
 test('The ${classname} class', () => {
+
     is('object' === typeof OOM, 'The OOM namespace object exists')
     is('undefined' === typeof ${classname}, '${classname} is not global')
-    let Class = OOM.${classname}
     is('function' === typeof Class, '${classname} is a function')
 
     is('${classname}' === Class.NAME, 'NAME as expected')
@@ -446,8 +452,28 @@ test('The ${classname} class', () => {
 
 
 
+test('Successful ${classname} instantiation', () => {
+
+    const instance = new Class({
+        firstParameter: 100
+      , secondParameter: new Date
+    }, getMockHub())
+    is(instance instanceof Class, 'instance as expected')
+
 })
 
+
+
+
+//// PRIVATE FUNCTIONS
+
+//// Provides a mock of the oom-hub instance.
+function getMockHub () { return { /* @TODO hub API */ } }
+
+
+
+
+})
 ` }
 
 
@@ -492,6 +518,12 @@ module.exports.getTestHtml = function (config) {
           , description: `Unit tests for ‘${projectTC}’.`
         })
     ) + `
+
+<!-- Container for test-output -->
+<style>.kludjs li { list-style: none; }</style>
+<section class="row">
+  <div class="kludjs col-12"></div>
+</section>
 
 <!-- Load the assertion library and its reporter -->
 <script src="asset/js/klud.min.js"></script>
@@ -539,6 +571,8 @@ pre, tt, code, kbd, samp, var {
 }
 
 
+
+
 /* COLOURS */
 
 body {
@@ -546,6 +580,16 @@ body {
 }
 .container {
     background: #fff;
+}
+
+
+
+
+/* LAYOUT */
+
+.container {
+    padding-bottom: 1em;
+    border-radius: 0 0 4px 4px;
 }
 
 
@@ -602,14 +646,14 @@ module.exports.getEcmaswitchJs = function (config) {
         projectLC
     } = config
     return '//// '
-+ `ECMASwitch //// 1.0.11 //// January 2018 //// ecmaswitch.loop.coop/ ///////
++ `ECMASwitch //// 1.0.12 //// January 2018 //// ecmaswitch.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
 //// Create the namespace-object if it does not already exist and add constants.
 var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}
 ECMASwitch.NAME     = 'ECMASwitch'
-ECMASwitch.VERSION  = '1.0.11'
+ECMASwitch.VERSION  = '1.0.12'
 ECMASwitch.HOMEPAGE = 'http://ecmaswitch.loop.coop/'
 
 //// Polyfill \`document\` for non-browser contexts.

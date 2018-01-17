@@ -1,5 +1,5 @@
-//// OomFoo 1.0.11 has no nonbrowser tests
+//// OomFoo 1.0.12 has no nonbrowser tests
 
 
 
-//// Made by Oomtility Make 1.0.11 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.0.12 //\\//\\ http://oomtility.loop.coop /////////
