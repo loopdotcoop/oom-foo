@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Make'
-    , VERSION  = '1.0.12'
+    , VERSION  = '1.0.13'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Made by ${NAME} ${VERSION} //\\\\//\\\\ `
@@ -132,11 +132,7 @@ writeFileSyncAndTally( `dist/main/${projectLC}.6.js`, es6 )
 
 
 //// 2. Transpile the new ‘project.6.js’ to ‘project.5.js’
-es5 = traceur.compile(es6, { blockBinding:true })
-es5 = es5.replace( // correct a traceur error
-    /efined' : \$traceurRuntime\.typeof\(global\)\) \? global : \(void 0\)\);/g
-  , "efined' : $traceurRuntime.typeof(global)) ? global : this);"
-)
+es5 = traceurFix( traceur.compile(es6, { blockBinding:true }) )
 es5 = removeSourceMapRef(es5)
 writeFileSyncAndTally(
     `dist/main/${projectLC}.5.js`
@@ -180,7 +176,7 @@ es6.forEach( (orig, i) => {
 
 //// 5. Transpile ES6 files in ‘dist/demo/’ to ES5
 es6.forEach( (orig, i) => {
-    let es5 = traceur.compile(orig, { blockBinding:true })
+    let es5 = traceurFix( traceur.compile(orig, { blockBinding:true }) )
     es5 = removeSourceMapRef(es5)
     writeFileSyncAndTally(
         `dist/demo/${names[i]}.5.js`
@@ -246,14 +242,14 @@ es5.browser = es6.browser
   : `//// ${projectTC} ${projectV} has no browser tests`
 writeFileSyncAndTally(
     `dist/test/${projectLC}-browser.5.js`
-  , removeSourceMapRef(es5.browser) + BYLINE
+  , removeSourceMapRef( traceurFix(es5.browser) ) + BYLINE
 )
 es5.universal = es6.universal
   ? topline + '\n\n' + traceur.compile(es6.universal, { blockBinding:true })
   : `//// ${projectTC} ${projectV} has no universal tests`
 writeFileSyncAndTally(
     `dist/test/${projectLC}-universal.5.js`
-  , removeSourceMapRef(es5.universal) + BYLINE
+  , removeSourceMapRef( traceurFix(es5.universal) ) + BYLINE
 )
 
 
@@ -349,10 +345,14 @@ function updateTestFile (htmlPath, tests) {
     out = html.slice(0, start+1).concat([
 `//// This dynamic section is kept up to date by ‘oomtility/make.js’ ////////////
 `])
+    //// ‘App-universal.6.js’ defines \`throws()\`, so run it first.
     tests.forEach( name => {
-        if ( '-browser.6.js'   != name.slice(-13)
-          && '-universal.6.js' != name.slice(-15) ) return
-        out.push(`    , [ null, null, null, '../src/test/${name}' ]`)
+        if ( '-universal.6.js' === name.slice(-15) )
+            out.push(`    , [ null, null, null, '../src/test/${name}' ]`)
+    })
+    tests.forEach( name => {
+        if ( '-browser.6.js' === name.slice(-13) )
+            out.push(`    , [ null, null, null, '../src/test/${name}' ]`)
     })
     out = out.concat( '', html.slice(end) )
     fs.writeFileSync( htmlPath, out.join('\n') )
@@ -404,5 +404,12 @@ function writeFileSyncAndTally (path, content) {
     writeFileTally++
 }
 
+//// Correct a traceur error.
+function traceurFix (es5) {
+    return es5.replace( // correct a traceur error
+        /efined' : \$traceurRuntime\.typeof\(global\)\) \? global : \(void 0\)\);/g
+      , "efined' : $traceurRuntime.typeof(global)) ? global : this);"
+    )
+}
 
 }()

@@ -2,19 +2,19 @@
 
 
 
-//// OomFoo //// 1.0.12 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.13 //// January 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
 const META = {
     NAME:     { value:'OomFoo' }
-  , VERSION:  { value:'1.0.12' } // OOMBUMPABLE
+  , VERSION:  { value:'1.0.13' } // OOMBUMPABLE
   , HOMEPAGE: { value:'http://oom-foo.loop.coop/' }
   , REMARKS:  { value:'Initial test of the oom-hub architecture' }
 }
 
 
-//// Make this module and Oom’s toolkit available globally.
+//// Shortcuts to Oom’s global namespace and toolkit.
 const OOM     = ROOT.OOM    = ROOT.OOM    || {}
 const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
 
@@ -26,8 +26,9 @@ const Class = OOM.OomFoo = class {
 
         //// id: Oom instances have universally unique IDs (57 billion combos).
         Object.defineProperty(this, 'id', { value:
-            '123456'.replace( /./g,         c=>rndCh(48,122) )    // 6 x [0-z]
-                    .replace( /[:-@\[-`]/g, c=>rndCh(97,122) ) }) // 6 x [a-z]
+            '123456'.replace( /./g,         c=>TOOLKIT.rndCh(48,122) )    // 0-z
+                    .replace( /[:-@\[-`]/g, c=>TOOLKIT.rndCh(97,122) ) }) // a-z
+
 
         //// hub: Oom instances keep a reference to the oom-hub.
         Object.defineProperty(this, 'hub', { value:hub })
@@ -42,9 +43,13 @@ const Class = OOM.OomFoo = class {
             Object.defineProperty(this, valid.name, { value })
         })
 
+
         //// ready: a Promise which resolves when the instance has initialised.
         Object.defineProperty(this, 'ready', { value: this._getReady() })
+
     }
+
+
 
 
     //// Returns a Promise which is recorded as the `ready` property, after
@@ -56,7 +61,7 @@ const Class = OOM.OomFoo = class {
 
         //// setupStart: the time that `new OomFoo({...})` was called.
         if (this.setupStart)
-            throw new Error(`OomFoo:_getReady(): Can only run once`)
+            throw new Error(`OomFoo._getReady(): Can only run once`)
         Object.defineProperty(this, 'setupStart', { value:TOOLKIT.getNow() })
 
         //// `OomFoo` does no setup, so could resolve the `ready`
@@ -77,17 +82,17 @@ const Class = OOM.OomFoo = class {
     }
 
 
-    //// Ensures that the `config` argument passed to the `constructor()` is
-    //// valid.
+
+    //// Ensures the `config` argument passed to the `constructor()` is valid.
     //// Called by: constructor()
     _validateConstructor (config) {
-        const ME = `OomFoo:_validateConstructor(): ` // error prefix
+        let err, value, ME = `OomFoo._validateConstructor(): ` // error prefix
         if ('object' !== typeof config)
             throw new Error(ME+`config is type ${typeof config} not object`)
         this.validConstructor.forEach( valid => {
             if (! TOOLKIT.applyDefault(valid, config) )
                 throw new TypeError(ME+`config.${valid.name} is mandatory`)
-            let err, value = config[valid.name]
+            value = config[valid.name]
             if ( err = TOOLKIT.validateType(valid, value) )
                 throw new TypeError(ME+`config.${valid.name} ${err}`)
             if ( err = TOOLKIT.validateRange(valid, value) )
@@ -152,6 +157,13 @@ Object.defineProperties(Class, META)
 
 //// TOOLKIT FUNCTIONS
 
+
+//// Return a random character within char-code start/end positions 's' and 'e'.
+TOOLKIT.rndCh = TOOLKIT.rndCh || ( (s, e) =>
+    String.fromCharCode(Math.random() * (e-s) + s) )
+
+
+//// @TODO describe these three
 TOOLKIT.applyDefault = TOOLKIT.applyDefault || ( (valid, config) => {
     if ( config.hasOwnProperty(valid.name) )
         return true // `true` here signifies default didn’t need to be applied
@@ -184,6 +196,7 @@ TOOLKIT.validateRange = TOOLKIT.validateRange || ( (valid, value) => {
         return `${value} ÷ ${valid.step} leaves ${(value/valid.step) % 1}`
 })
 
+
 //// Cross-platform millisecond-timer.
 TOOLKIT.getNow = TOOLKIT.getNow || ( () => {
     let now
@@ -203,11 +216,8 @@ TOOLKIT.getNow = TOOLKIT.getNow || ( () => {
 
 //// PRIVATE FUNCTIONS
 
-//// No operation.
-function noop () {}
-
-//// Return a random character within char-code start/end positions 's' and 'e'.
-function rndCh (s, e) { return String.fromCharCode(Math.random() * (e-s) + s) }
+//// Place any private functions here.
+// function noop () {}
 
 
 
@@ -217,5 +227,266 @@ function rndCh (s, e) { return String.fromCharCode(Math.random() * (e-s) + s) }
 
 
 
+//\\//\\ src/main/App.topLevel.6.js
 
-//// Made by Oomtility Make 1.0.12 //\\//\\ http://oomtility.loop.coop /////////
+
+
+//// OomFoo //// 1.0.13 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+
+!function (ROOT) { 'use strict'
+
+const META = {
+    NAME:     { value:'OomFoo.topLevel' }
+  , REMARKS:  { value:'@TODO' }
+}
+
+
+//// Shortcuts to Oom’s namespace and toolkit.
+const OOM     = ROOT.OOM    = ROOT.OOM    || {}
+const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
+
+
+//// Define the `OomFoo.topLevel()` method.
+const method = OOM.OomFoo.prototype.topLevel = function (abc) {
+    let err, ME = `OomFoo.topLevel(): ` // error prefix
+    if (! (this instanceof OOM.OomFoo)) throw new Error(ME
+      + `Must not be called as OomFoo.prototype.topLevel()`)
+    if ( err = TOOLKIT.validateType({ type:'string' }, abc) )
+        throw new TypeError(ME+`abc ${err}`)
+
+    this.xyz++
+    return abc + ' ok!'
+
+}//OomFoo.topLevel()
+
+//// A tally of the number of times `topLevel()` is called.
+OOM.OomFoo.prototype.xyz = 0
+
+
+//// Add static constants to the `topLevel()` method.
+Object.defineProperties(method, META)
+
+
+
+
+}( 'object' === typeof global ? global : this ) // `window` in a browser
+
+
+
+
+//\\//\\ src/main/Base.6.js
+
+
+
+//// OomFoo //// 1.0.13 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+
+!function (ROOT) { 'use strict'
+
+const META = {
+    NAME:     { value:'OomFoo.Base' }
+  , REMARKS:  { value:'@TODO' }
+}
+
+
+//// Shortcuts to Oom’s global namespace and toolkit.
+const OOM     = ROOT.OOM    = ROOT.OOM    || {}
+const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
+
+
+//// Define the `OomFoo.Base` class.
+const Class = OOM.OomFoo.Base = class {
+
+    constructor (config={}, hub=OOM.hub) {
+
+        //// id: Oom instances have universally unique IDs (57 billion combos).
+        Object.defineProperty(this, 'id', { value:
+            '123456'.replace( /./g,         c=>TOOLKIT.rndCh(48,122) )    // 0-z
+                    .replace( /[:-@\[-`]/g, c=>TOOLKIT.rndCh(97,122) ) }) // a-z
+
+
+        //// hub: Oom instances keep a reference to the oom-hub.
+        Object.defineProperty(this, 'hub', { value:hub })
+
+        //// Validate the configuration object.
+        this._validateConstructor(config)
+
+        //// Record config’s values as immutable properties.
+        this.validConstructor.forEach( valid => {
+            const value = config[valid.name]
+            if (null == value) throw Error('I am unreachable?') //@TODO remove
+            Object.defineProperty(this, valid.name, { value })
+        })
+
+
+        //// ready: a Promise which resolves when the instance has initialised.
+        Object.defineProperty(this, 'ready', { value: this._getReady() })
+
+    }
+
+
+
+
+    //// Returns a Promise which is recorded as the `ready` property, after
+    //// the constructor() has validated `config` and recorded the config
+    //// properties. Sub-classes can override _getReady() if they need to do
+    //// other async preparation.
+    //// Called by: constructor()
+    _getReady () {
+
+        //// setupStart: the time that `new OomFoo.Base({...})` was called.
+        if (this.setupStart)
+            throw new Error(`OomFoo.Base._getReady(): Can only run once`)
+        Object.defineProperty(this, 'setupStart', { value:TOOLKIT.getNow() })
+
+        //// `OomFoo.Base` does no setup, so could resolve the `ready`
+        //// Promise immediately. However, to make _getReady()’s behavior
+        //// consistent with classes which have a slow async setup, we introduce
+        //// a miniscule delay.
+        return new Promise( (resolve, reject) => { setTimeout( () => {
+
+            //// setupEnd: the time that `_getReady()` finished running.
+            Object.defineProperty(this, 'setupEnd', { value:TOOLKIT.getNow() })
+
+            //// Define the instance’s `ready` property.
+            resolve({
+                setupDelay: this.setupEnd - this.setupStart
+            })
+        }, 0)})
+
+    }
+
+
+
+    //// Ensures the `config` argument passed to the `constructor()` is valid.
+    //// Called by: constructor()
+    _validateConstructor (config) {
+        let err, value, ME = `OomFoo.Base._validateConstructor(): ` // error prefix
+        if ('object' !== typeof config)
+            throw new Error(ME+`config is type ${typeof config} not object`)
+        this.validConstructor.forEach( valid => {
+            if (! TOOLKIT.applyDefault(valid, config) )
+                throw new TypeError(ME+`config.${valid.name} is mandatory`)
+            value = config[valid.name]
+            if ( err = TOOLKIT.validateType(valid, value) )
+                throw new TypeError(ME+`config.${valid.name} ${err}`)
+            if ( err = TOOLKIT.validateRange(valid, value) )
+                throw new RangeError(ME+`config.${valid.name} ${err}`)
+        })
+    }
+
+
+    //// Defines what the `config` argument passed to the `constructor()`
+    //// should look like. Note that all of the `config` values are recorded
+    //// as immutable instance properties.
+    //// Called by: constructor()
+    //// Called by: constructor() > _validateConstructor()
+    //// Can also be used to auto-generate unit tests and auto-build GUIs.
+    get validConstructor () { return [
+        {
+            title:   'First Parameter'
+          , name:    'firstParameter'
+          , alias:   'fp'
+
+          , tooltip: 'An example numeric parameter, intended as a placeholder'
+          , devtip:  'You should replace this placeholder with a real parameter'
+          , form:    'range'
+          , power:   1 // eg `8` for an exponential range-slider
+          , suffix:  'Units'
+
+          , type:    'number'
+          , min:     1
+          , max:     100
+          , step:    1
+          , default: 50
+        }
+      , {
+            title:   'Second Parameter'
+          , name:    'secondParameter'
+          , alias:   'sp'
+
+          , tooltip: 'An example object parameter, intended as a placeholder'
+          , devtip:  'You should replace this placeholder with a real parameter'
+          , form:    'hidden'
+
+          , type:    Date
+        }
+    ]}
+
+    xxx (config) {
+        const { hub, a, b, c } = this
+        const { xx, yy, zz } = config
+
+        ////
+
+    }
+
+}//OomFoo.Base
+
+
+//// Add static constants to the `OomFoo.Base` class.
+Object.defineProperties(Class, META)
+
+
+
+
+//// PRIVATE FUNCTIONS
+
+//// Place any private functions here.
+// function noop () {}
+
+
+
+
+}( 'object' === typeof global ? global : this ) // `window` in a browser
+
+
+
+
+//\\//\\ src/main/Base.foo.6.js
+
+
+
+//// OomFoo //// 1.0.13 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+
+!function (ROOT) { 'use strict'
+
+const META = {
+    NAME:     { value:'OomFoo.Base.foo' }
+  , REMARKS:  { value:'@TODO' }
+}
+
+
+//// Shortcuts to Oom’s namespace and toolkit.
+const OOM     = ROOT.OOM    = ROOT.OOM    || {}
+const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
+
+
+//// Define the `OomFoo.Base.foo()` method.
+const method = OOM.OomFoo.Base.prototype.foo = function (abc) {
+    let err, ME = `OomFoo.Base.foo(): ` // error prefix
+    if (! (this instanceof OOM.OomFoo.Base)) throw new Error(ME
+      + `Must not be called as OomFoo.Base.prototype.foo()`)
+    if ( err = TOOLKIT.validateType({ type:'string' }, abc) )
+        throw new TypeError(ME+`abc ${err}`)
+
+    this.xyz++
+    return abc + ' ok!'
+
+}//OomFoo.Base.foo()
+
+//// A tally of the number of times `foo()` is called.
+OOM.OomFoo.Base.prototype.xyz = 0
+
+
+//// Add static constants to the `foo()` method.
+Object.defineProperties(method, META)
+
+
+
+
+}( 'object' === typeof global ? global : this ) // `window` in a browser
+
+
+
+
+//// Made by Oomtility Make 1.0.13 //\\//\\ http://oomtility.loop.coop /////////

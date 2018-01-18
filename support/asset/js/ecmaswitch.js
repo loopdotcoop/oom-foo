@@ -1,11 +1,11 @@
-//// ECMASwitch //// 1.0.12 //// January 2018 //// ecmaswitch.loop.coop/ ///////
+//// ECMASwitch //// 1.0.13 //// January 2018 //// ecmaswitch.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
 //// Create the namespace-object if it does not already exist and add constants.
 var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}
 ECMASwitch.NAME     = 'ECMASwitch'
-ECMASwitch.VERSION  = '1.0.12'
+ECMASwitch.VERSION  = '1.0.13'
 ECMASwitch.HOMEPAGE = 'http://ecmaswitch.loop.coop/'
 
 //// Polyfill `document` for non-browser contexts.
@@ -21,7 +21,7 @@ var d = ROOT.document || {
 //// This dynamic section is kept up to date by ‘oomtility/make.js’ ////////////
 
 var projectLC = 'oom-foo'
-var classFiles = 'App'
+var classFiles = 'App,App.topLevel,Base,Base.foo'
 
 //// END DYNAMIC SECTION ///////////////////////////////////////////////////////
 

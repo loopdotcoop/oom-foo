@@ -1,13 +1,14 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Lib'
-    , VERSION  = '1.0.12'
+    , VERSION  = '1.0.13'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
 
 
 
 //// LOCAL
+
 
 //// Used by `getSupportDemo/TestHtml()` and `getIndexHtml()`.
 function getHtmlTop (config) {
@@ -183,12 +184,16 @@ $('#ecma').html('ES'+['5','5 min','6','6 dev'][~~document.cookie.split('~')[1]])
 
 //// DYNAMIC EXPORTED
 
-module.exports.getApp6Js = function (config) {
+
+//// Used by `getApp6Js()` and `oomtiity/auto.js:generateClass()`.
+module.exports.getClass6Js = function (config) {
     let {
-        topline
-      , classname
-      , version
-      , homepage
+        isApp            // true if this is the `App` class (src/main/App.6.js)
+      , isTop            // true for the `App` class or another top-level class
+      , classname        // 'FooBar' if `isApp`, or 'FooBar.Base.Sub' if not
+      , version  = 'n/a' // only needed if `isApp`
+      , homepage = 'n/a' // only needed if `isApp`
+      , topline
       , remarks
     } = config
 
@@ -197,27 +202,35 @@ module.exports.getApp6Js = function (config) {
 !function (ROOT) { 'use strict'
 
 const META = {
-    NAME:     { value:'${classname}' }
-  , VERSION:  { value:'${version}' } // OOMBUMPABLE
-  , HOMEPAGE: { value:'${homepage}' }
-  , REMARKS:  { value:'${remarks}' }
+    NAME:     { value:'${classname}' }\n`+
+(isApp?`  , VERSION:  { value:'${version}' } // OOMBUMPABLE\n`:'')+
+(isApp?`  , HOMEPAGE: { value:'${homepage}' }\n`:'')+
+       `  , REMARKS:  { value:'${remarks}' }
 }
 
 
-//// Make this module and Oom’s toolkit available globally.
+//// Shortcuts to Oom’s global namespace and toolkit.
 const OOM     = ROOT.OOM    = ROOT.OOM    || {}
 const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
 
 
-//// Define \`${classname}\`, this module’s main entry point.
-const Class = OOM.${classname} = class {
+`+
+(isApp?`//// Define \`${classname}\`, this module’s main entry point.\n`
+      :`//// Define the \`${classname}\` class.\n`)+
+(isTop
+?`const Class = OOM.${classname} = class {` // OomFoo.Base
+:`const Class = OOM.${classname} = class extends OOM.${ // OomFoo.Base.Sub
+    classname.split('.').slice(0, -1).join('.')} {`
+)+`
 
-    constructor (config={}, hub=OOM.hub) {
-
+    constructor (config={}, hub=OOM.hub) {\n`+
+(isTop?`
         //// id: Oom instances have universally unique IDs (57 billion combos).
         Object.defineProperty(this, 'id', { value:
-            '123456'.replace( /./g,         c=>rndCh(48,122) )    // 6 x [0-z]
-                    .replace( /[:-@\\[-\`]/g, c=>rndCh(97,122) ) }) // 6 x [a-z]
+            '123456'.replace( /./g,         c=>TOOLKIT.rndCh(48,122) )    // 0-z
+                    .replace( /[:-@\\[-\`]/g, c=>TOOLKIT.rndCh(97,122) ) }) // a-z
+`:`
+        super(config, hub)`)+`
 
         //// hub: Oom instances keep a reference to the oom-hub.
         Object.defineProperty(this, 'hub', { value:hub })
@@ -231,12 +244,14 @@ const Class = OOM.${classname} = class {
             if (null == value) throw Error('I am unreachable?') //@TODO remove
             Object.defineProperty(this, valid.name, { value })
         })
-
+\n`+(isTop?`
         //// ready: a Promise which resolves when the instance has initialised.
         Object.defineProperty(this, 'ready', { value: this._getReady() })
+`:'')+`
     }
 
 
+\n`+(isTop?`
     //// Returns a Promise which is recorded as the \`ready\` property, after
     //// the constructor() has validated \`config\` and recorded the config
     //// properties. Sub-classes can override _getReady() if they need to do
@@ -246,7 +261,7 @@ const Class = OOM.${classname} = class {
 
         //// setupStart: the time that \`new ${classname}({...})\` was called.
         if (this.setupStart)
-            throw new Error(\`${classname}:_getReady(): Can only run once\`)
+            throw new Error(\`${classname}._getReady(): Can only run once\`)
         Object.defineProperty(this, 'setupStart', { value:TOOLKIT.getNow() })
 
         //// \`${classname}\` does no setup, so could resolve the \`ready\`
@@ -265,19 +280,19 @@ const Class = OOM.${classname} = class {
         }, 0)})
 
     }
+`:'')+`
 
 
-    //// Ensures that the \`config\` argument passed to the \`constructor()\` is
-    //// valid.
+    //// Ensures the \`config\` argument passed to the \`constructor()\` is valid.
     //// Called by: constructor()
     _validateConstructor (config) {
-        const ME = \`${classname}:_validateConstructor(): \` // error prefix
+        let err, value, ME = \`${classname}._validateConstructor(): \` // error prefix
         if ('object' !== typeof config)
             throw new Error(ME+\`config is type \${typeof config} not object\`)
         this.validConstructor.forEach( valid => {
             if (! TOOLKIT.applyDefault(valid, config) )
                 throw new TypeError(ME+\`config.\${valid.name} is mandatory\`)
-            let err, value = config[valid.name]
+            value = config[valid.name]
             if ( err = TOOLKIT.validateType(valid, value) )
                 throw new TypeError(ME+\`config.\${valid.name} \${err}\`)
             if ( err = TOOLKIT.validateRange(valid, value) )
@@ -339,9 +354,16 @@ Object.defineProperties(Class, META)
 
 
 
-
+`+(isApp?`
 //// TOOLKIT FUNCTIONS
 
+
+//// Return a random character within char-code start/end positions 's' and 'e'.
+TOOLKIT.rndCh = TOOLKIT.rndCh || ( (s, e) =>
+    String.fromCharCode(Math.random() * (e-s) + s) )
+
+
+//// @TODO describe these three
 TOOLKIT.applyDefault = TOOLKIT.applyDefault || ( (valid, config) => {
     if ( config.hasOwnProperty(valid.name) )
         return true // \`true\` here signifies default didn’t need to be applied
@@ -374,6 +396,7 @@ TOOLKIT.validateRange = TOOLKIT.validateRange || ( (valid, value) => {
         return \`\${value} ÷ \${valid.step} leaves \${(value/valid.step) % 1}\`
 })
 
+
 //// Cross-platform millisecond-timer.
 TOOLKIT.getNow = TOOLKIT.getNow || ( () => {
     let now
@@ -390,47 +413,47 @@ TOOLKIT.getNow = TOOLKIT.getNow || ( () => {
 
 
 
-
+`:'')+`
 //// PRIVATE FUNCTIONS
 
-//// No operation.
-function noop () {}
-
-//// Return a random character within char-code start/end positions 's' and 'e'.
-function rndCh (s, e) { return String.fromCharCode(Math.random() * (e-s) + s) }
+//// Place any private functions here.
+// function noop () {}
 
 
 
 
 }( 'object' === typeof global ? global : this ) // \`window\` in a browser
-
 ` }
 
 
+module.exports.getApp6Js = function (config) {
+    config.isApp = true
+    config.isTop = 3 > config.classname.split('.').length
+    return module.exports.getClass6Js(config)
+}
 
 
-module.exports.getAppUniversal6Js = function (config) {
+module.exports.getClassUniversal6Js = function (config) {
     let {
-        topline
-      , classname
-      , version
-      , homepage
+        isApp            // true if this is the `App` class (src/main/App.6.js)
+      , isTop            // true for the `App` class or another top-level class
+      , classname        // 'FooBar' if `isApp`, or 'FooBar.Base.Sub' if not
+      , version  = 'n/a' // only needed if `isApp`
+      , homepage = 'n/a' // only needed if `isApp`
+      , topline
     } = config
 
     return `${topline}
-
-//// Node.js: 7.2.0
-//// Rhino:   @TODO get Rhino working
-
+`+(isApp?`
+//// Node.js:    7.2.0
+//// Rhino:      @TODO get Rhino working
 //// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
 //// Windows 7:  IE 9, Safari 5.1
 //// OS X 10.6:  Firefox 6, Chrome 16 (and probably lower), Opera 12, Safari 5.1
 //// iOS:        iPad 3rd (iOS 6) Safari, iPad Air (iOS 7) Chrome
 //// Android:    Xperia Tipo (Android 4), Pixel XL (Android 7.1)
-
-
-
-
+`:'')+`
+!function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
 const Class = OOM.${classname}
@@ -438,51 +461,447 @@ const Class = OOM.${classname}
 
 
 
+//// Instantiates a typical ${classname} instance for unit testing its methods.
+Class.testInstanceFactory = () =>
+    new Class({
+        firstParameter: 100
+      , secondParameter: new Date
+    },{
+        /* @TODO hub API */
+    })
+
+
+
+
 test('The ${classname} class', () => {
-
-    is('object' === typeof OOM, 'The OOM namespace object exists')
-    is('undefined' === typeof ${classname}, '${classname} is not global')
-    is('function' === typeof Class, '${classname} is a function')
-
-    is('${classname}' === Class.NAME, 'NAME as expected')
-    is('${version  }' === Class.VERSION, 'VERSION as expected') // OOMBUMPABLE
-    is('${homepage }' === Class.HOMEPAGE, 'HOMEPAGE as expected')
-})
+    is('object' === typeof OOM, 'The OOM namespace object exists')\n`+
+(isApp?`    is('undefined' === typeof ${classname}, '${classname} is not global')\n`:'')+
+`    is('function' === typeof Class, '${classname} is a function')
+    is('${classname}' === Class.NAME, 'NAME is ${classname}')\n`+
+(isApp?`    is('${version  }' === Class.VERSION, 'VERSION is ${version}') // OOMBUMPABLE (twice!)\n`:'')+
+(isApp?`    is('${homepage }' === Class.HOMEPAGE\n`:'')+
+(isApp?`      , 'HOMEPAGE is ${homepage}')\n`:'')+
+`})
 
 
 
 
 test('Successful ${classname} instantiation', () => {
+    const instance = Class.testInstanceFactory()
+    is(instance instanceof Class, 'Is an instance of ${classname}')
+    is('object' === typeof instance.hub, '\`hub\` property is an object')
+})
 
-    const instance = new Class({
+
+
+
+`+(isApp?
+`//// EXTEND KLUD.JS
+
+//// Test for an expected exception.
+ROOT.throws = ROOT.throws || ( (fn, expect, prefix) => {
+    let nl = // newline plus colon and indent (klud.js’s test for Node.js, btw)
+        'undefined' === typeof window ? ':\\n    ' : ':<br>'+' &nbsp;'.repeat(6)
+    let didntThrow = true
+    try {
+        fn()
+    } catch (e) {
+        didntThrow = false
+        const ok = expect === e.message
+        is(ok, \`\${prefix} has \${ok?'':'un'}expected error\${ok?'':nl+e.message}\`)
+    }
+    if (didntThrow) is(0, prefix + \` did not throw an error\`)
+})
+
+
+
+
+`:'')+
+`})//jQuery()
+}( 'object' === typeof global ? global : this ) // \`window\` in a browser
+` }
+
+
+module.exports.getAppUniversal6Js = function (config) {
+    config.isApp = true
+    config.isTop = 3 > config.classname.split('.').length
+    return module.exports.getClassUniversal6Js(config)
+}
+
+
+module.exports.getClassBrowser6Js = function (config) {
+    let {
+        isApp     // true if this is the `App` class (src/main/App.6.js)
+      , isTop     // true for the `App` class or another top-level class
+      , classname // 'FooBar' if `isApp`, or 'FooBar.Base.Sub' if not
+      , topline
+    } = config
+
+    return `${topline}
+`+(isApp?`
+//// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
+//// Windows 7:  IE 9, Safari 5.1
+//// OS X 10.6:  Firefox 6, Chrome 16 (and probably lower), Opera 12, Safari 5.1
+//// iOS:        iPad 3rd (iOS 6) Safari, iPad Air (iOS 7) Chrome
+//// Android:    Xperia Tipo (Android 4), Pixel XL (Android 7.1)
+`:'')+`
+!function (ROOT) { 'use strict'
+if ('function' !== typeof jQuery) throw Error('jQuery not found')
+jQuery( function($) {
+const Class = OOM.${classname}
+
+
+
+
+//// Instantiates a typical ${classname} instance for unit testing its methods.
+Class.testInstanceFactory = () =>
+    new Class({
         firstParameter: 100
       , secondParameter: new Date
-    }, getMockHub())
-    is(instance instanceof Class, 'instance as expected')
+    },{
+        /* @TODO hub API */
+    })
+
+
+
+
+test('Browser test the ${classname} class', () => {
+    is(true, '@TODO')
+})
+
+
+
+
+})//jQuery()
+}( 'object' === typeof global ? global : this ) // \`window\` in a browser
+` }
+
+
+module.exports.getAppBrowser6Js = function (config) {
+    config.isApp = true
+    config.isTop = 3 > config.classname.split('.').length
+    return module.exports.getClassBrowser6Js(config)
+}
+
+
+module.exports.getClassNonbrowser6Js = function (config) {
+    let {
+        isApp     // true if this is the `App` class (src/main/App.6.js)
+      , isTop     // true for the `App` class or another top-level class
+      , classname // 'FooBar' if `isApp`, or 'FooBar.Base.Sub' if not
+      , topline
+    } = config
+
+    return `${topline}
+`+(isApp?`
+//// Node.js:    7.2.0
+//// Rhino:      @TODO get Rhino working
+`:'')+`
+!function (ROOT) { 'use strict'
+const Class = OOM.${classname}
+
+
+
+
+//// Instantiates a typical ${classname} instance for unit testing its methods.
+Class.testInstanceFactory = () =>
+    new Class({
+        firstParameter: 100
+      , secondParameter: new Date
+    },{
+        /* @TODO hub API */
+    })
+
+
+
+
+test('Nonbrowser test the ${classname} class', () => {
+    is(true, '@TODO')
+})
+
+
+
+
+}( 'object' === typeof global ? global : this ) // \`window\` in a browser
+` }
+
+
+module.exports.getAppNonbrowser6Js = function (config) {
+    config.isApp = true
+    config.isTop = 3 > config.classname.split('.').length
+    return module.exports.getClassNonbrowser6Js(config)
+}
+
+
+module.exports.getDemo6Js = function (config) {
+    let {
+        classname // 'FooBar' if `isApp`, or 'FooBar.Base.Sub' if not
+      , topline
+    } = config
+
+    return `${topline}
+
+!function (ROOT) { 'use strict'
+if ('function' !== typeof jQuery) throw Error('jQuery not found')
+jQuery( function($) {
+
+
+
+
+//// Generate an instance of ${classname} with default configuration.
+const instance = new ROOT.OOM.${classname}({
+    firstParameter: 100
+  , secondParameter: new Date
+})
+console.log(instance)
+
+
+//// Run the demo.
+//@TODO
+
+
+
+
+})//jQuery()
+}( 'object' === typeof global ? global : this ) // \`window\` in a browser
+` }
+
+
+module.exports.getAppDemo6Js = function (config) {
+    return module.exports.getDemo6Js(config)
+}
+
+
+
+
+module.exports.getClassDemoHtml = function (config) {
+    let {
+        classname
+      , name
+    } = config
+    let nameLC = name.toLowerCase()
+    return getHtmlTop(
+        Object.assign({}, config, {
+            title: `${classname} Demo`
+          , description: `Usage examples for ‘${classname}’.`
+        })
+    ) + `
+
+<!-- Displays the demo -->
+<pre id="dump" style="background:#cde; width:48em; line-height:1.15"></pre>
+
+<!-- Load the proper format scripts, according to the '#ecmaswitch' menu -->
+<script src="asset/js/ecmaswitch.js"></script>
+<script>ECMASwitch.load('../', [
+    [
+        '../dist/demo/${nameLC}-demo.5.js'
+      , '../dist/demo/${nameLC}-demo.5.js' // no need to minify a demo script
+      , '../dist/demo/${nameLC}-demo.6.js'
+      ,  '../src/demo/${name}-demo.6.js'
+    ]
+])</script>
+
+` + getHtmlBottom(config)
+}
+
+
+module.exports.getDemoAppHtml = function (config) {
+    config.name = 'App'
+    return module.exports.getClassDemoHtml(config)
+}
+
+
+
+
+module.exports.getMethod6Js = function (config) {
+    let {
+        methodname
+      , topline
+      , remarks
+    } = config
+    let parts = methodname.split('.')
+      , classname = parts.slice(0,-1).join('.')
+      , shortname = parts.pop()
+
+    return `${topline}
+
+!function (ROOT) { 'use strict'
+
+const META = {
+    NAME:     { value:'${methodname}' }
+  , REMARKS:  { value:'${remarks}' }
+}
+
+
+//// Shortcuts to Oom’s namespace and toolkit.
+const OOM     = ROOT.OOM    = ROOT.OOM    || {}
+const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
+
+
+//// Define the \`${methodname}()\` method.
+const method = OOM.${classname}.prototype.${shortname} = function (abc) {
+    let err, ME = \`${methodname}(): \` // error prefix
+    if (! (this instanceof OOM.${classname})) throw new Error(ME
+      + \`Must not be called as ${classname}.prototype.${shortname}()\`)
+    if ( err = TOOLKIT.validateType({ type:'string' }, abc) )
+        throw new TypeError(ME+\`abc \${err}\`)
+
+    this.xyz++
+    return abc + ' ok!'
+
+}//${methodname}()
+
+//// A tally of the number of times \`${shortname}()\` is called.
+OOM.${classname}.prototype.xyz = 0
+
+
+//// Add static constants to the \`${shortname}()\` method.
+Object.defineProperties(method, META)
+
+
+
+
+}( 'object' === typeof global ? global : this ) // \`window\` in a browser
+` }
+
+
+
+
+module.exports.getMethodUniversal6Js = function (config) {
+    let {
+        methodname
+      , topline
+    } = config
+    let parts = methodname.split('.')
+      , classname = parts.slice(0,-1).join('.')
+      , shortname = parts.pop()
+
+    return `${topline}
+
+!function (ROOT) { 'use strict'
+if ('function' != typeof jQuery) throw Error('jQuery not found')
+jQuery( function($) {
+const Class = OOM.${classname}
+
+
+
+
+test('The ${methodname}() method', () => {
+    const protoMethod = Class.prototype.${shortname}
+    is('function' === typeof protoMethod, 'prototype.${shortname}() is a function')
+    is('${methodname}' === protoMethod.NAME, "NAME is '${methodname}'")
+})
+
+
+
+
+test('+ve ${shortname}()', () => {
+    const instance1 = Class.testInstanceFactory()
+    is('123 ok!' === instance1.${shortname}('123'),
+       "\`${shortname}('123')\` returns '123 ok!'")
+    instance1.${shortname}('456')
+    is(2 === instance1.xyz,
+       'After two calls, \`xyz\` is 2')
+
+    const instance2 = Class.testInstanceFactory()
+    instance2.${shortname}('789')
+    is(1 === instance2.xyz,
+       'A second instance has its own \`xyz\` property')
 
 })
 
 
 
 
-//// PRIVATE FUNCTIONS
-
-//// Provides a mock of the oom-hub instance.
-function getMockHub () { return { /* @TODO hub API */ } }
-
-
+test('-ve ${shortname}()', () => {
+    const protoMethod = Class.prototype.${shortname}
+    throws( () => protoMethod('123')
+      , '${methodname}(): Must not be called as ${classname}.prototype.${shortname}()'
+      , 'Prototype call')
+    const instance = Class.testInstanceFactory()
+    throws( () => instance.${shortname}(123)
+      , '${methodname}(): abc is type number not string'
+      , 'Passing a number into \`abc\`')
 
 
 })
+
+
+
+
+})//jQuery()
+}( 'object' === typeof global ? global : this ) // \`window\` in a browser
+` }
+
+
+
+
+module.exports.getMethodBrowser6Js = function (config) {
+    let {
+        methodname
+      , topline
+    } = config
+    let parts = methodname.split('.')
+      , classname = parts.slice(0,-1).join('.')
+      , shortname = parts.pop()
+
+    return `${topline}
+
+!function (ROOT) { 'use strict'
+if ('function' != typeof jQuery) throw Error('jQuery not found')
+jQuery( function($) {
+const Class = OOM.${classname}
+
+
+
+
+test('Browser test the ${methodname}() method', () => {
+    is(true, '@TODO')
+})
+
+
+
+
+})//jQuery()
+}( 'object' === typeof global ? global : this ) // \`window\` in a browser
+` }
+
+
+
+
+module.exports.getMethodNonbrowser6Js = function (config) {
+    let {
+        methodname
+      , topline
+    } = config
+    let parts = methodname.split('.')
+      , classname = parts.slice(0,-1).join('.')
+      , shortname = parts.pop()
+
+    return `${topline}
+
+!function (ROOT) { 'use strict'
+if ('function' != typeof jQuery) throw Error('jQuery not found')
+const Class = OOM.${classname}
+
+
+
+
+test('Nonbrowser test the ${methodname}() method', () => {
+    is(true, '@TODO')
+})
+
+
+
+
+}( 'object' === typeof global ? global : this ) // \`window\` in a browser
 ` }
 
 
 
 
 module.exports.getDemoHtml = function (config) {
-    let {
-        projectTC
-    } = config
+    let { projectTC } = config
 
     return getHtmlTop(
         Object.assign({}, config, {
@@ -525,23 +944,23 @@ module.exports.getTestHtml = function (config) {
   <div class="kludjs col-12"></div>
 </section>
 
-<!-- Load the assertion library and its reporter -->
+<!-- Load assertion library and its reporter (bitbucket.org/zserge/klud.js) -->
 <script src="asset/js/klud.min.js"></script>
 <script src="asset/js/report.min.js"></script>
 
 <!-- Load the proper format scripts, according to the '#ecmaswitch' menu -->
 <script src="asset/js/ecmaswitch.js"></script>
 <script>ECMASwitch.load('../', [
-    [
-        '../dist/test/${projectLC}-browser.5.js'
-      , '../dist/test/${projectLC}-browser.5.js' // no need to minify a test
-      , '../dist/test/${projectLC}-browser.6.js'
-      , null
-    ]
-  , [
+    [ // ‘App-universal.6.js’ defines \`throws()\`, so run it first
         '../dist/test/${projectLC}-universal.5.js'
       , '../dist/test/${projectLC}-universal.5.js' // no need to minify a test
       , '../dist/test/${projectLC}-universal.6.js'
+      , null
+    ]
+  , [
+        '../dist/test/${projectLC}-browser.5.js'
+      , '../dist/test/${projectLC}-browser.5.js' // no need to minify a test
+      , '../dist/test/${projectLC}-browser.6.js'
       , null
     ]
 
@@ -589,6 +1008,7 @@ body {
 
 .container {
     padding-bottom: 1em;
+    margin-bottom: 1em;
     border-radius: 0 0 4px 4px;
 }
 
@@ -646,14 +1066,14 @@ module.exports.getEcmaswitchJs = function (config) {
         projectLC
     } = config
     return '//// '
-+ `ECMASwitch //// 1.0.12 //// January 2018 //// ecmaswitch.loop.coop/ ///////
++ `ECMASwitch //// 1.0.13 //// January 2018 //// ecmaswitch.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
 //// Create the namespace-object if it does not already exist and add constants.
 var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}
 ECMASwitch.NAME     = 'ECMASwitch'
-ECMASwitch.VERSION  = '1.0.12'
+ECMASwitch.VERSION  = '1.0.13'
 ECMASwitch.HOMEPAGE = 'http://ecmaswitch.loop.coop/'
 
 //// Polyfill \`document\` for non-browser contexts.
@@ -951,6 +1371,7 @@ module.exports.getManifestJson = function (config) {
 
 
 //// STATIC EXPORTED
+
 
 //// An Oomtility Wrap of jquery-3.2.1.slim.min.js \\//\\// https://oomtility.loop.coop ////
 module.exports.getJquery321SlimMinJs = function () { return ''

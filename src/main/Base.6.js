@@ -3,10 +3,8 @@
 !function (ROOT) { 'use strict'
 
 const META = {
-    NAME:     { value:'OomFoo' }
-  , VERSION:  { value:'1.0.13' } // OOMBUMPABLE
-  , HOMEPAGE: { value:'http://oom-foo.loop.coop/' }
-  , REMARKS:  { value:'Initial test of the oom-hub architecture' }
+    NAME:     { value:'OomFoo.Base' }
+  , REMARKS:  { value:'@TODO' }
 }
 
 
@@ -15,8 +13,8 @@ const OOM     = ROOT.OOM    = ROOT.OOM    || {}
 const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
 
 
-//// Define `OomFoo`, this module’s main entry point.
-const Class = OOM.OomFoo = class {
+//// Define the `OomFoo.Base` class.
+const Class = OOM.OomFoo.Base = class {
 
     constructor (config={}, hub=OOM.hub) {
 
@@ -55,12 +53,12 @@ const Class = OOM.OomFoo = class {
     //// Called by: constructor()
     _getReady () {
 
-        //// setupStart: the time that `new OomFoo({...})` was called.
+        //// setupStart: the time that `new OomFoo.Base({...})` was called.
         if (this.setupStart)
-            throw new Error(`OomFoo._getReady(): Can only run once`)
+            throw new Error(`OomFoo.Base._getReady(): Can only run once`)
         Object.defineProperty(this, 'setupStart', { value:TOOLKIT.getNow() })
 
-        //// `OomFoo` does no setup, so could resolve the `ready`
+        //// `OomFoo.Base` does no setup, so could resolve the `ready`
         //// Promise immediately. However, to make _getReady()’s behavior
         //// consistent with classes which have a slow async setup, we introduce
         //// a miniscule delay.
@@ -82,7 +80,7 @@ const Class = OOM.OomFoo = class {
     //// Ensures the `config` argument passed to the `constructor()` is valid.
     //// Called by: constructor()
     _validateConstructor (config) {
-        let err, value, ME = `OomFoo._validateConstructor(): ` // error prefix
+        let err, value, ME = `OomFoo.Base._validateConstructor(): ` // error prefix
         if ('object' !== typeof config)
             throw new Error(ME+`config is type ${typeof config} not object`)
         this.validConstructor.forEach( valid => {
@@ -142,70 +140,11 @@ const Class = OOM.OomFoo = class {
 
     }
 
-}//OomFoo
+}//OomFoo.Base
 
 
-//// Add static constants to the `OomFoo` class.
+//// Add static constants to the `OomFoo.Base` class.
 Object.defineProperties(Class, META)
-
-
-
-
-//// TOOLKIT FUNCTIONS
-
-
-//// Return a random character within char-code start/end positions 's' and 'e'.
-TOOLKIT.rndCh = TOOLKIT.rndCh || ( (s, e) =>
-    String.fromCharCode(Math.random() * (e-s) + s) )
-
-
-//// @TODO describe these three
-TOOLKIT.applyDefault = TOOLKIT.applyDefault || ( (valid, config) => {
-    if ( config.hasOwnProperty(valid.name) )
-        return true // `true` here signifies default didn’t need to be applied
-    if (! valid.hasOwnProperty('default') )
-        return false // `false` signifies a missing mandatory field
-    config[valid.name] = 'function' === typeof valid.default
-      ? valid.default(config) // a value can depend on another config value
-      : valid.default
-    return true // `true` here signifies default was successfully applied
-})
-
-TOOLKIT.validateType = TOOLKIT.validateType || ( (valid, value) => {
-    switch (typeof valid.type) {
-        case 'string':   return (typeof value === valid.type)
-                           ? null : `is type ${typeof value} not ${valid.type}`
-        case 'function': return (value instanceof valid.type)
-                           ? null : `is not an instance of ${valid.type.name}`
-        case 'object':   return (value === valid.type)
-                           ? null : `is not the expected object` }
-    throw new TypeError(`TOOLKIT.validateType: `
-      + `valid.type for ${valid.name} is ${typeof valid.type}`)
-})
-
-TOOLKIT.validateRange = TOOLKIT.validateRange || ( (valid, value) => {
-    if (null != valid.min && valid.min > value)
-        return `is less than the minimum ${valid.min}`
-    if (null != valid.max && valid.max < value)
-        return `is greater than the maximum ${valid.max}`
-    if (null != valid.step && ((value/valid.step) % 1))
-        return `${value} ÷ ${valid.step} leaves ${(value/valid.step) % 1}`
-})
-
-
-//// Cross-platform millisecond-timer.
-TOOLKIT.getNow = TOOLKIT.getNow || ( () => {
-    let now
-    if ( // Node.js
-        'object'   === typeof ROOT.process
-     && 'function' === typeof ROOT.process.hrtime) {
-        const hrtime = ROOT.process.hrtime()
-        now = ( (hrtime[0] * 1e9) + hrtime[1] ) / 1e6 // in milliseconds
-    } else { // modern browser @TODO legacy browser
-        now = ROOT.performance.now()
-    }
-    return now
-})
 
 
 
