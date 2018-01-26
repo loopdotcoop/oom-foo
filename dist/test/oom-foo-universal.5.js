@@ -1,4 +1,4 @@
-//// OomFoo //// 1.0.13 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
@@ -9,8 +9,8 @@
     var Class = OOM.OomFoo;
     Class.testInstanceFactory = function() {
       return new Class({
-        firstParameter: 100,
-        secondParameter: new Date
+        firstParam: 100,
+        secondParam: new Date
       }, {});
     };
     test('The OomFoo class', function() {
@@ -18,7 +18,7 @@
       is('undefined' === typeof OomFoo, 'OomFoo is not global');
       is('function' === typeof Class, 'OomFoo is a function');
       is('OomFoo' === Class.NAME, 'NAME is OomFoo');
-      is('1.0.13' === Class.VERSION, 'VERSION is 1.0.13');
+      is('1.0.0' === Class.VERSION, 'VERSION is 1.0.0');
       is('http://oom-foo.loop.coop/' === Class.HOMEPAGE, 'HOMEPAGE is http://oom-foo.loop.coop/');
     });
     test('Successful OomFoo instantiation', function() {
@@ -81,8 +81,8 @@
     var Class = OOM.OomFoo.Base;
     Class.testInstanceFactory = function() {
       return new Class({
-        firstParameter: 100,
-        secondParameter: new Date
+        firstParam: 100,
+        secondParam: new Date
       }, {});
     };
     test('The OomFoo.Base class', function() {
@@ -133,4 +133,4 @@
 
 
 
-//// Made by Oomtility Make 1.0.13 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.0.14 //\\//\\ http://oomtility.loop.coop /////////

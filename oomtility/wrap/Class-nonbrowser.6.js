@@ -1,15 +1,18 @@
-//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
+${{topline}}
 
+${{{
+isApp ? `
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
-
+`:''
+}}}
 !function (ROOT) { 'use strict'
-const Class = OOM.OomFoo
+const Class = OOM.${{classname}}
 
 
 
 
-test('Nonbrowser test the OomFoo class', () => {
+test('Nonbrowser test the ${{classname}} class', () => {
     is(true, '@TODO')
 })
 

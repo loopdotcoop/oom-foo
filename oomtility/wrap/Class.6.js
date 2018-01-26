@@ -1,12 +1,15 @@
-//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
+${{topline}}
 
 !function (ROOT) { 'use strict'
 
 const META = {
-    NAME:     { value:'OomFoo' }
-  , VERSION:  { value:'1.0.0' } // OOMBUMPABLE
-  , HOMEPAGE: { value:'http://oom-foo.loop.coop/' }
-  , REMARKS:  { value:'Initial test of the oom-hub architecture' }
+    NAME:     { value:'${{classname}}' }
+${{{
+isApp ? `
+  , VERSION:  { value:'${version}' } // OOMBUMPABLE
+  , HOMEPAGE: { value:'${homepage}' }`:''
+}}}
+  , REMARKS:  { value:'${{remarks}}' }
 }
 
 
@@ -15,15 +18,27 @@ const OOM     = ROOT.OOM    = ROOT.OOM    || {}
 const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
 
 
-//// Define `OomFoo`, this module’s main entry point.
-const Class = OOM.OomFoo = class {
+${{{
+isApp ? `
+//// Define \`${classname}\`, this module’s main entry point.`:`
+//// Define the \`${classname}\` class.`
+}}}
+${{{
+isTop ? `
+const Class = OOM.${classname} = class {`:`
+const Class = OOM.${classname} = class extends OOM.${classname.split('.').slice(0, -1).join('.')} {`
+}}}
 
     constructor (config={}, hub=OOM.hub) {
 
+${{{
+isTop ? `
         //// id: Oom instances have universally unique IDs (57 billion combos).
         Object.defineProperty(this, 'id', { value:
             '123456'.replace( /./g,         c=>TOOLKIT.rndCh(48,122) )    // 0-z
-                    .replace( /[:-@\[-`]/g, c=>TOOLKIT.rndCh(97,122) ) }) // a-z
+                    .replace( /[:-@\\[-\`]/g, c=>TOOLKIT.rndCh(97,122) ) }) // a-z`:`
+        super(config, hub)`
+}}}
 
         //// hub: Oom instances keep a reference to the oom-hub.
         Object.defineProperty(this, 'hub', { value:hub })
@@ -38,35 +53,40 @@ const Class = OOM.OomFoo = class {
             Object.defineProperty(this, valid.name, { value })
         })
 
+${{{
+isTop ? `
         //// ready: a Promise which resolves when the instance has initialised.
-        Object.defineProperty(this, 'ready', { value: this._getReady() })
+        Object.defineProperty(this, 'ready', { value: this._getReady() })`:''
+}}}
 
     }
 
 
 
-    //// Returns a Promise which is recorded as the `ready` property, after
-    //// the constructor() has validated `config` and recorded the config
+${{{
+isTop ? `
+    //// Returns a Promise which is recorded as the \`ready\` property, after
+    //// the constructor() has validated \`config\` and recorded the config
     //// properties. Sub-classes can override _getReady() if they need to do
     //// other async preparation.
     //// Called by: constructor()
     _getReady () {
 
-        //// setupStart: the time that `new OomFoo({...})` was called.
+        //// setupStart: the time that \`new ${classname}({...})\` was called.
         if (this.setupStart)
-            throw new Error(`OomFoo._getReady(): Can only run once`)
+            throw new Error(\`${classname}._getReady(): Can only run once\`)
         Object.defineProperty(this, 'setupStart', { value:TOOLKIT.getNow() })
 
-        //// `OomFoo` does no setup, so could resolve the `ready`
+        //// \`${classname}\` does no setup, so could resolve the \`ready\`
         //// Promise immediately. However, to make _getReady()’s behavior
         //// consistent with classes which have a slow async setup, we introduce
         //// a miniscule delay.
         return new Promise( (resolve, reject) => { setTimeout( () => {
 
-            //// setupEnd: the time that `_getReady()` finished running.
+            //// setupEnd: the time that \`_getReady()\` finished running.
             Object.defineProperty(this, 'setupEnd', { value:TOOLKIT.getNow() })
 
-            //// Define the instance’s `ready` property.
+            //// Define the instance’s \`ready\` property.
             resolve({
                 setupDelay: this.setupEnd - this.setupStart
             })
@@ -75,11 +95,12 @@ const Class = OOM.OomFoo = class {
     }
 
 
-
+`:''
+}}}
     //// Ensures the `config` argument passed to the `constructor()` is valid.
     //// Called by: constructor()
     _validateConstructor (config) {
-        let err, value, ME = `OomFoo._validateConstructor(): ` // error prefix
+        let err, value, ME = `${{classname}}._validateConstructor(): ` // error prefix
         if ('object' !== typeof config)
             throw new Error(ME+`config is type ${typeof config} not object`)
         this.validConstructor.forEach( valid => {
@@ -143,15 +164,17 @@ const Class = OOM.OomFoo = class {
 
     }
 
-}//OomFoo
+}//${{classname}}
 
 
-//// Add static constants to the `OomFoo` class.
+//// Add static constants to the `${{classname}}` class.
 Object.defineProperties(Class, META)
 
 
 
 
+${{{
+isApp ? `
 //// TOOLKIT FUNCTIONS
 
 
@@ -163,34 +186,34 @@ TOOLKIT.rndCh = TOOLKIT.rndCh || ( (s, e) =>
 //// @TODO describe these three
 TOOLKIT.applyDefault = TOOLKIT.applyDefault || ( (valid, config) => {
     if ( config.hasOwnProperty(valid.name) )
-        return true // `true` here signifies default didn’t need to be applied
+        return true // \`true\` here signifies default didn’t need to be applied
     if (! valid.hasOwnProperty('default') )
-        return false // `false` signifies a missing mandatory field
+        return false // \`false\` signifies a missing mandatory field
     config[valid.name] = 'function' === typeof valid.default
       ? valid.default(config) // a value can depend on another config value
       : valid.default
-    return true // `true` here signifies default was successfully applied
+    return true // \`true\` here signifies default was successfully applied
 })
 
 TOOLKIT.validateType = TOOLKIT.validateType || ( (valid, value) => {
     switch (typeof valid.type) {
         case 'string':   return (typeof value === valid.type)
-                           ? null : `is type ${typeof value} not ${valid.type}`
+                           ? null : \`is type \${typeof value} not \${valid.type}\`
         case 'function': return (value instanceof valid.type)
-                           ? null : `is not an instance of ${valid.type.name}`
+                           ? null : \`is not an instance of \${valid.type.name}\`
         case 'object':   return (value === valid.type)
-                           ? null : `is not the expected object` }
-    throw new TypeError(`TOOLKIT.validateType: `
-      + `valid.type for ${valid.name} is ${typeof valid.type}`)
+                           ? null : \`is not the expected object\` }
+    throw new TypeError(\`TOOLKIT.validateType: \`
+      + \`valid.type for \${valid.name} is \${typeof valid.type}\`)
 })
 
 TOOLKIT.validateRange = TOOLKIT.validateRange || ( (valid, value) => {
     if (null != valid.min && valid.min > value)
-        return `is less than the minimum ${valid.min}`
+        return \`is less than the minimum \${valid.min}\`
     if (null != valid.max && valid.max < value)
-        return `is greater than the maximum ${valid.max}`
+        return \`is greater than the maximum \${valid.max}\`
     if (null != valid.step && ((value/valid.step) % 1))
-        return `${value} ÷ ${valid.step} leaves ${(value/valid.step) % 1}`
+        return \`\${value} ÷ \${valid.step} leaves \${(value/valid.step) % 1}\`
 })
 
 
@@ -210,7 +233,8 @@ TOOLKIT.getNow = TOOLKIT.getNow || ( () => {
 
 
 
-
+`:''
+}}}
 //// PRIVATE FUNCTIONS
 
 

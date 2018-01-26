@@ -2,25 +2,13 @@
 
 
 
-//// OomFoo //// 1.0.13 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
 
 !function (ROOT) { 'use strict'
 const Class = OOM.OomFoo
-
-
-
-
-//// Instantiates a typical OomFoo instance for unit testing its methods.
-Class.testInstanceFactory = () =>
-    new Class({
-        firstParameter: 100
-      , secondParameter: new Date
-    },{
-        /* @TODO hub API */
-    })
 
 
 
@@ -41,7 +29,7 @@ test('Nonbrowser test the OomFoo class', () => {
 
 
 
-//// OomFoo //// 1.0.13 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')
@@ -66,22 +54,10 @@ test('Nonbrowser test the OomFoo.topLevel() method', () => {
 
 
 
-//// OomFoo //// 1.0.13 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 const Class = OOM.OomFoo.Base
-
-
-
-
-//// Instantiates a typical OomFoo.Base instance for unit testing its methods.
-Class.testInstanceFactory = () =>
-    new Class({
-        firstParameter: 100
-      , secondParameter: new Date
-    },{
-        /* @TODO hub API */
-    })
 
 
 
@@ -102,7 +78,7 @@ test('Nonbrowser test the OomFoo.Base class', () => {
 
 
 
-//// OomFoo //// 1.0.13 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')
@@ -123,4 +99,4 @@ test('Nonbrowser test the OomFoo.Base.foo() method', () => {
 
 
 
-//// Made by Oomtility Make 1.0.13 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.0.14 //\\//\\ http://oomtility.loop.coop /////////

@@ -1,11 +1,11 @@
-//// OomFoo //// 1.0.13 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
     NAME: {value: 'OomFoo'},
-    VERSION: {value: '1.0.13'},
+    VERSION: {value: '1.0.0'},
     HOMEPAGE: {value: 'http://oom-foo.loop.coop/'},
     REMARKS: {value: 'Initial test of the oom-hub architecture'}
   };
@@ -60,8 +60,8 @@
     },
     get validConstructor() {
       return [{
-        title: 'First Parameter',
-        name: 'firstParameter',
+        title: 'First Param',
+        name: 'firstParam',
         alias: 'fp',
         tooltip: 'An example numeric parameter, intended as a placeholder',
         devtip: 'You should replace this placeholder with a real parameter',
@@ -74,8 +74,8 @@
         step: 1,
         default: 50
       }, {
-        title: 'Second Parameter',
-        name: 'secondParameter',
+        title: 'Second Param',
+        name: 'secondParam',
         alias: 'sp',
         tooltip: 'An example object parameter, intended as a placeholder',
         devtip: 'You should replace this placeholder with a real parameter',
@@ -215,8 +215,8 @@
     },
     get validConstructor() {
       return [{
-        title: 'First Parameter',
-        name: 'firstParameter',
+        title: 'First Param',
+        name: 'firstParam',
         alias: 'fp',
         tooltip: 'An example numeric parameter, intended as a placeholder',
         devtip: 'You should replace this placeholder with a real parameter',
@@ -229,8 +229,8 @@
         step: 1,
         default: 50
       }, {
-        title: 'Second Parameter',
-        name: 'secondParameter',
+        title: 'Second Param',
+        name: 'secondParam',
         alias: 'sp',
         tooltip: 'An example object parameter, intended as a placeholder',
         devtip: 'You should replace this placeholder with a real parameter',
@@ -277,4 +277,4 @@
 
 
 
-//// Made by Oomtility Make 1.0.13 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.0.14 //\\//\\ http://oomtility.loop.coop /////////

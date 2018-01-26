@@ -1,4 +1,4 @@
-//// OomFoo //// 1.0.13 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
@@ -8,7 +8,7 @@ const META = {
 }
 
 
-//// Shortcuts to Oom’s namespace and toolkit.
+//// Shortcuts to Ooms namespace and toolkit.
 const OOM     = ROOT.OOM    = ROOT.OOM    || {}
 const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
 

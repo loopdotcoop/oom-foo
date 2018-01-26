@@ -1,4 +1,4 @@
-//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
+${{topline}}
 
 !function (ROOT) { 'use strict'
 

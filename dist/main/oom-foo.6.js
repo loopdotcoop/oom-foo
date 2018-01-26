@@ -2,13 +2,13 @@
 
 
 
-//// OomFoo //// 1.0.13 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
 const META = {
     NAME:     { value:'OomFoo' }
-  , VERSION:  { value:'1.0.13' } // OOMBUMPABLE
+  , VERSION:  { value:'1.0.0' } // OOMBUMPABLE
   , HOMEPAGE: { value:'http://oom-foo.loop.coop/' }
   , REMARKS:  { value:'Initial test of the oom-hub architecture' }
 }
@@ -29,7 +29,6 @@ const Class = OOM.OomFoo = class {
             '123456'.replace( /./g,         c=>TOOLKIT.rndCh(48,122) )    // 0-z
                     .replace( /[:-@\[-`]/g, c=>TOOLKIT.rndCh(97,122) ) }) // a-z
 
-
         //// hub: Oom instances keep a reference to the oom-hub.
         Object.defineProperty(this, 'hub', { value:hub })
 
@@ -43,12 +42,10 @@ const Class = OOM.OomFoo = class {
             Object.defineProperty(this, valid.name, { value })
         })
 
-
         //// ready: a Promise which resolves when the instance has initialised.
         Object.defineProperty(this, 'ready', { value: this._getReady() })
 
     }
-
 
 
 
@@ -109,8 +106,8 @@ const Class = OOM.OomFoo = class {
     //// Can also be used to auto-generate unit tests and auto-build GUIs.
     get validConstructor () { return [
         {
-            title:   'First Parameter'
-          , name:    'firstParameter'
+            title:   'First Param'
+          , name:    'firstParam' // in Vue, a key-name in `props`
           , alias:   'fp'
 
           , tooltip: 'An example numeric parameter, intended as a placeholder'
@@ -119,15 +116,17 @@ const Class = OOM.OomFoo = class {
           , power:   1 // eg `8` for an exponential range-slider
           , suffix:  'Units'
 
-          , type:    'number'
+          , type:    'number' // `props.firstParam.type` in Vue
+          //@TODO replace with String|Number|Boolean|Function|Object|Array|Symbol
           , min:     1
           , max:     100
           , step:    1
-          , default: 50
+          , default: 50 // implies `props.firstParam.required: false` in Vue
+          //@TODO `props.firstParam.validator`
         }
       , {
-            title:   'Second Parameter'
-          , name:    'secondParameter'
+            title:   'Second Param'
+          , name:    'secondParam'
           , alias:   'sp'
 
           , tooltip: 'An example object parameter, intended as a placeholder'
@@ -135,6 +134,8 @@ const Class = OOM.OomFoo = class {
           , form:    'hidden'
 
           , type:    Date
+
+          // no `default`, so `props.firstParam.required: true` in Vue
         }
     ]}
 
@@ -216,6 +217,7 @@ TOOLKIT.getNow = TOOLKIT.getNow || ( () => {
 
 //// PRIVATE FUNCTIONS
 
+
 //// Place any private functions here.
 // function noop () {}
 
@@ -231,7 +233,7 @@ TOOLKIT.getNow = TOOLKIT.getNow || ( () => {
 
 
 
-//// OomFoo //// 1.0.13 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
@@ -241,7 +243,7 @@ const META = {
 }
 
 
-//// Shortcuts to Oom’s namespace and toolkit.
+//// Shortcuts to Ooms namespace and toolkit.
 const OOM     = ROOT.OOM    = ROOT.OOM    || {}
 const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
 
@@ -278,7 +280,7 @@ Object.defineProperties(method, META)
 
 
 
-//// OomFoo //// 1.0.13 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
@@ -303,7 +305,6 @@ const Class = OOM.OomFoo.Base = class {
             '123456'.replace( /./g,         c=>TOOLKIT.rndCh(48,122) )    // 0-z
                     .replace( /[:-@\[-`]/g, c=>TOOLKIT.rndCh(97,122) ) }) // a-z
 
-
         //// hub: Oom instances keep a reference to the oom-hub.
         Object.defineProperty(this, 'hub', { value:hub })
 
@@ -317,12 +318,10 @@ const Class = OOM.OomFoo.Base = class {
             Object.defineProperty(this, valid.name, { value })
         })
 
-
         //// ready: a Promise which resolves when the instance has initialised.
         Object.defineProperty(this, 'ready', { value: this._getReady() })
 
     }
-
 
 
 
@@ -383,8 +382,8 @@ const Class = OOM.OomFoo.Base = class {
     //// Can also be used to auto-generate unit tests and auto-build GUIs.
     get validConstructor () { return [
         {
-            title:   'First Parameter'
-          , name:    'firstParameter'
+            title:   'First Param'
+          , name:    'firstParam' // in Vue, a key-name in `props`
           , alias:   'fp'
 
           , tooltip: 'An example numeric parameter, intended as a placeholder'
@@ -393,15 +392,17 @@ const Class = OOM.OomFoo.Base = class {
           , power:   1 // eg `8` for an exponential range-slider
           , suffix:  'Units'
 
-          , type:    'number'
+          , type:    'number' // `props.firstParam.type` in Vue
+          //@TODO replace with String|Number|Boolean|Function|Object|Array|Symbol
           , min:     1
           , max:     100
           , step:    1
-          , default: 50
+          , default: 50 // implies `props.firstParam.required: false` in Vue
+          //@TODO `props.firstParam.validator`
         }
       , {
-            title:   'Second Parameter'
-          , name:    'secondParameter'
+            title:   'Second Param'
+          , name:    'secondParam'
           , alias:   'sp'
 
           , tooltip: 'An example object parameter, intended as a placeholder'
@@ -409,6 +410,8 @@ const Class = OOM.OomFoo.Base = class {
           , form:    'hidden'
 
           , type:    Date
+
+          // no `default`, so `props.firstParam.required: true` in Vue
         }
     ]}
 
@@ -431,6 +434,7 @@ Object.defineProperties(Class, META)
 
 //// PRIVATE FUNCTIONS
 
+
 //// Place any private functions here.
 // function noop () {}
 
@@ -446,7 +450,7 @@ Object.defineProperties(Class, META)
 
 
 
-//// OomFoo //// 1.0.13 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
@@ -456,7 +460,7 @@ const META = {
 }
 
 
-//// Shortcuts to Oom’s namespace and toolkit.
+//// Shortcuts to Ooms namespace and toolkit.
 const OOM     = ROOT.OOM    = ROOT.OOM    || {}
 const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
 
@@ -489,4 +493,4 @@ Object.defineProperties(method, META)
 
 
 
-//// Made by Oomtility Make 1.0.13 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.0.14 //\\//\\ http://oomtility.loop.coop /////////

@@ -1,19 +1,7 @@
-//// OomFoo //// 1.0.13 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 const Class = OOM.OomFoo.Base
-
-
-
-
-//// Instantiates a typical OomFoo.Base instance for unit testing its methods.
-Class.testInstanceFactory = () =>
-    new Class({
-        firstParameter: 100
-      , secondParameter: new Date
-    },{
-        /* @TODO hub API */
-    })
 
 
 

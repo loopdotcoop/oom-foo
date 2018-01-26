@@ -1,8 +1,508 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Lib'
-    , VERSION  = '1.0.13'
+    , VERSION  = '1.0.14'
     , HOMEPAGE = 'http://oomtility.loop.coop'
+
+
+
+
+//// BEGIN DYNAMIC SECTION /////////////////////////////////////////////////////
+//// oomtility/wrap/ files, processed by oomtility/wrap.js /////////////////////
+
+//// An Oomtility Wrap of Class-browser.6.js \\//\\// https://oomtility.loop.coop ////
+module.exports.getClassBrowser6Js = function (config) {
+    let {
+        isApp
+      , classname
+      , topline
+    } = config
+
+    return ''
+  + (topline)+'\n'
+  + '' + (
+isApp ? `
+//// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
+//// Windows 7:  IE 9, Safari 5.1
+//// OS X 10.6:  Firefox 6, Chrome 16 (and probably lower), Opera 12, Safari 5.1
+//// iOS:        iPad 3rd (iOS 6) Safari, iPad Air (iOS 7) Chrome
+//// Android:    Xperia Tipo (Android 4), Pixel XL (Android 7.1)
+`:''
+) + '\n'
+  + '!function (ROOT) { \'use strict\'\n'
+  + 'if (\'function\' !== typeof jQuery) throw Error(\'jQuery not found\')\n'
+  + 'jQuery( function($) {\n'
+  + 'const Class = OOM.'+(classname)+'\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + 'test(\'Browser test the '+(classname)+' class\', () => {\n'
+  + '    is(true, \'@TODO\')\n'
+  + '})\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '})//jQuery()\n'
+  + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
+  + ''
+}
+
+
+
+
+//// An Oomtility Wrap of Class-nonbrowser.6.js \\//\\// https://oomtility.loop.coop ////
+module.exports.getClassNonbrowser6Js = function (config) {
+    let {
+        isApp
+      , classname
+      , topline
+    } = config
+
+    return ''
+  + (topline)+'\n'
+  + '' + (
+isApp ? `
+//// Node.js:    7.2.0
+//// Rhino:      @TODO get Rhino working
+`:''
+) + '\n'
+  + '!function (ROOT) { \'use strict\'\n'
+  + 'const Class = OOM.'+(classname)+'\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + 'test(\'Nonbrowser test the '+(classname)+' class\', () => {\n'
+  + '    is(true, \'@TODO\')\n'
+  + '})\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
+  + ''
+}
+
+
+
+
+//// An Oomtility Wrap of Class-universal.6.js \\//\\// https://oomtility.loop.coop ////
+module.exports.getClassUniversal6Js = function (config) {
+    let {
+        isApp
+      , classname
+      , version
+      , homepage
+      , topline
+    } = config
+
+    return ''
+  + (topline)+'\n'
+  + '' + (
+isApp ? `
+//// Node.js:    7.2.0
+//// Rhino:      @TODO get Rhino working
+//// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
+//// Windows 7:  IE 9, Safari 5.1
+//// OS X 10.6:  Firefox 6, Chrome 16 (and probably lower), Opera 12, Safari 5.1
+//// iOS:        iPad 3rd (iOS 6) Safari, iPad Air (iOS 7) Chrome
+//// Android:    Xperia Tipo (Android 4), Pixel XL (Android 7.1)
+`:''
+) + '\n'
+  + '!function (ROOT) { \'use strict\'\n'
+  + 'if (\'function\' !== typeof jQuery) throw Error(\'jQuery not found\')\n'
+  + 'jQuery( function($) {\n'
+  + 'const Class = OOM.'+(classname)+'\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '//// Instantiates a typical '+(classname)+' instance for unit testing its methods.\n'
+  + 'Class.testInstanceFactory = () =>\n'
+  + '    new Class({\n'
+  + '        firstParam: 100\n'
+  + '      , secondParam: new Date\n'
+  + '    },{\n'
+  + '        /* @TODO hub API */\n'
+  + '    })\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + 'test(\'The '+(classname)+' class\', () => {\n'
+  + '    is(\'object\' === typeof OOM, \'The OOM namespace object exists\')' + (
+    isApp ? `
+    is('undefined' === typeof ${classname}, '${classname} is not global')`:''
+) + '\n'
+  + '    is(\'function\' === typeof Class, \''+(classname)+' is a function\')\n'
+  + '    is(\''+(classname)+'\' === Class.NAME, \'NAME is '+(classname)+'\')' + (
+    isApp ? `
+    is('${version}' === Class.VERSION, 'VERSION is ${version}') // OOMBUMPABLE (twice!)
+    is('${homepage}' === Class.HOMEPAGE
+      , 'HOMEPAGE is ${homepage}')`:''
+) + '\n'
+  + '})\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + 'test(\'Successful '+(classname)+' instantiation\', () => {\n'
+  + '    const instance = Class.testInstanceFactory()\n'
+  + '    is(instance instanceof Class, \'Is an instance of '+(classname)+'\')\n'
+  + '    is(\'object\' === typeof instance.hub, \'`hub` property is an object\')\n'
+  + '})\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '' + (
+isApp ? `
+//// EXTEND KLUD.JS
+
+//// Test for an expected exception.
+ROOT.throws = ROOT.throws || ( (fn, expect, prefix) => {
+    let nl = // newline plus colon and indent (klud.js test for Node.js, btw)
+        'undefined' === typeof window ? ':\\n    ' : ':<br>'+' &nbsp;'.repeat(6)
+    let didntThrow = true
+    try {
+        fn()
+    } catch (e) {
+        didntThrow = false
+        const ok = expect === e.message
+        is(ok, \`\${prefix} has \${ok?'':'un'}expected error\${ok?'':nl+e.message}\`)
+    }
+    if (didntThrow) is(0, prefix + \` did not throw an error\`)
+})
+
+
+
+
+`:''
+) + '\n'
+  + '})//jQuery()\n'
+  + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
+  + ''
+}
+
+
+
+
+//// An Oomtility Wrap of Class.6.js \\//\\// https://oomtility.loop.coop ////
+module.exports.getClass6Js = function (config) {
+    let {
+        isApp
+      , isTop
+      , classname
+      , version
+      , homepage
+      , topline
+      , remarks
+    } = config
+
+    return ''
+  + (topline)+'\n'
+  + '\n'
+  + '!function (ROOT) { \'use strict\'\n'
+  + '\n'
+  + 'const META = {\n'
+  + '    NAME:     { value:\''+(classname)+'\' }' + (
+isApp ? `
+  , VERSION:  { value:'${version}' } // OOMBUMPABLE
+  , HOMEPAGE: { value:'${homepage}' }`:''
+) + '\n'
+  + '  , REMARKS:  { value:\''+(remarks)+'\' }\n'
+  + '}\n'
+  + '\n'
+  + '\n'
+  + '//// Shortcuts to Oom\u2019s global namespace and toolkit.\n'
+  + 'const OOM     = ROOT.OOM    = ROOT.OOM    || {}\n'
+  + 'const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}\n'
+  + '\n'
+  + '' + (
+isApp ? `
+//// Define \`${classname}\`, this module’s main entry point.`:`
+//// Define the \`${classname}\` class.`
+) + '' + (
+isTop ? `
+const Class = OOM.${classname} = class {`:`
+const Class = OOM.${classname} = class extends OOM.${classname.split('.').slice(0, -1).join('.')} {`
+) + '\n'
+  + '\n'
+  + '    constructor (config={}, hub=OOM.hub) {\n'
+  + '' + (
+isTop ? `
+        //// id: Oom instances have universally unique IDs (57 billion combos).
+        Object.defineProperty(this, 'id', { value:
+            '123456'.replace( /./g,         c=>TOOLKIT.rndCh(48,122) )    // 0-z
+                    .replace( /[:-@\\[-\`]/g, c=>TOOLKIT.rndCh(97,122) ) }) // a-z`:`
+        super(config, hub)`
+) + '\n'
+  + '\n'
+  + '        //// hub: Oom instances keep a reference to the oom-hub.\n'
+  + '        Object.defineProperty(this, \'hub\', { value:hub })\n'
+  + '\n'
+  + '        //// Validate the configuration object.\n'
+  + '        this._validateConstructor(config)\n'
+  + '\n'
+  + '        //// Record config\u2019s values as immutable properties.\n'
+  + '        this.validConstructor.forEach( valid => {\n'
+  + '            const value = config[valid.name]\n'
+  + '            if (null == value) throw Error(\'I am unreachable?\') //@TODO remove\n'
+  + '            Object.defineProperty(this, valid.name, { value })\n'
+  + '        })\n'
+  + '' + (
+isTop ? `
+        //// ready: a Promise which resolves when the instance has initialised.
+        Object.defineProperty(this, 'ready', { value: this._getReady() })`:''
+) + '\n'
+  + '\n'
+  + '    }\n'
+  + '\n'
+  + '\n'
+  + '' + (
+isTop ? `
+    //// Returns a Promise which is recorded as the \`ready\` property, after
+    //// the constructor() has validated \`config\` and recorded the config
+    //// properties. Sub-classes can override _getReady() if they need to do
+    //// other async preparation.
+    //// Called by: constructor()
+    _getReady () {
+
+        //// setupStart: the time that \`new ${classname}({...})\` was called.
+        if (this.setupStart)
+            throw new Error(\`${classname}._getReady(): Can only run once\`)
+        Object.defineProperty(this, 'setupStart', { value:TOOLKIT.getNow() })
+
+        //// \`${classname}\` does no setup, so could resolve the \`ready\`
+        //// Promise immediately. However, to make _getReady()’s behavior
+        //// consistent with classes which have a slow async setup, we introduce
+        //// a miniscule delay.
+        return new Promise( (resolve, reject) => { setTimeout( () => {
+
+            //// setupEnd: the time that \`_getReady()\` finished running.
+            Object.defineProperty(this, 'setupEnd', { value:TOOLKIT.getNow() })
+
+            //// Define the instance’s \`ready\` property.
+            resolve({
+                setupDelay: this.setupEnd - this.setupStart
+            })
+        }, 0)})
+
+    }
+
+
+`:''
+) + '\n'
+  + '    //// Ensures the `config` argument passed to the `constructor()` is valid.\n'
+  + '    //// Called by: constructor()\n'
+  + '    _validateConstructor (config) {\n'
+  + '        let err, value, ME = `'+(classname)+'._validateConstructor(): ` // error prefix\n'
+  + '        if (\'object\' !== typeof config)\n'
+  + '            throw new Error(ME+`config is type ${typeof config} not object`)\n'
+  + '        this.validConstructor.forEach( valid => {\n'
+  + '            if (! TOOLKIT.applyDefault(valid, config) )\n'
+  + '                throw new TypeError(ME+`config.${valid.name} is mandatory`)\n'
+  + '            value = config[valid.name]\n'
+  + '            if ( err = TOOLKIT.validateType(valid, value) )\n'
+  + '                throw new TypeError(ME+`config.${valid.name} ${err}`)\n'
+  + '            if ( err = TOOLKIT.validateRange(valid, value) )\n'
+  + '                throw new RangeError(ME+`config.${valid.name} ${err}`)\n'
+  + '        })\n'
+  + '    }\n'
+  + '\n'
+  + '\n'
+  + '    //// Defines what the `config` argument passed to the `constructor()`\n'
+  + '    //// should look like. Note that all of the `config` values are recorded\n'
+  + '    //// as immutable instance properties.\n'
+  + '    //// Called by: constructor()\n'
+  + '    //// Called by: constructor() > _validateConstructor()\n'
+  + '    //// Can also be used to auto-generate unit tests and auto-build GUIs.\n'
+  + '    get validConstructor () { return [\n'
+  + '        {\n'
+  + '            title:   \'First Param\'\n'
+  + '          , name:    \'firstParam\' // in Vue, a key-name in `props`\n'
+  + '          , alias:   \'fp\'\n'
+  + '\n'
+  + '          , tooltip: \'An example numeric parameter, intended as a placeholder\'\n'
+  + '          , devtip:  \'You should replace this placeholder with a real parameter'
+  + '\'\n'
+  + '          , form:    \'range\'\n'
+  + '          , power:   1 // eg `8` for an exponential range-slider\n'
+  + '          , suffix:  \'Units\'\n'
+  + '\n'
+  + '          , type:    \'number\' // `props.firstParam.type` in Vue\n'
+  + '          //@TODO replace with String|Number|Boolean|Function|Object|Array|Symbo'
+  + 'l\n'
+  + '          , min:     1\n'
+  + '          , max:     100\n'
+  + '          , step:    1\n'
+  + '          , default: 50 // implies `props.firstParam.required: false` in Vue\n'
+  + '          //@TODO `props.firstParam.validator`\n'
+  + '        }\n'
+  + '      , {\n'
+  + '            title:   \'Second Param\'\n'
+  + '          , name:    \'secondParam\'\n'
+  + '          , alias:   \'sp\'\n'
+  + '\n'
+  + '          , tooltip: \'An example object parameter, intended as a placeholder\'\n'
+  + '          , devtip:  \'You should replace this placeholder with a real parameter'
+  + '\'\n'
+  + '          , form:    \'hidden\'\n'
+  + '\n'
+  + '          , type:    Date\n'
+  + '\n'
+  + '          // no `default`, so `props.firstParam.required: true` in Vue\n'
+  + '        }\n'
+  + '    ]}\n'
+  + '\n'
+  + '    xxx (config) {\n'
+  + '        const { hub, a, b, c } = this\n'
+  + '        const { xx, yy, zz } = config\n'
+  + '\n'
+  + '        ////\n'
+  + '\n'
+  + '    }\n'
+  + '\n'
+  + '}//'+(classname)+'\n'
+  + '\n'
+  + '\n'
+  + '//// Add static constants to the `'+(classname)+'` class.\n'
+  + 'Object.defineProperties(Class, META)\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '' + (
+isApp ? `
+//// TOOLKIT FUNCTIONS
+
+
+//// Return a random character within char-code start/end positions 's' and 'e'.
+TOOLKIT.rndCh = TOOLKIT.rndCh || ( (s, e) =>
+    String.fromCharCode(Math.random() * (e-s) + s) )
+
+
+//// @TODO describe these three
+TOOLKIT.applyDefault = TOOLKIT.applyDefault || ( (valid, config) => {
+    if ( config.hasOwnProperty(valid.name) )
+        return true // \`true\` here signifies default didn’t need to be applied
+    if (! valid.hasOwnProperty('default') )
+        return false // \`false\` signifies a missing mandatory field
+    config[valid.name] = 'function' === typeof valid.default
+      ? valid.default(config) // a value can depend on another config value
+      : valid.default
+    return true // \`true\` here signifies default was successfully applied
+})
+
+TOOLKIT.validateType = TOOLKIT.validateType || ( (valid, value) => {
+    switch (typeof valid.type) {
+        case 'string':   return (typeof value === valid.type)
+                           ? null : \`is type \${typeof value} not \${valid.type}\`
+        case 'function': return (value instanceof valid.type)
+                           ? null : \`is not an instance of \${valid.type.name}\`
+        case 'object':   return (value === valid.type)
+                           ? null : \`is not the expected object\` }
+    throw new TypeError(\`TOOLKIT.validateType: \`
+      + \`valid.type for \${valid.name} is \${typeof valid.type}\`)
+})
+
+TOOLKIT.validateRange = TOOLKIT.validateRange || ( (valid, value) => {
+    if (null != valid.min && valid.min > value)
+        return \`is less than the minimum \${valid.min}\`
+    if (null != valid.max && valid.max < value)
+        return \`is greater than the maximum \${valid.max}\`
+    if (null != valid.step && ((value/valid.step) % 1))
+        return \`\${value} ÷ \${valid.step} leaves \${(value/valid.step) % 1}\`
+})
+
+
+//// Cross-platform millisecond-timer.
+TOOLKIT.getNow = TOOLKIT.getNow || ( () => {
+    let now
+    if ( // Node.js
+        'object'   === typeof ROOT.process
+     && 'function' === typeof ROOT.process.hrtime) {
+        const hrtime = ROOT.process.hrtime()
+        now = ( (hrtime[0] * 1e9) + hrtime[1] ) / 1e6 // in milliseconds
+    } else { // modern browser @TODO legacy browser
+        now = ROOT.performance.now()
+    }
+    return now
+})
+
+
+
+`:''
+) + '\n'
+  + '//// PRIVATE FUNCTIONS\n'
+  + '\n'
+  + '\n'
+  + '//// Place any private functions here.\n'
+  + '// function noop () {}\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
+  + ''
+}
+
+
+
+
+//// An Oomtility Wrap of Method.6.js \\//\\// https://oomtility.loop.coop ////
+module.exports.getMethod6Js = function (config) {
+    let {
+        topline
+    } = config
+
+    return ''
+  + (topline)+'\n'
+  + '\n'
+  + '!function (ROOT) { \'use strict\'\n'
+  + '\n'
+  + 'const META = {\n'
+  + '    NAME:     { value:\'OomFoo.topLevel\' }\n'
+  + '  , REMARKS:  { value:\'@TODO\' }\n'
+  + '}\n'
+  + '\n'
+  + '\n'
+  + '//// Shortcuts to Oom\u0019s namespace and toolkit.\n'
+  + 'const OOM     = ROOT.OOM    = ROOT.OOM    || {}\n'
+  + 'const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}\n'
+  + '\n'
+  + '\n'
+  + '//// Define the `OomFoo.topLevel()` method.\n'
+  + 'const method = OOM.OomFoo.prototype.topLevel = function (abc) {\n'
+  + '    let err, ME = `OomFoo.topLevel(): ` // error prefix\n'
+  + '    if (! (this instanceof OOM.OomFoo)) throw new Error(ME\n'
+  + '      + `Must not be called as OomFoo.prototype.topLevel()`)\n'
+  + '    if ( err = TOOLKIT.validateType({ type:\'string\' }, abc) )\n'
+  + '        throw new TypeError(ME+`abc ${err}`)\n'
+  + '\n'
+  + '    this.xyz++\n'
+  + '    return abc + \' ok!\'\n'
+  + '\n'
+  + '}//OomFoo.topLevel()\n'
+  + '\n'
+  + '//// A tally of the number of times `topLevel()` is called.\n'
+  + 'OOM.OomFoo.prototype.xyz = 0\n'
+  + '\n'
+  + '\n'
+  + '//// Add static constants to the `topLevel()` method.\n'
+  + 'Object.defineProperties(method, META)\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
+  + ''
+}
+
+
+
+
+//// END DYNAMIC SECTION ///////////////////////////////////////////////////////
 
 
 
@@ -185,341 +685,11 @@ $('#ecma').html('ES'+['5','5 min','6','6 dev'][~~document.cookie.split('~')[1]])
 //// DYNAMIC EXPORTED
 
 
-//// Used by `getApp6Js()` and `oomtiity/auto.js:generateClass()`.
-module.exports.getClass6Js = function (config) {
-    let {
-        isApp            // true if this is the `App` class (src/main/App.6.js)
-      , isTop            // true for the `App` class or another top-level class
-      , classname        // 'FooBar' if `isApp`, or 'FooBar.Base.Sub' if not
-      , version  = 'n/a' // only needed if `isApp`
-      , homepage = 'n/a' // only needed if `isApp`
-      , topline
-      , remarks
-    } = config
-
-    return `${topline}
-
-!function (ROOT) { 'use strict'
-
-const META = {
-    NAME:     { value:'${classname}' }\n`+
-(isApp?`  , VERSION:  { value:'${version}' } // OOMBUMPABLE\n`:'')+
-(isApp?`  , HOMEPAGE: { value:'${homepage}' }\n`:'')+
-       `  , REMARKS:  { value:'${remarks}' }
-}
-
-
-//// Shortcuts to Oom’s global namespace and toolkit.
-const OOM     = ROOT.OOM    = ROOT.OOM    || {}
-const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
-
-
-`+
-(isApp?`//// Define \`${classname}\`, this module’s main entry point.\n`
-      :`//// Define the \`${classname}\` class.\n`)+
-(isTop
-?`const Class = OOM.${classname} = class {` // OomFoo.Base
-:`const Class = OOM.${classname} = class extends OOM.${ // OomFoo.Base.Sub
-    classname.split('.').slice(0, -1).join('.')} {`
-)+`
-
-    constructor (config={}, hub=OOM.hub) {\n`+
-(isTop?`
-        //// id: Oom instances have universally unique IDs (57 billion combos).
-        Object.defineProperty(this, 'id', { value:
-            '123456'.replace( /./g,         c=>TOOLKIT.rndCh(48,122) )    // 0-z
-                    .replace( /[:-@\\[-\`]/g, c=>TOOLKIT.rndCh(97,122) ) }) // a-z
-`:`
-        super(config, hub)`)+`
-
-        //// hub: Oom instances keep a reference to the oom-hub.
-        Object.defineProperty(this, 'hub', { value:hub })
-
-        //// Validate the configuration object.
-        this._validateConstructor(config)
-
-        //// Record config’s values as immutable properties.
-        this.validConstructor.forEach( valid => {
-            const value = config[valid.name]
-            if (null == value) throw Error('I am unreachable?') //@TODO remove
-            Object.defineProperty(this, valid.name, { value })
-        })
-\n`+(isTop?`
-        //// ready: a Promise which resolves when the instance has initialised.
-        Object.defineProperty(this, 'ready', { value: this._getReady() })
-`:'')+`
-    }
-
-
-\n`+(isTop?`
-    //// Returns a Promise which is recorded as the \`ready\` property, after
-    //// the constructor() has validated \`config\` and recorded the config
-    //// properties. Sub-classes can override _getReady() if they need to do
-    //// other async preparation.
-    //// Called by: constructor()
-    _getReady () {
-
-        //// setupStart: the time that \`new ${classname}({...})\` was called.
-        if (this.setupStart)
-            throw new Error(\`${classname}._getReady(): Can only run once\`)
-        Object.defineProperty(this, 'setupStart', { value:TOOLKIT.getNow() })
-
-        //// \`${classname}\` does no setup, so could resolve the \`ready\`
-        //// Promise immediately. However, to make _getReady()’s behavior
-        //// consistent with classes which have a slow async setup, we introduce
-        //// a miniscule delay.
-        return new Promise( (resolve, reject) => { setTimeout( () => {
-
-            //// setupEnd: the time that \`_getReady()\` finished running.
-            Object.defineProperty(this, 'setupEnd', { value:TOOLKIT.getNow() })
-
-            //// Define the instance’s \`ready\` property.
-            resolve({
-                setupDelay: this.setupEnd - this.setupStart
-            })
-        }, 0)})
-
-    }
-`:'')+`
-
-
-    //// Ensures the \`config\` argument passed to the \`constructor()\` is valid.
-    //// Called by: constructor()
-    _validateConstructor (config) {
-        let err, value, ME = \`${classname}._validateConstructor(): \` // error prefix
-        if ('object' !== typeof config)
-            throw new Error(ME+\`config is type \${typeof config} not object\`)
-        this.validConstructor.forEach( valid => {
-            if (! TOOLKIT.applyDefault(valid, config) )
-                throw new TypeError(ME+\`config.\${valid.name} is mandatory\`)
-            value = config[valid.name]
-            if ( err = TOOLKIT.validateType(valid, value) )
-                throw new TypeError(ME+\`config.\${valid.name} \${err}\`)
-            if ( err = TOOLKIT.validateRange(valid, value) )
-                throw new RangeError(ME+\`config.\${valid.name} \${err}\`)
-        })
-    }
-
-
-    //// Defines what the \`config\` argument passed to the \`constructor()\`
-    //// should look like. Note that all of the \`config\` values are recorded
-    //// as immutable instance properties.
-    //// Called by: constructor()
-    //// Called by: constructor() > _validateConstructor()
-    //// Can also be used to auto-generate unit tests and auto-build GUIs.
-    get validConstructor () { return [
-        {
-            title:   'First Parameter'
-          , name:    'firstParameter'
-          , alias:   'fp'
-
-          , tooltip: 'An example numeric parameter, intended as a placeholder'
-          , devtip:  'You should replace this placeholder with a real parameter'
-          , form:    'range'
-          , power:   1 // eg \`8\` for an exponential range-slider
-          , suffix:  'Units'
-
-          , type:    'number'
-          , min:     1
-          , max:     100
-          , step:    1
-          , default: 50
-        }
-      , {
-            title:   'Second Parameter'
-          , name:    'secondParameter'
-          , alias:   'sp'
-
-          , tooltip: 'An example object parameter, intended as a placeholder'
-          , devtip:  'You should replace this placeholder with a real parameter'
-          , form:    'hidden'
-
-          , type:    Date
-        }
-    ]}
-
-    xxx (config) {
-        const { hub, a, b, c } = this
-        const { xx, yy, zz } = config
-
-        ////
-
-    }
-
-}//${classname}
-
-
-//// Add static constants to the \`${classname}\` class.
-Object.defineProperties(Class, META)
-
-
-
-`+(isApp?`
-//// TOOLKIT FUNCTIONS
-
-
-//// Return a random character within char-code start/end positions 's' and 'e'.
-TOOLKIT.rndCh = TOOLKIT.rndCh || ( (s, e) =>
-    String.fromCharCode(Math.random() * (e-s) + s) )
-
-
-//// @TODO describe these three
-TOOLKIT.applyDefault = TOOLKIT.applyDefault || ( (valid, config) => {
-    if ( config.hasOwnProperty(valid.name) )
-        return true // \`true\` here signifies default didn’t need to be applied
-    if (! valid.hasOwnProperty('default') )
-        return false // \`false\` signifies a missing mandatory field
-    config[valid.name] = 'function' === typeof valid.default
-      ? valid.default(config) // a value can depend on another config value
-      : valid.default
-    return true // \`true\` here signifies default was successfully applied
-})
-
-TOOLKIT.validateType = TOOLKIT.validateType || ( (valid, value) => {
-    switch (typeof valid.type) {
-        case 'string':   return (typeof value === valid.type)
-                           ? null : \`is type \${typeof value} not \${valid.type}\`
-        case 'function': return (value instanceof valid.type)
-                           ? null : \`is not an instance of \${valid.type.name}\`
-        case 'object':   return (value === valid.type)
-                           ? null : \`is not the expected object\` }
-    throw new TypeError(\`TOOLKIT.validateType: \`
-      + \`valid.type for \${valid.name} is \${typeof valid.type}\`)
-})
-
-TOOLKIT.validateRange = TOOLKIT.validateRange || ( (valid, value) => {
-    if (null != valid.min && valid.min > value)
-        return \`is less than the minimum \${valid.min}\`
-    if (null != valid.max && valid.max < value)
-        return \`is greater than the maximum \${valid.max}\`
-    if (null != valid.step && ((value/valid.step) % 1))
-        return \`\${value} ÷ \${valid.step} leaves \${(value/valid.step) % 1}\`
-})
-
-
-//// Cross-platform millisecond-timer.
-TOOLKIT.getNow = TOOLKIT.getNow || ( () => {
-    let now
-    if ( // Node.js
-        'object'   === typeof ROOT.process
-     && 'function' === typeof ROOT.process.hrtime) {
-        const hrtime = ROOT.process.hrtime()
-        now = ( (hrtime[0] * 1e9) + hrtime[1] ) / 1e6 // in milliseconds
-    } else { // modern browser @TODO legacy browser
-        now = ROOT.performance.now()
-    }
-    return now
-})
-
-
-
-`:'')+`
-//// PRIVATE FUNCTIONS
-
-//// Place any private functions here.
-// function noop () {}
-
-
-
-
-}( 'object' === typeof global ? global : this ) // \`window\` in a browser
-` }
-
-
 module.exports.getApp6Js = function (config) {
     config.isApp = true
     config.isTop = 3 > config.classname.split('.').length
     return module.exports.getClass6Js(config)
 }
-
-
-module.exports.getClassUniversal6Js = function (config) {
-    let {
-        isApp            // true if this is the `App` class (src/main/App.6.js)
-      , isTop            // true for the `App` class or another top-level class
-      , classname        // 'FooBar' if `isApp`, or 'FooBar.Base.Sub' if not
-      , version  = 'n/a' // only needed if `isApp`
-      , homepage = 'n/a' // only needed if `isApp`
-      , topline
-    } = config
-
-    return `${topline}
-`+(isApp?`
-//// Node.js:    7.2.0
-//// Rhino:      @TODO get Rhino working
-//// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
-//// Windows 7:  IE 9, Safari 5.1
-//// OS X 10.6:  Firefox 6, Chrome 16 (and probably lower), Opera 12, Safari 5.1
-//// iOS:        iPad 3rd (iOS 6) Safari, iPad Air (iOS 7) Chrome
-//// Android:    Xperia Tipo (Android 4), Pixel XL (Android 7.1)
-`:'')+`
-!function (ROOT) { 'use strict'
-if ('function' !== typeof jQuery) throw Error('jQuery not found')
-jQuery( function($) {
-const Class = OOM.${classname}
-
-
-
-
-//// Instantiates a typical ${classname} instance for unit testing its methods.
-Class.testInstanceFactory = () =>
-    new Class({
-        firstParameter: 100
-      , secondParameter: new Date
-    },{
-        /* @TODO hub API */
-    })
-
-
-
-
-test('The ${classname} class', () => {
-    is('object' === typeof OOM, 'The OOM namespace object exists')\n`+
-(isApp?`    is('undefined' === typeof ${classname}, '${classname} is not global')\n`:'')+
-`    is('function' === typeof Class, '${classname} is a function')
-    is('${classname}' === Class.NAME, 'NAME is ${classname}')\n`+
-(isApp?`    is('${version  }' === Class.VERSION, 'VERSION is ${version}') // OOMBUMPABLE (twice!)\n`:'')+
-(isApp?`    is('${homepage }' === Class.HOMEPAGE\n`:'')+
-(isApp?`      , 'HOMEPAGE is ${homepage}')\n`:'')+
-`})
-
-
-
-
-test('Successful ${classname} instantiation', () => {
-    const instance = Class.testInstanceFactory()
-    is(instance instanceof Class, 'Is an instance of ${classname}')
-    is('object' === typeof instance.hub, '\`hub\` property is an object')
-})
-
-
-
-
-`+(isApp?
-`//// EXTEND KLUD.JS
-
-//// Test for an expected exception.
-ROOT.throws = ROOT.throws || ( (fn, expect, prefix) => {
-    let nl = // newline plus colon and indent (klud.js’s test for Node.js, btw)
-        'undefined' === typeof window ? ':\\n    ' : ':<br>'+' &nbsp;'.repeat(6)
-    let didntThrow = true
-    try {
-        fn()
-    } catch (e) {
-        didntThrow = false
-        const ok = expect === e.message
-        is(ok, \`\${prefix} has \${ok?'':'un'}expected error\${ok?'':nl+e.message}\`)
-    }
-    if (didntThrow) is(0, prefix + \` did not throw an error\`)
-})
-
-
-
-
-`:'')+
-`})//jQuery()
-}( 'object' === typeof global ? global : this ) // \`window\` in a browser
-` }
 
 
 module.exports.getAppUniversal6Js = function (config) {
@@ -529,101 +699,11 @@ module.exports.getAppUniversal6Js = function (config) {
 }
 
 
-module.exports.getClassBrowser6Js = function (config) {
-    let {
-        isApp     // true if this is the `App` class (src/main/App.6.js)
-      , isTop     // true for the `App` class or another top-level class
-      , classname // 'FooBar' if `isApp`, or 'FooBar.Base.Sub' if not
-      , topline
-    } = config
-
-    return `${topline}
-`+(isApp?`
-//// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
-//// Windows 7:  IE 9, Safari 5.1
-//// OS X 10.6:  Firefox 6, Chrome 16 (and probably lower), Opera 12, Safari 5.1
-//// iOS:        iPad 3rd (iOS 6) Safari, iPad Air (iOS 7) Chrome
-//// Android:    Xperia Tipo (Android 4), Pixel XL (Android 7.1)
-`:'')+`
-!function (ROOT) { 'use strict'
-if ('function' !== typeof jQuery) throw Error('jQuery not found')
-jQuery( function($) {
-const Class = OOM.${classname}
-
-
-
-
-//// Instantiates a typical ${classname} instance for unit testing its methods.
-Class.testInstanceFactory = () =>
-    new Class({
-        firstParameter: 100
-      , secondParameter: new Date
-    },{
-        /* @TODO hub API */
-    })
-
-
-
-
-test('Browser test the ${classname} class', () => {
-    is(true, '@TODO')
-})
-
-
-
-
-})//jQuery()
-}( 'object' === typeof global ? global : this ) // \`window\` in a browser
-` }
-
-
 module.exports.getAppBrowser6Js = function (config) {
     config.isApp = true
     config.isTop = 3 > config.classname.split('.').length
     return module.exports.getClassBrowser6Js(config)
 }
-
-
-module.exports.getClassNonbrowser6Js = function (config) {
-    let {
-        isApp     // true if this is the `App` class (src/main/App.6.js)
-      , isTop     // true for the `App` class or another top-level class
-      , classname // 'FooBar' if `isApp`, or 'FooBar.Base.Sub' if not
-      , topline
-    } = config
-
-    return `${topline}
-`+(isApp?`
-//// Node.js:    7.2.0
-//// Rhino:      @TODO get Rhino working
-`:'')+`
-!function (ROOT) { 'use strict'
-const Class = OOM.${classname}
-
-
-
-
-//// Instantiates a typical ${classname} instance for unit testing its methods.
-Class.testInstanceFactory = () =>
-    new Class({
-        firstParameter: 100
-      , secondParameter: new Date
-    },{
-        /* @TODO hub API */
-    })
-
-
-
-
-test('Nonbrowser test the ${classname} class', () => {
-    is(true, '@TODO')
-})
-
-
-
-
-}( 'object' === typeof global ? global : this ) // \`window\` in a browser
-` }
 
 
 module.exports.getAppNonbrowser6Js = function (config) {
@@ -683,7 +763,7 @@ module.exports.getClassDemoHtml = function (config) {
     return getHtmlTop(
         Object.assign({}, config, {
             title: `${classname} Demo`
-          , description: `Usage examples for ‘${classname}’.`
+          , description: `Usage examples for ${classname}.`
         })
     ) + `
 
@@ -733,7 +813,7 @@ const META = {
 }
 
 
-//// Shortcuts to Oom’s namespace and toolkit.
+//// Shortcuts to Ooms namespace and toolkit.
 const OOM     = ROOT.OOM    = ROOT.OOM    || {}
 const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
 
@@ -906,12 +986,12 @@ module.exports.getDemoHtml = function (config) {
     return getHtmlTop(
         Object.assign({}, config, {
             title: `${projectTC} Demo`
-          , description: `Usage examples for ‘${projectTC}’.`
+          , description: `Usage examples for ${projectTC}.`
         })
     ) + `
 
 <!-- BEGIN DYNAMIC SECTION /////////////////////////////////////////////////////
-  //// This dynamic section is kept up to date by ‘oomtility/make.js’ ////// -->
+  //// This dynamic section is kept up to date by oomtility/make.js ////// -->
 
 <!-- END DYNAMIC SECTION ///////////////////////////////////////////////// -->
 
@@ -934,7 +1014,7 @@ module.exports.getTestHtml = function (config) {
     return getHtmlTop(
         Object.assign({}, config, {
             title: `${projectTC} Test`
-          , description: `Unit tests for ‘${projectTC}’.`
+          , description: `Unit tests for ${projectTC}.`
         })
     ) + `
 
@@ -951,7 +1031,7 @@ module.exports.getTestHtml = function (config) {
 <!-- Load the proper format scripts, according to the '#ecmaswitch' menu -->
 <script src="asset/js/ecmaswitch.js"></script>
 <script>ECMASwitch.load('../', [
-    [ // ‘App-universal.6.js’ defines \`throws()\`, so run it first
+    [ // App-universal.6.js defines \`throws()\`, so run it first
         '../dist/test/${projectLC}-universal.5.js'
       , '../dist/test/${projectLC}-universal.5.js' // no need to minify a test
       , '../dist/test/${projectLC}-universal.6.js'
@@ -965,7 +1045,7 @@ module.exports.getTestHtml = function (config) {
     ]
 
 //// BEGIN DYNAMIC SECTION /////////////////////////////////////////////////////
-//// This dynamic section is kept up to date by ‘ootility/make.js’ /////////////
+//// This dynamic section is kept up to date by ootility/make.js /////////////
 
 //// END DYNAMIC SECTION ///////////////////////////////////////////////////////
 
@@ -1051,7 +1131,7 @@ module.exports.getIndexHtml = function (config) {
 <script src="support/asset/js/ecmaswitch.js"></script>
 <script>ECMASwitch.load('./')</script>
 
-<!-- Link to the proper homepage domain, if we’re not already there -->
+<!-- Link to the proper homepage domain, if were not already there -->
 <script>if ( 0 > location.href.indexOf(OOM.${projectTC}.HOMEPAGE) )
 $('#home-link').attr('href', OOM.${projectTC}.HOMEPAGE)</script>
 
@@ -1066,14 +1146,14 @@ module.exports.getEcmaswitchJs = function (config) {
         projectLC
     } = config
     return '//// '
-+ `ECMASwitch //// 1.0.13 //// January 2018 //// ecmaswitch.loop.coop/ ///////
++ `ECMASwitch //// 1.0.14 //// January 2018 //// ecmaswitch.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
 //// Create the namespace-object if it does not already exist and add constants.
 var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}
 ECMASwitch.NAME     = 'ECMASwitch'
-ECMASwitch.VERSION  = '1.0.13'
+ECMASwitch.VERSION  = '1.0.14'
 ECMASwitch.HOMEPAGE = 'http://ecmaswitch.loop.coop/'
 
 //// Polyfill \`document\` for non-browser contexts.
@@ -1086,7 +1166,7 @@ var d = ROOT.document || {
 
 
 //// BEGIN DYNAMIC SECTION /////////////////////////////////////////////////////
-//// This dynamic section is kept up to date by ‘oomtility/make.js’ ////////////
+//// This dynamic section is kept up to date by oomtility/make.js ////////////
 
 var projectLC = '${projectLC}'
 var classFiles = 'App'
@@ -1114,7 +1194,7 @@ ECMASwitch.load = function (path, names) {
         : (3 == f) ?   // ES6 Development
               (p+'main/'+classFiles.replace(/,/g,'.6.js|'+p+'main/')+'.6.js')
              .split('|')
-        : [            // ES5 Production (the default, if no cookie’s been set)
+        : [            // ES5 Production (the default, if no cookies been set)
               path + 'support/asset/js/traceur-runtime.min.js'
             , p + 'main/' + projectLC + '.5.js'
           ]
@@ -1170,17 +1250,17 @@ module.exports.getPackageJson = function (config) {
   },
   "keywords": [
     "Oom",
-    "🔅",
+    "=",
     "Interactive",
-    "🌟",
+    "<",
     "3d",
-    "🍍",
+    "<M",
     "Sequencer",
-    "✨",
+    "(",
     "Instrument",
-    "🎉",
+    "<�",
     "Seqin",
-    "🔸",
+    "=8",
     "Web Audio"
   ],
   "author": "Rich Plastow <rich@richplastow.com> (https://richplastow.com/)",
@@ -1225,17 +1305,17 @@ module.exports.getREADMEMd = function (config) {
 [Demo](${homepage}support/demo.html)
 
 Oom &nbsp;
-🔅 &nbsp;
+= &nbsp;
 Interactive &nbsp;
-🌟 &nbsp;
+< &nbsp;
 3d &nbsp;
-🍍 &nbsp;
+<M &nbsp;
 Sequencer &nbsp;
-✨ &nbsp;
+( &nbsp;
 Instrument &nbsp;
-🎉 &nbsp;
+<� &nbsp;
 Seqin &nbsp;
-🔸 &nbsp;
+=8 &nbsp;
 Web Audio &nbsp;
 
 
@@ -11259,51 +11339,71 @@ module.exports.getUbuntumonoRegularWoff2 = function () { return ''
 
 
 
-module.exports.getKludMinJs = function () {
-    return '!function(n){"use strict";function t(n,e){\nif(typeof n!=typeof e)r'
-      + 'eturn!1\n;if(n instanceof Function)return n.toString()===e.toString()'
-      + '\n;if(n===e||n.valueOf()===e.valueOf())return!0\n;if(!(n instanceof Ob'
-      + 'ject))return!1;var i=Object.keys(n)\n;if(i.length!=Object.keys(e).leng'
-      + 'th)return!1\n;for(var r in e)if(e.hasOwnProperty(r)){\nif(-1===i.index'
-      + 'Of(r))return!1;if(!t(n[r],e[r]))return!1}return!0\n}function e(n){var '
-      + 't=function(){var e\n;if(t.called=t.called||[],t.thrown=t.thrown||[],n)'
-      + 'try{\ne=n.apply(n.this,arguments),t.thrown.push(void 0)}catch(n){\nt.t'
-      + 'hrown.push(n)}return t.called.push(arguments),e};return t}\nvar i=[],r'
-      + '=function(){i.length>0?i[0](r):u("finalize")\n},f=n,u=function(){};n.t'
-      + 'est=function(s,c,o){\nif("function"==typeof s)return u=s,void(f=c||n)'
-      + '\n;var a=function(n){var r={is:f.is,spy:f.spy,eq:f.eq},a=u\n;f.eq=t,f.'
-      + 'spy=e,f.is=function(n,t){\n(n=!!n)?a("pass",s,t):a("fail",s,t)},a("beg'
-      + 'in",s);try{\nc(function(){\nf.is=r.is,f.spy=r.spy,f.eq=r.eq,a("end",s)'
-      + ',i.shift(),n&&n()})\n}catch(n){a("except",s,n)}\no||(a("end",s),f.is=r'
-      + '.is,f.spy=r.spy,f.eq=r.eq)}\n;o?(i.push(a),1==i.length&&r()):a()}}(fun'
-      + 'ction(){return this\n}.call());\n'
+
+
+
+
+//// An Oomtility Wrap of klud.min.js \\//\\// https://oomtility.loop.coop ////
+module.exports.getKludMinJs = function (config) {
+    return ''
+  + '!function(n){"use strict";function t(n,e){\n'
+  + 'if(typeof n!=typeof e)return!1\n'
+  + ';if(n instanceof Function)return n.toString()===e.toString()\n'
+  + ';if(n===e||n.valueOf()===e.valueOf())return!0\n'
+  + ';if(!(n instanceof Object))return!1;var i=Object.keys(n)\n'
+  + ';if(i.length!=Object.keys(e).length)return!1\n'
+  + ';for(var r in e)if(e.hasOwnProperty(r)){\n'
+  + 'if(-1===i.indexOf(r))return!1;if(!t(n[r],e[r]))return!1}return!0\n'
+  + '}function e(n){var t=function(){var e\n'
+  + ';if(t.called=t.called||[],t.thrown=t.thrown||[],n)try{\n'
+  + 'e=n.apply(n.this,arguments),t.thrown.push(void 0)}catch(n){\n'
+  + 't.thrown.push(n)}return t.called.push(arguments),e};return t}\n'
+  + 'var i=[],r=function(){i.length>0?i[0](r):u("finalize")\n'
+  + '},f=n,u=function(){};n.test=function(s,c,o){\n'
+  + 'if("function"==typeof s)return u=s,void(f=c||n)\n'
+  + ';var a=function(n){var r={is:f.is,spy:f.spy,eq:f.eq},a=u\n'
+  + ';f.eq=t,f.spy=e,f.is=function(n,t){\n'
+  + '(n=!!n)?a("pass",s,t):a("fail",s,t)},a("begin",s);try{\n'
+  + 'c(function(){\n'
+  + 'f.is=r.is,f.spy=r.spy,f.eq=r.eq,a("end",s),i.shift(),n&&n()})\n'
+  + '}catch(n){a("except",s,n)}\n'
+  + 'o||(a("end",s),f.is=r.is,f.spy=r.spy,f.eq=r.eq)}\n'
+  + ';o?(i.push(a),1==i.length&&r()):a()}}(function(){return this\n'
+  + '}.call());\n'
+  + ''
 }
 
 
 
 
-module.exports.getReportMinJs = function () {
-    return 'if("undefined"==typeof window)test(function(e,s,l){\n"pass"==e?cons'
-      + 'ole.log("\u001b[32m✔\u001b[0m "+s+": "+l):"fail"!=e&&"except"!=e||cons'
-      + 'ole.log("\u001b[31m✘\u001b[0m "+s+": "+l)\n});else{var css=document.cr'
-      + 'eateElement("style")\n;css.type="text/css",css.innerHTML=\'.kludjs li,'
-      + ' .kludjs ul { margin: 0; padding: 0; }.kludjs-pass, .kludjs-except, .k'
-      + 'ludjs-fail { list-style: none; }.kludjs-pass:before {content:"✓";margi'
-      + 'n-right:1em;color:green;}.kludjs-fail:before, .kludjs-except:before {c'
-      + 'ontent:"✖";margin-right:1em;color:red;}.kludjs-singleton ul, .kludjs-s'
-      + 'ingleton li { display:inline; }.kludjs-singleton li { margin-left:2em;'
-      + ' }\',\ndocument.head.appendChild(css)\n;var el,testEl,assertEl,passed,'
-      + 'failed;test(function(e,s,l){\nvoid 0===el&&((el=document.createElement'
-      + '("ul")).className="kludjs",\n(document.querySelector(".kludjs")||docum'
-      + 'ent.body).appendChild(el)),\n"begin"===e?(passed=failed=0,\ntestEl=doc'
-      + 'ument.createElement("li"),assertEl=document.createElement("ul"),\ntest'
-      + 'El.appendChild(document.createTextNode(s)),\ntestEl.appendChild(assert'
-      + 'El),el.appendChild(testEl)):"end"===e?(testEl.insertBefore(document.cr'
-      + 'eateTextNode(" ("+passed+"/"+(passed+failed)+")"),assertEl),\n1===pass'
-      + 'ed&&1===passed+failed&&(testEl.className="kludjs-singleton")):"pass"!='
-      + '=e&&"fail"!==e&&"except"!==e||(assertEl.innerHTML+=\'<li class="kludjs'
-      + '-item kludjs-\'+e+\'">\'+l+"</li>",\n"pass"===e?passed++:failed++)})}'
-      + '\n"undefined"!=typeof module&&(module.exports=test);\n'
+//// An Oomtility Wrap of report.min.js \\//\\// https://oomtility.loop.coop ////
+module.exports.getReportMinJs = function (config) {
+    return ''
+  + 'if("undefined"==typeof window)test(function(e,s,l){\n'
+  + '"pass"==e?console.log("\u001b[32m\u2714\u001b[0m "+s+": "+l):"fail"!=e&&"except"'
+  + '!=e||console.log("\u001b[31m\u2718\u001b[0m "+s+": "+l)\n'
+  + '});else{var css=document.createElement("style")\n'
+  + ';css.type="text/css",css.innerHTML=\'.kludjs li, .kludjs ul { margin: 0; padding'
+  + ': 0; }.kludjs-pass, .kludjs-except, .kludjs-fail { list-style: none; }.kludjs-pa'
+  + 'ss:before {content:"\u2713";margin-right:1em;color:green;}.kludjs-fail:before, .'
+  + 'kludjs-except:before {content:"\u2716";margin-right:1em;color:red;}.kludjs-singl'
+  + 'eton ul, .kludjs-singleton li { display:inline; }.kludjs-singleton li { margin-l'
+  + 'eft:2em; }\',\n'
+  + 'document.head.appendChild(css)\n'
+  + ';var el,testEl,assertEl,passed,failed;test(function(e,s,l){\n'
+  + 'void 0===el&&((el=document.createElement("ul")).className="kludjs",\n'
+  + '(document.querySelector(".kludjs")||document.body).appendChild(el)),\n'
+  + '"begin"===e?(passed=failed=0,\n'
+  + 'testEl=document.createElement("li"),assertEl=document.createElement("ul"),\n'
+  + 'testEl.appendChild(document.createTextNode(s)),\n'
+  + 'testEl.appendChild(assertEl),el.appendChild(testEl)):"end"===e?(testEl.insertBef'
+  + 'ore(document.createTextNode(" ("+passed+"/"+(passed+failed)+")"),assertEl),\n'
+  + '1===passed&&1===passed+failed&&(testEl.className="kludjs-singleton")):"pass"!==e'
+  + '&&"fail"!==e&&"except"!==e||(assertEl.innerHTML+=\'<li class="kludjs-item kludjs'
+  + '-\'+e+\'">\'+l+"</li>",\n'
+  + '"pass"===e?passed++:failed++)})}\n'
+  + '"undefined"!=typeof module&&(module.exports=test);\n'
+  + ''
 }
 
 

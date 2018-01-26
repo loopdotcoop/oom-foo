@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Make'
-    , VERSION  = '1.0.13'
+    , VERSION  = '1.0.14'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Made by ${NAME} ${VERSION} //\\\\//\\\\ `
@@ -19,6 +19,9 @@ Installation
 ------------
 You’ll need Uglify and Traceur installed globally before running make.js:
 $ npm install -g uglify-js; npm install -g traceur
+
+If you get \`require()\` errors, try:
+$ export NODE_PATH=$(npm root --quiet -g)
 
 If you haven’t done it already, you should set up the \`oommake\` alias:
 $ node oomtility/alias.js
@@ -202,9 +205,9 @@ es6 = { browser:[], nonbrowser:[], universal:[] }
 tests.forEach( name => {
     if ( '.6.js' !== name.slice(-5) ) return
     let ua =
-        '-browser.6.js'    == name.slice(-13) ? es6.browser
-      : '-nonbrowser.6.js' == name.slice(-16) ? es6.nonbrowser
-      : '-universal.6.js'  == name.slice(-15) ? es6.universal
+        '-browser.6.js'    === name.slice(-13) ? es6.browser
+      : '-nonbrowser.6.js' === name.slice(-16) ? es6.nonbrowser
+      : '-universal.6.js'  === name.slice(-15) ? es6.universal
       : []
     ua.push('//\\\\//\\\\ src/test/' + name)
     ua.push( fs.readFileSync('src/test/' + name)+'' )
@@ -292,10 +295,11 @@ function updateDemoFile (htmlPath, supportPath) {
         if (0 < html[start].indexOf('BEGIN DYNAMIC SECTION //////////') ) break
     for (; end<html.length; end++)
         if (0 < html[end].indexOf('END DYNAMIC SECTION ////////////')   ) break
-    if ( start == html.length || end == html.length)
-        return console.warn(`Could not find dynamic section in ‘${htmlPath}’`)
+    if ( start === html.length || end === html.length)
+        return console.warn(`Couldn’t find dynamic section in ‘${htmlPath}’`)
     out = html.slice(0, start+1).concat([
-`  //// This dynamic section is kept up to date by ‘oomtility/make.js’ ////// -->`])
+`  //// This dynamic section is kept up to date by ‘oomtility/make.js’ ////// -->
+`])
     demos.forEach( name => {
         if ( 'demo-' != name.slice(0,5) || '.html' != name.slice(-5) ) return
         let i, file = (fs.readFileSync(supportPath+'/'+name)+'').split('\n')
@@ -319,8 +323,8 @@ function updateECMASwitch (jsPath, mains) {
         if (0 < js[start].indexOf('BEGIN DYNAMIC SECTION //////////') ) break
     for (; end<js.length; end++)
         if (0 < js[end].indexOf('END DYNAMIC SECTION ////////////')   ) break
-    if ( start == js.length || end == js.length)
-        return console.warn(`Could not find dynamic section in ‘${jsPath}’`)
+    if ( start === js.length || end === js.length)
+        return console.warn(`Couldn’t find dynamic section in ‘${jsPath}’`)
     out = js.slice(0, start+1).concat([
 `//// This dynamic section is kept up to date by ‘oomtility/make.js’ ////////////
 
@@ -340,8 +344,8 @@ function updateTestFile (htmlPath, tests) {
         if (0 < html[start].indexOf('BEGIN DYNAMIC SECTION //////////') ) break
     for (; end<html.length; end++)
         if (0 < html[end].indexOf('END DYNAMIC SECTION ////////////')   ) break
-    if ( start == html.length || end == html.length)
-        return console.warn(`Could not find dynamic section in ‘${htmlPath}’`)
+    if ( start === html.length || end === html.length)
+        return console.warn(`Couldn’t find dynamic section in ‘${htmlPath}’`)
     out = html.slice(0, start+1).concat([
 `//// This dynamic section is kept up to date by ‘oomtility/make.js’ ////////////
 `])

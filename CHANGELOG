@@ -14,3 +14,4 @@
 1.0.11 oomtility/init.js shows a result after a successful run
 1.0.12 Improved App.6.js and its tests
 1.0.13 oomtility/make.js generates methods, eg $ oomauto Base.foo topLevel Base
+1.0.14 oomtility/wrap.js updates oomtility/wrapped.js with oomtility/wrap/

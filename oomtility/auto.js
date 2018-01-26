@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Auto'
-    , VERSION  = '1.0.13'
+    , VERSION  = '1.0.14'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Initialised by ${NAME} ${VERSION}\n`
@@ -69,7 +69,7 @@ if ('function' !== typeof require)
 
 //// Load library functionality.
 const fs = require('fs')
-    , lib = require('./lib.js')
+    , wrapped = require('./wrapped.js')
 
 //// Set constants.
 const rxClassname
@@ -251,7 +251,7 @@ function generateOrRemove (path, content) {
 ////
 function generateClass (name) {
     const isTop = 2 > name.split('.').length
-    return lib.getClass6Js({
+    return wrapped.getClass6Js({
         isApp: false
       , isTop
       , classname: `${projectTC}.${name}`
@@ -264,7 +264,7 @@ function generateClass (name) {
 ////
 function generateClassUniversal (name) {
     const isTop = 2 > name.split('.').length
-    return lib.getClassUniversal6Js({
+    return wrapped.getClassUniversal6Js({
         isApp: false
       , isTop
       , classname: `${projectTC}.${name}`
@@ -276,7 +276,7 @@ function generateClassUniversal (name) {
 ////
 function generateClassBrowser (name) {
     const isTop = 2 > name.split('.').length
-    return lib.getClassBrowser6Js({
+    return wrapped.getClassBrowser6Js({
         isApp: false
       , isTop
       , classname: `${projectTC}.${name}`
@@ -288,7 +288,7 @@ function generateClassBrowser (name) {
 ////
 function generateClassNonbrowser (name) {
     const isTop = 2 > name.split('.').length
-    return lib.getClassNonbrowser6Js({
+    return wrapped.getClassNonbrowser6Js({
         isApp: false
       , isTop
       , classname: `${projectTC}.${name}`
@@ -299,7 +299,7 @@ function generateClassNonbrowser (name) {
 
 ////
 function generateDemoScript (name) {
-    return lib.getDemo6Js({
+    return wrapped.getDemo6Js({
         classname: `${projectTC}.${name}`
       , topline
     })
@@ -308,7 +308,7 @@ function generateDemoScript (name) {
 
 ////
 function generateDemoPage (name) {
-    return lib.getClassDemoHtml({
+    return wrapped.getClassDemoHtml({
         classname: `${projectTC}.${name}`
       , projectTC
       , name
@@ -321,7 +321,7 @@ function generateDemoPage (name) {
 
 ////
 function generateMethod (name) {
-    return lib.getMethod6Js({
+    return wrapped.getMethod6Js({
         methodname: `${projectTC}.${name}`
       , topline
       , remarks: '@TODO'
@@ -331,7 +331,7 @@ function generateMethod (name) {
 
 ////
 function generateMethodUniversal (name) {
-    return lib.getMethodUniversal6Js({
+    return wrapped.getMethodUniversal6Js({
         methodname: `${projectTC}.${name}`
       , topline
     })
@@ -340,7 +340,7 @@ function generateMethodUniversal (name) {
 
 ////
 function generateMethodBrowser (name) {
-    return lib.getMethodBrowser6Js({
+    return wrapped.getMethodBrowser6Js({
         methodname: `${projectTC}.${name}`
       , topline
     })
@@ -349,7 +349,7 @@ function generateMethodBrowser (name) {
 
 ////
 function generateMethodNonbrowser (name) {
-    return lib.getMethodNonbrowser6Js({
+    return wrapped.getMethodNonbrowser6Js({
         methodname: `${projectTC}.${name}`
       , topline
     })

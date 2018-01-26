@@ -1,4 +1,4 @@
-//// OomFoo //// 1.0.13 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
@@ -17,4 +17,4 @@
 
 
 
-//// Made by Oomtility Make 1.0.13 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.0.14 //\\//\\ http://oomtility.loop.coop /////////

@@ -2,7 +2,7 @@
 
 
 
-//// OomFoo //// 1.0.13 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -23,8 +23,8 @@ const Class = OOM.OomFoo
 //// Instantiates a typical OomFoo instance for unit testing its methods.
 Class.testInstanceFactory = () =>
     new Class({
-        firstParameter: 100
-      , secondParameter: new Date
+        firstParam: 100
+      , secondParam: new Date
     },{
         /* @TODO hub API */
     })
@@ -37,7 +37,7 @@ test('The OomFoo class', () => {
     is('undefined' === typeof OomFoo, 'OomFoo is not global')
     is('function' === typeof Class, 'OomFoo is a function')
     is('OomFoo' === Class.NAME, 'NAME is OomFoo')
-    is('1.0.13' === Class.VERSION, 'VERSION is 1.0.13') // OOMBUMPABLE (twice!)
+    is('1.0.0' === Class.VERSION, 'VERSION is 1.0.0') // OOMBUMPABLE (twice!)
     is('http://oom-foo.loop.coop/' === Class.HOMEPAGE
       , 'HOMEPAGE is http://oom-foo.loop.coop/')
 })
@@ -58,7 +58,7 @@ test('Successful OomFoo instantiation', () => {
 
 //// Test for an expected exception.
 ROOT.throws = ROOT.throws || ( (fn, expect, prefix) => {
-    let nl = // newline plus colon and indent (klud.js’s test for Node.js, btw)
+    let nl = // newline plus colon and indent (klud.js test for Node.js, btw)
         'undefined' === typeof window ? ':\n    ' : ':<br>'+' &nbsp;'.repeat(6)
     let didntThrow = true
     try {
@@ -74,6 +74,7 @@ ROOT.throws = ROOT.throws || ( (fn, expect, prefix) => {
 
 
 
+
 })//jQuery()
 }( 'object' === typeof global ? global : this ) // `window` in a browser
 
@@ -84,7 +85,7 @@ ROOT.throws = ROOT.throws || ( (fn, expect, prefix) => {
 
 
 
-//// OomFoo //// 1.0.13 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')
@@ -147,7 +148,7 @@ test('-ve topLevel()', () => {
 
 
 
-//// OomFoo //// 1.0.13 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -160,8 +161,8 @@ const Class = OOM.OomFoo.Base
 //// Instantiates a typical OomFoo.Base instance for unit testing its methods.
 Class.testInstanceFactory = () =>
     new Class({
-        firstParameter: 100
-      , secondParameter: new Date
+        firstParam: 100
+      , secondParam: new Date
     },{
         /* @TODO hub API */
     })
@@ -197,7 +198,7 @@ test('Successful OomFoo.Base instantiation', () => {
 
 
 
-//// OomFoo //// 1.0.13 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')
@@ -256,4 +257,4 @@ test('-ve foo()', () => {
 
 
 
-//// Made by Oomtility Make 1.0.13 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.0.14 //\\//\\ http://oomtility.loop.coop /////////
