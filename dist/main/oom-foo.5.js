@@ -1,11 +1,11 @@
-//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
+//// OomFoo //// 1.0.14 //// January 2018 //// http://oom-foo.loop.coop/ ///////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
     NAME: {value: 'OomFoo'},
-    VERSION: {value: '1.0.0'},
+    VERSION: {value: '1.0.14'},
     HOMEPAGE: {value: 'http://oom-foo.loop.coop/'},
     REMARKS: {value: 'Initial test of the oom-hub architecture'}
   };

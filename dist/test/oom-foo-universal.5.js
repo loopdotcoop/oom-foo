@@ -1,4 +1,4 @@
-//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
+//// OomFoo //// 1.0.14 //// January 2018 //// http://oom-foo.loop.coop/ ///////
 
 "use strict";
 !function(ROOT) {
@@ -18,7 +18,7 @@
       is('undefined' === typeof OomFoo, 'OomFoo is not global');
       is('function' === typeof Class, 'OomFoo is a function');
       is('OomFoo' === Class.NAME, 'NAME is OomFoo');
-      is('1.0.0' === Class.VERSION, 'VERSION is 1.0.0');
+      is('1.0.14' === Class.VERSION, 'VERSION is 1.0.14');
       is('http://oom-foo.loop.coop/' === Class.HOMEPAGE, 'HOMEPAGE is http://oom-foo.loop.coop/');
     });
     test('Successful OomFoo instantiation', function() {

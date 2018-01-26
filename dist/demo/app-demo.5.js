@@ -1,4 +1,4 @@
-//// OomFoo //// 1.0.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
+//// OomFoo //// 1.0.14 //// January 2018 //// http://oom-foo.loop.coop/ ///////
 
 "use strict";
 !function(ROOT) {
