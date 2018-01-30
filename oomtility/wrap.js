@@ -13,7 +13,7 @@ const CONSTS = {
 }
 
 const NAME     = 'Oomtility Wrap'
-    , VERSION  = '1.0.14'
+    , VERSION  = '1.0.15'
     , HOMEPAGE = 'https://oomtility.loop.coop'
     , HELP =
 `
@@ -42,7 +42,7 @@ Options
 -h  --help      Show this help message
 -v  --version   Show the current ${NAME} version
 
-This script belongs to ${HOMEPAGE}
+This script lives at ${HOMEPAGE}
 `
 
 

@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Alias'
-    , VERSION  = '1.0.14'
+    , VERSION  = '1.0.15'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , HELP =
@@ -16,11 +16,12 @@ Basic Usage
 -----------
 $ cd /path/to/your/oom/repo/
 $ node oomtility/alias.js
-${NAME} ${VERSION} added 8 lines to ~/.bash_profile.
+${NAME} ${VERSION} added 9 lines to ~/.bash_profile.
 After reopening your terminal, the following commands will be available:
 $ oomauto   Generates new classes, demos, docs and tests         (runs auto.js)
 $ oombump   Bumps the current version                            (runs bump.js)
 $ oomdocs   Generates API documentation                          (runs docs.js)
+$ oomhttp   Serves your Oom repo locally over HTTP               (runs http.js)
 $ oominit   Initialises a new oom repo                           (runs init.js)
 $ oommake   Builds the project, from src/ into dist/             (runs make.js)
 $ oompush   Prompts for a commit-message, then pushes            (runs push.js)
@@ -33,7 +34,7 @@ Options
 -r  --remove    Remove the aliases from ~/.bash_profile or ~/.bashrc
 -v  --version   Show the current ${NAME} version
 
-This script belongs to ${HOMEPAGE}
+This script lives at ${HOMEPAGE}
 `
 
 
@@ -91,7 +92,7 @@ else
 //// Check whether the aliases have already been added.
 original = ( fs.readFileSync(path)+'' ).split('\n')
 removed = original.filter( line =>
-    ! /^alias oom(auto|bump|docs|init|make|push|test)="node oomtility\//.test(line)
+    ! /^alias oom(auto|bump|docs|http|init|make|push|test|wrap)="node oomtility\//.test(line)
 )
 diff = original.length - removed.length
 if (diff)
@@ -132,6 +133,7 @@ try {
         `alias oomauto="node oomtility/auto.js" ${comment}`
       , `alias oombump="node oomtility/bump.js" ${comment}`
       , `alias oomdocs="node oomtility/docs.js" ${comment}`
+      , `alias oomhttp="node oomtility/http.js" ${comment}`
       , `alias oominit="node oomtility/init.js" ${comment}`
       , `alias oommake="node oomtility/make.js" ${comment}`
       , `alias oompush="node oomtility/push.js" ${comment}`
@@ -155,11 +157,12 @@ You should change temporarily change the permissions, eg:
     else return console.warn(`${NAME} ${VERSION} cannot write to ${path}:\n`, e)
 }
 return console.log(
-`${NAME} ${VERSION} added 8 lines to ${path}.
+`${NAME} ${VERSION} added 9 lines to ${path}.
 After reopening your terminal, the following commands will be available:
 $ oomauto   Generates new classes, demos, docs and tests         (runs auto.js)
 $ oombump   Bumps the current version                            (runs bump.js)
 $ oomdocs   Generates API documentation                          (runs docs.js)
+$ oomhttp   Serves your Oom repo locally over HTTP               (runs http.js)
 $ oominit   Initialises a new oom repo                           (runs init.js)
 $ oommake   Builds the project, from src/ into dist/             (runs make.js)
 $ oompush   Prompts for a commit-message, then pushes            (runs push.js)

@@ -2,13 +2,13 @@
 
 
 
-//// OomFoo //// 1.0.14 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.15 //// January 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
 const META = {
     NAME:     { value:'OomFoo' }
-  , VERSION:  { value:'1.0.14' } // OOMBUMPABLE
+  , VERSION:  { value:'1.0.15' } // OOMBUMPABLE
   , HOMEPAGE: { value:'http://oom-foo.loop.coop/' }
   , REMARKS:  { value:'Initial test of the oom-hub architecture' }
 }
@@ -233,7 +233,7 @@ TOOLKIT.getNow = TOOLKIT.getNow || ( () => {
 
 
 
-//// OomFoo //// 1.0.14 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.15 //// January 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
@@ -280,7 +280,7 @@ Object.defineProperties(method, META)
 
 
 
-//// OomFoo //// 1.0.14 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.15 //// January 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
@@ -450,7 +450,7 @@ Object.defineProperties(Class, META)
 
 
 
-//// OomFoo //// 1.0.14 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.15 //// January 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
@@ -493,4 +493,4 @@ Object.defineProperties(method, META)
 
 
 
-//// Made by Oomtility Make 1.0.14 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.0.15 //\\//\\ http://oomtility.loop.coop /////////

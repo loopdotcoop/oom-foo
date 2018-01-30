@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Make'
-    , VERSION  = '1.0.14'
+    , VERSION  = '1.0.15'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Made by ${NAME} ${VERSION} //\\\\//\\\\ `
@@ -20,8 +20,13 @@ Installation
 You’ll need Uglify and Traceur installed globally before running make.js:
 $ npm install -g uglify-js; npm install -g traceur
 
+If you get permission errors, run this before:
+$ sudo chmod -R a+w $(npm root -q -g); sudo chmod -R a+w $(npm bin -q -g)
+...and this after:
+$ sudo chmod -R a-w $(npm root -q -g); sudo chmod -R a-w $(npm bin -q -g)
+
 If you get \`require()\` errors, try:
-$ export NODE_PATH=$(npm root --quiet -g)
+$ export NODE_PATH=$(npm root -q -g)
 
 If you haven’t done it already, you should set up the \`oommake\` alias:
 $ node oomtility/alias.js
@@ -58,7 +63,7 @@ Options
 -h  --help      Show this help message
 -v  --version   Show the current ${NAME} version
 
-This script belongs to ${HOMEPAGE}
+This script lives at ${HOMEPAGE}
 `
 
 

@@ -2,7 +2,7 @@
 
 
 
-//// OomFoo //// 1.0.14 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.15 //// January 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -31,4 +31,4 @@ console.log(instance)
 
 
 
-//// Made by Oomtility Make 1.0.14 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.0.15 //\\//\\ http://oomtility.loop.coop /////////

@@ -2,7 +2,7 @@
 
 
 
-//// OomFoo //// 1.0.14 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.15 //// January 2018 //// http://oom-foo.loop.coop/ ///////
 
 //// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
 //// Windows 7:  IE 9, Safari 5.1
@@ -35,7 +35,7 @@ test('Browser test the OomFoo class', () => {
 
 
 
-//// OomFoo //// 1.0.14 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.15 //// January 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')
@@ -62,7 +62,7 @@ test('Browser test the OomFoo.topLevel() method', () => {
 
 
 
-//// OomFoo //// 1.0.14 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.15 //// January 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -89,7 +89,7 @@ test('Browser test the OomFoo.Base class', () => {
 
 
 
-//// OomFoo //// 1.0.14 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.15 //// January 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')
@@ -112,4 +112,4 @@ test('Browser test the OomFoo.Base.foo() method', () => {
 
 
 
-//// Made by Oomtility Make 1.0.14 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.0.15 //\\//\\ http://oomtility.loop.coop /////////

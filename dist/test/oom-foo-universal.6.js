@@ -2,7 +2,7 @@
 
 
 
-//// OomFoo //// 1.0.14 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.15 //// January 2018 //// http://oom-foo.loop.coop/ ///////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -37,7 +37,7 @@ test('The OomFoo class', () => {
     is('undefined' === typeof OomFoo, 'OomFoo is not global')
     is('function' === typeof Class, 'OomFoo is a function')
     is('OomFoo' === Class.NAME, 'NAME is OomFoo')
-    is('1.0.14' === Class.VERSION, 'VERSION is 1.0.14') // OOMBUMPABLE (twice!)
+    is('1.0.15' === Class.VERSION, 'VERSION is 1.0.15') // OOMBUMPABLE (twice!)
     is('http://oom-foo.loop.coop/' === Class.HOMEPAGE
       , 'HOMEPAGE is http://oom-foo.loop.coop/')
 })
@@ -85,7 +85,7 @@ ROOT.throws = ROOT.throws || ( (fn, expect, prefix) => {
 
 
 
-//// OomFoo //// 1.0.14 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.15 //// January 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')
@@ -148,7 +148,7 @@ test('-ve topLevel()', () => {
 
 
 
-//// OomFoo //// 1.0.14 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.15 //// January 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -198,7 +198,7 @@ test('Successful OomFoo.Base instantiation', () => {
 
 
 
-//// OomFoo //// 1.0.14 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.0.15 //// January 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')
@@ -257,4 +257,4 @@ test('-ve foo()', () => {
 
 
 
-//// Made by Oomtility Make 1.0.14 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.0.15 //\\//\\ http://oomtility.loop.coop /////////

@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Bump'
-    , VERSION  = '1.0.14'
+    , VERSION  = '1.0.15'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , HELP =
@@ -57,7 +57,7 @@ Options
 -s  --set       Set the version to some arbitrary value
 -v  --version   Show the current ${NAME} version
 
-This script belongs to ${HOMEPAGE}
+This script lives at ${HOMEPAGE}
 `
 
 
