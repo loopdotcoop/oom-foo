@@ -3,28 +3,28 @@
 #### Initial test of the oom-hub architecture
 
 + __Last update:__  2018/01/30 <!-- OOMBUMPABLE -->
-+ __Version:__      1.0.15 <!-- OOMBUMPABLE -->
++ __Version:__      1.1.0 <!-- OOMBUMPABLE -->
 
 [Homepage](http://oom-foo.loop.coop/) &nbsp;
 [Repo](https://github.com/loopdotcoop/oom-foo) &nbsp;
 [NPM](https://www.npmjs.com/package/oom-foo) &nbsp;
 [Changelog](http://oom-foo.loop.coop/CHANGELOG) &nbsp;
 [Test](http://oom-foo.loop.coop/support/test.html) &nbsp;
-[Demo](http://oom-foo.loop.coop/support/demo.html)
+[Demo](http://oom-foo.loop.coop/support/demo.html)  
 
 Oom &nbsp;
-= &nbsp;
+🔅 &nbsp;
 Interactive &nbsp;
-< &nbsp;
+🌟 &nbsp;
 3d &nbsp;
-<M &nbsp;
+🍍 &nbsp;
 Sequencer &nbsp;
-( &nbsp;
+✨ &nbsp;
 Instrument &nbsp;
-<� &nbsp;
+🎉 &nbsp;
 Seqin &nbsp;
-=8 &nbsp;
-Web Audio &nbsp;
+🔸 &nbsp;
+Web Audio  
 
 
 
@@ -96,7 +96,3 @@ Designed, developed and authored by Rich Plastow for Loop.Coop.
 + __Scaling:__      Lanczos
 + __App Name:__     OomFoo
 + __Post:__         Six PNGs thru tinypng.com, and replace safari-pinned-tab.svg
-
-
-
-

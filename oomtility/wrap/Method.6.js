@@ -3,8 +3,8 @@ ${{topline}}
 !function (ROOT) { 'use strict'
 
 const META = {
-    NAME:     { value:'OomFoo.topLevel' }
-  , REMARKS:  { value:'@TODO' }
+    NAME:     { value:'${{methodname}}' }
+  , REMARKS:  { value:'${{remarks}}' }
 }
 
 
@@ -13,24 +13,24 @@ const OOM     = ROOT.OOM    = ROOT.OOM    || {}
 const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
 
 
-//// Define the `OomFoo.topLevel()` method.
-const method = OOM.OomFoo.prototype.topLevel = function (abc) {
-    let err, ME = `OomFoo.topLevel(): ` // error prefix
-    if (! (this instanceof OOM.OomFoo)) throw new Error(ME
-      + `Must not be called as OomFoo.prototype.topLevel()`)
+//// Define the `${{methodname}}()` method.
+const method = OOM.${{classname}}.prototype.${{methodshort}} = function (abc) {
+    let err, ME = `${{methodname}}(): ` // error prefix
+    if (! (this instanceof OOM.${{classname}})) throw new Error(ME
+      + `Must not be called as ${{classname}}.prototype.${{methodshort}}()`)
     if ( err = TOOLKIT.validateType({ type:'string' }, abc) )
         throw new TypeError(ME+`abc ${err}`)
 
     this.xyz++
     return abc + ' ok!'
 
-}//OomFoo.topLevel()
+}//${{methodname}}()
 
-//// A tally of the number of times `topLevel()` is called.
-OOM.OomFoo.prototype.xyz = 0
+//// A tally of the number of times `${{methodshort}}()` is called.
+OOM.${{classname}}.prototype.xyz = 0
 
 
-//// Add static constants to the `topLevel()` method.
+//// Add static constants to the `${{methodshort}}()` method.
 Object.defineProperties(method, META)
 
 

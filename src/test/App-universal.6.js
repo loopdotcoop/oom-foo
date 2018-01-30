@@ -1,4 +1,4 @@
-//// OomFoo //// 1.0.15 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -33,7 +33,7 @@ test('The OomFoo class', () => {
     is('undefined' === typeof OomFoo, 'OomFoo is not global')
     is('function' === typeof Class, 'OomFoo is a function')
     is('OomFoo' === Class.NAME, 'NAME is OomFoo')
-    is('1.0.15' === Class.VERSION, 'VERSION is 1.0.15') // OOMBUMPABLE (twice!)
+    is('1.1.0' === Class.VERSION, 'VERSION is 1.1.0') // OOMBUMPABLE (twice!)
     is('http://oom-foo.loop.coop/' === Class.HOMEPAGE
       , 'HOMEPAGE is http://oom-foo.loop.coop/')
 })

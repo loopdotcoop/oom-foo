@@ -1,2 +1,19 @@
 # Changelog
 
+1.0.0 After oominit and oommake
+1.0.1 With oomtility/wrap.js
+1.0.2 Updated jQuery and the Traceur Runtime
+1.0.3 With fonts and icons
+1.0.4 Better icon
+1.0.5 Even better icon
+1.0.6 ctrl-alt-0 to ctrl-alt-3 changes ecmaswitch
+1.0.7 With oomtility/bump.js
+1.0.8 oomtility/init.js starts projects at 1.0.0 and prompts for colour
+1.0.9 oomtility/test.js in line with other Oomtilities
+1.0.10 Tidying and fixing oomtility/make.js
+1.0.11 oomtility/init.js shows a result after a successful run
+1.0.12 Improved App.6.js and its tests
+1.0.13 oomtility/make.js generates methods, eg $ oomauto Base.foo topLevel Base
+1.0.14 oomtility/wrap.js updates oomtility/wrapped.js with oomtility/wrap/
+1.0.15 With oomtility/http.js, which runs a beefy server and dev environment
+1.1.0 All oomtility/wrap/ files in place

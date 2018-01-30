@@ -1,4 +1,4 @@
-//// OomFoo //// 1.0.15 //// January 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')

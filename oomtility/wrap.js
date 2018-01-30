@@ -1,19 +1,36 @@
 !function () { 'use strict'
 
+//// YOU MAY NEED TO ADD MORE EXTENSIONS IN HERE:
+const BINARY_EXTS = [ // case-insensitive
+    'woff2'
+  , 'png'
+  , 'ico'
+]
+const rxBinaryExts = new RegExp( '\\.' + BINARY_EXTS.join('$|\\.') + '$', 'i')
+
 //// YOU MAY NEED TO ADD MORE CONST NAMES IN HERE:
 const CONSTS = {
-    isApp:      0
-  , isTop:      0
-  , classname:  0
-  , methodname: 0
-  , version:    0
-  , homepage:   0
-  , topline:    0
-  , remarks:    0
+    isApp:       0
+  , isTop:       0
+  , title:       0
+  , projectLC:   0
+  , classname:   0
+  , methodname:  0
+  , methodshort: 0
+  , remarks:     0
+  , version:     0
+  , date:        0
+  , repo:        0
+  , npm:         0
+  , domain:      0
+  , homepage:    0
+  , topline:     0
+  , description: 0
+  , color:       0
 }
 
 const NAME     = 'Oomtility Wrap'
-    , VERSION  = '1.0.15'
+    , VERSION  = '1.1.0'
     , HOMEPAGE = 'https://oomtility.loop.coop'
     , HELP =
 `
@@ -77,7 +94,8 @@ while ( opt = process.argv.shift() ) {
 }
 
 //// If no paths were specified, wrap the contents of ‘oomtility/wrap/’.
-paths = fs.readdirSync('oomtility/wrap/').map( p => 'oomtility/wrap/' + p)
+if (0 === paths.length)
+    paths = fs.readdirSync('oomtility/wrap/').map( p => 'oomtility/wrap/' + p)
 
 
 
@@ -87,6 +105,7 @@ paths = fs.readdirSync('oomtility/wrap/').map( p => 'oomtility/wrap/' + p)
 
 //// Convert each file in `paths`.
 paths.forEach( path => {
+    if ( '.DS_Store' === path.slice(-9) ) return
     const wrapped = []
     const expectedConsts = Object.assign({}, CONSTS)
     let inTemplateSection = false
@@ -141,9 +160,7 @@ paths.forEach( path => {
                     expectedConsts[c]++
 
         //// Escape backslashes, single-quotes, and unicode-escape non-ascii.
-        line = line.replace(/\\/g, '\\\\')
-        line = line.replace(/'/g, "\\'")
-        line = encodeUTF16(line, '•') // avoid edge cases by adding a non-ascii
+        line = encodeUTF16(line, '•', path, num) // non-ascii ‘•’ avoids edge cases
 
         //// Prevent double-templates markers from being split over two lines.
         for (let i=0,tmpt; tmpt=doubleTemplates[i]; i++) {
@@ -154,7 +171,7 @@ paths.forEach( path => {
 
         //// Deal with a line which does not need to be split.
         if (80 >= line.length) {
-            line = line.replace(/•/g, 'u') // correct our edge-case avoider
+            line = line.replace(/•/g, '\\u') // correct our edge-case avoider
             line = line.replace(/([°-¹])/g, (m,p1) =>
                 `'+(${doubleTemplateLut[p1]})+'` ) // reinstate double-templates
             if ( "'+(" === line.slice(0,3) ) // remove useless code
@@ -174,7 +191,7 @@ paths.forEach( path => {
             if (0 >= len)
                 throw Error(`Too many backslashes in ${path}:${num}\n`)
             sub = line.substr(pos, len)
-            sub = sub.replace(/•/g, 'u') // correct our edge-case avoider
+            sub = sub.replace(/•/g, '\\u') // correct our edge-case avoider
             sub = sub.replace(/([°-¹])/g, (m,p1) =>
                 `'+(${doubleTemplateLut[p1]})+'` ) // reinstate double-templates
             wrapped.push(`  + '${sub}'`)
@@ -227,62 +244,126 @@ else
 
 //// UTILITY
 
-function encodeUTF16 (str, u='u') {
+function encodeUTF16 (str, u='\\u', path, num) {
     let pos=0, out='', code, hex
-    str = utf8to16(str)
+
+    //// Convert from UTF-8 to UTF-16, unless it’s a binary file.
+    if (! rxBinaryExts.test(path) )
+        str = utf8to16(str, path, num)
+
     for (; pos<str.length; pos++) {
         code = str.charCodeAt(pos)
-        if (31 < code && 127 > code) {
+        if (0x27 === code) { // single quote
+            out += "\\'"
+        } else if (0x5c === code) { // backslash
+            out += '\\\\'
+        } else if (31 < code && 127 > code) { // printable ascii
             out += str[pos]
+        } else if (0xd === code) { // carriage return
+            out += '\\r'
+        } else if (0x9 === code) { // horizontal tab
+            out += '\\t'
         } else {
             hex = code.toString(16)
-            out += '\\' + u + ( '0'.repeat(4-hex.length) ) + hex
+            out += u + ( '0'.repeat(4-hex.length) ) + hex
         }
     }
-    return out;
+    return out
 }
 
-//// from https://gist.github.com/weishuaiwang/4221687
-function utf8to16(str) {
-	var out, i, len, c;
-	var char2, char3;
-	out = "";
-	len = str.length;
-	i = 0;
+
+//// based on https://gist.github.com/weishuaiwang/4221687
+function utf8to16(str, path, num) {
+	let c1, c2, c3, c4, out = '', len = str.length, i = 0
 	while (i < len) {
-		c = str.charCodeAt(i++);
-		switch (c >> 4) {
+		c1 = str.charCodeAt(i++)
+		switch (c1 >> 4) {
 			case 0:
 			case 1:
 			case 2:
 			case 3:
-			case 4:
+            case 4:
 			case 5:
 			case 6:
 			case 7:
-				// 0xxxxxxx
-				out += str.charAt(i - 1);
-				break;
+				// c1 is 0 to 01111111, output as-is
+				out += str.charAt(i - 1)
+				break
+            case 8:
+			case 9:
+			case 10:
+			case 11:
+                // c1 is 10000000 to 10111111
+                throw Error(
+                    `code ${c1}, which is 128 to 191, in ${path}:${num}\n`
+                  + `    ...may be a binary file, or a garbled UTF-8 file.\n`
+                )
 			case 12:
 			case 13:
-				// 110x xxxx 10xx xxxx
-				char2 = str.charCodeAt(i++);
-				out += String.fromCharCode(((c & 0x1F) << 6) | (char2 & 0x3F));
-				break;
+                // c1 is 11000000 to 11011111
+                // 11000000 10000000 -> 00000000 10000000 (U+0080)
+                // 11011111 11111111 -> 00000011 11111111 (U+DFFF)
+				c2 = str.charCodeAt(i++)
+				out += String.fromCharCode(
+                    ( (c1 & 0x0F) << 6 )
+                  |   (c2 & 0x3F)
+                )
+				break
 			case 14:
-				// 1110 xxxx10xx xxxx10xx xxxx
-				char2 = str.charCodeAt(i++);
-				char3 = str.charCodeAt(i++);
-				out += String.fromCharCode(((c & 0x0F) << 12) | ((char2 & 0x3F) << 6) | ((char3 & 0x3F) << 0));
-				break;
+                // c1 is 11100000 to 11101111
+                // 11101110 10000000 10000000 -> 11100000 00000000 (U+E000)
+                // 11011111 11111111 11111111 -> 10111111 10111111 (U+FFFF)
+				c2 = str.charCodeAt(i++)
+				c3 = str.charCodeAt(i++)
+				out += String.fromCharCode(
+                    ( (c1 & 0x0F) << 12 )
+                  | ( (c2 & 0x3F) <<  6 )
+                  |   (c3 & 0x3F)
+                )
+				break
+            case 15:
+                // c1 is 11110000 to 11111111 (emojis etc)
+                // 11110000 10010000 10000000 10000000 -> D800 DC00 (U+100000)
+                //     which is 11011000 00000000 11011100 00000000
+                // 11110100 10001111 10111111 10111111 -> DBFF DFFF (U+10ffff)
+                //     which is 11011011 11111111 1101111 111111111
+				c2 = str.charCodeAt(i++);
+                c3 = str.charCodeAt(i++);
+                c4 = str.charCodeAt(i++);
+                out += utf32to16(
+                    ( (c1 & 0x0F) << 18 )
+                  | ( (c2 & 0x3F) << 12 )
+                  | ( (c3 & 0x3F) <<  6 )
+                  |   (c4 & 0x3F)
+                )
+				break
 		}
 	}
 	return out;
 }
 
+
+//// based on https://stackoverflow.com/a/37674792
+function utf32to16 (x) {
+    return ''
+      + String.fromCharCode(
+            (
+                ( (x - 0x10000) >> 0x0A )
+              | 0
+            ) + 0xD800
+        ).toString(16)
+      + String.fromCharCode(
+            (
+                (x - 0x10000) & 0x3FF
+            ) + 0xDC00
+        ).toString(16)
+}
+
+
+////
 function getLineLengthReduction (line, pos, len) {
-    for (let i=1; i<6; i++) // find an encoding made by `encodeUTF16()`
-        if ( /\\•[0-9a-f]{4}/.test( line.substr(pos+len-i,6) ) )
+    for (let i=1; i<5; i++) // find an encoding made by `encodeUTF16()`
+        if ( /•[0-9a-f]{4}/.test( line.substr(pos+len-i,5) ) )
             return i
     if ( '\\' === line[pos+len-1] ) // find a backslash
         return 1
@@ -304,9 +385,9 @@ function updateWrappedJs (wrappedPath, out) {
     let start = 0, end = 0
       , orig = (fs.readFileSync(wrappedPath, 'binary')+'').split('\n')
     for (; start<orig.length; start++)
-        if (0 < orig[start].indexOf('BEGIN DYNAMIC SECTION //////////') ) break
+        if (0 < orig[start].indexOf('BEGIN wrap.js OUTPUT //////////') ) break
     for (; end<orig.length; end++)
-        if (0 < orig[end].indexOf('END DYNAMIC SECTION ////////////')   ) break
+        if (0 < orig[end].indexOf('END wrap.js OUTPUT ////////////')   ) break
     if ( start === orig.length || end === orig.length)
         return console.warn(`Couldn’t find dynamic section in ‘${wrappedPath}’`)
     out = orig.slice(0, start+1).concat([

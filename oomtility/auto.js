@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Auto'
-    , VERSION  = '1.0.15'
+    , VERSION  = '1.1.0'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Initialised by ${NAME} ${VERSION}\n`
@@ -321,40 +321,39 @@ function generateDemoPage (name) {
 
 ////
 function generateMethod (name) {
-    return wrapped.getMethod6Js({
-        methodname: `${projectTC}.${name}`
-      , topline
-      , remarks: '@TODO'
-    })
+    return wrapped.getMethod6Js( generateConfig(name) )
 }
 
 
 ////
 function generateMethodUniversal (name) {
-    return wrapped.getMethodUniversal6Js({
-        methodname: `${projectTC}.${name}`
-      , topline
-    })
+    return wrapped.getMethodUniversal6Js( generateConfig(name) )
 }
 
 
 ////
 function generateMethodBrowser (name) {
-    return wrapped.getMethodBrowser6Js({
-        methodname: `${projectTC}.${name}`
-      , topline
-    })
+    return wrapped.getMethodBrowser6Js( generateConfig(name) )
 }
 
 
 ////
 function generateMethodNonbrowser (name) {
-    return wrapped.getMethodNonbrowser6Js({
-        methodname: `${projectTC}.${name}`
-      , topline
-    })
+    return wrapped.getMethodNonbrowser6Js( generateConfig(name) )
 }
 
+
+////
+function generateConfig (name) {
+    const parts =  name.split('.')
+    return {
+        classname: `${projectTC}${1<parts.length?'.':''}${parts.slice(0,-1).join('.')}`
+      , methodname: `${projectTC}.${name}`
+      , methodshort: parts.pop()
+      , topline
+      , remarks: '@TODO'
+    }
+}
 
 
 
