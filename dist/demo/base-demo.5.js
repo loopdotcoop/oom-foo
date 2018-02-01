@@ -1,4 +1,4 @@
-//// OomFoo //// 1.1.2 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.3 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 "use strict";
 !function(ROOT) {
@@ -6,15 +6,12 @@
   if ('function' !== typeof jQuery)
     throw Error('jQuery not found');
   jQuery(function($) {
-    var instance = new ROOT.OOM.OomFoo.Base({
-      firstParameter: 100,
-      secondParameter: new Date
-    });
-    console.log(instance);
+    Vue.component('oom-base', {template: '<span>A component based on OomFoo.Base</span>'});
+    new Vue({el: '#demo'});
   });
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
 
 
 
 
-//// Made by Oomtility Make 1.1.2 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.1.3 //\\//\\ http://oomtility.loop.coop //////////

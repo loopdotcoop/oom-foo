@@ -13,7 +13,7 @@ const rxBinaryExt = module.exports.rxBinaryExt =
     new RegExp( '\\.' + BINARY_EXTS.join('$|\\.') + '$', 'i')
 
 const NAME     = 'Oomtility Wrapped'
-    , VERSION  = '1.1.2'
+    , VERSION  = '1.1.3'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
 
@@ -328,45 +328,12 @@ module.exports.writeAppNonbrowser6Js = function (configOrig, path) {
 
 
 
-/*
-module.exports.writeDemo6Js = function (configOrig, path) {
-    let {
-        classname // 'FooBar' if `isApp`, or 'FooBar.Base.Sub' if not
-      , topline
-    } = config
 
-    return `${topline}
-
-!function (ROOT) { 'use strict'
-if ('function' !== typeof jQuery) throw Error('jQuery not found')
-jQuery( function($) {
-
-
-
-
-//// Generate an instance of ${classname} with default configuration.
-const instance = new ROOT.OOM.${classname}({
-    firstParameter: 100
-  , secondParameter: new Date
+module.exports.writeAppDemo6Js = function (configOrig, path) {
+const config = Object.assign({}, configOrig, {
+    nameLC: configOrig.projectTC.toLowerCase()
 })
-console.log(instance)
-
-
-//// Run the demo.
-//@TODO
-
-
-
-
-})//jQuery()
-}( 'object' === typeof global ? global : this ) // \`window\` in a browser
-` }
-*/
-
-
-
-module.exports.writeAppDemo6Js = function (config, path) {
-    module.exports.writeDemo6Js(config, path)
+module.exports.writeDemo6Js(config, path)
 }
 
 
@@ -375,8 +342,7 @@ module.exports.writeAppDemo6Js = function (config, path) {
 module.exports.writeClassDemoHtml = function (configOrig, path) {
 const config = Object.assign({}, configOrig, {
     title: `${configOrig.classname} Demo`
-  , description: `Usage examples for ‘${configOrig.classname}’.`
-  , nameLC: configOrig.name.toLowerCase()
+  , description: `Usage example for ‘${configOrig.classname}’.`
 })
 const {
     classname
@@ -384,6 +350,7 @@ const {
   , title
   , description
   , nameLC
+  , tagname
 } = config
 const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
 const flag = 'a'
@@ -392,7 +359,10 @@ fs.writeFileSync(path, ''
   + `
 
 <!-- Displays the demo -->
-<pre id="dump" style="background:#cde; width:48em; line-height:1.15"></pre>
+<div id="demo">
+    <${tagname}>Loading...</${tagname}>
+</div>
+
 
 <!-- Load the proper format scripts, according to the '#ecmaswitch' menu -->
 <script src="asset/js/ecmaswitch.js"></script>
@@ -415,6 +385,8 @@ fs.writeFileSync(path, ''
 module.exports.writeDemoAppHtml = function (configOrig, path) {
     const config = Object.assign({}, configOrig, {
         name: 'App'
+      , nameLC: 'app'
+      , tagname: 'oom-' + configOrig.projectTC.toLowerCase()
     })
     return module.exports.writeClassDemoHtml(config, path)
 }
@@ -643,6 +615,10 @@ fs.writeFileSync(path, ''
 
 <!-- BEGIN DYNAMIC SECTION /////////////////////////////////////////////////////
   //// This dynamic section is kept up to date by ‘oomtility/make.js’ ////// -->
+
+  <a href="demo-app.html">
+  <b>OomFoo Demo</b>
+  </a><br>
 
 <!-- END DYNAMIC SECTION ///////////////////////////////////////////////// -->
 
@@ -1275,6 +1251,7 @@ TOOLKIT.toPropsObj = TOOLKIT.toPropsObj || ( src => {
 module.exports.writeDemo6Js = function (config, path) {
 const {
     classname
+  , nameLC
   , topline
 } = config
 const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
@@ -1290,11 +1267,22 @@ fs.writeFileSync(path, ''
   + '\n'
   + '\n'
   + '//// Generate an instance of ${classname} with default configuration.\n'
-  + 'const instance = new ROOT.OOM.'+(classname)+'({\n'
-  + '    firstParameter: 100\n'
-  + '  , secondParameter: new Date\n'
+  + '// const instance = new ROOT.OOM.'+(classname)+'({\n'
+  + '//     firstProp: 100\n'
+  + '//   , secondProp: new Date\n'
+  + '// })\n'
+  + '// console.log(instance)\n'
+  + '\n'
+  + '\n'
+  + '//// Register the <oom-'+(nameLC.split('.').pop())+'>, a Vue component version of '+(classname)+'.\n'
+  + 'Vue.component(\'oom-'+(nameLC.split("-").pop())+'\', {\n'
+  + '    template: \'<span>A component based on '+(classname)+'</span>\'\n'
   + '})\n'
-  + 'console.log(instance)\n'
+  + '\n'
+  + '//// Create a root instance.\n'
+  + 'new Vue({\n'
+  + '    el: \'#demo\'\n'
+  + '})\n'
   + '\n'
   + '\n'
   + '//// Run the demo.\n'
@@ -18567,14 +18555,14 @@ const {
 const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
 const flag = 'a'
 fs.writeFileSync(path, ''
-  + '//// ECMASwitch //// 1.1.1 //// January 2018 //// ecmaswitch.loop.coop/ ///////\n'
+  + '//// ECMASwitch //// 1.1.3 //// January 2018 //// ecmaswitch.loop.coop/ ///////\n'
   + '\n'
   + '!function (ROOT) { \'use strict\'\n'
   + '\n'
   + '//// Create the namespace-object if it does not already exist and add constants.\n'
   + 'var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}\n'
   + 'ECMASwitch.NAME     = \'ECMASwitch\'\n'
-  + 'ECMASwitch.VERSION  = \'1.1.1\'\n'
+  + 'ECMASwitch.VERSION  = \'1.1.3\'\n'
   + 'ECMASwitch.HOMEPAGE = \'http://ecmaswitch.loop.coop/\'\n'
   + '\n'
   + '//// Polyfill `document` for non-browser contexts.\n'
@@ -18630,6 +18618,7 @@ fs.writeFileSync(path, ''
   + '    for (var i=0; i<names.length; i++) if (names[i][f]) s.push( names[i][f] )\n'
   + '    s.unshift(path + \'support/asset/js/polyfill.min.js\') //@TODO only load for'
   + ' legacy browsers\n'
+  + '    s.unshift(path + \'support/asset/js/vue-2.5.13.min.js\') // load second\n'
   + '    s.unshift(path + \'support/asset/js/jquery-3.3.1.slim.min.js\') // load firs'
   + 't\n'
   + '    d.write(B + s.join(E + B) + E)\n'
@@ -20394,6 +20383,19 @@ fs.writeFileSync(path, ''
   + '    height: auto;\n'
   + '    margin-left: auto;\n'
   + '    margin-right: auto;\n'
+  + '}\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '/* DEMO */\n'
+  + '\n'
+  + '#demo {\n'
+  + '    padding: 0.5em;\n'
+  + '    font-size: 1.5em;\n'
+  + '    line-height: 1.15;\n'
+  + '    background: #cde;\n'
+  + '    border-radius: 4px;\n'
   + '}\n'
   + ''
   , { encoding, flag } )

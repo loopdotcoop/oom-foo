@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Make'
-    , VERSION  = '1.1.2'
+    , VERSION  = '1.1.3'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Made by ${NAME} ${VERSION} //\\\\//\\\\ `
@@ -187,12 +187,13 @@ demos.forEach( name => {
     es6.push('//\\\\//\\\\ src/demo/' + name + '\n\n\n\n'
         + fs.readFileSync('src/demo/' + name)
     )
-    names.push( name.slice(0,-5).toLowerCase() ) // 'Ok-demo.6.js' -> 'ok-demo'
+    names.push( // 'FooBar.OkYep-demo.6.js' -> 'foo-bar.ok-yep-demo'
+        name.slice(0,-5).replace(/\./g,'-').toLowerCase()
+    )
 })
 es6.forEach( (orig, i) => {
     writeFileSyncAndTally( `dist/demo/${names[i]}.6.js`, orig + BYLINE )
     })
-
 
 //// 5. Transpile ES6 files in ‘dist/demo/’ to ES5
 es6.forEach( (orig, i) => {

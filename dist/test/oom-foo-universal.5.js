@@ -1,4 +1,4 @@
-//// OomFoo //// 1.1.2 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.3 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 "use strict";
 !function(ROOT) {
@@ -18,8 +18,8 @@
       is('undefined' === typeof OomFoo, 'OomFoo is not global');
       is('function' === typeof Class, 'OomFoo is a function');
       is('OomFoo' === Class.NAME, 'NAME is OomFoo');
-      is('OomFoo' === Class.name, 'name is OomFoo: "' + Class.name + '"');
-      is('1.1.2' === Class.VERSION, 'VERSION is 1.1.2');
+      is('OomFoo' === Class.name, 'name is OomFoo');
+      is('1.1.3' === Class.VERSION, 'VERSION is 1.1.3');
       is('http://oom-foo.loop.coop/' === Class.HOMEPAGE, 'HOMEPAGE is http://oom-foo.loop.coop/');
     });
     test('+ve OomFoo instance', function() {
@@ -137,4 +137,4 @@
 
 
 
-//// Made by Oomtility Make 1.1.2 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.1.3 //\\//\\ http://oomtility.loop.coop //////////

@@ -55,6 +55,7 @@ ECMASwitch.load = function (path, names) {
     names = names || []
     for (var i=0; i<names.length; i++) if (names[i][f]) s.push( names[i][f] )
     s.unshift(path + 'support/asset/js/polyfill.min.js') //@TODO only load for legacy browsers
+    s.unshift(path + 'support/asset/js/vue-2.5.13.min.js') // load second
     s.unshift(path + 'support/asset/js/jquery-3.3.1.slim.min.js') // load first
     d.write(B + s.join(E + B) + E)
 }

@@ -7,6 +7,7 @@ const CONSTS = {
   , title:       0
   , projectLC:   0
   , classname:   0
+  , nameLC:      0
   , methodname:  0
   , methodshort: 0
   , remarks:     0
@@ -22,7 +23,7 @@ const CONSTS = {
 }
 
 const NAME     = 'Oomtility Wrap'
-    , VERSION  = '1.1.2'
+    , VERSION  = '1.1.3'
     , HOMEPAGE = 'https://oomtility.loop.coop'
     , HELP =
 `

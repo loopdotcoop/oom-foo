@@ -44,3 +44,16 @@ body {
     margin-left: auto;
     margin-right: auto;
 }
+
+
+
+
+/* DEMO */
+
+#demo {
+    padding: 0.5em;
+    font-size: 1.5em;
+    line-height: 1.15;
+    background: #cde;
+    border-radius: 4px;
+}
