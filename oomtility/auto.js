@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Auto'
-    , VERSION  = '1.1.1'
+    , VERSION  = '1.1.2'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Initialised by ${NAME} ${VERSION}\n`
@@ -12,7 +12,8 @@ ${NAME} ${VERSION}
 ${'='.repeat( (NAME+VERSION).length+1 )}
 
 This Node.js script initialises source, test and demo files for new classes and
-and methods. It can also remove these files. @TODO docs
+and methods. It can also remove these files. It also updates the ‘dynamic’
+sections of various ‘support/’ files. @TODO docs
 
 Installation
 ------------
@@ -28,8 +29,8 @@ $ oomauto Base.Sub.foo topLevel   # Generate files for two new methods
 $ oomauto -r Another Base.Sub     # Remove two classes’s files (+ methods)
 $ oomauto --remove Base.Sub.foo   # Remove a method from a class
 
-Generated Or Removed Files
---------------------------
+Generate Or Remove Files
+------------------------
 1.  src/main/Base.Sub.6.js                  Source file for Base.Sub class
 2.  src/test/Base.Sub-universal.6.js        Basic unit tests you’ll add to
 3.  src/test/Base.Sub-browser.6.js          As above, for browsers only
@@ -40,6 +41,14 @@ Generated Or Removed Files
 8.  src/test/Base.Sub.foo-universal.6.js    Basic unit tests you’ll add to
 9.  src/test/Base.Sub.foo-browser.6.js      As above, for browsers only
 10. src/test/Base.Sub.foo-nonbrowser.6.js   As above, for Node.js only
+
+Edit Files
+----------
+1. support/demo.html                       Link to each usage example
+2. support/asset/js/ecmaswitch.js          \`var classFiles = '...'\` updated
+3. support/test.html                       ‘Development ES6’ links
+X. src/main/README.md                      Documentation for each class @TODO move to docs.js
+X. support/docs.html                       Documentation for each class @TODO move to docs.js
 
 Options
 -------
@@ -97,8 +106,12 @@ if ( projectTC.toLowerCase() != projectNH) return console.warn(
 const projectRepo = 'https://github.com/loopdotcoop/' + projectLC
 const projectNPM  = 'https://www.npmjs.com/package/' + projectLC
 
+//// Simplifies moving ‘App.6.js’ to the start of concatenation.
+Array.prototype.move = function(from, to) { // stackoverflow.com/a/7180095
+    this.splice(to, 0, this.splice(from, 1)[0]) }
+
 //// Declare variables.
-let opt, remove, classes = [], methods = []
+let opt, remove, classes = [], methods = [], mains, tests, pos
 
 //// Deal with command-line options.
 while ( opt = process.argv.shift() ) {
@@ -237,6 +250,27 @@ methods.forEach( name => { generateOrRemove(
 
 //// 3. support/docs.html                       Documentation for each class
 // @todo
+
+
+
+
+//// EDIT FILES
+
+//// 1. support/demo.html                       Link to each usage example
+wrapped.updateDemoFile('support/demo.html', 'support')
+
+
+//// 2. support/asset/js/ecmaswitch.js          `var classFiles = '...'` updated
+mains = fs.readdirSync('src/main')
+if ( -1 === (pos = mains.indexOf('App.6.js')) )
+    return console.warn('No ‘src/main/App.6.js’')
+mains.move(pos, 0) // ‘src/main/App.6.js’ must go first (`move()` defined above)
+wrapped.updateECMASwitch('support/asset/js/ecmaswitch.js', mains, projectLC)
+
+
+//// 3. support/test.html                       ‘Development ES6’ links
+tests = fs.readdirSync('src/test')
+wrapped.updateTestFile('support/test.html', tests) // `tests` from previous step
 
 
 

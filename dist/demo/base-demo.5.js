@@ -1,4 +1,4 @@
-//// OomFoo //// 1.1.1 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.2 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 "use strict";
 !function(ROOT) {
@@ -7,8 +7,8 @@
     throw Error('jQuery not found');
   jQuery(function($) {
     var instance = new ROOT.OOM.OomFoo.Base({
-      firstParam: 100,
-      secondParam: new Date
+      firstParameter: 100,
+      secondParameter: new Date
     });
     console.log(instance);
   });
@@ -17,4 +17,4 @@
 
 
 
-//// Made by Oomtility Make 1.1.1 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.1.2 //\\//\\ http://oomtility.loop.coop //////////

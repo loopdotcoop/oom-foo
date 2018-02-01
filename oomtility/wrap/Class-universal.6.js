@@ -22,8 +22,8 @@ const Class = OOM.${{classname}}
 //// Instantiates a typical ${{classname}} instance for unit testing its methods.
 Class.testInstanceFactory = () =>
     new Class({
-        firstParam: 100
-      , secondParam: new Date
+        firstProp: 100
+      , secondProp: new Date
     },{
         /* @TODO hub API */
     })
@@ -31,7 +31,7 @@ Class.testInstanceFactory = () =>
 
 
 
-test('The ${{classname}} class', () => {
+test('+ve ${{classname}} class', () => {
     is('object' === typeof OOM, 'The OOM namespace object exists')
 ${{{
     isApp ? `
@@ -39,6 +39,7 @@ ${{{
 }}}
     is('function' === typeof Class, '${{classname}} is a function')
     is('${{classname}}' === Class.NAME, 'NAME is ${{classname}}')
+    is('${{classname.split('.').pop()}}' === Class.name, 'name is ${{classname.split('.').pop()}}')
 ${{{
     isApp ? `
     is('${version}' === Class.VERSION, 'VERSION is ${version}') // OOMBUMPABLE (twice!)
@@ -50,9 +51,10 @@ ${{{
 
 
 
-test('Successful ${{classname}} instantiation', () => {
+test('+ve ${{classname}} instance', () => {
     const instance = Class.testInstanceFactory()
     is(instance instanceof Class, 'Is an instance of ${{classname}}')
+    is(Class === instance.constructor, '`constructor` is ${{classname}}')
     is('object' === typeof instance.hub, '`hub` property is an object')
 })
 

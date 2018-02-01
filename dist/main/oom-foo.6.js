@@ -2,15 +2,24 @@
 
 
 
-//// OomFoo //// 1.1.1 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.2 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
 const META = {
-    NAME:     { value:'OomFoo' }
-  , VERSION:  { value:'1.1.1' } // OOMBUMPABLE
-  , HOMEPAGE: { value:'http://oom-foo.loop.coop/' }
-  , REMARKS:  { value:'Initial test of the oom-hub architecture' }
+    NAME:     'OomFoo'
+  , VERSION:  '1.1.2' // OOMBUMPABLE
+  , HOMEPAGE: 'http://oom-foo.loop.coop/'
+  , REMARKS:  'Initial test of the oom-hub architecture'
+}
+
+const PROPS = {
+    propA: Number // or set to `null` to accept any type
+  , propB: [ String, Number ] // multiple possible types
+  , propC: { type:String, required:true } // a required string
+  , propD: { type:Number, default:100 } // a number with default value
+  , propE: { type:Object, default:function(){return[1]} } // must use factory fn
+  , propF: { validator:function(v){return v>10} } // custom validator
 }
 
 
@@ -20,7 +29,7 @@ const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
 
 
 //// Define `OomFoo`, this module’s main entry point.
-const Class = OOM.OomFoo = class {
+const Class = OOM.OomFoo = class OomFoo {
 
     constructor (config={}, hub=OOM.hub) {
 
@@ -38,7 +47,6 @@ const Class = OOM.OomFoo = class {
         //// Record config’s values as immutable properties.
         this.validConstructor.forEach( valid => {
             const value = config[valid.name]
-            if (null == value) throw Error('I am unreachable?') //@TODO remove
             Object.defineProperty(this, valid.name, { value })
         })
 
@@ -106,36 +114,34 @@ const Class = OOM.OomFoo = class {
     //// Can also be used to auto-generate unit tests and auto-build GUIs.
     get validConstructor () { return [
         {
-            title:   'First Param'
-          , name:    'firstParam' // in Vue, a key-name in `props`
+            title:   'First Prop'
+          , name:    'firstProp' // in Vue, a key-name in `props`
           , alias:   'fp'
 
-          , tooltip: 'An example numeric parameter, intended as a placeholder'
-          , devtip:  'You should replace this placeholder with a real parameter'
+          , tooltip: 'An example numeric property, intended as a placeholder'
+          , devtip:  'You should replace this placeholder with a real property'
           , form:    'range'
           , power:   1 // eg `8` for an exponential range-slider
           , suffix:  'Units'
 
-          , type:    'number' // `props.firstParam.type` in Vue
-          //@TODO replace with String|Number|Boolean|Function|Object|Array|Symbol
+          , type:    Number // `props.firstProp.type` in Vue
           , min:     1
           , max:     100
           , step:    1
-          , default: 50 // implies `props.firstParam.required: false` in Vue
-          //@TODO `props.firstParam.validator`
+          , default: 50 // implies `props.firstProp.required: false` in Vue
+          //@TODO `props.firstProp.validator`
         }
       , {
-            title:   'Second Param'
-          , name:    'secondParam'
+            title:   'Second Prop'
+          , name:    'secondProp'
           , alias:   'sp'
 
-          , tooltip: 'An example object parameter, intended as a placeholder'
-          , devtip:  'You should replace this placeholder with a real parameter'
+          , tooltip: 'An example object property, intended as a placeholder'
+          , devtip:  'You should replace this placeholder with a real property'
           , form:    'hidden'
 
           , type:    Date
-
-          // no `default`, so `props.firstParam.required: true` in Vue
+          // no `default`, so `props.firstProp.required: true` in Vue
         }
     ]}
 
@@ -148,10 +154,6 @@ const Class = OOM.OomFoo = class {
     }
 
 }//OomFoo
-
-
-//// Add static constants to the `OomFoo` class.
-Object.defineProperties(Class, META)
 
 
 
@@ -177,15 +179,17 @@ TOOLKIT.applyDefault = TOOLKIT.applyDefault || ( (valid, config) => {
 })
 
 TOOLKIT.validateType = TOOLKIT.validateType || ( (valid, value) => {
-    switch (typeof valid.type) {
-        case 'string':   return (typeof value === valid.type)
-                           ? null : `is type ${typeof value} not ${valid.type}`
-        case 'function': return (value instanceof valid.type)
-                           ? null : `is not an instance of ${valid.type.name}`
-        case 'object':   return (value === valid.type)
-                           ? null : `is not the expected object` }
-    throw new TypeError(`TOOLKIT.validateType: `
-      + `valid.type for ${valid.name} is ${typeof valid.type}`)
+    const ME = `TOOLKIT.validateType: `, C = 'constructor'
+    if (null === valid.type)
+        return (null === value) ? null : `is not null`
+    if ('undefined' === typeof valid.type)
+        return ('undefined' === typeof value) ? null : `is not undefined`
+    if (! valid.type.name )
+        throw new TypeError(ME+valid.name+`’s valid.type has no name`)
+    if (! value[C] || ! value[C].name )
+        throw new TypeError(ME+valid.name+`’s value has no ${C}.name`)
+    return (valid.type.name === value[C].name)
+      ? null : `has ${C}.name ${value[C].name} not ${valid.type.name}`
 })
 
 TOOLKIT.validateRange = TOOLKIT.validateRange || ( (valid, value) => {
@@ -213,6 +217,12 @@ TOOLKIT.getNow = TOOLKIT.getNow || ( () => {
 })
 
 
+//// Convert an object like { FOO:1, BAR:2 } to { FOO:{value:1}, BAR:{value:2} }
+//// making it suitable to pass to `Object.defineProperties()`.
+TOOLKIT.toPropsObj = TOOLKIT.toPropsObj || ( src => {
+    const obj = {}; for (let k in src) obj[k] = { value: src[k] }; return obj })
+
+
 
 
 //// PRIVATE FUNCTIONS
@@ -220,6 +230,16 @@ TOOLKIT.getNow = TOOLKIT.getNow || ( () => {
 
 //// Place any private functions here.
 // function noop () {}
+
+
+
+
+//// FINISHING UP
+
+
+//// Add static constants to the `OomFoo` class.
+// console.log(TOOLKIT.toPropsObj(META));
+Object.defineProperties( Class, TOOLKIT.toPropsObj(META) )
 
 
 
@@ -233,7 +253,7 @@ TOOLKIT.getNow = TOOLKIT.getNow || ( () => {
 
 
 
-//// OomFoo //// 1.1.1 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.2 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
@@ -253,7 +273,7 @@ const method = OOM.OomFoo.prototype.topLevel = function (abc) {
     let err, ME = `OomFoo.topLevel(): ` // error prefix
     if (! (this instanceof OOM.OomFoo)) throw new Error(ME
       + `Must not be called as OomFoo.prototype.topLevel()`)
-    if ( err = TOOLKIT.validateType({ type:'string' }, abc) )
+    if ( err = TOOLKIT.validateType({ type:String }, abc) )
         throw new TypeError(ME+`abc ${err}`)
 
     this.xyz++
@@ -280,13 +300,22 @@ Object.defineProperties(method, META)
 
 
 
-//// OomFoo //// 1.1.1 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.2 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
 const META = {
-    NAME:     { value:'OomFoo.Base' }
-  , REMARKS:  { value:'@TODO' }
+    NAME:     'OomFoo.Base'
+  , REMARKS:  '@TODO'
+}
+
+const PROPS = {
+    propA: Number // or set to `null` to accept any type
+  , propB: [ String, Number ] // multiple possible types
+  , propC: { type:String, required:true } // a required string
+  , propD: { type:Number, default:100 } // a number with default value
+  , propE: { type:Object, default:function(){return[1]} } // must use factory fn
+  , propF: { validator:function(v){return v>10} } // custom validator
 }
 
 
@@ -296,7 +325,7 @@ const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
 
 
 //// Define the `OomFoo.Base` class.
-const Class = OOM.OomFoo.Base = class {
+const Class = OOM.OomFoo.Base = class Base {
 
     constructor (config={}, hub=OOM.hub) {
 
@@ -314,7 +343,6 @@ const Class = OOM.OomFoo.Base = class {
         //// Record config’s values as immutable properties.
         this.validConstructor.forEach( valid => {
             const value = config[valid.name]
-            if (null == value) throw Error('I am unreachable?') //@TODO remove
             Object.defineProperty(this, valid.name, { value })
         })
 
@@ -382,36 +410,34 @@ const Class = OOM.OomFoo.Base = class {
     //// Can also be used to auto-generate unit tests and auto-build GUIs.
     get validConstructor () { return [
         {
-            title:   'First Param'
-          , name:    'firstParam' // in Vue, a key-name in `props`
+            title:   'First Prop'
+          , name:    'firstProp' // in Vue, a key-name in `props`
           , alias:   'fp'
 
-          , tooltip: 'An example numeric parameter, intended as a placeholder'
-          , devtip:  'You should replace this placeholder with a real parameter'
+          , tooltip: 'An example numeric property, intended as a placeholder'
+          , devtip:  'You should replace this placeholder with a real property'
           , form:    'range'
           , power:   1 // eg `8` for an exponential range-slider
           , suffix:  'Units'
 
-          , type:    'number' // `props.firstParam.type` in Vue
-          //@TODO replace with String|Number|Boolean|Function|Object|Array|Symbol
+          , type:    Number // `props.firstProp.type` in Vue
           , min:     1
           , max:     100
           , step:    1
-          , default: 50 // implies `props.firstParam.required: false` in Vue
-          //@TODO `props.firstParam.validator`
+          , default: 50 // implies `props.firstProp.required: false` in Vue
+          //@TODO `props.firstProp.validator`
         }
       , {
-            title:   'Second Param'
-          , name:    'secondParam'
+            title:   'Second Prop'
+          , name:    'secondProp'
           , alias:   'sp'
 
-          , tooltip: 'An example object parameter, intended as a placeholder'
-          , devtip:  'You should replace this placeholder with a real parameter'
+          , tooltip: 'An example object property, intended as a placeholder'
+          , devtip:  'You should replace this placeholder with a real property'
           , form:    'hidden'
 
           , type:    Date
-
-          // no `default`, so `props.firstParam.required: true` in Vue
+          // no `default`, so `props.firstProp.required: true` in Vue
         }
     ]}
 
@@ -426,10 +452,6 @@ const Class = OOM.OomFoo.Base = class {
 }//OomFoo.Base
 
 
-//// Add static constants to the `OomFoo.Base` class.
-Object.defineProperties(Class, META)
-
-
 
 
 //// PRIVATE FUNCTIONS
@@ -437,6 +459,16 @@ Object.defineProperties(Class, META)
 
 //// Place any private functions here.
 // function noop () {}
+
+
+
+
+//// FINISHING UP
+
+
+//// Add static constants to the `OomFoo` class.
+// console.log(TOOLKIT.toPropsObj(META));
+Object.defineProperties( Class, TOOLKIT.toPropsObj(META) )
 
 
 
@@ -450,7 +482,7 @@ Object.defineProperties(Class, META)
 
 
 
-//// OomFoo //// 1.1.1 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.2 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
@@ -470,7 +502,7 @@ const method = OOM.OomFoo.Base.prototype.foo = function (abc) {
     let err, ME = `OomFoo.Base.foo(): ` // error prefix
     if (! (this instanceof OOM.OomFoo.Base)) throw new Error(ME
       + `Must not be called as OomFoo.Base.prototype.foo()`)
-    if ( err = TOOLKIT.validateType({ type:'string' }, abc) )
+    if ( err = TOOLKIT.validateType({ type:String }, abc) )
         throw new TypeError(ME+`abc ${err}`)
 
     this.xyz++
@@ -493,4 +525,4 @@ Object.defineProperties(method, META)
 
 
 
-//// Made by Oomtility Make 1.1.1 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.1.2 //\\//\\ http://oomtility.loop.coop //////////

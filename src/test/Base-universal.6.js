@@ -1,4 +1,4 @@
-//// OomFoo //// 1.1.1 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.2 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -11,8 +11,8 @@ const Class = OOM.OomFoo.Base
 //// Instantiates a typical OomFoo.Base instance for unit testing its methods.
 Class.testInstanceFactory = () =>
     new Class({
-        firstParam: 100
-      , secondParam: new Date
+        firstProp: 100
+      , secondProp: new Date
     },{
         /* @TODO hub API */
     })
@@ -20,18 +20,20 @@ Class.testInstanceFactory = () =>
 
 
 
-test('The OomFoo.Base class', () => {
+test('+ve OomFoo.Base class', () => {
     is('object' === typeof OOM, 'The OOM namespace object exists')
     is('function' === typeof Class, 'OomFoo.Base is a function')
     is('OomFoo.Base' === Class.NAME, 'NAME is OomFoo.Base')
+    is('Base' === Class.name, 'name is Base')
 })
 
 
 
 
-test('Successful OomFoo.Base instantiation', () => {
+test('+ve OomFoo.Base instance', () => {
     const instance = Class.testInstanceFactory()
     is(instance instanceof Class, 'Is an instance of OomFoo.Base')
+    is(Class === instance.constructor, '`constructor` is OomFoo.Base')
     is('object' === typeof instance.hub, '`hub` property is an object')
 })
 

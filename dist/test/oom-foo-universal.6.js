@@ -2,7 +2,7 @@
 
 
 
-//// OomFoo //// 1.1.1 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.2 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -23,8 +23,8 @@ const Class = OOM.OomFoo
 //// Instantiates a typical OomFoo instance for unit testing its methods.
 Class.testInstanceFactory = () =>
     new Class({
-        firstParam: 100
-      , secondParam: new Date
+        firstProp: 100
+      , secondProp: new Date
     },{
         /* @TODO hub API */
     })
@@ -32,12 +32,13 @@ Class.testInstanceFactory = () =>
 
 
 
-test('The OomFoo class', () => {
+test('+ve OomFoo class', () => {
     is('object' === typeof OOM, 'The OOM namespace object exists')
     is('undefined' === typeof OomFoo, 'OomFoo is not global')
     is('function' === typeof Class, 'OomFoo is a function')
     is('OomFoo' === Class.NAME, 'NAME is OomFoo')
-    is('1.1.1' === Class.VERSION, 'VERSION is 1.1.1') // OOMBUMPABLE (twice!)
+    is('OomFoo' === Class.name, 'name is OomFoo: "'+ Class.name+'"')
+    is('1.1.2' === Class.VERSION, 'VERSION is 1.1.2') // OOMBUMPABLE (twice!)
     is('http://oom-foo.loop.coop/' === Class.HOMEPAGE
       , 'HOMEPAGE is http://oom-foo.loop.coop/')
 })
@@ -45,9 +46,10 @@ test('The OomFoo class', () => {
 
 
 
-test('Successful OomFoo instantiation', () => {
+test('+ve OomFoo instance', () => {
     const instance = Class.testInstanceFactory()
     is(instance instanceof Class, 'Is an instance of OomFoo')
+    is(Class === instance.constructor, '`constructor` is OomFoo')
     is('object' === typeof instance.hub, '`hub` property is an object')
 })
 
@@ -85,7 +87,7 @@ ROOT.throws = ROOT.throws || ( (fn, expect, prefix) => {
 
 
 
-//// OomFoo //// 1.1.1 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.2 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')
@@ -129,7 +131,7 @@ test('-ve topLevel()', () => {
       , 'Prototype call')
     const instance = Class.testInstanceFactory()
     throws( () => instance.topLevel(123)
-      , 'OomFoo.topLevel(): abc is type number not string'
+      , 'OomFoo.topLevel(): abc has constructor.name Number not String'
       , 'Passing a number into `abc`')
 
 
@@ -148,7 +150,7 @@ test('-ve topLevel()', () => {
 
 
 
-//// OomFoo //// 1.1.1 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.2 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -161,8 +163,8 @@ const Class = OOM.OomFoo.Base
 //// Instantiates a typical OomFoo.Base instance for unit testing its methods.
 Class.testInstanceFactory = () =>
     new Class({
-        firstParam: 100
-      , secondParam: new Date
+        firstProp: 100
+      , secondProp: new Date
     },{
         /* @TODO hub API */
     })
@@ -170,18 +172,20 @@ Class.testInstanceFactory = () =>
 
 
 
-test('The OomFoo.Base class', () => {
+test('+ve OomFoo.Base class', () => {
     is('object' === typeof OOM, 'The OOM namespace object exists')
     is('function' === typeof Class, 'OomFoo.Base is a function')
     is('OomFoo.Base' === Class.NAME, 'NAME is OomFoo.Base')
+    is('Base' === Class.name, 'name is Base')
 })
 
 
 
 
-test('Successful OomFoo.Base instantiation', () => {
+test('+ve OomFoo.Base instance', () => {
     const instance = Class.testInstanceFactory()
     is(instance instanceof Class, 'Is an instance of OomFoo.Base')
+    is(Class === instance.constructor, '`constructor` is OomFoo.Base')
     is('object' === typeof instance.hub, '`hub` property is an object')
 })
 
@@ -198,7 +202,7 @@ test('Successful OomFoo.Base instantiation', () => {
 
 
 
-//// OomFoo //// 1.1.1 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.2 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')
@@ -242,7 +246,7 @@ test('-ve foo()', () => {
       , 'Prototype call')
     const instance = Class.testInstanceFactory()
     throws( () => instance.foo(123)
-      , 'OomFoo.Base.foo(): abc is type number not string'
+      , 'OomFoo.Base.foo(): abc has constructor.name Number not String'
       , 'Passing a number into `abc`')
 
 
@@ -257,4 +261,4 @@ test('-ve foo()', () => {
 
 
 
-//// Made by Oomtility Make 1.1.1 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.1.2 //\\//\\ http://oomtility.loop.coop //////////

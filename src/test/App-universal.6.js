@@ -1,4 +1,4 @@
-//// OomFoo //// 1.1.1 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.2 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -19,8 +19,8 @@ const Class = OOM.OomFoo
 //// Instantiates a typical OomFoo instance for unit testing its methods.
 Class.testInstanceFactory = () =>
     new Class({
-        firstParam: 100
-      , secondParam: new Date
+        firstProp: 100
+      , secondProp: new Date
     },{
         /* @TODO hub API */
     })
@@ -28,12 +28,13 @@ Class.testInstanceFactory = () =>
 
 
 
-test('The OomFoo class', () => {
+test('+ve OomFoo class', () => {
     is('object' === typeof OOM, 'The OOM namespace object exists')
     is('undefined' === typeof OomFoo, 'OomFoo is not global')
     is('function' === typeof Class, 'OomFoo is a function')
     is('OomFoo' === Class.NAME, 'NAME is OomFoo')
-    is('1.1.1' === Class.VERSION, 'VERSION is 1.1.1') // OOMBUMPABLE (twice!)
+    is('OomFoo' === Class.name, 'name is OomFoo: "'+ Class.name+'"')
+    is('1.1.2' === Class.VERSION, 'VERSION is 1.1.2') // OOMBUMPABLE (twice!)
     is('http://oom-foo.loop.coop/' === Class.HOMEPAGE
       , 'HOMEPAGE is http://oom-foo.loop.coop/')
 })
@@ -41,9 +42,10 @@ test('The OomFoo class', () => {
 
 
 
-test('Successful OomFoo instantiation', () => {
+test('+ve OomFoo instance', () => {
     const instance = Class.testInstanceFactory()
     is(instance instanceof Class, 'Is an instance of OomFoo')
+    is(Class === instance.constructor, '`constructor` is OomFoo')
     is('object' === typeof instance.hub, '`hub` property is an object')
 })
 

@@ -3,7 +3,7 @@
 #### Initial test of the oom-hub architecture
 
 + __Last update:__  2018/02/01 <!-- OOMBUMPABLE -->
-+ __Version:__      1.1.1 <!-- OOMBUMPABLE -->
++ __Version:__      1.1.2 <!-- OOMBUMPABLE -->
 
 [Homepage](http://oom-foo.loop.coop/) &nbsp;
 [Repo](https://github.com/loopdotcoop/oom-foo) &nbsp;
@@ -38,7 +38,7 @@ Web Audio
 + __Windows 7:__           IE 10
 + __Windows XP:__          Firefox 42, Chrome 36, Opera 23
 + __OS X Mountain Lion:__  Safari 6.2
-+ __OS X El Capitan:__     Node 7.2.0 and Firefox 57 (dev browser)
++ __macOS High Sierra:__   Node 8.9.4, Safari 11, Firefox 57 (dev browser)
 
 
 

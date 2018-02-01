@@ -13,7 +13,7 @@ const rxBinaryExt = module.exports.rxBinaryExt =
     new RegExp( '\\.' + BINARY_EXTS.join('$|\\.') + '$', 'i')
 
 const NAME     = 'Oomtility Wrapped'
-    , VERSION  = '1.1.1'
+    , VERSION  = '1.1.2'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
 
@@ -208,6 +208,83 @@ $('#ecma').html('ES'+['5','5 min','6','6 dev'][~~document.cookie.split('~')[1]])
 //// HAND-CODED EXPORTED
 
 
+//// Used by ‘oomtility/auto.js’ and ‘oomtility/make.js’.
+module.exports.updateDemoFile = function (htmlPath, supportPath) {
+    let out, start = 0, end = 0
+      , html = (fs.readFileSync(htmlPath)+'').split('\n')
+      , demos = fs.readdirSync(supportPath)
+    for (; start<html.length; start++)
+        if (0 < html[start].indexOf('BEGIN DYNAMIC SECTION //////////') ) break
+    for (; end<html.length; end++)
+        if (0 < html[end].indexOf('END DYNAMIC SECTION ////////////')   ) break
+    if ( start === html.length || end === html.length)
+        return console.warn(`Couldn’t find dynamic section in ‘${htmlPath}’`)
+    out = html.slice(0, start+1).concat([
+`  //// This dynamic section is kept up to date by ‘oomtility/make.js’ ////// -->
+`])
+    demos.forEach( name => {
+        if ( 'demo-' != name.slice(0,5) || '.html' != name.slice(-5) ) return
+        let i, file = (fs.readFileSync(supportPath+'/'+name)+'').split('\n')
+        for (i=0; i<file.length; i++)
+            if (0 <= file[i].indexOf('<title>') ) break
+        out.push(`
+  <a href="${name}">
+  ${i != file.length ? file[i].replace(/title>/g,'b>') : '  Untitled Demo'}
+  </a><br>`)
+    })
+    out = out.concat( '', html.slice(end) )
+    fs.writeFileSync( htmlPath, out.join('\n') )
+}
+
+
+//// Used by ‘oomtility/auto.js’ and ‘oomtility/make.js’.
+module.exports.updateECMASwitch = function (jsPath, mains, projectLC) {
+    let out, start = 0, end = 0
+      , js = (fs.readFileSync(jsPath)+'').split('\n')
+    for (; start<js.length; start++)
+        if (0 < js[start].indexOf('BEGIN DYNAMIC SECTION //////////') ) break
+    for (; end<js.length; end++)
+        if (0 < js[end].indexOf('END DYNAMIC SECTION ////////////')   ) break
+    if ( start === js.length || end === js.length)
+        return console.warn(`Couldn’t find dynamic section in ‘${jsPath}’`)
+    out = js.slice(0, start+1).concat([
+`//// This dynamic section is kept up to date by ‘oomtility/make.js’ ////////////
+
+var projectLC = '${projectLC}'
+var classFiles = '${mains.filter(n=>'.6.js'==n.slice(-5)).map(n=>n.slice(0,-5))}'
+`])
+    out = out.concat( js.slice(end) )
+    fs.writeFileSync( jsPath, out.join('\n') )
+}
+
+
+//// Used by ‘oomtility/auto.js’ and ‘oomtility/make.js’.
+module.exports.updateTestFile = function (htmlPath, tests) {
+    let out, start = 0, end = 0
+      , html = (fs.readFileSync(htmlPath)+'').split('\n')
+    for (; start<html.length; start++)
+        if (0 < html[start].indexOf('BEGIN DYNAMIC SECTION //////////') ) break
+    for (; end<html.length; end++)
+        if (0 < html[end].indexOf('END DYNAMIC SECTION ////////////')   ) break
+    if ( start === html.length || end === html.length)
+        return console.warn(`Couldn’t find dynamic section in ‘${htmlPath}’`)
+    out = html.slice(0, start+1).concat([
+`//// This dynamic section is kept up to date by ‘oomtility/make.js’ ////////////
+`])
+    //// ‘App-universal.6.js’ defines \`throws()\`, so run it first.
+    tests.forEach( name => {
+        if ( '-universal.6.js' === name.slice(-15) )
+            out.push(`    , [ null, null, null, '../src/test/${name}' ]`)
+    })
+    tests.forEach( name => {
+        if ( '-browser.6.js' === name.slice(-13) )
+            out.push(`    , [ null, null, null, '../src/test/${name}' ]`)
+    })
+    out = out.concat( '', html.slice(end) )
+    fs.writeFileSync( htmlPath, out.join('\n') )
+}
+
+
 module.exports.writeApp6Js = function (configOrig, path) {
     const config = Object.assign({}, configOrig, {
         isApp: true
@@ -298,7 +375,7 @@ module.exports.writeAppDemo6Js = function (config, path) {
 module.exports.writeClassDemoHtml = function (configOrig, path) {
 const config = Object.assign({}, configOrig, {
     title: `${configOrig.classname} Demo`
-  , description: `Usage examples for ${configOrig.classname}.`
+  , description: `Usage examples for ‘${configOrig.classname}’.`
   , nameLC: configOrig.name.toLowerCase()
 })
 const {
@@ -367,7 +444,7 @@ const META = {
 }
 
 
-//// Shortcuts to Ooms namespace and toolkit.
+//// Shortcuts to Oom’s namespace and toolkit.
 const OOM     = ROOT.OOM    = ROOT.OOM    || {}
 const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
 
@@ -458,7 +535,7 @@ test('-ve ${shortname}()', () => {
       , 'Prototype call')
     const instance = Class.testInstanceFactory()
     throws( () => instance.${shortname}(123)
-      , '${methodname}(): abc is type number not string'
+      , '${methodname}(): abc has constructor.name Number not String'
       , 'Passing a number into \`abc\`')
 
 
@@ -551,7 +628,7 @@ test('Nonbrowser test the ${methodname}() method', () => {
 module.exports.writeDemoHtml = function (configOrig, path) {
 const config = Object.assign({}, configOrig, {
     title: `${configOrig.projectTC} Demo`
-  , description: `Usage examples for ${configOrig.projectTC}.`
+  , description: `Usage examples for ‘${configOrig.projectTC}’.`
 })
 const {
     projectTC
@@ -565,7 +642,7 @@ fs.writeFileSync(path, ''
   + `
 
 <!-- BEGIN DYNAMIC SECTION /////////////////////////////////////////////////////
-  //// This dynamic section is kept up to date by oomtility/make.js ////// -->
+  //// This dynamic section is kept up to date by ‘oomtility/make.js’ ////// -->
 
 <!-- END DYNAMIC SECTION ///////////////////////////////////////////////// -->
 
@@ -583,7 +660,7 @@ fs.writeFileSync(path, ''
 module.exports.writeTestHtml = function (configOrig, path) {
 const config = Object.assign({}, configOrig, {
     title: `${configOrig.projectTC} Test`
-  , description: `Unit tests for ${configOrig.projectTC}.`
+  , description: `Unit tests for ‘${configOrig.projectTC}’.`
 })
 const {
     projectTC
@@ -610,7 +687,7 @@ fs.writeFileSync(path, ''
 <!-- Load the proper format scripts, according to the '#ecmaswitch' menu -->
 <script src="asset/js/ecmaswitch.js"></script>
 <script>ECMASwitch.load('../', [
-    [ // App-universal.6.js defines \`throws()\`, so run it first
+    [ // ‘App-universal.6.js’ defines \`throws()\`, so run it first
         '../dist/test/${projectLC}-universal.5.js'
       , '../dist/test/${projectLC}-universal.5.js' // no need to minify a test
       , '../dist/test/${projectLC}-universal.6.js'
@@ -624,7 +701,11 @@ fs.writeFileSync(path, ''
     ]
 
 //// BEGIN DYNAMIC SECTION /////////////////////////////////////////////////////
-//// This dynamic section is kept up to date by ootility/make.js /////////////
+//// This dynamic section is initialised by ‘oomtility/init.js’, and then //////
+//// modified by ‘oomtility/auto.js’ and ‘oomtility/make.js’ ///////////////////
+
+    , [ null, null, null, '../src/test/App-universal.6.js' ]
+    , [ null, null, null, '../src/test/App-browser.6.js' ]
 
 //// END DYNAMIC SECTION ///////////////////////////////////////////////////////
 
@@ -660,7 +741,7 @@ fs.writeFileSync(path, ''
 <script src="${pathToSupport}asset/js/ecmaswitch.js"></script>
 <script>ECMASwitch.load('./')</script>
 
-<!-- Link to the proper homepage domain, if were not already there -->
+<!-- Link to the proper homepage domain, if we’re not already there -->
 <script>if ( 0 > location.href.indexOf(OOM.${projectTC}.HOMEPAGE) )
 $('#home-link').attr('href', OOM.${projectTC}.HOMEPAGE)</script>
 
@@ -837,8 +918,8 @@ isApp ? `
   + '//// Instantiates a typical '+(classname)+' instance for unit testing its methods.\n'
   + 'Class.testInstanceFactory = () =>\n'
   + '    new Class({\n'
-  + '        firstParam: 100\n'
-  + '      , secondParam: new Date\n'
+  + '        firstProp: 100\n'
+  + '      , secondProp: new Date\n'
   + '    },{\n'
   + '        /* @TODO hub API */\n'
   + '    })\n'
@@ -846,13 +927,14 @@ isApp ? `
   + '\n'
   + '\n'
   + '\n'
-  + 'test(\'The '+(classname)+' class\', () => {\n'
+  + 'test(\'+ve '+(classname)+' class\', () => {\n'
   + '    is(\'object\' === typeof OOM, \'The OOM namespace object exists\')' + (
     isApp ? `
     is('undefined' === typeof ${classname}, '${classname} is not global')`:''
 ) + '\n'
   + '    is(\'function\' === typeof Class, \''+(classname)+' is a function\')\n'
-  + '    is(\''+(classname)+'\' === Class.NAME, \'NAME is '+(classname)+'\')' + (
+  + '    is(\''+(classname)+'\' === Class.NAME, \'NAME is '+(classname)+'\')\n'
+  + '    is(\''+(classname.split('.').pop())+'\' === Class.name, \'name is '+(classname.split('.').pop())+'\')' + (
     isApp ? `
     is('${version}' === Class.VERSION, 'VERSION is ${version}') // OOMBUMPABLE (twice!)
     is('${homepage}' === Class.HOMEPAGE
@@ -863,9 +945,10 @@ isApp ? `
   + '\n'
   + '\n'
   + '\n'
-  + 'test(\'Successful '+(classname)+' instantiation\', () => {\n'
+  + 'test(\'+ve '+(classname)+' instance\', () => {\n'
   + '    const instance = Class.testInstanceFactory()\n'
   + '    is(instance instanceof Class, \'Is an instance of '+(classname)+'\')\n'
+  + '    is(Class === instance.constructor, \'`constructor` is '+(classname)+'\')\n'
   + '    is(\'object\' === typeof instance.hub, \'`hub` property is an object\')\n'
   + '})\n'
   + '\n'
@@ -924,12 +1007,21 @@ fs.writeFileSync(path, ''
   + '!function (ROOT) { \'use strict\'\n'
   + '\n'
   + 'const META = {\n'
-  + '    NAME:     { value:\''+(classname)+'\' }' + (
+  + '    NAME:     \''+(classname)+'\'' + (
 isApp ? `
-  , VERSION:  { value:'${version}' } // OOMBUMPABLE
-  , HOMEPAGE: { value:'${homepage}' }`:''
+  , VERSION:  '${version}' // OOMBUMPABLE
+  , HOMEPAGE: '${homepage}'`:''
 ) + '\n'
-  + '  , REMARKS:  { value:\''+(remarks)+'\' }\n'
+  + '  , REMARKS:  \''+(remarks)+'\'\n'
+  + '}\n'
+  + '\n'
+  + 'const PROPS = {\n'
+  + '    propA: Number // or set to `null` to accept any type\n'
+  + '  , propB: [ String, Number ] // multiple possible types\n'
+  + '  , propC: { type:String, required:true } // a required string\n'
+  + '  , propD: { type:Number, default:100 } // a number with default value\n'
+  + '  , propE: { type:Object, default:function(){return[1]} } // must use factory fn\n'
+  + '  , propF: { validator:function(v){return v>10} } // custom validator\n'
   + '}\n'
   + '\n'
   + '\n'
@@ -943,8 +1035,8 @@ isApp ? `
 //// Define the \`${classname}\` class.`
 ) + '' + (
 isTop ? `
-const Class = OOM.${classname} = class {`:`
-const Class = OOM.${classname} = class extends OOM.${classname.split('.').slice(0, -1).join('.')} {`
+const Class = OOM.${classname} = class ${classname.split('.').pop()} {`:`
+const Class = OOM.${classname} = class ${classname.split('.').pop()} extends OOM.${classname.split('.').slice(0, -1).join('.')} {`
 ) + '\n'
   + '\n'
   + '    constructor (config={}, hub=OOM.hub) {\n'
@@ -966,7 +1058,6 @@ isTop ? `
   + '        //// Record config\u2019s values as immutable properties.\n'
   + '        this.validConstructor.forEach( valid => {\n'
   + '            const value = config[valid.name]\n'
-  + '            if (null == value) throw Error(\'I am unreachable?\') //@TODO remove\n'
   + '            Object.defineProperty(this, valid.name, { value })\n'
   + '        })\n'
   + '' + (
@@ -1038,39 +1129,36 @@ isTop ? `
   + '    //// Can also be used to auto-generate unit tests and auto-build GUIs.\n'
   + '    get validConstructor () { return [\n'
   + '        {\n'
-  + '            title:   \'First Param\'\n'
-  + '          , name:    \'firstParam\' // in Vue, a key-name in `props`\n'
+  + '            title:   \'First Prop\'\n'
+  + '          , name:    \'firstProp\' // in Vue, a key-name in `props`\n'
   + '          , alias:   \'fp\'\n'
   + '\n'
-  + '          , tooltip: \'An example numeric parameter, intended as a placeholder\'\n'
-  + '          , devtip:  \'You should replace this placeholder with a real parameter'
+  + '          , tooltip: \'An example numeric property, intended as a placeholder\'\n'
+  + '          , devtip:  \'You should replace this placeholder with a real property'
   + '\'\n'
   + '          , form:    \'range\'\n'
   + '          , power:   1 // eg `8` for an exponential range-slider\n'
   + '          , suffix:  \'Units\'\n'
   + '\n'
-  + '          , type:    \'number\' // `props.firstParam.type` in Vue\n'
-  + '          //@TODO replace with String|Number|Boolean|Function|Object|Array|Symbo'
-  + 'l\n'
+  + '          , type:    Number // `props.firstProp.type` in Vue\n'
   + '          , min:     1\n'
   + '          , max:     100\n'
   + '          , step:    1\n'
-  + '          , default: 50 // implies `props.firstParam.required: false` in Vue\n'
-  + '          //@TODO `props.firstParam.validator`\n'
+  + '          , default: 50 // implies `props.firstProp.required: false` in Vue\n'
+  + '          //@TODO `props.firstProp.validator`\n'
   + '        }\n'
   + '      , {\n'
-  + '            title:   \'Second Param\'\n'
-  + '          , name:    \'secondParam\'\n'
+  + '            title:   \'Second Prop\'\n'
+  + '          , name:    \'secondProp\'\n'
   + '          , alias:   \'sp\'\n'
   + '\n'
-  + '          , tooltip: \'An example object parameter, intended as a placeholder\'\n'
-  + '          , devtip:  \'You should replace this placeholder with a real parameter'
+  + '          , tooltip: \'An example object property, intended as a placeholder\'\n'
+  + '          , devtip:  \'You should replace this placeholder with a real property'
   + '\'\n'
   + '          , form:    \'hidden\'\n'
   + '\n'
   + '          , type:    Date\n'
-  + '\n'
-  + '          // no `default`, so `props.firstParam.required: true` in Vue\n'
+  + '          // no `default`, so `props.firstProp.required: true` in Vue\n'
   + '        }\n'
   + '    ]}\n'
   + '\n'
@@ -1083,10 +1171,6 @@ isTop ? `
   + '    }\n'
   + '\n'
   + '}//'+(classname)+'\n'
-  + '\n'
-  + '\n'
-  + '//// Add static constants to the `'+(classname)+'` class.\n'
-  + 'Object.defineProperties(Class, META)\n'
   + '\n'
   + '\n'
   + '\n'
@@ -1113,15 +1197,17 @@ TOOLKIT.applyDefault = TOOLKIT.applyDefault || ( (valid, config) => {
 })
 
 TOOLKIT.validateType = TOOLKIT.validateType || ( (valid, value) => {
-    switch (typeof valid.type) {
-        case 'string':   return (typeof value === valid.type)
-                           ? null : \`is type \${typeof value} not \${valid.type}\`
-        case 'function': return (value instanceof valid.type)
-                           ? null : \`is not an instance of \${valid.type.name}\`
-        case 'object':   return (value === valid.type)
-                           ? null : \`is not the expected object\` }
-    throw new TypeError(\`TOOLKIT.validateType: \`
-      + \`valid.type for \${valid.name} is \${typeof valid.type}\`)
+    const ME = \`TOOLKIT.validateType: \`, C = 'constructor'
+    if (null === valid.type)
+        return (null === value) ? null : \`is not null\`
+    if ('undefined' === typeof valid.type)
+        return ('undefined' === typeof value) ? null : \`is not undefined\`
+    if (! valid.type.name )
+        throw new TypeError(ME+valid.name+\`’s valid.type has no name\`)
+    if (! value[C] || ! value[C].name )
+        throw new TypeError(ME+valid.name+\`’s value has no \${C}.name\`)
+    return (valid.type.name === value[C].name)
+      ? null : \`has \${C}.name \${value[C].name} not \${valid.type.name}\`
 })
 
 TOOLKIT.validateRange = TOOLKIT.validateRange || ( (valid, value) => {
@@ -1149,6 +1235,12 @@ TOOLKIT.getNow = TOOLKIT.getNow || ( () => {
 })
 
 
+//// Convert an object like { FOO:1, BAR:2 } to { FOO:{value:1}, BAR:{value:2} }
+//// making it suitable to pass to \`Object.defineProperties()\`.
+TOOLKIT.toPropsObj = TOOLKIT.toPropsObj || ( src => {
+    const obj = {}; for (let k in src) obj[k] = { value: src[k] }; return obj })
+
+
 
 `:''
 ) + '\n'
@@ -1157,6 +1249,16 @@ TOOLKIT.getNow = TOOLKIT.getNow || ( () => {
   + '\n'
   + '//// Place any private functions here.\n'
   + '// function noop () {}\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '//// FINISHING UP\n'
+  + '\n'
+  + '\n'
+  + '//// Add static constants to the `OomFoo` class.\n'
+  + '// console.log(TOOLKIT.toPropsObj(META));\n'
+  + 'Object.defineProperties( Class, TOOLKIT.toPropsObj(META) )\n'
   + '\n'
   + '\n'
   + '\n'
@@ -1189,8 +1291,8 @@ fs.writeFileSync(path, ''
   + '\n'
   + '//// Generate an instance of ${classname} with default configuration.\n'
   + 'const instance = new ROOT.OOM.'+(classname)+'({\n'
-  + '    firstParam: 100\n'
-  + '  , secondParam: new Date\n'
+  + '    firstParameter: 100\n'
+  + '  , secondParameter: new Date\n'
   + '})\n'
   + 'console.log(instance)\n'
   + '\n'
@@ -1242,7 +1344,7 @@ fs.writeFileSync(path, ''
   + '    let err, ME = `'+(methodname)+'(): ` // error prefix\n'
   + '    if (! (this instanceof OOM.'+(classname)+')) throw new Error(ME\n'
   + '      + `Must not be called as '+(classname)+'.prototype.'+(methodshort)+'()`)\n'
-  + '    if ( err = TOOLKIT.validateType({ type:\'string\' }, abc) )\n'
+  + '    if ( err = TOOLKIT.validateType({ type:String }, abc) )\n'
   + '        throw new TypeError(ME+`abc ${err}`)\n'
   + '\n'
   + '    this.xyz++\n'
@@ -1323,7 +1425,7 @@ fs.writeFileSync(path, ''
   + '+ __Windows 7:__           IE 10\n'
   + '+ __Windows XP:__          Firefox 42, Chrome 36, Opera 23\n'
   + '+ __OS X Mountain Lion:__  Safari 6.2\n'
-  + '+ __OS X El Capitan:__     Node 7.2.0 and Firefox 57 (dev browser)\n'
+  + '+ __macOS High Sierra:__   Node 8.9.4, Safari 11, Firefox 57 (dev browser)\n'
   + '\n'
   + '\n'
   + '\n'

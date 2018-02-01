@@ -2,7 +2,7 @@
 
 
 
-//// OomFoo //// 1.1.1 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.2 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -29,7 +29,7 @@ test('Nonbrowser test the OomFoo class', () => {
 
 
 
-//// OomFoo //// 1.1.1 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.2 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')
@@ -54,7 +54,7 @@ test('Nonbrowser test the OomFoo.topLevel() method', () => {
 
 
 
-//// OomFoo //// 1.1.1 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.2 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 const Class = OOM.OomFoo.Base
@@ -78,7 +78,7 @@ test('Nonbrowser test the OomFoo.Base class', () => {
 
 
 
-//// OomFoo //// 1.1.1 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.2 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')
@@ -99,4 +99,4 @@ test('Nonbrowser test the OomFoo.Base.foo() method', () => {
 
 
 
-//// Made by Oomtility Make 1.1.1 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.1.2 //\\//\\ http://oomtility.loop.coop //////////

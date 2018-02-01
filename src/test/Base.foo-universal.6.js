@@ -1,4 +1,4 @@
-//// OomFoo //// 1.1.1 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.2 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')
@@ -42,7 +42,7 @@ test('-ve foo()', () => {
       , 'Prototype call')
     const instance = Class.testInstanceFactory()
     throws( () => instance.foo(123)
-      , 'OomFoo.Base.foo(): abc is type number not string'
+      , 'OomFoo.Base.foo(): abc has constructor.name Number not String'
       , 'Passing a number into `abc`')
 
 

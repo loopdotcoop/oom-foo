@@ -18,7 +18,7 @@ const method = OOM.${{classname}}.prototype.${{methodshort}} = function (abc) {
     let err, ME = `${{methodname}}(): ` // error prefix
     if (! (this instanceof OOM.${{classname}})) throw new Error(ME
       + `Must not be called as ${{classname}}.prototype.${{methodshort}}()`)
-    if ( err = TOOLKIT.validateType({ type:'string' }, abc) )
+    if ( err = TOOLKIT.validateType({ type:String }, abc) )
         throw new TypeError(ME+`abc ${err}`)
 
     this.xyz++

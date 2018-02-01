@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Make'
-    , VERSION  = '1.1.1'
+    , VERSION  = '1.1.2'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Made by ${NAME} ${VERSION} //\\\\//\\\\ `
@@ -87,6 +87,7 @@ if ('function' !== typeof require)
 const fs = require('fs')
     , uglify = tidyUglifyWarnings( require('uglify-js') )
     , traceur = require('traceur/src/node/api.js')
+    , wrapped = require('./wrapped.js')
 
 //// Set constants.
 const topline = (fs.readFileSync(`src/main/App.6.js`)+'').split('\n')[0]
@@ -140,7 +141,18 @@ writeFileSyncAndTally( `dist/main/${projectLC}.6.js`, es6 )
 
 
 //// 2. Transpile the new ‘project.6.js’ to ‘project.5.js’
-es5 = traceurFix( traceur.compile(es6, { blockBinding:true }) )
+try {
+    es5 = traceurFix( traceur.compile(es6, { blockBinding:true }) )
+} catch(e) {
+    if ( 'MultipleErrors' === e.name && /^<compile-source>:/.test(e.message) )
+        return console.warn(
+            e.errors.length + ` syntax errors in dist/main/${projectLC}.6.js\n`
+          + `Starting with ${e.errors[0].slice(17)}\n`
+          + `Atom user? Try $ atom dist/main/${projectLC}.6.js:`
+          + e.errors[0].split(':').slice(1,3).join(':')
+        )
+    throw(e)
+}
 es5 = removeSourceMapRef(es5)
 writeFileSyncAndTally(
     `dist/main/${projectLC}.5.js`
@@ -266,15 +278,15 @@ writeFileSyncAndTally(
 //// EDIT FILES
 
 //// 1. support/demo.html                       Link to each usage example
-updateDemoFile('support/demo.html', 'support')
+wrapped.updateDemoFile('support/demo.html', 'support')
 
 
 //// 2. support/asset/js/ecmaswitch.js          `var classFiles = '...'` updated
-updateECMASwitch('support/asset/js/ecmaswitch.js', mains)
+wrapped.updateECMASwitch('support/asset/js/ecmaswitch.js', mains, projectLC)
 
 
 //// 3. support/test.html                       ‘Development ES6’ links
-updateTestFile('support/test.html', tests) // `tests` from previous step
+wrapped.updateTestFile('support/test.html', tests) // `tests` from previous step
 
 
 
@@ -289,83 +301,6 @@ console.log(`Made ${writeFileTally} file${1===writeFileTally?'':'s'}`)
 
 
 //// UTILITY
-
-
-////
-function updateDemoFile (htmlPath, supportPath) {
-    let out, start = 0, end = 0
-      , html = (fs.readFileSync(htmlPath)+'').split('\n')
-      , demos = fs.readdirSync(supportPath)
-    for (; start<html.length; start++)
-        if (0 < html[start].indexOf('BEGIN DYNAMIC SECTION //////////') ) break
-    for (; end<html.length; end++)
-        if (0 < html[end].indexOf('END DYNAMIC SECTION ////////////')   ) break
-    if ( start === html.length || end === html.length)
-        return console.warn(`Couldn’t find dynamic section in ‘${htmlPath}’`)
-    out = html.slice(0, start+1).concat([
-`  //// This dynamic section is kept up to date by ‘oomtility/make.js’ ////// -->
-`])
-    demos.forEach( name => {
-        if ( 'demo-' != name.slice(0,5) || '.html' != name.slice(-5) ) return
-        let i, file = (fs.readFileSync(supportPath+'/'+name)+'').split('\n')
-        for (i=0; i<file.length; i++)
-            if (0 <= file[i].indexOf('<title>') ) break
-        out.push(`
-  <a href="${name}">
-  ${i != file.length ? file[i].replace(/title>/g,'b>') : '  Untitled Demo'}
-  </a><br>`)
-    })
-    out = out.concat( '', html.slice(end) )
-    fs.writeFileSync( htmlPath, out.join('\n') )
-}
-
-
-////
-function updateECMASwitch (jsPath, mains) {
-    let out, start = 0, end = 0
-      , js = (fs.readFileSync(jsPath)+'').split('\n')
-    for (; start<js.length; start++)
-        if (0 < js[start].indexOf('BEGIN DYNAMIC SECTION //////////') ) break
-    for (; end<js.length; end++)
-        if (0 < js[end].indexOf('END DYNAMIC SECTION ////////////')   ) break
-    if ( start === js.length || end === js.length)
-        return console.warn(`Couldn’t find dynamic section in ‘${jsPath}’`)
-    out = js.slice(0, start+1).concat([
-`//// This dynamic section is kept up to date by ‘oomtility/make.js’ ////////////
-
-var projectLC = '${projectLC}'
-var classFiles = '${mains.filter(n=>'.6.js'==n.slice(-5)).map(n=>n.slice(0,-5))}'
-`])
-    out = out.concat( js.slice(end) )
-    fs.writeFileSync( jsPath, out.join('\n') )
-}
-
-
-////
-function updateTestFile (htmlPath, tests) {
-    let out, start = 0, end = 0
-      , html = (fs.readFileSync(htmlPath)+'').split('\n')
-    for (; start<html.length; start++)
-        if (0 < html[start].indexOf('BEGIN DYNAMIC SECTION //////////') ) break
-    for (; end<html.length; end++)
-        if (0 < html[end].indexOf('END DYNAMIC SECTION ////////////')   ) break
-    if ( start === html.length || end === html.length)
-        return console.warn(`Couldn’t find dynamic section in ‘${htmlPath}’`)
-    out = html.slice(0, start+1).concat([
-`//// This dynamic section is kept up to date by ‘oomtility/make.js’ ////////////
-`])
-    //// ‘App-universal.6.js’ defines \`throws()\`, so run it first.
-    tests.forEach( name => {
-        if ( '-universal.6.js' === name.slice(-15) )
-            out.push(`    , [ null, null, null, '../src/test/${name}' ]`)
-    })
-    tests.forEach( name => {
-        if ( '-browser.6.js' === name.slice(-13) )
-            out.push(`    , [ null, null, null, '../src/test/${name}' ]`)
-    })
-    out = out.concat( '', html.slice(end) )
-    fs.writeFileSync( htmlPath, out.join('\n') )
-}
 
 
 //// Hack Uglify, to avoid warnings we don’t care about.
@@ -391,6 +326,7 @@ function minConfig(outFileName) {
        // fromString:  true
        // outFileName: outFileName
         warnings: true
+      , keep_fnames: true // to preserve `Function.prototype/constructor.name`
       , output: { max_line_len:64 } // easier on the eye - but 500 would be safe
       , compress: {
             dead_code: true

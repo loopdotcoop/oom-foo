@@ -1,4 +1,4 @@
-//// OomFoo //// 1.1.1 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.2 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
@@ -18,7 +18,7 @@ const method = OOM.OomFoo.Base.prototype.foo = function (abc) {
     let err, ME = `OomFoo.Base.foo(): ` // error prefix
     if (! (this instanceof OOM.OomFoo.Base)) throw new Error(ME
       + `Must not be called as OomFoo.Base.prototype.foo()`)
-    if ( err = TOOLKIT.validateType({ type:'string' }, abc) )
+    if ( err = TOOLKIT.validateType({ type:String }, abc) )
         throw new TypeError(ME+`abc ${err}`)
 
     this.xyz++

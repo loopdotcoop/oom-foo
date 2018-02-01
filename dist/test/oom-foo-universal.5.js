@@ -1,4 +1,4 @@
-//// OomFoo //// 1.1.1 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.2 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 "use strict";
 !function(ROOT) {
@@ -9,21 +9,23 @@
     var Class = OOM.OomFoo;
     Class.testInstanceFactory = function() {
       return new Class({
-        firstParam: 100,
-        secondParam: new Date
+        firstProp: 100,
+        secondProp: new Date
       }, {});
     };
-    test('The OomFoo class', function() {
+    test('+ve OomFoo class', function() {
       is('object' === (typeof OOM === 'undefined' ? 'undefined' : $traceurRuntime.typeof(OOM)), 'The OOM namespace object exists');
       is('undefined' === typeof OomFoo, 'OomFoo is not global');
       is('function' === typeof Class, 'OomFoo is a function');
       is('OomFoo' === Class.NAME, 'NAME is OomFoo');
-      is('1.1.1' === Class.VERSION, 'VERSION is 1.1.1');
+      is('OomFoo' === Class.name, 'name is OomFoo: "' + Class.name + '"');
+      is('1.1.2' === Class.VERSION, 'VERSION is 1.1.2');
       is('http://oom-foo.loop.coop/' === Class.HOMEPAGE, 'HOMEPAGE is http://oom-foo.loop.coop/');
     });
-    test('Successful OomFoo instantiation', function() {
+    test('+ve OomFoo instance', function() {
       var instance = Class.testInstanceFactory();
       is(instance instanceof Class, 'Is an instance of OomFoo');
+      is(Class === instance.constructor, '`constructor` is OomFoo');
       is('object' === $traceurRuntime.typeof(instance.hub), '`hub` property is an object');
     });
     ROOT.throws = ROOT.throws || (function(fn, expect, prefix) {
@@ -69,7 +71,7 @@
       var instance = Class.testInstanceFactory();
       throws(function() {
         return instance.topLevel(123);
-      }, 'OomFoo.topLevel(): abc is type number not string', 'Passing a number into `abc`');
+      }, 'OomFoo.topLevel(): abc has constructor.name Number not String', 'Passing a number into `abc`');
     });
   });
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
@@ -81,18 +83,20 @@
     var Class = OOM.OomFoo.Base;
     Class.testInstanceFactory = function() {
       return new Class({
-        firstParam: 100,
-        secondParam: new Date
+        firstProp: 100,
+        secondProp: new Date
       }, {});
     };
-    test('The OomFoo.Base class', function() {
+    test('+ve OomFoo.Base class', function() {
       is('object' === (typeof OOM === 'undefined' ? 'undefined' : $traceurRuntime.typeof(OOM)), 'The OOM namespace object exists');
       is('function' === typeof Class, 'OomFoo.Base is a function');
       is('OomFoo.Base' === Class.NAME, 'NAME is OomFoo.Base');
+      is('Base' === Class.name, 'name is Base');
     });
-    test('Successful OomFoo.Base instantiation', function() {
+    test('+ve OomFoo.Base instance', function() {
       var instance = Class.testInstanceFactory();
       is(instance instanceof Class, 'Is an instance of OomFoo.Base');
+      is(Class === instance.constructor, '`constructor` is OomFoo.Base');
       is('object' === $traceurRuntime.typeof(instance.hub), '`hub` property is an object');
     });
   });
@@ -125,7 +129,7 @@
       var instance = Class.testInstanceFactory();
       throws(function() {
         return instance.foo(123);
-      }, 'OomFoo.Base.foo(): abc is type number not string', 'Passing a number into `abc`');
+      }, 'OomFoo.Base.foo(): abc has constructor.name Number not String', 'Passing a number into `abc`');
     });
   });
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
@@ -133,4 +137,4 @@
 
 
 
-//// Made by Oomtility Make 1.1.1 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.1.2 //\\//\\ http://oomtility.loop.coop //////////

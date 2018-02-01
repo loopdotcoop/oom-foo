@@ -1,101 +1,122 @@
-//// OomFoo //// 1.1.1 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.2 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
-    NAME: {value: 'OomFoo'},
-    VERSION: {value: '1.1.1'},
-    HOMEPAGE: {value: 'http://oom-foo.loop.coop/'},
-    REMARKS: {value: 'Initial test of the oom-hub architecture'}
+    NAME: 'OomFoo',
+    VERSION: '1.1.2',
+    HOMEPAGE: 'http://oom-foo.loop.coop/',
+    REMARKS: 'Initial test of the oom-hub architecture'
+  };
+  var PROPS = {
+    propA: Number,
+    propB: [String, Number],
+    propC: {
+      type: String,
+      required: true
+    },
+    propD: {
+      type: Number,
+      default: 100
+    },
+    propE: {
+      type: Object,
+      default: function() {
+        return [1];
+      }
+    },
+    propF: {validator: function(v) {
+        return v > 10;
+      }}
   };
   var OOM = ROOT.OOM = ROOT.OOM || {};
   var TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {};
-  var Class = OOM.OomFoo = ($traceurRuntime.createClass)(function() {
-    var config = arguments[0] !== (void 0) ? arguments[0] : {};
-    var hub = arguments[1] !== (void 0) ? arguments[1] : OOM.hub;
-    var $__3 = this;
-    Object.defineProperty(this, 'id', {value: '123456'.replace(/./g, function(c) {
-        return TOOLKIT.rndCh(48, 122);
-      }).replace(/[:-@\[-`]/g, function(c) {
-        return TOOLKIT.rndCh(97, 122);
-      })});
-    Object.defineProperty(this, 'hub', {value: hub});
-    this._validateConstructor(config);
-    this.validConstructor.forEach(function(valid) {
-      var value = config[valid.name];
-      if (null == value)
-        throw Error('I am unreachable?');
-      Object.defineProperty($__3, valid.name, {value: value});
-    });
-    Object.defineProperty(this, 'ready', {value: this._getReady()});
-  }, {
-    _getReady: function() {
-      var $__3 = this;
-      if (this.setupStart)
-        throw new Error("OomFoo._getReady(): Can only run once");
-      Object.defineProperty(this, 'setupStart', {value: TOOLKIT.getNow()});
-      return new Promise(function(resolve, reject) {
-        setTimeout(function() {
-          Object.defineProperty($__3, 'setupEnd', {value: TOOLKIT.getNow()});
-          resolve({setupDelay: $__3.setupEnd - $__3.setupStart});
-        }, 0);
-      });
-    },
-    _validateConstructor: function(config) {
-      var err,
-          value,
-          ME = "OomFoo._validateConstructor(): ";
-      if ('object' !== (typeof config === 'undefined' ? 'undefined' : $traceurRuntime.typeof(config)))
-        throw new Error(ME + ("config is type " + (typeof config === 'undefined' ? 'undefined' : $traceurRuntime.typeof(config)) + " not object"));
+  var Class = OOM.OomFoo = function() {
+    function OomFoo() {
+      var config = arguments[0] !== (void 0) ? arguments[0] : {};
+      var hub = arguments[1] !== (void 0) ? arguments[1] : OOM.hub;
+      var $__2 = this;
+      Object.defineProperty(this, 'id', {value: '123456'.replace(/./g, function(c) {
+          return TOOLKIT.rndCh(48, 122);
+        }).replace(/[:-@\[-`]/g, function(c) {
+          return TOOLKIT.rndCh(97, 122);
+        })});
+      Object.defineProperty(this, 'hub', {value: hub});
+      this._validateConstructor(config);
       this.validConstructor.forEach(function(valid) {
-        if (!TOOLKIT.applyDefault(valid, config))
-          throw new TypeError(ME + ("config." + valid.name + " is mandatory"));
-        value = config[valid.name];
-        if (err = TOOLKIT.validateType(valid, value))
-          throw new TypeError(ME + ("config." + valid.name + " " + err));
-        if (err = TOOLKIT.validateRange(valid, value))
-          throw new RangeError(ME + ("config." + valid.name + " " + err));
+        var value = config[valid.name];
+        Object.defineProperty($__2, valid.name, {value: value});
       });
-    },
-    get validConstructor() {
-      return [{
-        title: 'First Param',
-        name: 'firstParam',
-        alias: 'fp',
-        tooltip: 'An example numeric parameter, intended as a placeholder',
-        devtip: 'You should replace this placeholder with a real parameter',
-        form: 'range',
-        power: 1,
-        suffix: 'Units',
-        type: 'number',
-        min: 1,
-        max: 100,
-        step: 1,
-        default: 50
-      }, {
-        title: 'Second Param',
-        name: 'secondParam',
-        alias: 'sp',
-        tooltip: 'An example object parameter, intended as a placeholder',
-        devtip: 'You should replace this placeholder with a real parameter',
-        form: 'hidden',
-        type: Date
-      }];
-    },
-    xxx: function(config) {
-      var $__4 = this,
-          hub = $__4.hub,
-          a = $__4.a,
-          b = $__4.b,
-          c = $__4.c;
-      var $__5 = config,
-          xx = $__5.xx,
-          yy = $__5.yy,
-          zz = $__5.zz;
+      Object.defineProperty(this, 'ready', {value: this._getReady()});
     }
-  }, {});
-  Object.defineProperties(Class, META);
+    return ($traceurRuntime.createClass)(OomFoo, {
+      _getReady: function() {
+        var $__2 = this;
+        if (this.setupStart)
+          throw new Error("OomFoo._getReady(): Can only run once");
+        Object.defineProperty(this, 'setupStart', {value: TOOLKIT.getNow()});
+        return new Promise(function(resolve, reject) {
+          setTimeout(function() {
+            Object.defineProperty($__2, 'setupEnd', {value: TOOLKIT.getNow()});
+            resolve({setupDelay: $__2.setupEnd - $__2.setupStart});
+          }, 0);
+        });
+      },
+      _validateConstructor: function(config) {
+        var err,
+            value,
+            ME = "OomFoo._validateConstructor(): ";
+        if ('object' !== (typeof config === 'undefined' ? 'undefined' : $traceurRuntime.typeof(config)))
+          throw new Error(ME + ("config is type " + (typeof config === 'undefined' ? 'undefined' : $traceurRuntime.typeof(config)) + " not object"));
+        this.validConstructor.forEach(function(valid) {
+          if (!TOOLKIT.applyDefault(valid, config))
+            throw new TypeError(ME + ("config." + valid.name + " is mandatory"));
+          value = config[valid.name];
+          if (err = TOOLKIT.validateType(valid, value))
+            throw new TypeError(ME + ("config." + valid.name + " " + err));
+          if (err = TOOLKIT.validateRange(valid, value))
+            throw new RangeError(ME + ("config." + valid.name + " " + err));
+        });
+      },
+      get validConstructor() {
+        return [{
+          title: 'First Prop',
+          name: 'firstProp',
+          alias: 'fp',
+          tooltip: 'An example numeric property, intended as a placeholder',
+          devtip: 'You should replace this placeholder with a real property',
+          form: 'range',
+          power: 1,
+          suffix: 'Units',
+          type: Number,
+          min: 1,
+          max: 100,
+          step: 1,
+          default: 50
+        }, {
+          title: 'Second Prop',
+          name: 'secondProp',
+          alias: 'sp',
+          tooltip: 'An example object property, intended as a placeholder',
+          devtip: 'You should replace this placeholder with a real property',
+          form: 'hidden',
+          type: Date
+        }];
+      },
+      xxx: function(config) {
+        var $__3 = this,
+            hub = $__3.hub,
+            a = $__3.a,
+            b = $__3.b,
+            c = $__3.c;
+        var $__4 = config,
+            xx = $__4.xx,
+            yy = $__4.yy,
+            zz = $__4.zz;
+      }
+    }, {});
+  }();
   TOOLKIT.rndCh = TOOLKIT.rndCh || (function(s, e) {
     return String.fromCharCode(Math.random() * (e - s) + s);
   });
@@ -108,15 +129,17 @@
     return true;
   });
   TOOLKIT.validateType = TOOLKIT.validateType || (function(valid, value) {
-    switch ($traceurRuntime.typeof(valid.type)) {
-      case 'string':
-        return ((typeof value === 'undefined' ? 'undefined' : $traceurRuntime.typeof(value)) === valid.type) ? null : ("is type " + (typeof value === 'undefined' ? 'undefined' : $traceurRuntime.typeof(value)) + " not " + valid.type);
-      case 'function':
-        return (value instanceof valid.type) ? null : ("is not an instance of " + valid.type.name);
-      case 'object':
-        return (value === valid.type) ? null : "is not the expected object";
-    }
-    throw new TypeError("TOOLKIT.validateType: " + ("valid.type for " + valid.name + " is " + $traceurRuntime.typeof(valid.type)));
+    var ME = "TOOLKIT.validateType: ",
+        C = 'constructor';
+    if (null === valid.type)
+      return (null === value) ? null : "is not null";
+    if ('undefined' === typeof valid.type)
+      return ('undefined' === typeof value) ? null : "is not undefined";
+    if (!valid.type.name)
+      throw new TypeError(ME + valid.name + "’s valid.type has no name");
+    if (!value[C] || !value[C].name)
+      throw new TypeError(ME + valid.name + ("’s value has no " + C + ".name"));
+    return (valid.type.name === value[C].name) ? null : ("has " + C + ".name " + value[C].name + " not " + valid.type.name);
   });
   TOOLKIT.validateRange = TOOLKIT.validateRange || (function(valid, value) {
     if (null != valid.min && valid.min > value)
@@ -136,6 +159,13 @@
     }
     return now;
   });
+  TOOLKIT.toPropsObj = TOOLKIT.toPropsObj || (function(src) {
+    var obj = {};
+    for (var k in src)
+      obj[k] = {value: src[k]};
+    return obj;
+  });
+  Object.defineProperties(Class, TOOLKIT.toPropsObj(META));
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
 !function(ROOT) {
   'use strict';
@@ -150,7 +180,7 @@
         ME = "OomFoo.topLevel(): ";
     if (!(this instanceof OOM.OomFoo))
       throw new Error(ME + "Must not be called as OomFoo.prototype.topLevel()");
-    if (err = TOOLKIT.validateType({type: 'string'}, abc))
+    if (err = TOOLKIT.validateType({type: String}, abc))
       throw new TypeError(ME + ("abc " + err));
     this.xyz++;
     return abc + ' ok!';
@@ -161,96 +191,118 @@
 !function(ROOT) {
   'use strict';
   var META = {
-    NAME: {value: 'OomFoo.Base'},
-    REMARKS: {value: '@TODO'}
+    NAME: 'OomFoo.Base',
+    REMARKS: '@TODO'
+  };
+  var PROPS = {
+    propA: Number,
+    propB: [String, Number],
+    propC: {
+      type: String,
+      required: true
+    },
+    propD: {
+      type: Number,
+      default: 100
+    },
+    propE: {
+      type: Object,
+      default: function() {
+        return [1];
+      }
+    },
+    propF: {validator: function(v) {
+        return v > 10;
+      }}
   };
   var OOM = ROOT.OOM = ROOT.OOM || {};
   var TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {};
-  var Class = OOM.OomFoo.Base = ($traceurRuntime.createClass)(function() {
-    var config = arguments[0] !== (void 0) ? arguments[0] : {};
-    var hub = arguments[1] !== (void 0) ? arguments[1] : OOM.hub;
-    var $__3 = this;
-    Object.defineProperty(this, 'id', {value: '123456'.replace(/./g, function(c) {
-        return TOOLKIT.rndCh(48, 122);
-      }).replace(/[:-@\[-`]/g, function(c) {
-        return TOOLKIT.rndCh(97, 122);
-      })});
-    Object.defineProperty(this, 'hub', {value: hub});
-    this._validateConstructor(config);
-    this.validConstructor.forEach(function(valid) {
-      var value = config[valid.name];
-      if (null == value)
-        throw Error('I am unreachable?');
-      Object.defineProperty($__3, valid.name, {value: value});
-    });
-    Object.defineProperty(this, 'ready', {value: this._getReady()});
-  }, {
-    _getReady: function() {
-      var $__3 = this;
-      if (this.setupStart)
-        throw new Error("OomFoo.Base._getReady(): Can only run once");
-      Object.defineProperty(this, 'setupStart', {value: TOOLKIT.getNow()});
-      return new Promise(function(resolve, reject) {
-        setTimeout(function() {
-          Object.defineProperty($__3, 'setupEnd', {value: TOOLKIT.getNow()});
-          resolve({setupDelay: $__3.setupEnd - $__3.setupStart});
-        }, 0);
-      });
-    },
-    _validateConstructor: function(config) {
-      var err,
-          value,
-          ME = "OomFoo.Base._validateConstructor(): ";
-      if ('object' !== (typeof config === 'undefined' ? 'undefined' : $traceurRuntime.typeof(config)))
-        throw new Error(ME + ("config is type " + (typeof config === 'undefined' ? 'undefined' : $traceurRuntime.typeof(config)) + " not object"));
+  var Class = OOM.OomFoo.Base = function() {
+    function Base() {
+      var config = arguments[0] !== (void 0) ? arguments[0] : {};
+      var hub = arguments[1] !== (void 0) ? arguments[1] : OOM.hub;
+      var $__2 = this;
+      Object.defineProperty(this, 'id', {value: '123456'.replace(/./g, function(c) {
+          return TOOLKIT.rndCh(48, 122);
+        }).replace(/[:-@\[-`]/g, function(c) {
+          return TOOLKIT.rndCh(97, 122);
+        })});
+      Object.defineProperty(this, 'hub', {value: hub});
+      this._validateConstructor(config);
       this.validConstructor.forEach(function(valid) {
-        if (!TOOLKIT.applyDefault(valid, config))
-          throw new TypeError(ME + ("config." + valid.name + " is mandatory"));
-        value = config[valid.name];
-        if (err = TOOLKIT.validateType(valid, value))
-          throw new TypeError(ME + ("config." + valid.name + " " + err));
-        if (err = TOOLKIT.validateRange(valid, value))
-          throw new RangeError(ME + ("config." + valid.name + " " + err));
+        var value = config[valid.name];
+        Object.defineProperty($__2, valid.name, {value: value});
       });
-    },
-    get validConstructor() {
-      return [{
-        title: 'First Param',
-        name: 'firstParam',
-        alias: 'fp',
-        tooltip: 'An example numeric parameter, intended as a placeholder',
-        devtip: 'You should replace this placeholder with a real parameter',
-        form: 'range',
-        power: 1,
-        suffix: 'Units',
-        type: 'number',
-        min: 1,
-        max: 100,
-        step: 1,
-        default: 50
-      }, {
-        title: 'Second Param',
-        name: 'secondParam',
-        alias: 'sp',
-        tooltip: 'An example object parameter, intended as a placeholder',
-        devtip: 'You should replace this placeholder with a real parameter',
-        form: 'hidden',
-        type: Date
-      }];
-    },
-    xxx: function(config) {
-      var $__4 = this,
-          hub = $__4.hub,
-          a = $__4.a,
-          b = $__4.b,
-          c = $__4.c;
-      var $__5 = config,
-          xx = $__5.xx,
-          yy = $__5.yy,
-          zz = $__5.zz;
+      Object.defineProperty(this, 'ready', {value: this._getReady()});
     }
-  }, {});
-  Object.defineProperties(Class, META);
+    return ($traceurRuntime.createClass)(Base, {
+      _getReady: function() {
+        var $__2 = this;
+        if (this.setupStart)
+          throw new Error("OomFoo.Base._getReady(): Can only run once");
+        Object.defineProperty(this, 'setupStart', {value: TOOLKIT.getNow()});
+        return new Promise(function(resolve, reject) {
+          setTimeout(function() {
+            Object.defineProperty($__2, 'setupEnd', {value: TOOLKIT.getNow()});
+            resolve({setupDelay: $__2.setupEnd - $__2.setupStart});
+          }, 0);
+        });
+      },
+      _validateConstructor: function(config) {
+        var err,
+            value,
+            ME = "OomFoo.Base._validateConstructor(): ";
+        if ('object' !== (typeof config === 'undefined' ? 'undefined' : $traceurRuntime.typeof(config)))
+          throw new Error(ME + ("config is type " + (typeof config === 'undefined' ? 'undefined' : $traceurRuntime.typeof(config)) + " not object"));
+        this.validConstructor.forEach(function(valid) {
+          if (!TOOLKIT.applyDefault(valid, config))
+            throw new TypeError(ME + ("config." + valid.name + " is mandatory"));
+          value = config[valid.name];
+          if (err = TOOLKIT.validateType(valid, value))
+            throw new TypeError(ME + ("config." + valid.name + " " + err));
+          if (err = TOOLKIT.validateRange(valid, value))
+            throw new RangeError(ME + ("config." + valid.name + " " + err));
+        });
+      },
+      get validConstructor() {
+        return [{
+          title: 'First Prop',
+          name: 'firstProp',
+          alias: 'fp',
+          tooltip: 'An example numeric property, intended as a placeholder',
+          devtip: 'You should replace this placeholder with a real property',
+          form: 'range',
+          power: 1,
+          suffix: 'Units',
+          type: Number,
+          min: 1,
+          max: 100,
+          step: 1,
+          default: 50
+        }, {
+          title: 'Second Prop',
+          name: 'secondProp',
+          alias: 'sp',
+          tooltip: 'An example object property, intended as a placeholder',
+          devtip: 'You should replace this placeholder with a real property',
+          form: 'hidden',
+          type: Date
+        }];
+      },
+      xxx: function(config) {
+        var $__3 = this,
+            hub = $__3.hub,
+            a = $__3.a,
+            b = $__3.b,
+            c = $__3.c;
+        var $__4 = config,
+            xx = $__4.xx,
+            yy = $__4.yy,
+            zz = $__4.zz;
+      }
+    }, {});
+  }();
+  Object.defineProperties(Class, TOOLKIT.toPropsObj(META));
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
 !function(ROOT) {
   'use strict';
@@ -265,7 +317,7 @@
         ME = "OomFoo.Base.foo(): ";
     if (!(this instanceof OOM.OomFoo.Base))
       throw new Error(ME + "Must not be called as OomFoo.Base.prototype.foo()");
-    if (err = TOOLKIT.validateType({type: 'string'}, abc))
+    if (err = TOOLKIT.validateType({type: String}, abc))
       throw new TypeError(ME + ("abc " + err));
     this.xyz++;
     return abc + ' ok!';
@@ -277,4 +329,4 @@
 
 
 
-//// Made by Oomtility Make 1.1.1 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.1.2 //\\//\\ http://oomtility.loop.coop //////////
