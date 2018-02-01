@@ -1,4 +1,4 @@
-//// OomFoo //// 1.1.0 //// January 2018 //// http://oom-foo.loop.coop/ ////////
+//// OomFoo //// 1.1.1 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -7,10 +7,10 @@ jQuery( function($) {
 
 
 
-//// Generate an instance of OomFoo with default configuration.
+//// Generate an instance of ${classname} with default configuration.
 const instance = new ROOT.OOM.OomFoo({
-    firstParameter: 100
-  , secondParameter: new Date
+    firstParam: 100
+  , secondParam: new Date
 })
 console.log(instance)
 

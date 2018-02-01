@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Alias'
-    , VERSION  = '1.1.0'
+    , VERSION  = '1.1.1'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , HELP =
@@ -67,7 +67,7 @@ let opt, path, original, removed, diff, remove = false
 while ( opt = process.argv.shift() ) {
     if ('-h' === opt || '--help'    === opt) return console.log(HELP)
     if ('-r' === opt || '--remove'  === opt) remove = true
-    if ('-v' === opt || '--version' === opt) return console.log(VERSION)
+    if ('-v' === opt || '--version' === opt) return console.log(NAME, VERSION)
 }
 
 

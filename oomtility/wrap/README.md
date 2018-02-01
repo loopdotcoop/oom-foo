@@ -13,7 +13,7 @@
 [Demo](${{homepage}}support/demo.html)  
 
 Oom &nbsp;
-🔅 &nbsp;
+🔅 &nbsp;
 Interactive &nbsp;
 🌟 &nbsp;
 3d &nbsp;

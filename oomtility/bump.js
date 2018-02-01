@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Bump'
-    , VERSION  = '1.1.0'
+    , VERSION  = '1.1.1'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , HELP =
@@ -136,7 +136,7 @@ const newMthYYYY  = `${newMth} ${newYYYY}` // 'January 2018'
 let opt, major, minor, patch, set, setV
 while ( opt = process.argv.shift() ) {
     if ('-h' === opt || '--help'    === opt) return console.log(HELP)
-    if ('-v' === opt || '--version' === opt) return console.log(VERSION)
+    if ('-v' === opt || '--version' === opt) return console.log(NAME, VERSION)
     if ('-1' === opt || '--major'   === opt) { major = true; continue }
     if ('-2' === opt || '--minor'   === opt) { minor = true; continue }
     if ('-3' === opt || '--patch'   === opt) { patch = true; continue } //unused
@@ -281,5 +281,6 @@ function monthNames() {
       , 'December'
     ]
 }
+
 
 }()

@@ -17,3 +17,4 @@
 1.0.14 oomtility/wrap.js updates oomtility/wrapped.js with oomtility/wrap/
 1.0.15 With oomtility/http.js, which runs a beefy server and dev environment
 1.1.0 All oomtility/wrap/ files in place
+1.1.1 With Afrane and Vue; oomtility/wrapped.js writes large files in chunks

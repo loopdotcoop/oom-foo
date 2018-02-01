@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Make'
-    , VERSION  = '1.1.0'
+    , VERSION  = '1.1.1'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Made by ${NAME} ${VERSION} //\\\\//\\\\ `
@@ -109,7 +109,7 @@ let opt, es6, es5, min, mains, demos, tests, pos, names, writeFileTally = 0
 //// Deal with command-line options.
 while ( opt = process.argv.shift() ) {
     if ('-h' === opt || '--help'    === opt) return console.log(HELP)
-    if ('-v' === opt || '--version' === opt) return console.log(VERSION)
+    if ('-v' === opt || '--version' === opt) return console.log(NAME, VERSION)
 }
 
 
@@ -399,6 +399,7 @@ function minConfig(outFileName) {
     }
 }
 
+
 //// Remove the pointless line `//# sourceURL=<compile-source>`.
 function removeSourceMapRef (code) {
     const sourceMapPos = code.lastIndexOf('/'+'/# sourceURL=<compile-source>\n')
@@ -407,11 +408,13 @@ function removeSourceMapRef (code) {
     return code.slice(0, sourceMapPos)
 }
 
+
 //// Basic wrapper round `fs.writeFileSync()`, which keeps a tally.
 function writeFileSyncAndTally (path, content) {
     fs.writeFileSync(path, content)
     writeFileTally++
 }
+
 
 //// Correct a traceur error.
 function traceurFix (es5) {
@@ -420,5 +423,6 @@ function traceurFix (es5) {
       , "efined' : $traceurRuntime.typeof(global)) ? global : this);"
     )
 }
+
 
 }()

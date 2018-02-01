@@ -1,13 +1,5 @@
 !function () { 'use strict'
 
-//// YOU MAY NEED TO ADD MORE EXTENSIONS IN HERE:
-const BINARY_EXTS = [ // case-insensitive
-    'woff2'
-  , 'png'
-  , 'ico'
-]
-const rxBinaryExts = new RegExp( '\\.' + BINARY_EXTS.join('$|\\.') + '$', 'i')
-
 //// YOU MAY NEED TO ADD MORE CONST NAMES IN HERE:
 const CONSTS = {
     isApp:       0
@@ -30,7 +22,7 @@ const CONSTS = {
 }
 
 const NAME     = 'Oomtility Wrap'
-    , VERSION  = '1.1.0'
+    , VERSION  = '1.1.1'
     , HOMEPAGE = 'https://oomtility.loop.coop'
     , HELP =
 `
@@ -51,7 +43,7 @@ Basic Usage
 $ cd /path/to/your/oom/repo/  # An Oom repo directory
 $ oomwrap --version           # Show the current ${NAME} version
 $ oomwrap                     # Update oomtility/wrapped.js with oomtility/wrap/
-$ oomwrap foo.js bar/baz.png  # Output \`getFooJs()\` and \`getBazPng()\`
+$ oomwrap foo.js bar/baz.png  # Output \`writeFooJs()\` and \`writeBazPng()\`
 
 Options
 -------
@@ -81,6 +73,7 @@ if ('function' !== typeof require)
 
 //// Load library functionality.
 const fs = require('fs')
+    , { rxBinaryExt } = require('./wrapped.js')
 
 //// Declare variables.
 let opt, dummy, paths = [], out = []
@@ -89,7 +82,7 @@ let opt, dummy, paths = [], out = []
 while ( opt = process.argv.shift() ) {
     if ('-h' === opt || '--help'    === opt) return console.log(HELP)
     if ('-d' === opt || '--dummy'   === opt) { dummy = true; continue }
-    if ('-v' === opt || '--version' === opt) return console.log(VERSION)
+    if ('-v' === opt || '--version' === opt) return console.log(NAME, VERSION)
     paths.push(opt)
 }
 
@@ -209,7 +202,7 @@ paths.forEach( path => {
 
     out = out.concat([
         `//// An ${NAME} of ${path.split('/').pop()} \\\\//\\\\// ${HOMEPAGE} ////`
-      , `module.exports.${pathToFnName(path)} = function (config) {`
+        , `module.exports.${pathToFnName(path)} = function (config, path) {`
     ])
 
     //// Generate the config-to-const code.
@@ -219,14 +212,30 @@ paths.forEach( path => {
             consts.push(c)
     if (0 < consts.length) {
         consts.forEach(c => {
-            configToConst.push((docomma ? '      , ' : '        ') + c)
+            configToConst.push((docomma ? '  , ' : '    ') + c)
             docomma = true
         })
-        out = out.concat('    let {', configToConst, '    } = config\n')
+        out = out.concat('const {', configToConst, '} = config')
     }
 
-    //// Add Some boilerplate around the wrapped code.
-    out = out.concat("    return ''", wrapped, '}\n\n\n\n')
+    //// Define options for `fs.writeFileSync()`.
+    out = out.concat(
+        'const encoding = rxBinaryExt.test(path) ? \'binary\' : \'utf8\''
+      , 'const flag = \'a\'' // 'a' appends to the end of the file
+    )
+
+    //// Add file-append code for each chunk of 2500 lines (just one chunk will
+    //// be used for files under about 200KB).
+    for (let i = 0; i<wrapped.length; i += 2500) {
+        out = out.concat(
+            'fs.writeFileSync(path, \'\''
+          , wrapped.slice(i, i + 2500)
+          , '  , { encoding, flag } )'
+        )
+    }
+
+    //// Finish off the function.
+    out = out.concat('}\n\n\n\n')
 
 })
 
@@ -248,7 +257,7 @@ function encodeUTF16 (str, u='\\u', path, num) {
     let pos=0, out='', code, hex
 
     //// Convert from UTF-8 to UTF-16, unless it’s a binary file.
-    if (! rxBinaryExts.test(path) )
+    if (! rxBinaryExt.test(path) )
         str = utf8to16(str, path, num)
 
     for (; pos<str.length; pos++) {
@@ -371,14 +380,15 @@ function getLineLengthReduction (line, pos, len) {
 }
 
 
-//// Similar to `lcToTc()` in ‘init.js’. 'foo/bar-baz.txt' to 'getBarBazTxt'.
+//// Similar to `lcToTc()` in ‘init.js’. 'foo/bar-baz.txt' to 'writeBarBazTxt'.
 function pathToFnName (path) {
-    return 'get' + (
+    return 'write' + (
         path.split('/').pop().split(/[- .]/g).map(
             w => w ? w[0].toUpperCase() + w.substr(1) : ''
         ).join('')
     )
 }
+
 
 ////
 function updateWrappedJs (wrappedPath, out) {
@@ -396,15 +406,18 @@ function updateWrappedJs (wrappedPath, out) {
     fs.writeFileSync( wrappedPath, out.join('\n'), 'binary' )
 }
 
+
 ////
 function rndCh (s, e) {
     return String.fromCharCode(Math.random() * (e-s) + s)
 }
+
 
 ////
 function rndCh8 () {
     return '12345678'.replace( /./g,         c=> rndCh(48,122) ) // 0-z
                      .replace( /[:-@\[-`]/g, c=> rndCh(97,122) ) // a-z
 }
+
 
 }()

@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Auto'
-    , VERSION  = '1.1.0'
+    , VERSION  = '1.1.1'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Initialised by ${NAME} ${VERSION}\n`
@@ -104,7 +104,7 @@ let opt, remove, classes = [], methods = []
 while ( opt = process.argv.shift() ) {
     if ('-h' === opt || '--help'    === opt) return console.log(HELP)
     if ('-r' === opt || '--remove'  === opt) { remove = true; continue }
-    if ('-v' === opt || '--version' === opt) return console.log(VERSION)
+    if ('-v' === opt || '--version' === opt) return console.log(NAME, VERSION)
     if ( rxClassname.test(opt) )
         classes.push(opt)
     else if ( rxMethodname.test(opt) )
@@ -145,74 +145,84 @@ methods = new Set(methods)
 //// 1.  src/main/Base.Sub.6.js                  Source file for Base.Sub class
 
 classes.forEach( name => { generateOrRemove(
-    `src/main/${name}.6.js`
-  , generateClass(name)
+    name
+  , `src/main/${name}.6.js`
+  , generateClass
 ) })
 
 
 //// 2.  src/test/Base.Sub-universal.6.js        Basic unit tests you’ll add to
 classes.forEach( name => { generateOrRemove(
-    `src/test/${name}-universal.6.js`
-  , generateClassUniversal(name)
+    name
+  , `src/test/${name}-universal.6.js`
+  , generateClassUniversal
 ) })
 
 
 //// 3.  src/test/Base.Sub-browser.6.js          As above, for browsers only
 classes.forEach( name => { generateOrRemove(
-    `src/test/${name}-browser.6.js`
-  , generateClassBrowser(name)
+    name
+  , `src/test/${name}-browser.6.js`
+  , generateClassBrowser
 ) })
 
 
 //// 4.  src/test/Base.Sub-nonbrowser.6.js       As above, for Node.js only
 classes.forEach( name => { generateOrRemove(
-    `src/test/${name}-nonbrowser.6.js`
-  , generateClassNonbrowser(name)
+    name
+  , `src/test/${name}-nonbrowser.6.js`
+  , generateClassNonbrowser
 ) })
 
 
 //// 5.  src/demo/Base.Sub-demo.6.js             Usage example script
 classes.forEach( name => { generateOrRemove(
-    `src/demo/${name}-demo.6.js`
-  , generateDemoScript(name)
+    name
+  , `src/demo/${name}-demo.6.js`
+  , generateDemoScript
 ) })
 
 
 //// 6.  support/demo-base.sub.html              Usage example page (lowercase)
 classes.forEach( name => { generateOrRemove(
-    `support/demo-${name.toLowerCase().replace(/\./g,'-')}.html`
-  , generateDemoPage(name)
+    name
+  , `support/demo-${name.toLowerCase().replace(/\./g,'-')}.html`
+  , generateDemoPage
 ) })
 
 
 //// 7.  src/main/Base.Sub.foo.6.js              Source file for foo() method
 
 methods.forEach( name => { generateOrRemove(
-    `src/main/${-1===name.indexOf('.')?'App.':''}${name}.6.js`
-  , generateMethod(name)
+    name
+  , `src/main/${-1===name.indexOf('.')?'App.':''}${name}.6.js`
+  , generateMethod
 ) }) // note that we prefix a top-level method’s filename with ‘App.’
 
 
 //// 8.  src/test/Base.Sub.foo-universal.6.js    Basic unit tests you’ll add to
 methods.forEach( name => { generateOrRemove(
-    `src/test/${-1===name.indexOf('.')?'App.':''}${name}-universal.6.js`
-  , generateMethodUniversal(name)
+    name
+  , `src/test/${-1===name.indexOf('.')?'App.':''}${name}-universal.6.js`
+  , generateMethodUniversal
 ) })
 
 
 //// 9.  src/test/Base.Sub.foo-browser.6.js      As above, for browsers only
 
 methods.forEach( name => { generateOrRemove(
-    `src/test/${-1===name.indexOf('.')?'App.':''}${name}-browser.6.js`
-  , generateMethodBrowser(name)
+    name
+  , `src/test/${-1===name.indexOf('.')?'App.':''}${name}-browser.6.js`
+  , generateMethodBrowser
 ) })
 
 
 //// 10. src/test/Base.Sub.foo-nonbrowser.6.js   As above, for Node.js only
 
 methods.forEach( name => { generateOrRemove(
-    `src/test/${-1===name.indexOf('.')?'App.':''}${name}-nonbrowser.6.js`
-  , generateMethodNonbrowser(name)
+    name
+  , `src/test/${-1===name.indexOf('.')?'App.':''}${name}-nonbrowser.6.js`
+  , generateMethodNonbrowser
 ) })
 
 
@@ -231,11 +241,107 @@ methods.forEach( name => { generateOrRemove(
 
 
 
+//// GENERATORS
+
+
+////
+function generateClass (name, path) {
+    wrapped.writeClass6Js({
+        isApp: false
+      , isTop: 2 > name.split('.').length
+      , classname: `${projectTC}.${name}`
+      , topline
+      , remarks: '@TODO'
+    }, path)
+}
+
+
+////
+function generateClassUniversal (name, path) {
+    wrapped.writeClassUniversal6Js({
+        isApp: false
+      , isTop: 2 > name.split('.').length
+      , classname: `${projectTC}.${name}`
+      , topline
+    }, path)
+}
+
+
+////
+function generateClassBrowser (name, path) {
+    wrapped.writeClassBrowser6Js({
+        isApp: false
+      , isTop: 2 > name.split('.').length
+      , classname: `${projectTC}.${name}`
+      , topline
+    }, path)
+}
+
+
+////
+function generateClassNonbrowser (name, path) {
+    wrapped.writeClassNonbrowser6Js({
+        isApp: false
+      , isTop: 2 > name.split('.').length
+      , classname: `${projectTC}.${name}`
+      , topline
+    }, path)
+}
+
+
+////
+function generateDemoScript (name, path) {
+    wrapped.writeDemo6Js({
+        classname: `${projectTC}.${name}`
+      , topline
+    }, path)
+}
+
+
+////
+function generateDemoPage (name, path) {
+    wrapped.writeClassDemoHtml({
+        classname: `${projectTC}.${name}`
+      , projectTC
+      , name
+      , homepage: projectURL
+      , repo: projectRepo
+      , npm: projectNPM
+    }, path)
+}
+
+
+////
+function generateMethod (name, path) {
+    wrapped.writeMethod6Js( getConfig(name), path )
+}
+
+
+////
+function generateMethodUniversal (name, path) {
+    wrapped.writeMethodUniversal6Js( getConfig(name), path )
+}
+
+
+////
+function generateMethodBrowser (name, path) {
+    wrapped.writeMethodBrowser6Js( getConfig(name), path )
+}
+
+
+////
+function generateMethodNonbrowser (name, path) {
+    wrapped.writeMethodNonbrowser6Js( getConfig(name), path )
+}
+
+
+
+
 //// UTILITY
 
 
 ////
-function generateOrRemove (path, content) {
+function generateOrRemove (name, path, generator) {
     const exists = fs.existsSync(path)
     if (remove && ! exists)
         return console.warn(`Doesn’t exist: ${path}`)
@@ -244,108 +350,13 @@ function generateOrRemove (path, content) {
     if (remove)
         fs.unlinkSync(path)
     else
-        fs.writeFileSync(path, content)
+        generator(name, path)
 }
 
 
 ////
-function generateClass (name) {
-    const isTop = 2 > name.split('.').length
-    return wrapped.getClass6Js({
-        isApp: false
-      , isTop
-      , classname: `${projectTC}.${name}`
-      , topline
-      , remarks: '@TODO'
-    })
-}
-
-
-////
-function generateClassUniversal (name) {
-    const isTop = 2 > name.split('.').length
-    return wrapped.getClassUniversal6Js({
-        isApp: false
-      , isTop
-      , classname: `${projectTC}.${name}`
-      , topline
-    })
-}
-
-
-////
-function generateClassBrowser (name) {
-    const isTop = 2 > name.split('.').length
-    return wrapped.getClassBrowser6Js({
-        isApp: false
-      , isTop
-      , classname: `${projectTC}.${name}`
-      , topline
-    })
-}
-
-
-////
-function generateClassNonbrowser (name) {
-    const isTop = 2 > name.split('.').length
-    return wrapped.getClassNonbrowser6Js({
-        isApp: false
-      , isTop
-      , classname: `${projectTC}.${name}`
-      , topline
-    })
-}
-
-
-////
-function generateDemoScript (name) {
-    return wrapped.getDemo6Js({
-        classname: `${projectTC}.${name}`
-      , topline
-    })
-}
-
-
-////
-function generateDemoPage (name) {
-    return wrapped.getClassDemoHtml({
-        classname: `${projectTC}.${name}`
-      , projectTC
-      , name
-      , homepage: projectURL
-      , repo: projectRepo
-      , npm: projectNPM
-    })
-}
-
-
-////
-function generateMethod (name) {
-    return wrapped.getMethod6Js( generateConfig(name) )
-}
-
-
-////
-function generateMethodUniversal (name) {
-    return wrapped.getMethodUniversal6Js( generateConfig(name) )
-}
-
-
-////
-function generateMethodBrowser (name) {
-    return wrapped.getMethodBrowser6Js( generateConfig(name) )
-}
-
-
-////
-function generateMethodNonbrowser (name) {
-    return wrapped.getMethodNonbrowser6Js( generateConfig(name) )
-}
-
-
-////
-function generateConfig (name) {
-    const parts =  name.split('.')
+function getConfig (name) {
+    const parts = name.split('.')
     return {
         classname: `${projectTC}${1<parts.length?'.':''}${parts.slice(0,-1).join('.')}`
       , methodname: `${projectTC}.${name}`
