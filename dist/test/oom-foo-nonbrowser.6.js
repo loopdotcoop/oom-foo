@@ -2,7 +2,7 @@
 
 
 
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -25,11 +25,11 @@ test('Nonbrowser test the OomFoo class', () => {
 
 
 
-//\\//\\ src/test/App.topLevel-nonbrowser.6.js
+//\\//\\ src/test/App.appfn-nonbrowser.6.js
 
 
 
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')
@@ -38,7 +38,7 @@ const Class = OOM.OomFoo
 
 
 
-test('Nonbrowser test the OomFoo.topLevel() method', () => {
+test('Nonbrowser test the OomFoo.appfn() method', () => {
     is(true, '@TODO')
 })
 
@@ -54,7 +54,7 @@ test('Nonbrowser test the OomFoo.topLevel() method', () => {
 
 
 
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 const Class = OOM.OomFoo.Base
@@ -74,20 +74,19 @@ test('Nonbrowser test the OomFoo.Base class', () => {
 
 
 
-//\\//\\ src/test/Base.foo-nonbrowser.6.js
+//\\//\\ src/test/Base.Sub-nonbrowser.6.js
 
 
 
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
-if ('function' != typeof jQuery) throw Error('jQuery not found')
-const Class = OOM.OomFoo.Base
+const Class = OOM.OomFoo.Base.Sub
 
 
 
 
-test('Nonbrowser test the OomFoo.Base.foo() method', () => {
+test('Nonbrowser test the OomFoo.Base.Sub class', () => {
     is(true, '@TODO')
 })
 
@@ -99,4 +98,54 @@ test('Nonbrowser test the OomFoo.Base.foo() method', () => {
 
 
 
-//// Made by Oomtility Make 1.1.4 //\\//\\ http://oomtility.loop.coop //////////
+//\\//\\ src/test/Base.Sub.subfn-nonbrowser.6.js
+
+
+
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+
+!function (ROOT) { 'use strict'
+if ('function' != typeof jQuery) throw Error('jQuery not found')
+const Class = OOM.OomFoo.Base.Sub
+
+
+
+
+test('Nonbrowser test the OomFoo.Base.Sub.subfn() method', () => {
+    is(true, '@TODO')
+})
+
+
+
+
+}( 'object' === typeof global ? global : this ) // `window` in a browser
+
+
+
+
+//\\//\\ src/test/Base.basefn-nonbrowser.6.js
+
+
+
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+
+!function (ROOT) { 'use strict'
+if ('function' != typeof jQuery) throw Error('jQuery not found')
+const Class = OOM.OomFoo.Base
+
+
+
+
+test('Nonbrowser test the OomFoo.Base.basefn() method', () => {
+    is(true, '@TODO')
+})
+
+
+
+
+}( 'object' === typeof global ? global : this ) // `window` in a browser
+
+
+
+
+//// Made by Oomtility Make 1.1.5 //\\//\\ http://oomtility.loop.coop //////////

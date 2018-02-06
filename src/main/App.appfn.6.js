@@ -1,9 +1,9 @@
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
 const META = {
-    NAME:     { value:'OomFoo.topLevel' }
+    NAME:     { value:'OomFoo.appfn' }
   , REMARKS:  { value:'@TODO' }
 }
 
@@ -13,24 +13,24 @@ const OOM     = ROOT.OOM    = ROOT.OOM    || {}
 const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
 
 
-//// Define the `OomFoo.topLevel()` method.
-const method = OOM.OomFoo.prototype.topLevel = function (abc) {
-    let err, ME = `OomFoo.topLevel(): ` // error prefix
+//// Define the `OomFoo.appfn()` method.
+const method = OOM.OomFoo.prototype.appfn = function (abc) {
+    let err, ME = `OomFoo.appfn(): ` // error prefix
     if (! (this instanceof OOM.OomFoo)) throw new Error(ME
-      + `Must not be called as OomFoo.prototype.topLevel()`)
+      + `Must not be called as OomFoo.prototype.appfn()`)
     if ( err = TOOLKIT.validateType({ type:String }, abc) )
         throw new TypeError(ME+`abc ${err}`)
 
     this.xyz++
     return abc + ' ok!'
 
-}//OomFoo.topLevel()
+}//OomFoo.appfn()
 
-//// A tally of the number of times `topLevel()` is called.
+//// A tally of the number of times `appfn()` is called.
 OOM.OomFoo.prototype.xyz = 0
 
 
-//// Add static constants to the `topLevel()` method.
+//// Add static constants to the `appfn()` method.
 Object.defineProperties(method, META)
 
 

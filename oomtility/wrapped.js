@@ -13,7 +13,7 @@ const rxBinaryExt = module.exports.rxBinaryExt =
     new RegExp( '\\.' + BINARY_EXTS.join('$|\\.') + '$', 'i')
 
 const NAME     = 'Oomtility Wrapped'
-    , VERSION  = '1.1.4'
+    , VERSION  = '1.1.5'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
 
@@ -134,6 +134,9 @@ function getHtmlTop (config) {
 <link rel="stylesheet" href="${pathToSupport}asset/css/bootstrap.4.0.0.min.css">
 <link rel="stylesheet" href="${pathToSupport}asset/css/main.css">
 
+<!-- A-Frame wants to be loaded in the <HEAD> -->
+<script src="${pathToSupport}asset/js/aframe-0.7.0.min.js"></script>
+
 
 </head>
 <body>
@@ -150,7 +153,7 @@ function getHtmlTop (config) {
   <option value="~1~">ctrl-alt-1: ES5 Minified</option>
   <option value="~2~">ctrl-alt-2: ES6 Production</option>
   <option value="~3~">ctrl-alt-3: ES6 Development</option>
-  <script>!function(d,S,m,s){m=d.scripts[0].parentNode,s=~~d.cookie.split('~')[1
+  <script>!function(d,S,m,s){m=d.scripts[1].parentNode,s=~~d.cookie.split('~')[1
   ],m[S]=s,d.addEventListener('keypress',function(e){s=e.charCode-48;if(0<=s&&4>
   s&&e.ctrlKey&&e.altKey)m[S]=s,m.dispatchEvent(new Event('change'))})}(document
   ,'selectedIndex')</script>
@@ -359,10 +362,15 @@ fs.writeFileSync(path, ''
   + getHtmlTop(config)
   + `
 
-<!-- Displays the demo -->
-<div id="demo">
-    <oom-${projectTC.toLowerCase()}>Loading...</oom-${projectTC.toLowerCase()}>
+<!-- Displays the Vue-only demo -->
+<div id="vue-only-demo">
+  <oom-${projectTC.toLowerCase()}>Loading...</oom-${projectTC.toLowerCase()}>
 </div>
+
+<!-- Displays the Aframe-only demo -->
+<a-scene id="aframe-only-demo">
+  <a-box></a-box>
+</a-scene>
 
 
 <!-- Load the proper format scripts, according to the '#ecmaswitch' menu -->
@@ -1031,6 +1039,9 @@ isTop ? `
                     .replace( /[:-@\\[-\`]/g, c=>TOOLKIT.rndCh(97,122) ) }) // a-z
 `:`
         super(config, hub)
+
+        //// Properties added to \`api\` are exposed to Vue etc.
+        const api = this.api = {}
 `
 ) + '\n'
   + '\n'
@@ -1469,9 +1480,9 @@ Vue.component('oom-${nameLC.split(".").pop()}', {
   + '\n'
   + '\n'
   + '\n'
-  + '//// Create Vue\u2019s root instance.\n'
+  + '//// Create the root instance for the Vue-only demo.\n'
   + 'new Vue({\n'
-  + '    el: \'#demo\'\n'
+  + '    el: \'#vue-only-demo\'\n'
   + '})\n'
   + '\n'
   + '\n'
@@ -18831,14 +18842,14 @@ const {
 const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
 const flag = 'a'
 fs.writeFileSync(path, ''
-  + '//// ECMASwitch //// 1.1.1 //// January 2018 //// ecmaswitch.loop.coop/ ///////\n'
+  + '//// ECMASwitch //// 1.1.5 //// January 2018 //// ecmaswitch.loop.coop/ ///////\n'
   + '\n'
   + '!function (ROOT) { \'use strict\'\n'
   + '\n'
   + '//// Create the namespace-object if it does not already exist and add constants.\n'
   + 'var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}\n'
   + 'ECMASwitch.NAME     = \'ECMASwitch\'\n'
-  + 'ECMASwitch.VERSION  = \'1.1.1\'\n'
+  + 'ECMASwitch.VERSION  = \'1.1.5\'\n'
   + 'ECMASwitch.HOMEPAGE = \'http://ecmaswitch.loop.coop/\'\n'
   + '\n'
   + '//// Polyfill `document` for non-browser contexts.\n'

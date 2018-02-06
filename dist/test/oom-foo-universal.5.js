@@ -1,4 +1,4 @@
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 "use strict";
 !function(ROOT) {
@@ -19,7 +19,7 @@
       is('function' === typeof Class, 'OomFoo is a function');
       is(('OomFoo' === Class.NAME && 'OomFoo' === Class.api.NAME), 'NAME and api.NAME is OomFoo');
       is('OomFoo' === Class.name, 'name is OomFoo');
-      is(('1.1.4' === Class.VERSION && '1.1.4' === Class.api.VERSION), 'VERSION and api.VERSION is 1.1.4');
+      is(('1.1.5' === Class.VERSION && '1.1.5' === Class.api.VERSION), 'VERSION and api.VERSION is 1.1.5');
       is(('http://oom-foo.loop.coop/' === Class.HOMEPAGE && 'http://oom-foo.loop.coop/' === Class.api.HOMEPAGE), 'HOMEPAGE and api.HOMEPAGE is http://oom-foo.loop.coop/');
     });
     test('+ve OomFoo instance', function() {
@@ -49,29 +49,29 @@
     throw Error('jQuery not found');
   jQuery(function($) {
     var Class = OOM.OomFoo;
-    test('The OomFoo.topLevel() method', function() {
-      var protoMethod = Class.prototype.topLevel;
-      is('function' === typeof protoMethod, 'prototype.topLevel() is a function');
-      is('OomFoo.topLevel' === protoMethod.NAME, "NAME is 'OomFoo.topLevel'");
+    test('The OomFoo.appfn() method', function() {
+      var protoMethod = Class.prototype.appfn;
+      is('function' === typeof protoMethod, 'prototype.appfn() is a function');
+      is('OomFoo.appfn' === protoMethod.NAME, "NAME is 'OomFoo.appfn'");
     });
-    test('+ve topLevel()', function() {
+    test('+ve appfn()', function() {
       var instance1 = Class.testInstanceFactory();
-      is('123 ok!' === instance1.topLevel('123'), "`topLevel('123')` returns '123 ok!'");
-      instance1.topLevel('456');
+      is('123 ok!' === instance1.appfn('123'), "`appfn('123')` returns '123 ok!'");
+      instance1.appfn('456');
       is(2 === instance1.xyz, 'After two calls, `xyz` is 2');
       var instance2 = Class.testInstanceFactory();
-      instance2.topLevel('789');
+      instance2.appfn('789');
       is(1 === instance2.xyz, 'A second instance has its own `xyz` property');
     });
-    test('-ve topLevel()', function() {
-      var protoMethod = Class.prototype.topLevel;
+    test('-ve appfn()', function() {
+      var protoMethod = Class.prototype.appfn;
       throws(function() {
         return protoMethod('123');
-      }, 'OomFoo.topLevel(): Must not be called as OomFoo.prototype.topLevel()', 'Prototype call');
+      }, 'OomFoo.appfn(): Must not be called as OomFoo.prototype.appfn()', 'Prototype call');
       var instance = Class.testInstanceFactory();
       throws(function() {
-        return instance.topLevel(123);
-      }, 'OomFoo.topLevel(): abc has constructor.name Number not String', 'Passing a number into `abc`');
+        return instance.appfn(123);
+      }, 'OomFoo.appfn(): abc has constructor.name Number not String', 'Passing a number into `abc`');
     });
   });
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
@@ -103,33 +103,91 @@
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
 !function(ROOT) {
   'use strict';
+  if ('function' !== typeof jQuery)
+    throw Error('jQuery not found');
+  jQuery(function($) {
+    var Class = OOM.OomFoo.Base.Sub;
+    Class.testInstanceFactory = function() {
+      return new Class({
+        firstProp: 100,
+        secondProp: new Date
+      }, {});
+    };
+    test('+ve OomFoo.Base.Sub class', function() {
+      is('object' === (typeof OOM === 'undefined' ? 'undefined' : $traceurRuntime.typeof(OOM)), 'The OOM namespace object exists');
+      is('function' === typeof Class, 'OomFoo.Base.Sub is a function');
+      is(('OomFoo.Base.Sub' === Class.NAME && 'OomFoo.Base.Sub' === Class.api.NAME), 'NAME and api.NAME is OomFoo.Base.Sub');
+      is('Sub' === Class.name, 'name is Sub');
+    });
+    test('+ve OomFoo.Base.Sub instance', function() {
+      var instance = Class.testInstanceFactory();
+      is(instance instanceof Class, 'Is an instance of OomFoo.Base.Sub');
+      is(Class === instance.constructor, '`constructor` is OomFoo.Base.Sub');
+      is('object' === $traceurRuntime.typeof(instance.hub), '`hub` property is an object');
+    });
+  });
+}('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
+!function(ROOT) {
+  'use strict';
+  if ('function' != typeof jQuery)
+    throw Error('jQuery not found');
+  jQuery(function($) {
+    var Class = OOM.OomFoo.Base.Sub;
+    test('The OomFoo.Base.Sub.subfn() method', function() {
+      var protoMethod = Class.prototype.subfn;
+      is('function' === typeof protoMethod, 'prototype.subfn() is a function');
+      is('OomFoo.Base.Sub.subfn' === protoMethod.NAME, "NAME is 'OomFoo.Base.Sub.subfn'");
+    });
+    test('+ve subfn()', function() {
+      var instance1 = Class.testInstanceFactory();
+      is('123 ok!' === instance1.subfn('123'), "`subfn('123')` returns '123 ok!'");
+      instance1.subfn('456');
+      is(2 === instance1.xyz, 'After two calls, `xyz` is 2');
+      var instance2 = Class.testInstanceFactory();
+      instance2.subfn('789');
+      is(1 === instance2.xyz, 'A second instance has its own `xyz` property');
+    });
+    test('-ve subfn()', function() {
+      var protoMethod = Class.prototype.subfn;
+      throws(function() {
+        return protoMethod('123');
+      }, 'OomFoo.Base.Sub.subfn(): Must not be called as OomFoo.Base.Sub.prototype.subfn()', 'Prototype call');
+      var instance = Class.testInstanceFactory();
+      throws(function() {
+        return instance.subfn(123);
+      }, 'OomFoo.Base.Sub.subfn(): abc has constructor.name Number not String', 'Passing a number into `abc`');
+    });
+  });
+}('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
+!function(ROOT) {
+  'use strict';
   if ('function' != typeof jQuery)
     throw Error('jQuery not found');
   jQuery(function($) {
     var Class = OOM.OomFoo.Base;
-    test('The OomFoo.Base.foo() method', function() {
-      var protoMethod = Class.prototype.foo;
-      is('function' === typeof protoMethod, 'prototype.foo() is a function');
-      is('OomFoo.Base.foo' === protoMethod.NAME, "NAME is 'OomFoo.Base.foo'");
+    test('The OomFoo.Base.basefn() method', function() {
+      var protoMethod = Class.prototype.basefn;
+      is('function' === typeof protoMethod, 'prototype.basefn() is a function');
+      is('OomFoo.Base.basefn' === protoMethod.NAME, "NAME is 'OomFoo.Base.basefn'");
     });
-    test('+ve foo()', function() {
+    test('+ve basefn()', function() {
       var instance1 = Class.testInstanceFactory();
-      is('123 ok!' === instance1.foo('123'), "`foo('123')` returns '123 ok!'");
-      instance1.foo('456');
+      is('123 ok!' === instance1.basefn('123'), "`basefn('123')` returns '123 ok!'");
+      instance1.basefn('456');
       is(2 === instance1.xyz, 'After two calls, `xyz` is 2');
       var instance2 = Class.testInstanceFactory();
-      instance2.foo('789');
+      instance2.basefn('789');
       is(1 === instance2.xyz, 'A second instance has its own `xyz` property');
     });
-    test('-ve foo()', function() {
-      var protoMethod = Class.prototype.foo;
+    test('-ve basefn()', function() {
+      var protoMethod = Class.prototype.basefn;
       throws(function() {
         return protoMethod('123');
-      }, 'OomFoo.Base.foo(): Must not be called as OomFoo.Base.prototype.foo()', 'Prototype call');
+      }, 'OomFoo.Base.basefn(): Must not be called as OomFoo.Base.prototype.basefn()', 'Prototype call');
       var instance = Class.testInstanceFactory();
       throws(function() {
-        return instance.foo(123);
-      }, 'OomFoo.Base.foo(): abc has constructor.name Number not String', 'Passing a number into `abc`');
+        return instance.basefn(123);
+      }, 'OomFoo.Base.basefn(): abc has constructor.name Number not String', 'Passing a number into `abc`');
     });
   });
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
@@ -137,4 +195,4 @@
 
 
 
-//// Made by Oomtility Make 1.1.4 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.1.5 //\\//\\ http://oomtility.loop.coop //////////

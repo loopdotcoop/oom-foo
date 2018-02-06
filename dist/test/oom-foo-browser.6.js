@@ -2,7 +2,7 @@
 
 
 
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 //// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
 //// Windows 7:  IE 9, Safari 5.1
@@ -31,11 +31,11 @@ test('Browser test the OomFoo class', () => {
 
 
 
-//\\//\\ src/test/App.topLevel-browser.6.js
+//\\//\\ src/test/App.appfn-browser.6.js
 
 
 
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')
@@ -45,7 +45,7 @@ const Class = OOM.OomFoo
 
 
 
-test('Browser test the OomFoo.topLevel() method', () => {
+test('Browser test the OomFoo.appfn() method', () => {
     is(true, '@TODO')
 })
 
@@ -62,7 +62,7 @@ test('Browser test the OomFoo.topLevel() method', () => {
 
 
 
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -85,21 +85,21 @@ test('Browser test the OomFoo.Base class', () => {
 
 
 
-//\\//\\ src/test/Base.foo-browser.6.js
+//\\//\\ src/test/Base.Sub-browser.6.js
 
 
 
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
-if ('function' != typeof jQuery) throw Error('jQuery not found')
+if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
-const Class = OOM.OomFoo.Base
+const Class = OOM.OomFoo.Base.Sub
 
 
 
 
-test('Browser test the OomFoo.Base.foo() method', () => {
+test('Browser test the OomFoo.Base.Sub class', () => {
     is(true, '@TODO')
 })
 
@@ -112,4 +112,58 @@ test('Browser test the OomFoo.Base.foo() method', () => {
 
 
 
-//// Made by Oomtility Make 1.1.4 //\\//\\ http://oomtility.loop.coop //////////
+//\\//\\ src/test/Base.Sub.subfn-browser.6.js
+
+
+
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+
+!function (ROOT) { 'use strict'
+if ('function' != typeof jQuery) throw Error('jQuery not found')
+jQuery( function($) {
+const Class = OOM.OomFoo.Base.Sub
+
+
+
+
+test('Browser test the OomFoo.Base.Sub.subfn() method', () => {
+    is(true, '@TODO')
+})
+
+
+
+
+})//jQuery()
+}( 'object' === typeof global ? global : this ) // `window` in a browser
+
+
+
+
+//\\//\\ src/test/Base.basefn-browser.6.js
+
+
+
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+
+!function (ROOT) { 'use strict'
+if ('function' != typeof jQuery) throw Error('jQuery not found')
+jQuery( function($) {
+const Class = OOM.OomFoo.Base
+
+
+
+
+test('Browser test the OomFoo.Base.basefn() method', () => {
+    is(true, '@TODO')
+})
+
+
+
+
+})//jQuery()
+}( 'object' === typeof global ? global : this ) // `window` in a browser
+
+
+
+
+//// Made by Oomtility Make 1.1.5 //\\//\\ http://oomtility.loop.coop //////////

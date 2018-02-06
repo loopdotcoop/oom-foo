@@ -89,6 +89,9 @@
 <link rel="stylesheet" href="support/asset/css/bootstrap.4.0.0.min.css">
 <link rel="stylesheet" href="support/asset/css/main.css">
 
+<!-- A-Frame wants to be loaded in the <HEAD> -->
+<script src="support/asset/js/aframe-0.7.0.min.js"></script>
+
 
 </head>
 <body>
@@ -105,7 +108,7 @@
   <option value="~1~">ctrl-alt-1: ES5 Minified</option>
   <option value="~2~">ctrl-alt-2: ES6 Production</option>
   <option value="~3~">ctrl-alt-3: ES6 Development</option>
-  <script>!function(d,S,m,s){m=d.scripts[0].parentNode,s=~~d.cookie.split('~')[1
+  <script>!function(d,S,m,s){m=d.scripts[1].parentNode,s=~~d.cookie.split('~')[1
   ],m[S]=s,d.addEventListener('keypress',function(e){s=e.charCode-48;if(0<=s&&4>
   s&&e.ctrlKey&&e.altKey)m[S]=s,m.dispatchEvent(new Event('change'))})}(document
   ,'selectedIndex')</script>

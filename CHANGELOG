@@ -21,3 +21,4 @@
 1.1.2 Starting to look at Vue component integration
 1.1.3 Better naming of demo files
 1.1.4 Demos generate and show nested Vue components
+1.1.5 oomtility/init.js --standard-demo to speed up oom-foo development

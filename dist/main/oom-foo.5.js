@@ -1,11 +1,11 @@
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
     NAME: 'OomFoo',
-    VERSION: '1.1.4',
+    VERSION: '1.1.5',
     HOMEPAGE: 'http://oom-foo.loop.coop/',
     REMARKS: 'Initial test of the oom-hub architecture'
   };
@@ -187,16 +187,16 @@
 !function(ROOT) {
   'use strict';
   var META = {
-    NAME: {value: 'OomFoo.topLevel'},
+    NAME: {value: 'OomFoo.appfn'},
     REMARKS: {value: '@TODO'}
   };
   var OOM = ROOT.OOM = ROOT.OOM || {};
   var TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {};
-  var method = OOM.OomFoo.prototype.topLevel = function(abc) {
+  var method = OOM.OomFoo.prototype.appfn = function(abc) {
     var err,
-        ME = "OomFoo.topLevel(): ";
+        ME = "OomFoo.appfn(): ";
     if (!(this instanceof OOM.OomFoo))
-      throw new Error(ME + "Must not be called as OomFoo.prototype.topLevel()");
+      throw new Error(ME + "Must not be called as OomFoo.prototype.appfn()");
     if (err = TOOLKIT.validateType({type: String}, abc))
       throw new TypeError(ME + ("abc " + err));
     this.xyz++;
@@ -325,16 +325,133 @@
 !function(ROOT) {
   'use strict';
   var META = {
-    NAME: {value: 'OomFoo.Base.foo'},
+    NAME: 'OomFoo.Base.Sub',
+    REMARKS: '@TODO'
+  };
+  var PROPS = {
+    propA: Number,
+    propB: [String, Number],
+    propC: {
+      type: String,
+      required: true
+    },
+    propD: {
+      type: Number,
+      default: 100
+    },
+    propE: {
+      type: Object,
+      default: function() {
+        return [1];
+      }
+    },
+    propF: {validator: function(v) {
+        return v > 10;
+      }}
+  };
+  var OOM = ROOT.OOM = ROOT.OOM || {};
+  var TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {};
+  var Class = OOM.OomFoo.Base.Sub = function($__super) {
+    function Sub() {
+      var config = arguments[0] !== (void 0) ? arguments[0] : {};
+      var hub = arguments[1] !== (void 0) ? arguments[1] : OOM.hub;
+      var $__2;
+      $traceurRuntime.superConstructor(Sub).call(this, config, hub);
+      var api = this.api = {};
+      Object.defineProperty(this, 'hub', {value: hub});
+      this._validateConstructor(config);
+      this.validConstructor.forEach(($__2 = this, function(valid) {
+        var value = config[valid.name];
+        Object.defineProperty($__2.api, valid.name, {
+          value: value,
+          enumerable: true,
+          configurable: true,
+          writable: true
+        });
+      }));
+      if (Class === this.constructor)
+        api.index = Class.api.tally++;
+    }
+    return ($traceurRuntime.createClass)(Sub, {
+      _validateConstructor: function(config) {
+        var err,
+            value,
+            ME = "OomFoo.Base.Sub._validateConstructor(): ";
+        if ('object' !== (typeof config === 'undefined' ? 'undefined' : $traceurRuntime.typeof(config)))
+          throw new Error(ME + ("config is type " + (typeof config === 'undefined' ? 'undefined' : $traceurRuntime.typeof(config)) + " not object"));
+        this.validConstructor.forEach(function(valid) {
+          if (!TOOLKIT.applyDefault(valid, config))
+            throw new TypeError(ME + ("config." + valid.name + " is mandatory"));
+          value = config[valid.name];
+          if (err = TOOLKIT.validateType(valid, value))
+            throw new TypeError(ME + ("config." + valid.name + " " + err));
+          if (err = TOOLKIT.validateRange(valid, value))
+            throw new RangeError(ME + ("config." + valid.name + " " + err));
+        });
+      },
+      get validConstructor() {
+        return [{
+          title: 'Third Prop',
+          name: 'thirdProp',
+          alias: 'tp',
+          tooltip: 'An example object property, intended as a placeholder',
+          devtip: 'You should replace this placeholder with a real property',
+          form: 'text',
+          type: String,
+          default: 'Some default text'
+        }];
+      },
+      xxx: function(config) {
+        var $__3 = this,
+            hub = $__3.hub,
+            a = $__3.a,
+            b = $__3.b,
+            c = $__3.c;
+        var $__4 = config,
+            xx = $__4.xx,
+            yy = $__4.yy,
+            zz = $__4.zz;
+      }
+    }, {}, $__super);
+  }(OOM.OomFoo.Base);
+  Class.api = {tally: 0};
+  Object.defineProperties(Class, TOOLKIT.toPropsObj(META));
+  Object.defineProperties(Class.api, TOOLKIT.toPropsObj(META));
+}('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
+!function(ROOT) {
+  'use strict';
+  var META = {
+    NAME: {value: 'OomFoo.Base.Sub.subfn'},
     REMARKS: {value: '@TODO'}
   };
   var OOM = ROOT.OOM = ROOT.OOM || {};
   var TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {};
-  var method = OOM.OomFoo.Base.prototype.foo = function(abc) {
+  var method = OOM.OomFoo.Base.Sub.prototype.subfn = function(abc) {
     var err,
-        ME = "OomFoo.Base.foo(): ";
+        ME = "OomFoo.Base.Sub.subfn(): ";
+    if (!(this instanceof OOM.OomFoo.Base.Sub))
+      throw new Error(ME + "Must not be called as OomFoo.Base.Sub.prototype.subfn()");
+    if (err = TOOLKIT.validateType({type: String}, abc))
+      throw new TypeError(ME + ("abc " + err));
+    this.xyz++;
+    return abc + ' ok!';
+  };
+  OOM.OomFoo.Base.Sub.prototype.xyz = 0;
+  Object.defineProperties(method, META);
+}('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
+!function(ROOT) {
+  'use strict';
+  var META = {
+    NAME: {value: 'OomFoo.Base.basefn'},
+    REMARKS: {value: '@TODO'}
+  };
+  var OOM = ROOT.OOM = ROOT.OOM || {};
+  var TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {};
+  var method = OOM.OomFoo.Base.prototype.basefn = function(abc) {
+    var err,
+        ME = "OomFoo.Base.basefn(): ";
     if (!(this instanceof OOM.OomFoo.Base))
-      throw new Error(ME + "Must not be called as OomFoo.Base.prototype.foo()");
+      throw new Error(ME + "Must not be called as OomFoo.Base.prototype.basefn()");
     if (err = TOOLKIT.validateType({type: String}, abc))
       throw new TypeError(ME + ("abc " + err));
     this.xyz++;
@@ -347,4 +464,4 @@
 
 
 
-//// Made by Oomtility Make 1.1.4 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.1.5 //\\//\\ http://oomtility.loop.coop //////////

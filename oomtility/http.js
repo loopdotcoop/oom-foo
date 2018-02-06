@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility HTTP'
-    , VERSION  = '1.1.4'
+    , VERSION  = '1.1.5'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , HELP =
@@ -71,7 +71,6 @@ if ('function' !== typeof require)
 
 //// Load library functionality.
 const fs = require('fs')
-    // , spawn = childProcess.spawn
     , { spawn } = require('child_process')
     , beefy = require('beefy')
 

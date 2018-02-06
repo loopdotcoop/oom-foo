@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Auto'
-    , VERSION  = '1.1.4'
+    , VERSION  = '1.1.5'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Initialised by ${NAME} ${VERSION}\n`
@@ -112,6 +112,7 @@ Array.prototype.move = function(from, to) { // stackoverflow.com/a/7180095
 
 //// Declare variables.
 let opt, remove, classes = [], methods = [], mains, tests, pos
+  , genTally = 0
 
 //// Deal with command-line options.
 while ( opt = process.argv.shift() ) {
@@ -275,6 +276,14 @@ wrapped.updateTestFile('support/test.html', tests) // `tests` from previous step
 
 
 
+//// FINISH
+
+console.log(
+    NAME + ` ${remove?'remov':'generat'}ed ${genTally} files, and edited 3`)
+
+
+
+
 //// GENERATORS
 
 
@@ -390,6 +399,7 @@ function generateOrRemove (name, path, generator) {
         fs.unlinkSync(path)
     else
         generator(name, path)
+    genTally++
 }
 
 

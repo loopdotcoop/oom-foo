@@ -50,6 +50,9 @@ isTop ? `
                     .replace( /[:-@\\[-\`]/g, c=>TOOLKIT.rndCh(97,122) ) }) // a-z
 `:`
         super(config, hub)
+
+        //// Properties added to \`api\` are exposed to Vue etc.
+        const api = this.api = {}
 `
 }}}
 

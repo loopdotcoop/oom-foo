@@ -1,9 +1,9 @@
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
 const META = {
-    NAME:     { value:'OomFoo.Base.foo' }
+    NAME:     { value:'OomFoo.Base.basefn' }
   , REMARKS:  { value:'@TODO' }
 }
 
@@ -13,24 +13,24 @@ const OOM     = ROOT.OOM    = ROOT.OOM    || {}
 const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
 
 
-//// Define the `OomFoo.Base.foo()` method.
-const method = OOM.OomFoo.Base.prototype.foo = function (abc) {
-    let err, ME = `OomFoo.Base.foo(): ` // error prefix
+//// Define the `OomFoo.Base.basefn()` method.
+const method = OOM.OomFoo.Base.prototype.basefn = function (abc) {
+    let err, ME = `OomFoo.Base.basefn(): ` // error prefix
     if (! (this instanceof OOM.OomFoo.Base)) throw new Error(ME
-      + `Must not be called as OomFoo.Base.prototype.foo()`)
+      + `Must not be called as OomFoo.Base.prototype.basefn()`)
     if ( err = TOOLKIT.validateType({ type:String }, abc) )
         throw new TypeError(ME+`abc ${err}`)
 
     this.xyz++
     return abc + ' ok!'
 
-}//OomFoo.Base.foo()
+}//OomFoo.Base.basefn()
 
-//// A tally of the number of times `foo()` is called.
+//// A tally of the number of times `basefn()` is called.
 OOM.OomFoo.Base.prototype.xyz = 0
 
 
-//// Add static constants to the `foo()` method.
+//// Add static constants to the `basefn()` method.
 Object.defineProperties(method, META)
 
 

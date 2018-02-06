@@ -1,4 +1,4 @@
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 "use strict";
 !function(ROOT) {
@@ -43,7 +43,7 @@
         wrapApiGettersAndSetters(ROOT.OOM.OomFoo);
       }
     });
-    new Vue({el: '#demo'});
+    new Vue({el: '#vue-only-demo'});
     function toggleHideData() {
       this.ui.hideData = !this.ui.hideData;
     }
@@ -99,4 +99,4 @@
 
 
 
-//// Made by Oomtility Make 1.1.4 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.1.5 //\\//\\ http://oomtility.loop.coop //////////

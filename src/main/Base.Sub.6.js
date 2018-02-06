@@ -3,7 +3,7 @@
 !function (ROOT) { 'use strict'
 
 const META = {
-    NAME:     'OomFoo.Base'
+    NAME:     'OomFoo.Base.Sub'
   , REMARKS:  '@TODO'
 }
 
@@ -22,17 +22,14 @@ const OOM     = ROOT.OOM    = ROOT.OOM    || {}
 const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
 
 
-//// Define the `OomFoo.Base` class.
-const Class = OOM.OomFoo.Base = class Base {
+//// Define the `OomFoo.Base.Sub` class.
+const Class = OOM.OomFoo.Base.Sub = class Sub extends OOM.OomFoo.Base {
 
     constructor (config={}, hub=OOM.hub) {
+        super(config, hub)
+
         //// Properties added to `api` are exposed to Vue etc.
         const api = this.api = {}
-
-        //// api.UUID: Oom instances have universally unique IDs (57 billion combos).
-        Object.defineProperty(api, 'UUID', { enumerable:true, configurable:false, value:
-            '123456'.replace( /./g,         c=>TOOLKIT.rndCh(48,122) )    // 0-z
-                    .replace( /[:-@\[-`]/g, c=>TOOLKIT.rndCh(97,122) ) }) // a-z
 
 
         //// hub: Oom instances keep a reference to the oom-hub.
@@ -47,9 +44,6 @@ const Class = OOM.OomFoo.Base = class Base {
             Object.defineProperty(this.api, valid.name, {
                 value, enumerable:true, configurable:true, writable:true })
         })
-        //// ready: a Promise which resolves when the instance has initialised.
-        Object.defineProperty(this, 'ready', { value: this._getReady() })
-
 
         //// api.index: the first instance of this class is `0`, the second is `1`, etc.
         if (Class === this.constructor) // not being called by a child-class
@@ -59,42 +53,10 @@ const Class = OOM.OomFoo.Base = class Base {
 
 
 
-    //// Returns a Promise which is recorded as the `ready` property, after
-    //// the constructor() has validated `config` and recorded the config
-    //// properties. Sub-classes can override _getReady() if they need to do
-    //// other async preparation.
-    //// Called by: constructor()
-    _getReady () {
-
-        //// setupStart: the time that `new OomFoo.Base({...})` was called.
-        if (this.setupStart)
-            throw new Error(`OomFoo.Base._getReady(): Can only run once`)
-        Object.defineProperty(this, 'setupStart', { value:TOOLKIT.getNow() })
-
-        //// `OomFoo.Base` does no setup, so could resolve the `ready`
-        //// Promise immediately. However, to make _getReady()’s behavior
-        //// consistent with classes which have a slow async setup, we introduce
-        //// a miniscule delay.
-        return new Promise( (resolve, reject) => { setTimeout( () => {
-
-            //// setupEnd: the time that `_getReady()` finished running.
-            Object.defineProperty(this, 'setupEnd', { value:TOOLKIT.getNow() })
-
-            //// Define the instance’s `ready` property.
-            resolve({
-                setupDelay: this.setupEnd - this.setupStart
-            })
-        }, 0)})
-
-    }
-
-
-
-
     //// Ensures the `config` argument passed to the `constructor()` is valid.
     //// Called by: constructor()
     _validateConstructor (config) {
-        let err, value, ME = `OomFoo.Base._validateConstructor(): ` // error prefix
+        let err, value, ME = `OomFoo.Base.Sub._validateConstructor(): ` // error prefix
         if ('object' !== typeof config)
             throw new Error(ME+`config is type ${typeof config} not object`)
         this.validConstructor.forEach( valid => {
@@ -140,7 +102,7 @@ const Class = OOM.OomFoo.Base = class Base {
 
     }
 
-}//OomFoo.Base
+}//OomFoo.Base.Sub
 
 
 
@@ -160,7 +122,7 @@ const Class = OOM.OomFoo.Base = class Base {
 //// Properties added to `api` are exposed to Vue etc.
 Class.api = { tally: 0 } // `tally` counts instantiations
 
-//// Expose the `OomFoo.Base` class’s static constants.
+//// Expose the `OomFoo.Base.Sub` class’s static constants.
 Object.defineProperties( Class    , TOOLKIT.toPropsObj(META) )
 Object.defineProperties( Class.api, TOOLKIT.toPropsObj(META) )
 

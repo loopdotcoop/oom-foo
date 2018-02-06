@@ -1,14 +1,14 @@
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
-const Class = OOM.OomFoo.Base
+const Class = OOM.OomFoo.Base.Sub
 
 
 
 
-test('Browser test the OomFoo.Base.foo() method', () => {
+test('Browser test the OomFoo.Base.Sub.subfn() method', () => {
     is(true, '@TODO')
 })
 

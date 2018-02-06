@@ -18,7 +18,7 @@
       methods: {isWritable: isWritable}
     });
     Vue.component('oom-oomfoo', {
-      template: "\n<div class=\"oom-component oom-oomfoo container\">\n  <div class=\"row\">\n    <div class=\"col-sm-7 h4\">\n      {{static.NAME}}<em class=\"text-muted\">#{{instance.UUID}}</em>\n      {{instance.index+1}}&nbsp;of&nbsp;{{static.tally}}\n    </div>\n    <div class=\"col-sm-5 rr\">\n      <span class=\"btn btn-sm btn-primary\" @click=\"toggleHideData\">{{ui.hideData ? 'Show' : 'Hide'}} Data</span>\n      <span class=\"btn btn-sm btn-primary\" @click=\"toggleHideInners\">{{ui.hideInners ? 'Show' : 'Hide'}} Inners</span>\n\n    </div>\n  </div>\n  <property-table :obj=\"static\"   :do-hide=\"ui.hideData\"\n    :caption=\"static.NAME+' static data:'\"></property-table>\n  <property-table :obj=\"instance\" :do-hide=\"ui.hideData\"\n    :caption=\"static.NAME+'<em>#'+instance.UUID+'</em>&nbsp; instance data:'\"></property-table>\n  <div v-bind:class=\"{ hid: ui.hideInners }\">\n    <oom-base v-bind=\"instance\"></oom-base>\n    <oom-base v-bind=\"instance\"></oom-base>\n  </div>\n\n</div>\n",
+      template: "\n<div class=\"oom-component oom-oomfoo container\">\n  <div class=\"row\">\n    <div class=\"col-sm-7 h4\">\n      {{static.NAME}}<em class=\"text-muted\">#{{instance.UUID}}</em>\n      {{instance.index+1}}&nbsp;of&nbsp;{{static.tally}}\n    </div>\n    <div class=\"col-sm-5 rr\">\n      <span class=\"btn btn-sm btn-primary\" @click=\"toggleHideData\">{{ui.hideData ? 'Show' : 'Hide'}} Data</span>\n      <span class=\"btn btn-sm btn-primary\" @click=\"toggleHideInners\">{{ui.hideInners ? 'Show' : 'Hide'}} Inners</span>\n\n    </div>\n  </div>\n  <property-table :obj=\"static\"   :do-hide=\"ui.hideData\"\n    :caption=\"static.NAME+' static data:'\"></property-table>\n  <property-table :obj=\"instance\" :do-hide=\"ui.hideData\"\n    :caption=\"static.NAME+'<em>#'+instance.UUID+'</em>&nbsp; instance data:'\"></property-table>\n  <div v-bind:class=\"{ hid: ui.hideInners }\">\n    <oom-base-sub v-bind=\"instance\"></oom-base-sub>\n    <oom-base-sub v-bind=\"instance\"></oom-base-sub>\n  </div>\n\n</div>\n",
       data: function() {
         return {
           instance: outers[outers.length - 1].api,
@@ -44,12 +44,12 @@
         wrapApiGettersAndSetters(ROOT.OOM.OomFoo);
       }
     });
-    Vue.component('oom-base', {
-      template: "\n<div class=\"oom-component oom-base container\">\n  <div class=\"row\">\n    <div class=\"col-sm-7 h4\">\n      {{static.NAME}}<em class=\"text-muted\">#{{instance.UUID}}</em>\n      {{instance.index+1}}&nbsp;of&nbsp;{{static.tally}}\n    </div>\n    <div class=\"col-sm-5 rr\">\n      <span class=\"btn btn-sm btn-primary\" @click=\"toggleHideData\">{{ui.hideData ? 'Show' : 'Hide'}} Data</span>\n    </div>\n  </div>\n  <property-table :obj=\"static\"   :do-hide=\"ui.hideData\"\n    :caption=\"static.NAME+' static data:'\"></property-table>\n  <property-table :obj=\"instance\" :do-hide=\"ui.hideData\"\n    :caption=\"static.NAME+'<em>#'+instance.UUID+'</em>&nbsp; instance data:'\"></property-table>\n  <table v-bind:class=\"{ hid: ui.hideData }\">\n    <caption>Props, passed from outer components:</caption>\n    <tr><td>firstProp</td><td>{{firstProp}}</td></tr>\n    <tr><td>UUID</td><td>{{UUID}}</td></tr>\n  </table>\n</div>\n",
+    Vue.component('oom-base-sub', {
+      template: "\n<div class=\"oom-component oom-base-sub container\">\n  <div class=\"row\">\n    <div class=\"col-sm-7 h4\">\n      {{static.NAME}}<em class=\"text-muted\">#{{instance.UUID}}</em>\n      {{instance.index+1}}&nbsp;of&nbsp;{{static.tally}}\n    </div>\n    <div class=\"col-sm-5 rr\">\n      <span class=\"btn btn-sm btn-primary\" @click=\"toggleHideData\">{{ui.hideData ? 'Show' : 'Hide'}} Data</span>\n    </div>\n  </div>\n  <property-table :obj=\"static\"   :do-hide=\"ui.hideData\"\n    :caption=\"static.NAME+' static data:'\"></property-table>\n  <property-table :obj=\"instance\" :do-hide=\"ui.hideData\"\n    :caption=\"static.NAME+'<em>#'+instance.UUID+'</em>&nbsp; instance data:'\"></property-table>\n  <table v-bind:class=\"{ hid: ui.hideData }\">\n    <caption>Props, passed from outer components:</caption>\n    <tr><td>firstProp</td><td>{{firstProp}}</td></tr>\n    <tr><td>UUID</td><td>{{UUID}}</td></tr>\n  </table>\n</div>\n",
       data: function() {
         return {
           instance: inners[inners.length - 1].api,
-          static: ROOT.OOM.OomFoo.Base.api,
+          static: ROOT.OOM.OomFoo.Base.Sub.api,
           ui: {hideData: false}
         };
       },
@@ -59,11 +59,11 @@
       },
       methods: {toggleHideData: toggleHideData},
       beforeCreate: function() {
-        inners.push(new ROOT.OOM.OomFoo.Base({thirdProp: 'inners.length: ' + inners.length}));
+        inners.push(new ROOT.OOM.OomFoo.Base.Sub({thirdProp: 'inners.length: ' + inners.length}));
       },
       created: function() {
         wrapApiGettersAndSetters(outers[outers.length - 1]);
-        wrapApiGettersAndSetters(ROOT.OOM.OomFoo.Base);
+        wrapApiGettersAndSetters(ROOT.OOM.OomFoo.Base.Sub);
       }
     });
     new Vue({el: '#vue-only-demo'});

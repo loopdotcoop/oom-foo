@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Make'
-    , VERSION  = '1.1.4'
+    , VERSION  = '1.1.5'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Made by ${NAME} ${VERSION} //\\\\//\\\\ `
@@ -91,10 +91,10 @@ const fs = require('fs')
 
 //// Set constants.
 const topline = (fs.readFileSync(`src/main/App.6.js`)+'').split('\n')[0]
-const projectTC = topline.split(' ')[1]          // titlecase, eg 'FooBar'
-const projectV  = topline.split(' ')[3]          // titlecase, eg '1.2.3'
-const projectLC = process.cwd().split('/').pop() // lowercase, eg 'foo-bar'
-const projectNH = projectLC.replace(/-/g,'')     // no hyphens, eg 'foobar'
+const projectTC = topline.split(' ')[1]         // titlecase, eg 'FooBar'
+const projectV  = topline.split(' ')[3]         // major.minor.patch, eg '1.2.3'
+const projectLC = process.cwd().split('/').pop()// lowercase, eg 'foo-bar'
+const projectNH = projectLC.replace(/-/g,'')    // no hyphens, eg 'foobar'
 if ( projectLC.toLowerCase() != projectLC) return console.warn(
     `Project '${projectLC}' contains uppercase letters`)
 if ( projectTC.toLowerCase() != projectNH) return console.warn(
@@ -296,7 +296,7 @@ wrapped.updateTestFile('support/test.html', tests) // `tests` from previous step
 
 
 //// Show the result.
-console.log(`Made ${writeFileTally} file${1===writeFileTally?'':'s'}`)
+console.log(NAME+` made ${writeFileTally} file${1===writeFileTally?'':'s'}`)
 
 
 

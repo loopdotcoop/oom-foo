@@ -2,7 +2,7 @@
 
 
 
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -100,9 +100,9 @@ Vue.component('oom-oomfoo', {
 
 
 
-//// Create Vue’s root instance.
+//// Create the root instance for the Vue-only demo.
 new Vue({
-    el: '#demo'
+    el: '#vue-only-demo'
 })
 
 
@@ -164,4 +164,4 @@ function wrapApiGettersAndSetters (obj) {
 
 
 
-//// Made by Oomtility Make 1.1.4 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.1.5 //\\//\\ http://oomtility.loop.coop //////////

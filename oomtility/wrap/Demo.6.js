@@ -170,9 +170,9 @@ Vue.component('oom-${nameLC.split(".").pop()}', {
 
 
 
-//// Create Vue’s root instance.
+//// Create the root instance for the Vue-only demo.
 new Vue({
-    el: '#demo'
+    el: '#vue-only-demo'
 })
 
 

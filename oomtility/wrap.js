@@ -24,7 +24,7 @@ const CONSTS = {
 }
 
 const NAME     = 'Oomtility Wrap'
-    , VERSION  = '1.1.4'
+    , VERSION  = '1.1.5'
     , HOMEPAGE = 'https://oomtility.loop.coop'
     , HELP =
 `
@@ -78,7 +78,7 @@ const fs = require('fs')
     , { rxBinaryExt } = require('./wrapped.js')
 
 //// Declare variables.
-let opt, dummy, paths = [], out = []
+let opt, dummy, paths = [], out = [], tally = 0
 
 //// Deal with command-line options.
 while ( opt = process.argv.shift() ) {
@@ -101,6 +101,7 @@ if (0 === paths.length)
 //// Convert each file in `paths`.
 paths.forEach( path => {
     if ( '.DS_Store' === path.slice(-9) ) return
+    tally++
     const wrapped = []
     const expectedConsts = Object.assign({}, CONSTS)
     let inTemplateSection = false
@@ -245,11 +246,12 @@ paths.forEach( path => {
 //// Write the result to console (if `--dummy` is set), or else the
 //// ‘DYNAMIC SECTION’ of ‘oomtility/wrapped.js’.
 out = out.join('\n')
-if (dummy)
+if (dummy) {
     console.log(out)
-else
+} else {
     updateWrappedJs('oomtility/wrapped.js', out)
-
+    console.log(NAME + ` processed ${tally} file${1===tally?'':'s'}`)
+}
 
 
 

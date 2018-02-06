@@ -2,7 +2,7 @@
 
 
 
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -39,8 +39,8 @@ test('+ve OomFoo class', () => {
     is( ('OomFoo' === Class.NAME && 'OomFoo' === Class.api.NAME)
       , 'NAME and api.NAME is OomFoo')
     is('OomFoo' === Class.name, 'name is OomFoo')
-    is( ('1.1.4' === Class.VERSION && '1.1.4' === Class.api.VERSION) // OOMBUMPABLE (twice!)
-      , 'VERSION and api.VERSION is 1.1.4') // OOMBUMPABLE
+    is( ('1.1.5' === Class.VERSION && '1.1.5' === Class.api.VERSION) // OOMBUMPABLE (twice!)
+      , 'VERSION and api.VERSION is 1.1.5') // OOMBUMPABLE
     is( ('http://oom-foo.loop.coop/' === Class.HOMEPAGE && 'http://oom-foo.loop.coop/' === Class.api.HOMEPAGE)
       , 'HOMEPAGE and api.HOMEPAGE is http://oom-foo.loop.coop/')
     //@TODO test for REMARKS
@@ -86,11 +86,11 @@ ROOT.throws = ROOT.throws || ( (fn, expect, prefix) => {
 
 
 
-//\\//\\ src/test/App.topLevel-universal.6.js
+//\\//\\ src/test/App.appfn-universal.6.js
 
 
 
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')
@@ -100,25 +100,25 @@ const Class = OOM.OomFoo
 
 
 
-test('The OomFoo.topLevel() method', () => {
-    const protoMethod = Class.prototype.topLevel
-    is('function' === typeof protoMethod, 'prototype.topLevel() is a function')
-    is('OomFoo.topLevel' === protoMethod.NAME, "NAME is 'OomFoo.topLevel'")
+test('The OomFoo.appfn() method', () => {
+    const protoMethod = Class.prototype.appfn
+    is('function' === typeof protoMethod, 'prototype.appfn() is a function')
+    is('OomFoo.appfn' === protoMethod.NAME, "NAME is 'OomFoo.appfn'")
 })
 
 
 
 
-test('+ve topLevel()', () => {
+test('+ve appfn()', () => {
     const instance1 = Class.testInstanceFactory()
-    is('123 ok!' === instance1.topLevel('123'),
-       "`topLevel('123')` returns '123 ok!'")
-    instance1.topLevel('456')
+    is('123 ok!' === instance1.appfn('123'),
+       "`appfn('123')` returns '123 ok!'")
+    instance1.appfn('456')
     is(2 === instance1.xyz,
        'After two calls, `xyz` is 2')
 
     const instance2 = Class.testInstanceFactory()
-    instance2.topLevel('789')
+    instance2.appfn('789')
     is(1 === instance2.xyz,
        'A second instance has its own `xyz` property')
 
@@ -127,14 +127,14 @@ test('+ve topLevel()', () => {
 
 
 
-test('-ve topLevel()', () => {
-    const protoMethod = Class.prototype.topLevel
+test('-ve appfn()', () => {
+    const protoMethod = Class.prototype.appfn
     throws( () => protoMethod('123')
-      , 'OomFoo.topLevel(): Must not be called as OomFoo.prototype.topLevel()'
+      , 'OomFoo.appfn(): Must not be called as OomFoo.prototype.appfn()'
       , 'Prototype call')
     const instance = Class.testInstanceFactory()
-    throws( () => instance.topLevel(123)
-      , 'OomFoo.topLevel(): abc has constructor.name Number not String'
+    throws( () => instance.appfn(123)
+      , 'OomFoo.appfn(): abc has constructor.name Number not String'
       , 'Passing a number into `abc`')
 
 
@@ -153,7 +153,7 @@ test('-ve topLevel()', () => {
 
 
 
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -202,39 +202,92 @@ test('+ve OomFoo.Base instance', () => {
 
 
 
-//\\//\\ src/test/Base.foo-universal.6.js
+//\\//\\ src/test/Base.Sub-universal.6.js
 
 
 
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
-if ('function' != typeof jQuery) throw Error('jQuery not found')
+if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
-const Class = OOM.OomFoo.Base
+const Class = OOM.OomFoo.Base.Sub
 
 
 
 
-test('The OomFoo.Base.foo() method', () => {
-    const protoMethod = Class.prototype.foo
-    is('function' === typeof protoMethod, 'prototype.foo() is a function')
-    is('OomFoo.Base.foo' === protoMethod.NAME, "NAME is 'OomFoo.Base.foo'")
+//// Instantiates a typical OomFoo.Base.Sub instance for unit testing its methods.
+Class.testInstanceFactory = () =>
+    new Class({
+        firstProp: 100
+      , secondProp: new Date
+    },{
+        /* @TODO hub API */
+    })
+
+
+
+
+test('+ve OomFoo.Base.Sub class', () => {
+    is('object' === typeof OOM, 'The OOM namespace object exists')
+    is('function' === typeof Class, 'OomFoo.Base.Sub is a function')
+    is( ('OomFoo.Base.Sub' === Class.NAME && 'OomFoo.Base.Sub' === Class.api.NAME)
+      , 'NAME and api.NAME is OomFoo.Base.Sub')
+    is('Sub' === Class.name, 'name is Sub')
 })
 
 
 
 
-test('+ve foo()', () => {
+test('+ve OomFoo.Base.Sub instance', () => {
+    const instance = Class.testInstanceFactory()
+    is(instance instanceof Class, 'Is an instance of OomFoo.Base.Sub')
+    is(Class === instance.constructor, '`constructor` is OomFoo.Base.Sub')
+    is('object' === typeof instance.hub, '`hub` property is an object')
+})
+
+
+
+
+})//jQuery()
+}( 'object' === typeof global ? global : this ) // `window` in a browser
+
+
+
+
+//\\//\\ src/test/Base.Sub.subfn-universal.6.js
+
+
+
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+
+!function (ROOT) { 'use strict'
+if ('function' != typeof jQuery) throw Error('jQuery not found')
+jQuery( function($) {
+const Class = OOM.OomFoo.Base.Sub
+
+
+
+
+test('The OomFoo.Base.Sub.subfn() method', () => {
+    const protoMethod = Class.prototype.subfn
+    is('function' === typeof protoMethod, 'prototype.subfn() is a function')
+    is('OomFoo.Base.Sub.subfn' === protoMethod.NAME, "NAME is 'OomFoo.Base.Sub.subfn'")
+})
+
+
+
+
+test('+ve subfn()', () => {
     const instance1 = Class.testInstanceFactory()
-    is('123 ok!' === instance1.foo('123'),
-       "`foo('123')` returns '123 ok!'")
-    instance1.foo('456')
+    is('123 ok!' === instance1.subfn('123'),
+       "`subfn('123')` returns '123 ok!'")
+    instance1.subfn('456')
     is(2 === instance1.xyz,
        'After two calls, `xyz` is 2')
 
     const instance2 = Class.testInstanceFactory()
-    instance2.foo('789')
+    instance2.subfn('789')
     is(1 === instance2.xyz,
        'A second instance has its own `xyz` property')
 
@@ -243,14 +296,14 @@ test('+ve foo()', () => {
 
 
 
-test('-ve foo()', () => {
-    const protoMethod = Class.prototype.foo
+test('-ve subfn()', () => {
+    const protoMethod = Class.prototype.subfn
     throws( () => protoMethod('123')
-      , 'OomFoo.Base.foo(): Must not be called as OomFoo.Base.prototype.foo()'
+      , 'OomFoo.Base.Sub.subfn(): Must not be called as OomFoo.Base.Sub.prototype.subfn()'
       , 'Prototype call')
     const instance = Class.testInstanceFactory()
-    throws( () => instance.foo(123)
-      , 'OomFoo.Base.foo(): abc has constructor.name Number not String'
+    throws( () => instance.subfn(123)
+      , 'OomFoo.Base.Sub.subfn(): abc has constructor.name Number not String'
       , 'Passing a number into `abc`')
 
 
@@ -265,4 +318,67 @@ test('-ve foo()', () => {
 
 
 
-//// Made by Oomtility Make 1.1.4 //\\//\\ http://oomtility.loop.coop //////////
+//\\//\\ src/test/Base.basefn-universal.6.js
+
+
+
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+
+!function (ROOT) { 'use strict'
+if ('function' != typeof jQuery) throw Error('jQuery not found')
+jQuery( function($) {
+const Class = OOM.OomFoo.Base
+
+
+
+
+test('The OomFoo.Base.basefn() method', () => {
+    const protoMethod = Class.prototype.basefn
+    is('function' === typeof protoMethod, 'prototype.basefn() is a function')
+    is('OomFoo.Base.basefn' === protoMethod.NAME, "NAME is 'OomFoo.Base.basefn'")
+})
+
+
+
+
+test('+ve basefn()', () => {
+    const instance1 = Class.testInstanceFactory()
+    is('123 ok!' === instance1.basefn('123'),
+       "`basefn('123')` returns '123 ok!'")
+    instance1.basefn('456')
+    is(2 === instance1.xyz,
+       'After two calls, `xyz` is 2')
+
+    const instance2 = Class.testInstanceFactory()
+    instance2.basefn('789')
+    is(1 === instance2.xyz,
+       'A second instance has its own `xyz` property')
+
+})
+
+
+
+
+test('-ve basefn()', () => {
+    const protoMethod = Class.prototype.basefn
+    throws( () => protoMethod('123')
+      , 'OomFoo.Base.basefn(): Must not be called as OomFoo.Base.prototype.basefn()'
+      , 'Prototype call')
+    const instance = Class.testInstanceFactory()
+    throws( () => instance.basefn(123)
+      , 'OomFoo.Base.basefn(): abc has constructor.name Number not String'
+      , 'Passing a number into `abc`')
+
+
+})
+
+
+
+
+})//jQuery()
+}( 'object' === typeof global ? global : this ) // `window` in a browser
+
+
+
+
+//// Made by Oomtility Make 1.1.5 //\\//\\ http://oomtility.loop.coop //////////

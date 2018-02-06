@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Bump'
-    , VERSION  = '1.1.4'
+    , VERSION  = '1.1.5'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , HELP =
@@ -254,7 +254,7 @@ srcPaths.forEach( path => {
 
 
 //// Show the result.
-console.log(`Bumped from ${projectV} to ${newV}`)
+console.log(NAME+` bumped from ${projectV} to ${newV}`)
 
 
 

@@ -2,13 +2,13 @@
 
 
 
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
 const META = {
     NAME:     'OomFoo'
-  , VERSION:  '1.1.4' // OOMBUMPABLE
+  , VERSION:  '1.1.5' // OOMBUMPABLE
   , HOMEPAGE: 'http://oom-foo.loop.coop/'
   , REMARKS:  'Initial test of the oom-hub architecture'
 }
@@ -267,16 +267,16 @@ Object.defineProperties( Class.api, TOOLKIT.toPropsObj(META) )
 
 
 
-//\\//\\ src/main/App.topLevel.6.js
+//\\//\\ src/main/App.appfn.6.js
 
 
 
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
 const META = {
-    NAME:     { value:'OomFoo.topLevel' }
+    NAME:     { value:'OomFoo.appfn' }
   , REMARKS:  { value:'@TODO' }
 }
 
@@ -286,24 +286,24 @@ const OOM     = ROOT.OOM    = ROOT.OOM    || {}
 const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
 
 
-//// Define the `OomFoo.topLevel()` method.
-const method = OOM.OomFoo.prototype.topLevel = function (abc) {
-    let err, ME = `OomFoo.topLevel(): ` // error prefix
+//// Define the `OomFoo.appfn()` method.
+const method = OOM.OomFoo.prototype.appfn = function (abc) {
+    let err, ME = `OomFoo.appfn(): ` // error prefix
     if (! (this instanceof OOM.OomFoo)) throw new Error(ME
-      + `Must not be called as OomFoo.prototype.topLevel()`)
+      + `Must not be called as OomFoo.prototype.appfn()`)
     if ( err = TOOLKIT.validateType({ type:String }, abc) )
         throw new TypeError(ME+`abc ${err}`)
 
     this.xyz++
     return abc + ' ok!'
 
-}//OomFoo.topLevel()
+}//OomFoo.appfn()
 
-//// A tally of the number of times `topLevel()` is called.
+//// A tally of the number of times `appfn()` is called.
 OOM.OomFoo.prototype.xyz = 0
 
 
-//// Add static constants to the `topLevel()` method.
+//// Add static constants to the `appfn()` method.
 Object.defineProperties(method, META)
 
 
@@ -318,7 +318,7 @@ Object.defineProperties(method, META)
 
 
 
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
@@ -492,16 +492,156 @@ Object.defineProperties( Class.api, TOOLKIT.toPropsObj(META) )
 
 
 
-//\\//\\ src/main/Base.foo.6.js
+//\\//\\ src/main/Base.Sub.6.js
 
 
 
-//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
 const META = {
-    NAME:     { value:'OomFoo.Base.foo' }
+    NAME:     'OomFoo.Base.Sub'
+  , REMARKS:  '@TODO'
+}
+
+const PROPS = {
+    propA: Number // or set to `null` to accept any type
+  , propB: [ String, Number ] // multiple possible types
+  , propC: { type:String, required:true } // a required string
+  , propD: { type:Number, default:100 } // a number with default value
+  , propE: { type:Object, default:function(){return[1]} } // must use factory fn
+  , propF: { validator:function(v){return v>10} } // custom validator
+}
+
+
+//// Shortcuts to Oom’s global namespace and toolkit.
+const OOM     = ROOT.OOM    = ROOT.OOM    || {}
+const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
+
+
+//// Define the `OomFoo.Base.Sub` class.
+const Class = OOM.OomFoo.Base.Sub = class Sub extends OOM.OomFoo.Base {
+
+    constructor (config={}, hub=OOM.hub) {
+        super(config, hub)
+
+        //// Properties added to `api` are exposed to Vue etc.
+        const api = this.api = {}
+
+
+        //// hub: Oom instances keep a reference to the oom-hub.
+        Object.defineProperty(this, 'hub', { value:hub })
+
+        //// Validate the configuration object.
+        this._validateConstructor(config)
+
+        //// Record config’s values to the `api` object.
+        this.validConstructor.forEach( valid => {
+            const value = config[valid.name]
+            Object.defineProperty(this.api, valid.name, {
+                value, enumerable:true, configurable:true, writable:true })
+        })
+
+        //// api.index: the first instance of this class is `0`, the second is `1`, etc.
+        if (Class === this.constructor) // not being called by a child-class
+            api.index = Class.api.tally++ // also, update the static `tally`
+    }
+
+
+
+
+    //// Ensures the `config` argument passed to the `constructor()` is valid.
+    //// Called by: constructor()
+    _validateConstructor (config) {
+        let err, value, ME = `OomFoo.Base.Sub._validateConstructor(): ` // error prefix
+        if ('object' !== typeof config)
+            throw new Error(ME+`config is type ${typeof config} not object`)
+        this.validConstructor.forEach( valid => {
+            if (! TOOLKIT.applyDefault(valid, config) )
+                throw new TypeError(ME+`config.${valid.name} is mandatory`)
+            value = config[valid.name]
+            if ( err = TOOLKIT.validateType(valid, value) )
+                throw new TypeError(ME+`config.${valid.name} ${err}`)
+            if ( err = TOOLKIT.validateRange(valid, value) )
+                throw new RangeError(ME+`config.${valid.name} ${err}`)
+        })
+    }
+
+
+    //// Defines what the `config` argument passed to the `constructor()`
+    //// should look like. Note that all of the `config` values are recorded
+    //// as immutable instance properties.
+    //// Called by: constructor()
+    //// Called by: constructor() > _validateConstructor()
+    //// Can also be used to auto-generate unit tests and auto-build GUIs.
+    get validConstructor () { return [
+        {
+            title:   'Third Prop'
+          , name:    'thirdProp'
+          , alias:   'tp'
+
+          , tooltip: 'An example object property, intended as a placeholder'
+          , devtip:  'You should replace this placeholder with a real property'
+          , form:    'text'
+
+          , type:    String
+          , default: 'Some default text'
+        }
+
+
+    ]}
+
+    xxx (config) {
+        const { hub, a, b, c } = this
+        const { xx, yy, zz } = config
+
+        ////
+
+    }
+
+}//OomFoo.Base.Sub
+
+
+
+
+//// PRIVATE FUNCTIONS
+
+
+//// Place any private functions here.
+// function noop () {}
+
+
+
+
+//// FINISHING UP
+
+
+//// Properties added to `api` are exposed to Vue etc.
+Class.api = { tally: 0 } // `tally` counts instantiations
+
+//// Expose the `OomFoo.Base.Sub` class’s static constants.
+Object.defineProperties( Class    , TOOLKIT.toPropsObj(META) )
+Object.defineProperties( Class.api, TOOLKIT.toPropsObj(META) )
+
+
+
+
+}( 'object' === typeof global ? global : this ) // `window` in a browser
+
+
+
+
+//\\//\\ src/main/Base.Sub.subfn.6.js
+
+
+
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+
+!function (ROOT) { 'use strict'
+
+const META = {
+    NAME:     { value:'OomFoo.Base.Sub.subfn' }
   , REMARKS:  { value:'@TODO' }
 }
 
@@ -511,24 +651,24 @@ const OOM     = ROOT.OOM    = ROOT.OOM    || {}
 const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
 
 
-//// Define the `OomFoo.Base.foo()` method.
-const method = OOM.OomFoo.Base.prototype.foo = function (abc) {
-    let err, ME = `OomFoo.Base.foo(): ` // error prefix
-    if (! (this instanceof OOM.OomFoo.Base)) throw new Error(ME
-      + `Must not be called as OomFoo.Base.prototype.foo()`)
+//// Define the `OomFoo.Base.Sub.subfn()` method.
+const method = OOM.OomFoo.Base.Sub.prototype.subfn = function (abc) {
+    let err, ME = `OomFoo.Base.Sub.subfn(): ` // error prefix
+    if (! (this instanceof OOM.OomFoo.Base.Sub)) throw new Error(ME
+      + `Must not be called as OomFoo.Base.Sub.prototype.subfn()`)
     if ( err = TOOLKIT.validateType({ type:String }, abc) )
         throw new TypeError(ME+`abc ${err}`)
 
     this.xyz++
     return abc + ' ok!'
 
-}//OomFoo.Base.foo()
+}//OomFoo.Base.Sub.subfn()
 
-//// A tally of the number of times `foo()` is called.
-OOM.OomFoo.Base.prototype.xyz = 0
+//// A tally of the number of times `subfn()` is called.
+OOM.OomFoo.Base.Sub.prototype.xyz = 0
 
 
-//// Add static constants to the `foo()` method.
+//// Add static constants to the `subfn()` method.
 Object.defineProperties(method, META)
 
 
@@ -539,4 +679,51 @@ Object.defineProperties(method, META)
 
 
 
-//// Made by Oomtility Make 1.1.4 //\\//\\ http://oomtility.loop.coop //////////
+//\\//\\ src/main/Base.basefn.6.js
+
+
+
+//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+
+!function (ROOT) { 'use strict'
+
+const META = {
+    NAME:     { value:'OomFoo.Base.basefn' }
+  , REMARKS:  { value:'@TODO' }
+}
+
+
+//// Shortcuts to Ooms namespace and toolkit.
+const OOM     = ROOT.OOM    = ROOT.OOM    || {}
+const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
+
+
+//// Define the `OomFoo.Base.basefn()` method.
+const method = OOM.OomFoo.Base.prototype.basefn = function (abc) {
+    let err, ME = `OomFoo.Base.basefn(): ` // error prefix
+    if (! (this instanceof OOM.OomFoo.Base)) throw new Error(ME
+      + `Must not be called as OomFoo.Base.prototype.basefn()`)
+    if ( err = TOOLKIT.validateType({ type:String }, abc) )
+        throw new TypeError(ME+`abc ${err}`)
+
+    this.xyz++
+    return abc + ' ok!'
+
+}//OomFoo.Base.basefn()
+
+//// A tally of the number of times `basefn()` is called.
+OOM.OomFoo.Base.prototype.xyz = 0
+
+
+//// Add static constants to the `basefn()` method.
+Object.defineProperties(method, META)
+
+
+
+
+}( 'object' === typeof global ? global : this ) // `window` in a browser
+
+
+
+
+//// Made by Oomtility Make 1.1.5 //\\//\\ http://oomtility.loop.coop //////////

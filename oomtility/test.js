@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Test'
-    , VERSION  = '1.1.4'
+    , VERSION  = '1.1.5'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , HELP =
@@ -29,6 +29,7 @@ $ npm test -- --browser       # Same as \`$ oomtest --browser\`
 Options
 -------
 -b  --browser   Also launch ‘support/test.html’ in the default browser
+-q  --quieter   Only show a single line result
 -h  --help      Show this help message
 -v  --version   Show the current ${NAME} version
 
@@ -63,13 +64,14 @@ require('../support/asset/js/report.min.js')
 require(`../dist/main/${projectLC}.6.js`)
 
 //// Declare variables.
-let opt, browser
+let opt, browser, quieter
 
 //// Deal with command-line options.
 while ( opt = process.argv.shift() ) {
     if ('-h' === opt || '--help'    === opt) return console.log(HELP)
     if ('-v' === opt || '--version' === opt) return console.log(NAME, VERSION)
     if ('-b' === opt || '--browser' === opt) { browser = true; continue }
+    if ('-q' === opt || '--quieter' === opt) { quieter = true; continue }
 }
 
 
@@ -81,9 +83,43 @@ while ( opt = process.argv.shift() ) {
 //// Stub the environment, to make it appear more browser-like.
 global.jQuery = global.$ = onload => { onload() }
 
+//// In '--quieter' mode, capture calls to `console.log()` etc.
+let captured, oldConsoleLog, oldConsoleWarn, oldConsoleError
+if (quieter) {
+    const { Writable } = require('stream')
+    captured = []
+    const capturer = new Writable({
+        write (chunk, encoding, callback) {
+            captured.push(chunk+'')
+            callback()
+        }
+    })
+    oldConsoleLog   = console.log
+    oldConsoleWarn  = console.warn
+    oldConsoleError = console.error
+    const captureConsole = new console.Console(capturer, capturer)
+    console.log   = captureConsole.log
+    console.warn  = captureConsole.warn
+    console.error = captureConsole.error
+}
+
 //// Run parts of the test-suite compatible with a non-browser runtime.
 require(`../dist/test/${projectLC}-universal.6.js`)
 require(`../dist/test/${projectLC}-nonbrowser.6.js`)
+
+//// In '--quieter' mode, show a summary of the tests.
+if (quieter) {
+    console.log   = oldConsoleLog
+    console.warn  = oldConsoleWarn
+    console.error = oldConsoleError
+    const fails = captured.filter( // green tick is '\x1b[32m\u2714\x1b[0m'
+        l => '\x1b[31m\u2718\x1b[0m' === l.slice(0,10) ? l : null )
+    if (fails.length)
+        console.log(fails.join(''))
+    else
+        console.log(
+            NAME+` passed ${captured.length} test${1===captured.length?'':'s'}`)
+}
 
 //// Launch the browser tests.
 if (browser) {

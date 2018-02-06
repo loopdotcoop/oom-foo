@@ -61,8 +61,8 @@ Vue.component('oom-oomfoo', {
   <property-table :obj="instance" :do-hide="ui.hideData"
     :caption="static.NAME+'<em>#'+instance.UUID+'</em>&nbsp; instance data:'"></property-table>
   <div v-bind:class="{ hid: ui.hideInners }">
-    <oom-base v-bind="instance"></oom-base>
-    <oom-base v-bind="instance"></oom-base>
+    <oom-base-sub v-bind="instance"></oom-base-sub>
+    <oom-base-sub v-bind="instance"></oom-base-sub>
   </div>
 
 </div>
@@ -100,10 +100,10 @@ Vue.component('oom-oomfoo', {
 
 
 
-//// Register <oom-base>, a Vue component version of OomFoo.Base.
-Vue.component('oom-base', {
+//// Register <oom-base-sub>, a Vue component version of OomFoo.Base.Sub.
+Vue.component('oom-base-sub', {
     template: `
-<div class="oom-component oom-base container">
+<div class="oom-component oom-base-sub container">
   <div class="row">
     <div class="col-sm-7 h4">
       {{static.NAME}}<em class="text-muted">#{{instance.UUID}}</em>
@@ -128,7 +128,7 @@ Vue.component('oom-base', {
 
   , data: function () { return {
         instance: inners[inners.length-1].api
-      , static: ROOT.OOM.OomFoo.Base.api
+      , static: ROOT.OOM.OomFoo.Base.Sub.api
       , ui: { hideData:false }
     } }
 
@@ -141,9 +141,9 @@ Vue.component('oom-base', {
         toggleHideData
     }
 
-    //// Generate an instance of OomFoo.Base.
+    //// Generate an instance of OomFoo.Base.Sub.
   , beforeCreate: function () {
-        inners.push( new ROOT.OOM.OomFoo.Base({
+        inners.push( new ROOT.OOM.OomFoo.Base.Sub({
             thirdProp: 'inners.length: ' + inners.length
         }) )
     }
@@ -153,7 +153,7 @@ Vue.component('oom-base', {
 
         //// Wrap Vue’s reactive getters and setters with our own.
         wrapApiGettersAndSetters(outers[outers.length-1])
-        wrapApiGettersAndSetters(ROOT.OOM.OomFoo.Base)
+        wrapApiGettersAndSetters(ROOT.OOM.OomFoo.Base.Sub)
 
     }
 })
