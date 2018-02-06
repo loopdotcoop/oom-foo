@@ -1,4 +1,4 @@
-//// OomFoo //// 1.1.3 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -32,11 +32,14 @@ test('+ve OomFoo class', () => {
     is('object' === typeof OOM, 'The OOM namespace object exists')
     is('undefined' === typeof OomFoo, 'OomFoo is not global')
     is('function' === typeof Class, 'OomFoo is a function')
-    is('OomFoo' === Class.NAME, 'NAME is OomFoo')
+    is( ('OomFoo' === Class.NAME && 'OomFoo' === Class.api.NAME)
+      , 'NAME and api.NAME is OomFoo')
     is('OomFoo' === Class.name, 'name is OomFoo')
-    is('1.1.3' === Class.VERSION, 'VERSION is 1.1.3') // OOMBUMPABLE (twice!)
-    is('http://oom-foo.loop.coop/' === Class.HOMEPAGE
-      , 'HOMEPAGE is http://oom-foo.loop.coop/')
+    is( ('1.1.4' === Class.VERSION && '1.1.4' === Class.api.VERSION) // OOMBUMPABLE (twice!)
+      , 'VERSION and api.VERSION is 1.1.4') // OOMBUMPABLE
+    is( ('http://oom-foo.loop.coop/' === Class.HOMEPAGE && 'http://oom-foo.loop.coop/' === Class.api.HOMEPAGE)
+      , 'HOMEPAGE and api.HOMEPAGE is http://oom-foo.loop.coop/')
+    //@TODO test for REMARKS
 })
 
 

@@ -2,13 +2,13 @@
 
 
 
-//// OomFoo //// 1.1.3 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
 const META = {
     NAME:     'OomFoo'
-  , VERSION:  '1.1.3' // OOMBUMPABLE
+  , VERSION:  '1.1.4' // OOMBUMPABLE
   , HOMEPAGE: 'http://oom-foo.loop.coop/'
   , REMARKS:  'Initial test of the oom-hub architecture'
 }
@@ -32,11 +32,14 @@ const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
 const Class = OOM.OomFoo = class OomFoo {
 
     constructor (config={}, hub=OOM.hub) {
+        //// Properties added to `api` are exposed to Vue etc.
+        const api = this.api = {}
 
-        //// id: Oom instances have universally unique IDs (57 billion combos).
-        Object.defineProperty(this, 'id', { value:
+        //// api.UUID: Oom instances have universally unique IDs (57 billion combos).
+        Object.defineProperty(api, 'UUID', { enumerable:true, configurable:false, value:
             '123456'.replace( /./g,         c=>TOOLKIT.rndCh(48,122) )    // 0-z
                     .replace( /[:-@\[-`]/g, c=>TOOLKIT.rndCh(97,122) ) }) // a-z
+
 
         //// hub: Oom instances keep a reference to the oom-hub.
         Object.defineProperty(this, 'hub', { value:hub })
@@ -44,16 +47,21 @@ const Class = OOM.OomFoo = class OomFoo {
         //// Validate the configuration object.
         this._validateConstructor(config)
 
-        //// Record config’s values as immutable properties.
+        //// Record config’s values to the `api` object.
         this.validConstructor.forEach( valid => {
             const value = config[valid.name]
-            Object.defineProperty(this, valid.name, { value })
+            Object.defineProperty(this.api, valid.name, {
+                value, enumerable:true, configurable:true, writable:true })
         })
-
         //// ready: a Promise which resolves when the instance has initialised.
         Object.defineProperty(this, 'ready', { value: this._getReady() })
 
+
+        //// api.index: the first instance of this class is `0`, the second is `1`, etc.
+        if (Class === this.constructor) // not being called by a child-class
+            api.index = Class.api.tally++ // also, update the static `tally`
     }
+
 
 
 
@@ -85,6 +93,7 @@ const Class = OOM.OomFoo = class OomFoo {
         }, 0)})
 
     }
+
 
 
 
@@ -143,6 +152,8 @@ const Class = OOM.OomFoo = class OomFoo {
           , type:    Date
           // no `default`, so `props.firstProp.required: true` in Vue
         }
+
+
     ]}
 
     xxx (config) {
@@ -217,10 +228,14 @@ TOOLKIT.getNow = TOOLKIT.getNow || ( () => {
 })
 
 
-//// Convert an object like { FOO:1, BAR:2 } to { FOO:{value:1}, BAR:{value:2} }
+//// Convert an object like { FOO:1, BAR:2 } to
+//// { FOO:{ value:1, enumerable:true }, BAR:{ value:2, enumerable:true} }
 //// making it suitable to pass to `Object.defineProperties()`.
 TOOLKIT.toPropsObj = TOOLKIT.toPropsObj || ( src => {
-    const obj = {}; for (let k in src) obj[k] = { value: src[k] }; return obj })
+    const obj = {}
+    for (let k in src) obj[k] = { value:src[k], enumerable:true }
+    return obj
+})
 
 
 
@@ -237,9 +252,12 @@ TOOLKIT.toPropsObj = TOOLKIT.toPropsObj || ( src => {
 //// FINISHING UP
 
 
-//// Add static constants to the `OomFoo` class.
-// console.log(TOOLKIT.toPropsObj(META));
-Object.defineProperties( Class, TOOLKIT.toPropsObj(META) )
+//// Properties added to `api` are exposed to Vue etc.
+Class.api = { tally: 0 } // `tally` counts instantiations
+
+//// Expose the `OomFoo` class’s static constants.
+Object.defineProperties( Class    , TOOLKIT.toPropsObj(META) )
+Object.defineProperties( Class.api, TOOLKIT.toPropsObj(META) )
 
 
 
@@ -253,7 +271,7 @@ Object.defineProperties( Class, TOOLKIT.toPropsObj(META) )
 
 
 
-//// OomFoo //// 1.1.3 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
@@ -300,7 +318,7 @@ Object.defineProperties(method, META)
 
 
 
-//// OomFoo //// 1.1.3 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
@@ -328,11 +346,14 @@ const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
 const Class = OOM.OomFoo.Base = class Base {
 
     constructor (config={}, hub=OOM.hub) {
+        //// Properties added to `api` are exposed to Vue etc.
+        const api = this.api = {}
 
-        //// id: Oom instances have universally unique IDs (57 billion combos).
-        Object.defineProperty(this, 'id', { value:
+        //// api.UUID: Oom instances have universally unique IDs (57 billion combos).
+        Object.defineProperty(api, 'UUID', { enumerable:true, configurable:false, value:
             '123456'.replace( /./g,         c=>TOOLKIT.rndCh(48,122) )    // 0-z
                     .replace( /[:-@\[-`]/g, c=>TOOLKIT.rndCh(97,122) ) }) // a-z
+
 
         //// hub: Oom instances keep a reference to the oom-hub.
         Object.defineProperty(this, 'hub', { value:hub })
@@ -340,16 +361,21 @@ const Class = OOM.OomFoo.Base = class Base {
         //// Validate the configuration object.
         this._validateConstructor(config)
 
-        //// Record config’s values as immutable properties.
+        //// Record config’s values to the `api` object.
         this.validConstructor.forEach( valid => {
             const value = config[valid.name]
-            Object.defineProperty(this, valid.name, { value })
+            Object.defineProperty(this.api, valid.name, {
+                value, enumerable:true, configurable:true, writable:true })
         })
-
         //// ready: a Promise which resolves when the instance has initialised.
         Object.defineProperty(this, 'ready', { value: this._getReady() })
 
+
+        //// api.index: the first instance of this class is `0`, the second is `1`, etc.
+        if (Class === this.constructor) // not being called by a child-class
+            api.index = Class.api.tally++ // also, update the static `tally`
     }
+
 
 
 
@@ -384,6 +410,7 @@ const Class = OOM.OomFoo.Base = class Base {
 
 
 
+
     //// Ensures the `config` argument passed to the `constructor()` is valid.
     //// Called by: constructor()
     _validateConstructor (config) {
@@ -410,35 +437,19 @@ const Class = OOM.OomFoo.Base = class Base {
     //// Can also be used to auto-generate unit tests and auto-build GUIs.
     get validConstructor () { return [
         {
-            title:   'First Prop'
-          , name:    'firstProp' // in Vue, a key-name in `props`
-          , alias:   'fp'
-
-          , tooltip: 'An example numeric property, intended as a placeholder'
-          , devtip:  'You should replace this placeholder with a real property'
-          , form:    'range'
-          , power:   1 // eg `8` for an exponential range-slider
-          , suffix:  'Units'
-
-          , type:    Number // `props.firstProp.type` in Vue
-          , min:     1
-          , max:     100
-          , step:    1
-          , default: 50 // implies `props.firstProp.required: false` in Vue
-          //@TODO `props.firstProp.validator`
-        }
-      , {
-            title:   'Second Prop'
-          , name:    'secondProp'
-          , alias:   'sp'
+            title:   'Third Prop'
+          , name:    'thirdProp'
+          , alias:   'tp'
 
           , tooltip: 'An example object property, intended as a placeholder'
           , devtip:  'You should replace this placeholder with a real property'
-          , form:    'hidden'
+          , form:    'text'
 
-          , type:    Date
-          // no `default`, so `props.firstProp.required: true` in Vue
+          , type:    String
+          , default: 'Some default text'
         }
+
+
     ]}
 
     xxx (config) {
@@ -466,9 +477,12 @@ const Class = OOM.OomFoo.Base = class Base {
 //// FINISHING UP
 
 
-//// Add static constants to the `OomFoo` class.
-// console.log(TOOLKIT.toPropsObj(META));
-Object.defineProperties( Class, TOOLKIT.toPropsObj(META) )
+//// Properties added to `api` are exposed to Vue etc.
+Class.api = { tally: 0 } // `tally` counts instantiations
+
+//// Expose the `OomFoo.Base` class’s static constants.
+Object.defineProperties( Class    , TOOLKIT.toPropsObj(META) )
+Object.defineProperties( Class.api, TOOLKIT.toPropsObj(META) )
 
 
 
@@ -482,7 +496,7 @@ Object.defineProperties( Class, TOOLKIT.toPropsObj(META) )
 
 
 
-//// OomFoo //// 1.1.3 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
@@ -525,4 +539,4 @@ Object.defineProperties(method, META)
 
 
 
-//// Made by Oomtility Make 1.1.3 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.1.4 //\\//\\ http://oomtility.loop.coop //////////

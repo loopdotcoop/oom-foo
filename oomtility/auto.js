@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Auto'
-    , VERSION  = '1.1.3'
+    , VERSION  = '1.1.4'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Initialised by ${NAME} ${VERSION}\n`
@@ -328,6 +328,8 @@ function generateDemoScript (name, path) {
     wrapped.writeDemo6Js({
         classname: `${projectTC}.${name}`
       , nameLC: name.replace(/\./g,'-').toLowerCase()
+      , projectTC
+      , projectLC
       , topline
     }, path)
 }

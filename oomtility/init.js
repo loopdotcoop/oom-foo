@@ -1,52 +1,53 @@
 !function () { 'use strict'
 
 const PATHS = {
-    'src/demo/App-demo.6.js                     ':'Main usage example'
-  , 'src/main/App.6.js                          ':'Entry-point and namespace'
-  , 'src/test/App-browser.6.js                  ':'Browser-only unit test'
-  , 'src/test/App-nonbrowser.6.js               ':'Node-only unit test'
-  , 'src/test/App-universal.6.js                ':'Browser+Node unit test'
-  , 'support/demo.html                          ':'Lists usage examples'
-  , 'support/demo-app.html                      ':'Main usage example'
-  , 'support/test.html                          ':'Test browser + universal'
-  , 'support/asset/css/bootstrap.min.css        ':'Grid, normalise browsers'
-  , 'support/asset/css/main.css                 ':'Specific Oom styles'
-  , 'support/asset/icon/android-192x192.png     ':'Smaller icon for Android'
-  , 'support/asset/icon/android-512x512.png     ':'Larger icon for Android'
-  , 'support/asset/icon/apple-touch-icon.png    ':'Icon for iOS'
-  , 'support/asset/icon/browserconfig.xml       ':'Configures Windows Metro'
-  , 'support/asset/icon/favicon-16x16.png       ':'Icon for modern browsers'
-  , 'support/asset/icon/favicon-32x32.png       ':'Icon for modern browsers'
-  , 'support/asset/icon/favicon-96x96.png       ':'Icon for modern browsers'
-  , 'support/asset/icon/favicon.ico             ':'Icon for legacy browsers'
-  , 'support/asset/icon/manifest.json           ':'Configures Android'
-  , 'support/asset/icon/mstile-310x310.png      ':'Icon for Windows Metro'
-  , 'support/asset/icon/safari-pinned-tab.svg   ':'Icon for mobile Safari'
-  , 'support/asset/font/ubuntu-bold.woff2       ':'Custom Google font'
-  , 'support/asset/font/ubuntu-bolditalic.woff2 ':''
-  , 'support/asset/font/ubuntu-italic.woff2     ':''
-  , 'support/asset/font/ubuntu-regular.woff2    ':''
-  , 'support/asset/font/ubuntumono-regular.woff2':''
-  , 'support/asset/js/aframe-0.7.0.min.js       ':'WebVR framework + THREE.js'
-  , 'support/asset/js/ecmaswitch.js             ':'Switch between JS builds'
-  , 'support/asset/js/klud.min.js               ':'An assertion library'
-  , 'support/asset/js/report.min.js             ':'Klud’s reporter'
-  , 'support/asset/js/polyfill.min.js           ':'Support Object.assign'
-  , 'support/asset/js/jquery-3.3.1.slim.min.js  ':'Cross-browser JS helpers'
-  , 'support/asset/js/traceur-runtime.min.js    ':'Runs ES6 transpiled to ES5'
-  , 'support/asset/js/vue-2.5.13.min.js         ':'Frontend framework'
-  , 'support/asset/logo/logo-1200x1200.svg      ':'Main image on homepage'
-  , '.gitignore                                 ':'Ignore .DS_Store, etc'
-  , 'CHANGELOG                                  ':'Lists bumps and commits'
-  , 'CNAME                                      ':'Sets the homepage URL'
-  , 'index.html                                 ':'The repo homepage'
-  , 'package.json                               ':'For publishing on NPM'
-  , 'README.md                                  ':'Human-readable repo info'
+    'src/demo/App-demo.6.js                        ':'Main usage example'
+  , 'src/main/App.6.js                             ':'Entry-point and namespace'
+  , 'src/test/App-browser.6.js                     ':'Browser-only unit test'
+  , 'src/test/App-nonbrowser.6.js                  ':'Node-only unit test'
+  , 'src/test/App-universal.6.js                   ':'Browser + Node unit test'
+  , 'support/demo.html                             ':'Lists usage examples'
+  , 'support/demo-app.html                         ':'Main usage example'
+  , 'support/test.html                             ':'Test browser + universal'
+  , 'support/asset/css/bootstrap.4.0.0.min.css     ':'Grid, normalise browsers'
+  , 'support/asset/css/main.css                    ':'Specific Oom styles'
+  , 'support/asset/icon/android-192x192.png        ':'Smaller icon for Android'
+  , 'support/asset/icon/android-512x512.png        ':'Larger icon for Android'
+  , 'support/asset/icon/apple-touch-icon.png       ':'Icon for iOS'
+  , 'support/asset/icon/browserconfig.xml          ':'Configures Windows Metro'
+  , 'support/asset/icon/favicon-16x16.png          ':'Icon for modern browsers'
+  , 'support/asset/icon/favicon-32x32.png          ':'Icon for modern browsers'
+  , 'support/asset/icon/favicon-96x96.png          ':'Icon for modern browsers'
+  , 'support/asset/icon/favicon.ico                ':'Icon for legacy browsers'
+  , 'support/asset/icon/manifest.json              ':'Configures Android'
+  , 'support/asset/icon/mstile-310x310.png         ':'Icon for Windows Metro'
+  , 'support/asset/icon/safari-pinned-tab.svg      ':'Icon for mobile Safari'
+  , 'support/asset/font/ubuntu-bold.woff2          ':'Custom Google font'
+  , 'support/asset/font/ubuntu-bolditalic.woff2    ':''
+  , 'support/asset/font/ubuntu-italic.woff2        ':''
+  , 'support/asset/font/ubuntu-regular.woff2       ':''
+  , 'support/asset/font/ubuntumono-regular.woff2   ':''
+  , 'support/asset/js/aframe-0.7.0.min.js          ':'WebVR framework, THREE.js'
+  , 'support/asset/js/ecmaswitch.js                ':'Switch between JS builds'
+  , 'support/asset/js/klud.min.js                  ':'An assertion library'
+  , 'support/asset/js/report.min.js                ':'Klud’s reporter'
+  , 'support/asset/js/polyfill.min.js              ':'Support Object.assign'
+  , 'support/asset/js/jquery-3.3.1.slim.min.js     ':'Cross-browser JS helpers'
+  , 'support/asset/js/traceur-runtime.min.js       ':'Runs transpiled ES6'
+  , 'support/asset/js/vue-2.5.13.dev.js            ':'Frontend framework'
+  , 'support/asset/js/vue-2.5.13.min.js            ':'Production version of Vue'
+  , 'support/asset/logo/logo-1200x1200.svg         ':'Main image on homepage'
+  , '.gitignore                                    ':'Ignore .DS_Store, etc'
+  , 'CHANGELOG                                     ':'Lists bumps and commits'
+  , 'CNAME                                         ':'Sets the homepage URL'
+  , 'index.html                                    ':'The repo homepage'
+  , 'package.json                                  ':'For publishing on NPM'
+  , 'README.md                                     ':'Human-readable repo info'
 }
 
 
 const NAME     = 'Oomtility Init'
-    , VERSION  = '1.1.3'
+    , VERSION  = '1.1.4'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = `\n\n\n\n//\\\\//\\\\ generated by ${NAME} ${VERSION}`
@@ -198,7 +199,7 @@ if (remove) {
 
     //// Prompt the user for a colour.
     function readColor (answer) {
-        projectColor = answer
+        projectColor = answer || 'silver'
 
         //// Generate the folders and files.
         createFolders()
@@ -325,6 +326,8 @@ function monthNames() {
 function addFile (path) {
     const config = {
         topline
+      , isApp: true
+      , isTop: true
       , projectTC
       , projectLC
       , classname:   projectTC

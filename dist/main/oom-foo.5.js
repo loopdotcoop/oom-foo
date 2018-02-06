@@ -1,11 +1,11 @@
-//// OomFoo //// 1.1.3 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
     NAME: 'OomFoo',
-    VERSION: '1.1.3',
+    VERSION: '1.1.4',
     HOMEPAGE: 'http://oom-foo.loop.coop/',
     REMARKS: 'Initial test of the oom-hub architecture'
   };
@@ -37,18 +37,30 @@
       var config = arguments[0] !== (void 0) ? arguments[0] : {};
       var hub = arguments[1] !== (void 0) ? arguments[1] : OOM.hub;
       var $__2 = this;
-      Object.defineProperty(this, 'id', {value: '123456'.replace(/./g, function(c) {
+      var api = this.api = {};
+      Object.defineProperty(api, 'UUID', {
+        enumerable: true,
+        configurable: false,
+        value: '123456'.replace(/./g, function(c) {
           return TOOLKIT.rndCh(48, 122);
         }).replace(/[:-@\[-`]/g, function(c) {
           return TOOLKIT.rndCh(97, 122);
-        })});
+        })
+      });
       Object.defineProperty(this, 'hub', {value: hub});
       this._validateConstructor(config);
       this.validConstructor.forEach(function(valid) {
         var value = config[valid.name];
-        Object.defineProperty($__2, valid.name, {value: value});
+        Object.defineProperty($__2.api, valid.name, {
+          value: value,
+          enumerable: true,
+          configurable: true,
+          writable: true
+        });
       });
       Object.defineProperty(this, 'ready', {value: this._getReady()});
+      if (Class === this.constructor)
+        api.index = Class.api.tally++;
     }
     return ($traceurRuntime.createClass)(OomFoo, {
       _getReady: function() {
@@ -162,10 +174,15 @@
   TOOLKIT.toPropsObj = TOOLKIT.toPropsObj || (function(src) {
     var obj = {};
     for (var k in src)
-      obj[k] = {value: src[k]};
+      obj[k] = {
+        value: src[k],
+        enumerable: true
+      };
     return obj;
   });
+  Class.api = {tally: 0};
   Object.defineProperties(Class, TOOLKIT.toPropsObj(META));
+  Object.defineProperties(Class.api, TOOLKIT.toPropsObj(META));
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
 !function(ROOT) {
   'use strict';
@@ -222,18 +239,30 @@
       var config = arguments[0] !== (void 0) ? arguments[0] : {};
       var hub = arguments[1] !== (void 0) ? arguments[1] : OOM.hub;
       var $__2 = this;
-      Object.defineProperty(this, 'id', {value: '123456'.replace(/./g, function(c) {
+      var api = this.api = {};
+      Object.defineProperty(api, 'UUID', {
+        enumerable: true,
+        configurable: false,
+        value: '123456'.replace(/./g, function(c) {
           return TOOLKIT.rndCh(48, 122);
         }).replace(/[:-@\[-`]/g, function(c) {
           return TOOLKIT.rndCh(97, 122);
-        })});
+        })
+      });
       Object.defineProperty(this, 'hub', {value: hub});
       this._validateConstructor(config);
       this.validConstructor.forEach(function(valid) {
         var value = config[valid.name];
-        Object.defineProperty($__2, valid.name, {value: value});
+        Object.defineProperty($__2.api, valid.name, {
+          value: value,
+          enumerable: true,
+          configurable: true,
+          writable: true
+        });
       });
       Object.defineProperty(this, 'ready', {value: this._getReady()});
+      if (Class === this.constructor)
+        api.index = Class.api.tally++;
     }
     return ($traceurRuntime.createClass)(Base, {
       _getReady: function() {
@@ -266,27 +295,14 @@
       },
       get validConstructor() {
         return [{
-          title: 'First Prop',
-          name: 'firstProp',
-          alias: 'fp',
-          tooltip: 'An example numeric property, intended as a placeholder',
-          devtip: 'You should replace this placeholder with a real property',
-          form: 'range',
-          power: 1,
-          suffix: 'Units',
-          type: Number,
-          min: 1,
-          max: 100,
-          step: 1,
-          default: 50
-        }, {
-          title: 'Second Prop',
-          name: 'secondProp',
-          alias: 'sp',
+          title: 'Third Prop',
+          name: 'thirdProp',
+          alias: 'tp',
           tooltip: 'An example object property, intended as a placeholder',
           devtip: 'You should replace this placeholder with a real property',
-          form: 'hidden',
-          type: Date
+          form: 'text',
+          type: String,
+          default: 'Some default text'
         }];
       },
       xxx: function(config) {
@@ -302,7 +318,9 @@
       }
     }, {});
   }();
+  Class.api = {tally: 0};
   Object.defineProperties(Class, TOOLKIT.toPropsObj(META));
+  Object.defineProperties(Class.api, TOOLKIT.toPropsObj(META));
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
 !function(ROOT) {
   'use strict';
@@ -329,4 +347,4 @@
 
 
 
-//// Made by Oomtility Make 1.1.3 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.1.4 //\\//\\ http://oomtility.loop.coop //////////

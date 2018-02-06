@@ -39,14 +39,18 @@ const Class = OOM.${classname} = class ${classname.split('.').pop()} extends OOM
 }}}
 
     constructor (config={}, hub=OOM.hub) {
-
 ${{{
 isTop ? `
-        //// id: Oom instances have universally unique IDs (57 billion combos).
-        Object.defineProperty(this, 'id', { value:
+        //// Properties added to \`api\` are exposed to Vue etc.
+        const api = this.api = {}
+
+        //// api.UUID: Oom instances have universally unique IDs (57 billion combos).
+        Object.defineProperty(api, 'UUID', { enumerable:true, configurable:false, value:
             '123456'.replace( /./g,         c=>TOOLKIT.rndCh(48,122) )    // 0-z
-                    .replace( /[:-@\\[-\`]/g, c=>TOOLKIT.rndCh(97,122) ) }) // a-z`:`
-        super(config, hub)`
+                    .replace( /[:-@\\[-\`]/g, c=>TOOLKIT.rndCh(97,122) ) }) // a-z
+`:`
+        super(config, hub)
+`
 }}}
 
         //// hub: Oom instances keep a reference to the oom-hub.
@@ -55,19 +59,24 @@ isTop ? `
         //// Validate the configuration object.
         this._validateConstructor(config)
 
-        //// Record config’s values as immutable properties.
+        //// Record config’s values to the `api` object.
         this.validConstructor.forEach( valid => {
             const value = config[valid.name]
-            Object.defineProperty(this, valid.name, { value })
+            Object.defineProperty(this.api, valid.name, {
+                value, enumerable:true, configurable:true, writable:true })
         })
-
 ${{{
 isTop ? `
         //// ready: a Promise which resolves when the instance has initialised.
-        Object.defineProperty(this, 'ready', { value: this._getReady() })`:''
+        Object.defineProperty(this, 'ready', { value: this._getReady() })
+`:''
 }}}
 
+        //// api.index: the first instance of this class is `0`, the second is `1`, etc.
+        if (Class === this.constructor) // not being called by a child-class
+            api.index = Class.api.tally++ // also, update the static `tally`
     }
+
 
 
 
@@ -103,6 +112,7 @@ isTop ? `
     }
 
 
+
 `:''
 }}}
     //// Ensures the `config` argument passed to the `constructor()` is valid.
@@ -130,23 +140,25 @@ isTop ? `
     //// Called by: constructor() > _validateConstructor()
     //// Can also be used to auto-generate unit tests and auto-build GUIs.
     get validConstructor () { return [
+${{{
+isApp ? `
         {
             title:   'First Prop'
-          , name:    'firstProp' // in Vue, a key-name in `props`
+          , name:    'firstProp' // in Vue, a key-name in \`props\`
           , alias:   'fp'
 
           , tooltip: 'An example numeric property, intended as a placeholder'
           , devtip:  'You should replace this placeholder with a real property'
           , form:    'range'
-          , power:   1 // eg `8` for an exponential range-slider
+          , power:   1 // eg \`8\` for an exponential range-slider
           , suffix:  'Units'
 
-          , type:    Number // `props.firstProp.type` in Vue
+          , type:    Number // \`props.firstProp.type\` in Vue
           , min:     1
           , max:     100
           , step:    1
-          , default: 50 // implies `props.firstProp.required: false` in Vue
-          //@TODO `props.firstProp.validator`
+          , default: 50 // implies \`props.firstProp.required: false\` in Vue
+          //@TODO \`props.firstProp.validator\`
         }
       , {
             title:   'Second Prop'
@@ -158,8 +170,24 @@ isTop ? `
           , form:    'hidden'
 
           , type:    Date
-          // no `default`, so `props.firstProp.required: true` in Vue
+          // no \`default\`, so \`props.firstProp.required: true\` in Vue
         }
+`:`
+        {
+            title:   'Third Prop'
+          , name:    'thirdProp'
+          , alias:   'tp'
+
+          , tooltip: 'An example object property, intended as a placeholder'
+          , devtip:  'You should replace this placeholder with a real property'
+          , form:    'text'
+
+          , type:    String
+          , default: 'Some default text'
+        }
+`
+}}}
+
     ]}
 
     xxx (config) {
@@ -236,10 +264,14 @@ TOOLKIT.getNow = TOOLKIT.getNow || ( () => {
 })
 
 
-//// Convert an object like { FOO:1, BAR:2 } to { FOO:{value:1}, BAR:{value:2} }
+//// Convert an object like { FOO:1, BAR:2 } to
+//// { FOO:{ value:1, enumerable:true }, BAR:{ value:2, enumerable:true} }
 //// making it suitable to pass to \`Object.defineProperties()\`.
 TOOLKIT.toPropsObj = TOOLKIT.toPropsObj || ( src => {
-    const obj = {}; for (let k in src) obj[k] = { value: src[k] }; return obj })
+    const obj = {}
+    for (let k in src) obj[k] = { value:src[k], enumerable:true }
+    return obj
+})
 
 
 
@@ -257,9 +289,12 @@ TOOLKIT.toPropsObj = TOOLKIT.toPropsObj || ( src => {
 //// FINISHING UP
 
 
-//// Add static constants to the `OomFoo` class.
-// console.log(TOOLKIT.toPropsObj(META));
-Object.defineProperties( Class, TOOLKIT.toPropsObj(META) )
+//// Properties added to `api` are exposed to Vue etc.
+Class.api = { tally: 0 } // `tally` counts instantiations
+
+//// Expose the `${{classname}}` class’s static constants.
+Object.defineProperties( Class    , TOOLKIT.toPropsObj(META) )
+Object.defineProperties( Class.api, TOOLKIT.toPropsObj(META) )
 
 
 

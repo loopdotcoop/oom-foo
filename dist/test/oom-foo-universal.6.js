@@ -2,7 +2,7 @@
 
 
 
-//// OomFoo //// 1.1.3 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -36,11 +36,14 @@ test('+ve OomFoo class', () => {
     is('object' === typeof OOM, 'The OOM namespace object exists')
     is('undefined' === typeof OomFoo, 'OomFoo is not global')
     is('function' === typeof Class, 'OomFoo is a function')
-    is('OomFoo' === Class.NAME, 'NAME is OomFoo')
+    is( ('OomFoo' === Class.NAME && 'OomFoo' === Class.api.NAME)
+      , 'NAME and api.NAME is OomFoo')
     is('OomFoo' === Class.name, 'name is OomFoo')
-    is('1.1.3' === Class.VERSION, 'VERSION is 1.1.3') // OOMBUMPABLE (twice!)
-    is('http://oom-foo.loop.coop/' === Class.HOMEPAGE
-      , 'HOMEPAGE is http://oom-foo.loop.coop/')
+    is( ('1.1.4' === Class.VERSION && '1.1.4' === Class.api.VERSION) // OOMBUMPABLE (twice!)
+      , 'VERSION and api.VERSION is 1.1.4') // OOMBUMPABLE
+    is( ('http://oom-foo.loop.coop/' === Class.HOMEPAGE && 'http://oom-foo.loop.coop/' === Class.api.HOMEPAGE)
+      , 'HOMEPAGE and api.HOMEPAGE is http://oom-foo.loop.coop/')
+    //@TODO test for REMARKS
 })
 
 
@@ -87,7 +90,7 @@ ROOT.throws = ROOT.throws || ( (fn, expect, prefix) => {
 
 
 
-//// OomFoo //// 1.1.3 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')
@@ -150,7 +153,7 @@ test('-ve topLevel()', () => {
 
 
 
-//// OomFoo //// 1.1.3 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -175,7 +178,8 @@ Class.testInstanceFactory = () =>
 test('+ve OomFoo.Base class', () => {
     is('object' === typeof OOM, 'The OOM namespace object exists')
     is('function' === typeof Class, 'OomFoo.Base is a function')
-    is('OomFoo.Base' === Class.NAME, 'NAME is OomFoo.Base')
+    is( ('OomFoo.Base' === Class.NAME && 'OomFoo.Base' === Class.api.NAME)
+      , 'NAME and api.NAME is OomFoo.Base')
     is('Base' === Class.name, 'name is Base')
 })
 
@@ -202,7 +206,7 @@ test('+ve OomFoo.Base instance', () => {
 
 
 
-//// OomFoo //// 1.1.3 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')
@@ -261,4 +265,4 @@ test('-ve foo()', () => {
 
 
 
-//// Made by Oomtility Make 1.1.3 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.1.4 //\\//\\ http://oomtility.loop.coop //////////

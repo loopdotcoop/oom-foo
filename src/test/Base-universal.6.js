@@ -1,4 +1,4 @@
-//// OomFoo //// 1.1.3 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.4 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -23,7 +23,8 @@ Class.testInstanceFactory = () =>
 test('+ve OomFoo.Base class', () => {
     is('object' === typeof OOM, 'The OOM namespace object exists')
     is('function' === typeof Class, 'OomFoo.Base is a function')
-    is('OomFoo.Base' === Class.NAME, 'NAME is OomFoo.Base')
+    is( ('OomFoo.Base' === Class.NAME && 'OomFoo.Base' === Class.api.NAME)
+      , 'NAME and api.NAME is OomFoo.Base')
     is('Base' === Class.name, 'name is Base')
 })
 

@@ -5,6 +5,7 @@ const CONSTS = {
     isApp:       0
   , isTop:       0
   , title:       0
+  , projectTC:   0
   , projectLC:   0
   , classname:   0
   , nameLC:      0
@@ -23,7 +24,7 @@ const CONSTS = {
 }
 
 const NAME     = 'Oomtility Wrap'
-    , VERSION  = '1.1.3'
+    , VERSION  = '1.1.4'
     , HOMEPAGE = 'https://oomtility.loop.coop'
     , HELP =
 `

@@ -76,8 +76,10 @@ Designed, developed and authored by Rich Plastow for Loop.Coop.
   - CSS3
   - JavaScript ES6
 + __Bundled Dev Dependencies:__
-  - Bootstrap 4.0.0-beta.3
-  - jQuery 3.2.1 (slim)
+  - Bootstrap 4.0.0 (just the CSS)
+  - jQuery 3.3.1 (slim)
+  - Vue 2.5.13
+  - A-Frame 0.7.0
   - Promise Polyfill (for IE11)
   - ECMASwitch
 

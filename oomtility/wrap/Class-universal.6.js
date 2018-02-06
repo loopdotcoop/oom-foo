@@ -38,13 +38,16 @@ ${{{
     is('undefined' === typeof ${classname}, '${classname} is not global')`:''
 }}}
     is('function' === typeof Class, '${{classname}} is a function')
-    is('${{classname}}' === Class.NAME, 'NAME is ${{classname}}')
+    is( ('${{classname}}' === Class.NAME && '${{classname}}' === Class.api.NAME)
+      , 'NAME and api.NAME is ${{classname}}')
     is('${{classname.split('.').pop()}}' === Class.name, 'name is ${{classname.split('.').pop()}}')
 ${{{
     isApp ? `
-    is('${version}' === Class.VERSION, 'VERSION is ${version}') // OOMBUMPABLE (twice!)
-    is('${homepage}' === Class.HOMEPAGE
-      , 'HOMEPAGE is ${homepage}')`:''
+    is( ('${version}' === Class.VERSION && '${version}' === Class.api.VERSION) // OOMBUMPABLE (twice!)
+      , 'VERSION and api.VERSION is ${version}') // OOMBUMPABLE
+    is( ('${homepage}' === Class.HOMEPAGE && '${homepage}' === Class.api.HOMEPAGE)
+      , 'HOMEPAGE and api.HOMEPAGE is ${homepage}')
+    //@TODO test for REMARKS`:''
 }}}
 })
 
