@@ -13,7 +13,7 @@ const rxBinaryExt = module.exports.rxBinaryExt =
     new RegExp( '\\.' + BINARY_EXTS.join('$|\\.') + '$', 'i')
 
 const NAME     = 'Oomtility Wrapped'
-    , VERSION  = '1.1.5'
+    , VERSION  = '1.1.6'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
 
@@ -368,8 +368,15 @@ fs.writeFileSync(path, ''
 </div>
 
 <!-- Displays the Aframe-only demo -->
-<a-scene id="aframe-only-demo">
-  <a-box></a-box>
+<a-scene id="aframe-only-demo" class="container"
+  embedded vr-mode-ui="enabled:false">
+  <a-box position="0 1.5 -3" material="color:#ccc">
+    <a-animation attribute="rotation"
+                 dur="10000"
+                 fill="forwards"
+                 to="0 360 0"
+                 repeat="indefinite"></a-animation>
+  </a-box>
 </a-scene>
 
 
@@ -1386,7 +1393,7 @@ isApp ? '' : `
   + '  , data: function () { return {\n'
   + '        instance: outers[outers.length-1].api\n'
   + '      , static: ROOT.OOM.'+(projectTC)+'.api\n'
-  + '      , ui: { hideData:false, hideInners:false }\n'
+  + '      , ui: { hideData:true, hideInners:true }\n'
   + '    } }\n'
   + '\n'
   + '  , methods: {\n'
@@ -1446,7 +1453,7 @@ Vue.component('oom-${nameLC.split(".").pop()}', {
   , data: function () { return {
         instance: inners[inners.length-1].api
       , static: ROOT.OOM.${classname}.api
-      , ui: { hideData:false }
+      , ui: { hideData:true }
     } }
 
   , props: {
@@ -18842,14 +18849,14 @@ const {
 const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
 const flag = 'a'
 fs.writeFileSync(path, ''
-  + '//// ECMASwitch //// 1.1.5 //// January 2018 //// ecmaswitch.loop.coop/ ///////\n'
+  + '//// ECMASwitch //// 1.1.6 //// January 2018 //// ecmaswitch.loop.coop/ ///////\n'
   + '\n'
   + '!function (ROOT) { \'use strict\'\n'
   + '\n'
   + '//// Create the namespace-object if it does not already exist and add constants.\n'
   + 'var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}\n'
   + 'ECMASwitch.NAME     = \'ECMASwitch\'\n'
-  + 'ECMASwitch.VERSION  = \'1.1.5\'\n'
+  + 'ECMASwitch.VERSION  = \'1.1.6\'\n'
   + 'ECMASwitch.HOMEPAGE = \'http://ecmaswitch.loop.coop/\'\n'
   + '\n'
   + '//// Polyfill `document` for non-browser contexts.\n'
@@ -20675,37 +20682,52 @@ fs.writeFileSync(path, ''
   + '\n'
   + '\n'
   + '\n'
-  + '/* DEMO */\n'
+  + '/* VUE-ONLY DEMO */\n'
   + '\n'
-  + '#demo .oom-component {\n'
+  + '#vue-only-demo .oom-component {\n'
   + '    padding-top: 0.5em;\n'
   + '    margin-bottom: 0.5em;\n'
   + '    border-radius: 4px;\n'
   + '    background: rgba(0,64,128,0.1);\n'
   + '}\n'
-  + '#demo >.oom-component {\n'
+  + '#vue-only-demo >.oom-component {\n'
   + '    font-size: 1.5em;\n'
   + '    line-height: 1.15;\n'
   + '}\n'
-  + '#demo table {\n'
+  + '#vue-only-demo table {\n'
   + '    width: 100%;\n'
   + '    margin-bottom: 0.5em;\n'
   + '}\n'
-  + '#demo td {\n'
+  + '#vue-only-demo td {\n'
   + '    padding: 0.2em 0.5em;\n'
   + '    font-size: 0.8em;\n'
   + '    border: 1px solid rgba(0,64,128,0.3);\n'
   + '    background: rgba(255,255,255,0.3);\n'
   + '}\n'
-  + '#demo td:first-child {\n'
+  + '#vue-only-demo td:first-child {\n'
   + '    width: 0;\n'
   + '}\n'
-  + '#demo table caption {\n'
+  + '#vue-only-demo table caption {\n'
   + '    font-size: 0.7em;\n'
   + '    padding: 0 0 0.2em 0;\n'
   + '    caption-side: top;\n'
   + '}\n'
   + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '/* AFRAME-ONLY DEMO */\n'
+  + '\n'
+  + 'a-scene#aframe-only-demo {\n'
+  + '    height: 400px!important;\n'
+  + '    margin-top: 1em;\n'
+  + '    border-radius: 4px;\n'
+  + '}\n'
+  + 'a-scene#aframe-only-demo .a-canvas {\n'
+  + '    /*width: 100%!important;*/\n'
+  + '    background: #9900ff;\n'
+  + '    border-radius: 4px;\n'
+  + '}\n'
   + '\n'
   + '\n'
   + '\n'

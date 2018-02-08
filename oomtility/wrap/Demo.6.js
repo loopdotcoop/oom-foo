@@ -75,7 +75,7 @@ isApp ? '' : `
   , data: function () { return {
         instance: outers[outers.length-1].api
       , static: ROOT.OOM.${{projectTC}}.api
-      , ui: { hideData:false, hideInners:false }
+      , ui: { hideData:true, hideInners:true }
     } }
 
   , methods: {
@@ -136,7 +136,7 @@ Vue.component('oom-${nameLC.split(".").pop()}', {
   , data: function () { return {
         instance: inners[inners.length-1].api
       , static: ROOT.OOM.${classname}.api
-      , ui: { hideData:false }
+      , ui: { hideData:true }
     } }
 
   , props: {

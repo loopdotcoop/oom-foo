@@ -2,7 +2,7 @@
 
 
 
-//// OomFoo //// 1.1.5 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.6 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -74,7 +74,7 @@ Vue.component('oom-oomfoo', {
   , data: function () { return {
         instance: outers[outers.length-1].api
       , static: ROOT.OOM.OomFoo.api
-      , ui: { hideData:false, hideInners:false }
+      , ui: { hideData:true, hideInners:true }
     } }
 
   , methods: {
@@ -133,7 +133,7 @@ Vue.component('oom-base-sub', {
   , data: function () { return {
         instance: inners[inners.length-1].api
       , static: ROOT.OOM.OomFoo.Base.Sub.api
-      , ui: { hideData:false }
+      , ui: { hideData:true }
     } }
 
   , props: {
@@ -230,4 +230,4 @@ function wrapApiGettersAndSetters (obj) {
 
 
 
-//// Made by Oomtility Make 1.1.5 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.1.6 //\\//\\ http://oomtility.loop.coop //////////

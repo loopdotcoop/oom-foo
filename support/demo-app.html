@@ -144,8 +144,15 @@
 </div>
 
 <!-- Displays the Aframe-only demo -->
-<a-scene id="aframe-only-demo">
-  <a-box></a-box>
+<a-scene id="aframe-only-demo" class="container"
+  embedded vr-mode-ui="enabled:false">
+  <a-box position="0 1.5 -3" material="color:#ccc">
+    <a-animation attribute="rotation"
+                 dur="10000"
+                 fill="forwards"
+                 to="0 360 0"
+                 repeat="indefinite"></a-animation>
+  </a-box>
 </a-scene>
 
 
