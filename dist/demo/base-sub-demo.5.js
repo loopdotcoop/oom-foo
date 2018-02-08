@@ -1,4 +1,4 @@
-//// OomFoo //// 1.1.6 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.7 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 "use strict";
 !function(ROOT) {
@@ -8,6 +8,32 @@
   jQuery(function($) {
     var outers = window.outers = [];
     var inners = window.inners = [];
+    AFRAME.registerComponent('oomfoo', {
+      schema: apiToAframeSchema(ROOT.OOM.OomFoo.api),
+      init: function() {
+        this.el.setAttribute('material', {color: ['red', 'green', 'blue', 'yellow', '#007bff'][this.data.firstprop]});
+      },
+      update: function() {},
+      tick: function() {},
+      remove: function() {},
+      pause: function() {},
+      play: function() {}
+    });
+    var extendDeep = AFRAME.utils.extendDeep;
+    var meshMixin = AFRAME.primitives.getMeshMixin();
+    AFRAME.registerPrimitive('a-oomfoo', extendDeep({}, meshMixin, {
+      defaultComponents: {
+        oomfoo: {firstprop: 2},
+        geometry: {primitive: 'box'}
+      },
+      mappings: {
+        depth: 'geometry.depth',
+        height: 'geometry.height',
+        width: 'geometry.width',
+        firstprop: 'oomfoo.firstprop'
+      }
+    }));
+    document.querySelector('#aframe-only-demo').innerHTML = "\n<a-scene embedded vr-mode-ui=\"enabled:false\">\n  <a-oomfoo firstprop=\"4\" position=\"0 1.5 -3\">\n    <a-animation attribute=\"rotation\"\n                 dur=\"10000\"\n                 fill=\"forwards\"\n                 to=\"0 360 0\"\n                 repeat=\"indefinite\"></a-animation>\n  </a-oomfoo>\n</a-scene>\n";
     Vue.component('property-table', {
       template: "\n  <table v-bind:class=\"{ hid: doHide }\">\n    <caption v-html=\"caption\"></caption>\n    <tr v-for=\"val, key in obj\">\n      <td>{{key}}</td>\n      <td>\n        <input v-if=\"isWritable(obj, key)\" v-model=\"obj[key]\">\n        <span v-else title=\"Read Only\">{{val}}</span>\n      </td>\n    </tr>\n  </table>",
       props: {
@@ -79,7 +105,7 @@
       return false !== Object.getOwnPropertyDescriptor(obj, key).writable;
     }
     function wrapApiGettersAndSetters(obj) {
-      var $__4 = function(propName) {
+      var $__3 = function(propName) {
         var propertyDescriptor = Object.getOwnPropertyDescriptor(obj.api, propName);
         var vueReactiveGetter = propertyDescriptor.get;
         var vueReactiveSetter = propertyDescriptor.set;
@@ -105,16 +131,22 @@
           set: wrappedSetter
         });
       },
-          $__5;
-      $__3: for (var propName in obj.api) {
-        $__5 = $__4(propName);
-        switch ($__5) {
+          $__4;
+      $__2: for (var propName in obj.api) {
+        $__4 = $__3(propName);
+        switch ($__4) {
           case 0:
-            continue $__3;
+            continue $__2;
           case 1:
-            continue $__3;
+            continue $__2;
         }
       }
+    }
+    function apiToAframeSchema(api) {
+      return {firstprop: {
+          type: 'int',
+          default: 3
+        }};
     }
   });
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
@@ -122,4 +154,4 @@
 
 
 
-//// Made by Oomtility Make 1.1.6 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.1.7 //\\//\\ http://oomtility.loop.coop //////////

@@ -13,7 +13,7 @@ const rxBinaryExt = module.exports.rxBinaryExt =
     new RegExp( '\\.' + BINARY_EXTS.join('$|\\.') + '$', 'i')
 
 const NAME     = 'Oomtility Wrapped'
-    , VERSION  = '1.1.6'
+    , VERSION  = '1.1.7'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
 
@@ -362,22 +362,14 @@ fs.writeFileSync(path, ''
   + getHtmlTop(config)
   + `
 
-<!-- Displays the Vue-only demo -->
+<!-- Display the Vue-only demo -->
 <div id="vue-only-demo">
   <oom-${projectTC.toLowerCase()}>Loading...</oom-${projectTC.toLowerCase()}>
 </div>
 
-<!-- Displays the Aframe-only demo -->
-<a-scene id="aframe-only-demo" class="container"
-  embedded vr-mode-ui="enabled:false">
-  <a-box position="0 1.5 -3" material="color:#ccc">
-    <a-animation attribute="rotation"
-                 dur="10000"
-                 fill="forwards"
-                 to="0 360 0"
-                 repeat="indefinite"></a-animation>
-  </a-box>
-</a-scene>
+<!-- Display the A-Frame-only demo -->
+<div id="aframe-only-demo" class="container">
+</div>
 
 
 <!-- Load the proper format scripts, according to the '#ecmaswitch' menu -->
@@ -1325,11 +1317,73 @@ fs.writeFileSync(path, ''
   + '\n'
   + '\n'
   + '\n'
+  + '//// AFRAME AND VUE\n'
+  + '\n'
+  + '\n'
   + '//// Instance containers.\n'
   + 'const outers = window.outers = []\n'
-  + (isApp ? '' : 'const inners = window.inners = []\n' )+'\n'
+  + (isApp ? '' : 'const inners = window.inners = []' )+'\n'
   + '\n'
   + '\n'
+  + '\n'
+  + '\n'
+  + '//// AFRAME\n'
+  + '\n'
+  + '\n'
+  + '//// Register \''+(projectTC.toLowerCase())+'\', an A-Frame component version of '+(projectTC)+'.\n'
+  + 'AFRAME.registerComponent(\''+(projectTC.toLowerCase())+'\', {\n'
+  + '    schema: apiToAframeSchema(ROOT.OOM.'+(projectTC)+'.api)\n'
+  + '  , init: function () { this.el.setAttribute(\n'
+  + '        \'material\'\n'
+  + '      , { color:[\'red\',\'green\',\'blue\',\'yellow\',\'#007bff\'][this.data.fi'
+  + 'rstprop] }\n'
+  + '    )}\n'
+  + '  , update: function () {}\n'
+  + '  , tick: function () { }\n'
+  + '  , remove: function () {}\n'
+  + '  , pause: function () {}\n'
+  + '  , play: function () {}\n'
+  + '});\n'
+  + '\n'
+  + '\n'
+  + '////\n'
+  + '//// See https://github.com/aframevr/aframe/blob/master/docs/introduction/html-a'
+  + 'nd-primitives.md#registering-a-primitive\n'
+  + 'const extendDeep = AFRAME.utils.extendDeep\n'
+  + 'const meshMixin = AFRAME.primitives.getMeshMixin() // for creating mesh-based pr'
+  + 'imitives\n'
+  + '\n'
+  + 'AFRAME.registerPrimitive(\'a-'+(projectTC.toLowerCase())+'\', extendDeep({}, meshMixin, {\n'
+  + '    defaultComponents: { // preset default components\n'
+  + '        '+(projectTC.toLowerCase())+': { firstprop: 2 }\n'
+  + '      , geometry: { primitive: \'box\' }\n'
+  + '    }\n'
+  + '  , mappings: { // from HTML attributes to component properties\n'
+  + '        depth: \'geometry.depth\'\n'
+  + '      , height: \'geometry.height\'\n'
+  + '      , width: \'geometry.width\'\n'
+  + '      , firstprop: \''+(projectTC.toLowerCase())+'.firstprop\'\n'
+  + '    }\n'
+  + '}))\n'
+  + '\n'
+  + '\n'
+  + '//// All components must be registered before the scene appears in the DOM.\n'
+  + 'document.querySelector(\'#aframe-only-demo\').innerHTML = `\n'
+  + '<a-scene embedded vr-mode-ui="enabled:false">\n'
+  + '  <a-'+(projectTC.toLowerCase())+' firstprop="4" position="0 1.5 -3">\n'
+  + '    <a-animation attribute="rotation"\n'
+  + '                 dur="10000"\n'
+  + '                 fill="forwards"\n'
+  + '                 to="0 360 0"\n'
+  + '                 repeat="indefinite"></a-animation>\n'
+  + '  </a-'+(projectTC.toLowerCase())+'>\n'
+  + '</a-scene>\n'
+  + '`\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '//// VUE\n'
   + '\n'
   + '\n'
   + '//// Register <property-table>, used by all Oom components in this demo.\n'
@@ -1354,8 +1408,6 @@ fs.writeFileSync(path, ''
   + '        isWritable\n'
   + '    }\n'
   + '})\n'
-  + '\n'
-  + '\n'
   + '\n'
   + '\n'
   + '//// Register <oom-'+(projectTC.toLowerCase())+'>, a Vue component version of '+(projectTC)+'.\n'
@@ -1420,8 +1472,6 @@ isApp ? '' : `
   + '\n'
   + '})\n'
   + '\n'
-  + '\n'
-  + '\n'
   + '' + (
 isApp ? '' : `
 //// Register <oom-${nameLC.split(".").pop()}>, a Vue component version of ${classname}.
@@ -1480,11 +1530,8 @@ Vue.component('oom-${nameLC.split(".").pop()}', {
         wrapApiGettersAndSetters(ROOT.OOM.${classname})
 
     }
-})
-`
+})`
 ) + '\n'
-  + '\n'
-  + '\n'
   + '\n'
   + '\n'
   + '//// Create the root instance for the Vue-only demo.\n'
@@ -1545,6 +1592,14 @@ Vue.component('oom-${nameLC.split(".").pop()}', {
   + '        })\n'
   + '    }\n'
   + '}\n'
+  + '\n'
+  + '\n'
+  + 'function apiToAframeSchema (api) {\n'
+  + '    return {\n'
+  + '        firstprop: { type:\'int\', default:3 }\n'
+  + '    }\n'
+  + '}\n'
+  + '\n'
   + '\n'
   + '\n'
   + '\n'
@@ -18849,14 +18904,14 @@ const {
 const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
 const flag = 'a'
 fs.writeFileSync(path, ''
-  + '//// ECMASwitch //// 1.1.6 //// January 2018 //// ecmaswitch.loop.coop/ ///////\n'
+  + '//// ECMASwitch //// 1.1.7 //// January 2018 //// ecmaswitch.loop.coop/ ///////\n'
   + '\n'
   + '!function (ROOT) { \'use strict\'\n'
   + '\n'
   + '//// Create the namespace-object if it does not already exist and add constants.\n'
   + 'var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}\n'
   + 'ECMASwitch.NAME     = \'ECMASwitch\'\n'
-  + 'ECMASwitch.VERSION  = \'1.1.6\'\n'
+  + 'ECMASwitch.VERSION  = \'1.1.7\'\n'
   + 'ECMASwitch.HOMEPAGE = \'http://ecmaswitch.loop.coop/\'\n'
   + '\n'
   + '//// Polyfill `document` for non-browser contexts.\n'
@@ -20682,6 +20737,21 @@ fs.writeFileSync(path, ''
   + '\n'
   + '\n'
   + '\n'
+  + '/* AFRAME-ONLY DEMO */\n'
+  + '\n'
+  + '#aframe-only-demo a-scene {\n'
+  + '    height: 400px!important;\n'
+  + '    margin-top: 1em;\n'
+  + '    border-radius: 4px;\n'
+  + '}\n'
+  + '#aframe-only-demo a-scene .a-canvas {\n'
+  + '    background: '+(color)+';\n'
+  + '    border-radius: 4px;\n'
+  + '}\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
   + '/* VUE-ONLY DEMO */\n'
   + '\n'
   + '#vue-only-demo .oom-component {\n'
@@ -20713,21 +20783,6 @@ fs.writeFileSync(path, ''
   + '    caption-side: top;\n'
   + '}\n'
   + '\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + '/* AFRAME-ONLY DEMO */\n'
-  + '\n'
-  + 'a-scene#aframe-only-demo {\n'
-  + '    height: 400px!important;\n'
-  + '    margin-top: 1em;\n'
-  + '    border-radius: 4px;\n'
-  + '}\n'
-  + 'a-scene#aframe-only-demo .a-canvas {\n'
-  + '    /*width: 100%!important;*/\n'
-  + '    background: #9900ff;\n'
-  + '    border-radius: 4px;\n'
-  + '}\n'
   + '\n'
   + '\n'
   + '\n'

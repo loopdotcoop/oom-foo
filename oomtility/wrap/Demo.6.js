@@ -7,11 +7,70 @@ jQuery( function($) {
 
 
 
+//// AFRAME AND VUE
+
+
 //// Instance containers.
 const outers = window.outers = []
-${{isApp ? '' : 'const inners = window.inners = []\n' }}
+${{isApp ? '' : 'const inners = window.inners = []' }}
 
 
+
+
+//// AFRAME
+
+
+//// Register '${{projectTC.toLowerCase()}}', an A-Frame component version of ${{projectTC}}.
+AFRAME.registerComponent('${{projectTC.toLowerCase()}}', {
+    schema: apiToAframeSchema(ROOT.OOM.${{projectTC}}.api)
+  , init: function () { this.el.setAttribute(
+        'material'
+      , { color:['red','green','blue','yellow','#007bff'][this.data.firstprop] }
+    )}
+  , update: function () {}
+  , tick: function () { }
+  , remove: function () {}
+  , pause: function () {}
+  , play: function () {}
+});
+
+
+////
+//// See https://github.com/aframevr/aframe/blob/master/docs/introduction/html-and-primitives.md#registering-a-primitive
+const extendDeep = AFRAME.utils.extendDeep
+const meshMixin = AFRAME.primitives.getMeshMixin() // for creating mesh-based primitives
+
+AFRAME.registerPrimitive('a-${{projectTC.toLowerCase()}}', extendDeep({}, meshMixin, {
+    defaultComponents: { // preset default components
+        ${{projectTC.toLowerCase()}}: { firstprop: 2 }
+      , geometry: { primitive: 'box' }
+    }
+  , mappings: { // from HTML attributes to component properties
+        depth: 'geometry.depth'
+      , height: 'geometry.height'
+      , width: 'geometry.width'
+      , firstprop: '${{projectTC.toLowerCase()}}.firstprop'
+    }
+}))
+
+
+//// All components must be registered before the scene appears in the DOM.
+document.querySelector('#aframe-only-demo').innerHTML = `
+<a-scene embedded vr-mode-ui="enabled:false">
+  <a-${{projectTC.toLowerCase()}} firstprop="4" position="0 1.5 -3">
+    <a-animation attribute="rotation"
+                 dur="10000"
+                 fill="forwards"
+                 to="0 360 0"
+                 repeat="indefinite"></a-animation>
+  </a-${{projectTC.toLowerCase()}}>
+</a-scene>
+`
+
+
+
+
+//// VUE
 
 
 //// Register <property-table>, used by all Oom components in this demo.
@@ -36,8 +95,6 @@ Vue.component('property-table', {
         isWritable
     }
 })
-
-
 
 
 //// Register <oom-${{projectTC.toLowerCase()}}>, a Vue component version of ${{projectTC}}.
@@ -103,8 +160,6 @@ isApp ? '' : `
 })
 
 
-
-
 ${{{
 isApp ? '' : `
 //// Register <oom-${nameLC.split(".").pop()}>, a Vue component version of ${classname}.
@@ -163,11 +218,8 @@ Vue.component('oom-${nameLC.split(".").pop()}', {
         wrapApiGettersAndSetters(ROOT.OOM.${classname})
 
     }
-})
-`
+})`
 }}}
-
-
 
 
 //// Create the root instance for the Vue-only demo.
@@ -225,6 +277,14 @@ function wrapApiGettersAndSetters (obj) {
         })
     }
 }
+
+
+function apiToAframeSchema (api) {
+    return {
+        firstprop: { type:'int', default:3 }
+    }
+}
+
 
 
 

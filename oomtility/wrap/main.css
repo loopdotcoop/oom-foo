@@ -48,6 +48,21 @@ body {
 
 
 
+/* AFRAME-ONLY DEMO */
+
+#aframe-only-demo a-scene {
+    height: 400px!important;
+    margin-top: 1em;
+    border-radius: 4px;
+}
+#aframe-only-demo a-scene .a-canvas {
+    background: ${{color}};
+    border-radius: 4px;
+}
+
+
+
+
 /* VUE-ONLY DEMO */
 
 #vue-only-demo .oom-component {
@@ -79,21 +94,6 @@ body {
     caption-side: top;
 }
 
-
-
-
-/* AFRAME-ONLY DEMO */
-
-a-scene#aframe-only-demo {
-    height: 400px!important;
-    margin-top: 1em;
-    border-radius: 4px;
-}
-a-scene#aframe-only-demo .a-canvas {
-    /*width: 100%!important;*/
-    background: #9900ff;
-    border-radius: 4px;
-}
 
 
 

@@ -1,4 +1,4 @@
-//// OomFoo //// 1.1.6 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.7 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 "use strict";
 !function(ROOT) {
@@ -19,7 +19,7 @@
       is('function' === typeof Class, 'OomFoo is a function');
       is(('OomFoo' === Class.NAME && 'OomFoo' === Class.api.NAME), 'NAME and api.NAME is OomFoo');
       is('OomFoo' === Class.name, 'name is OomFoo');
-      is(('1.1.6' === Class.VERSION && '1.1.6' === Class.api.VERSION), 'VERSION and api.VERSION is 1.1.6');
+      is(('1.1.7' === Class.VERSION && '1.1.7' === Class.api.VERSION), 'VERSION and api.VERSION is 1.1.7');
       is(('http://oom-foo.loop.coop/' === Class.HOMEPAGE && 'http://oom-foo.loop.coop/' === Class.api.HOMEPAGE), 'HOMEPAGE and api.HOMEPAGE is http://oom-foo.loop.coop/');
     });
     test('+ve OomFoo instance', function() {
@@ -195,4 +195,4 @@
 
 
 
-//// Made by Oomtility Make 1.1.6 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.1.7 //\\//\\ http://oomtility.loop.coop //////////

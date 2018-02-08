@@ -138,22 +138,14 @@
 <!-- CONTENT -->
 
 
-<!-- Displays the Vue-only demo -->
+<!-- Display the Vue-only demo -->
 <div id="vue-only-demo">
   <oom-oomfoo>Loading...</oom-oomfoo>
 </div>
 
-<!-- Displays the Aframe-only demo -->
-<a-scene id="aframe-only-demo" class="container"
-  embedded vr-mode-ui="enabled:false">
-  <a-box position="0 1.5 -3" material="color:#ccc">
-    <a-animation attribute="rotation"
-                 dur="10000"
-                 fill="forwards"
-                 to="0 360 0"
-                 repeat="indefinite"></a-animation>
-  </a-box>
-</a-scene>
+<!-- Display the A-Frame-only demo -->
+<div id="aframe-only-demo" class="container">
+</div>
 
 
 <!-- Load the proper format scripts, according to the '#ecmaswitch' menu -->

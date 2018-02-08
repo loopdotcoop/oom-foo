@@ -1,4 +1,4 @@
-//// OomFoo //// 1.1.6 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.7 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -7,12 +7,70 @@ jQuery( function($) {
 
 
 
+//// AFRAME AND VUE
+
+
 //// Instance containers.
 const outers = window.outers = []
 const inners = window.inners = []
 
 
 
+
+//// AFRAME
+
+
+//// Register 'oomfoo', an A-Frame component version of OomFoo.
+AFRAME.registerComponent('oomfoo', {
+    schema: apiToAframeSchema(ROOT.OOM.OomFoo.api)
+  , init: function () { this.el.setAttribute(
+        'material'
+      , { color:['red','green','blue','yellow','#007bff'][this.data.firstprop] }
+    )}
+  , update: function () {}
+  , tick: function () { }
+  , remove: function () {}
+  , pause: function () {}
+  , play: function () {}
+});
+
+
+////
+//// See https://github.com/aframevr/aframe/blob/master/docs/introduction/html-and-primitives.md#registering-a-primitive
+const extendDeep = AFRAME.utils.extendDeep
+const meshMixin = AFRAME.primitives.getMeshMixin() // for creating mesh-based primitives
+
+AFRAME.registerPrimitive('a-oomfoo', extendDeep({}, meshMixin, {
+    defaultComponents: { // preset default components
+        oomfoo: { firstprop: 2 }
+      , geometry: { primitive: 'box' }
+    }
+  , mappings: { // from HTML attributes to component properties
+        depth: 'geometry.depth'
+      , height: 'geometry.height'
+      , width: 'geometry.width'
+      , firstprop: 'oomfoo.firstprop'
+    }
+}))
+
+
+//// All components must be registered before the scene appears in the DOM.
+document.querySelector('#aframe-only-demo').innerHTML = `
+<a-scene embedded vr-mode-ui="enabled:false">
+  <a-oomfoo firstprop="4" position="0 1.5 -3">
+    <a-animation attribute="rotation"
+                 dur="10000"
+                 fill="forwards"
+                 to="0 360 0"
+                 repeat="indefinite"></a-animation>
+  </a-oomfoo>
+</a-scene>
+`
+
+
+
+
+//// VUE
 
 
 //// Register <property-table>, used by all Oom components in this demo.
@@ -37,8 +95,6 @@ Vue.component('property-table', {
         isWritable
     }
 })
-
-
 
 
 //// Register <oom-oomfoo>, a Vue component version of OomFoo.
@@ -96,8 +152,6 @@ Vue.component('oom-oomfoo', {
     }
 
 })
-
-
 
 
 //// Register <oom-base>, a Vue component version of OomFoo.Base.
@@ -159,9 +213,6 @@ Vue.component('oom-base', {
 })
 
 
-
-
-
 //// Create the root instance for the Vue-only demo.
 new Vue({
     el: '#vue-only-demo'
@@ -217,6 +268,14 @@ function wrapApiGettersAndSetters (obj) {
         })
     }
 }
+
+
+function apiToAframeSchema (api) {
+    return {
+        firstprop: { type:'int', default:3 }
+    }
+}
+
 
 
 
