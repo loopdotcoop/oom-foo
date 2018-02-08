@@ -2,7 +2,7 @@
 
 
 
-//// OomFoo //// 1.1.7 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.8 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 //// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
 //// Windows 7:  IE 9, Safari 5.1
@@ -35,7 +35,7 @@ test('Browser test the OomFoo class', () => {
 
 
 
-//// OomFoo //// 1.1.7 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.8 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')
@@ -62,7 +62,7 @@ test('Browser test the OomFoo.appfn() method', () => {
 
 
 
-//// OomFoo //// 1.1.7 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.8 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -89,7 +89,7 @@ test('Browser test the OomFoo.Base class', () => {
 
 
 
-//// OomFoo //// 1.1.7 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.8 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -116,7 +116,7 @@ test('Browser test the OomFoo.Base.Sub class', () => {
 
 
 
-//// OomFoo //// 1.1.7 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.8 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')
@@ -143,7 +143,7 @@ test('Browser test the OomFoo.Base.Sub.subfn() method', () => {
 
 
 
-//// OomFoo //// 1.1.7 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.8 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' != typeof jQuery) throw Error('jQuery not found')
@@ -166,4 +166,4 @@ test('Browser test the OomFoo.Base.basefn() method', () => {
 
 
 
-//// Made by Oomtility Make 1.1.7 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.1.8 //\\//\\ http://oomtility.loop.coop //////////

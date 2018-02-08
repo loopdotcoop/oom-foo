@@ -1,4 +1,4 @@
-//// OomFoo //// 1.1.7 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.8 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 const Class = OOM.OomFoo.Base.Sub

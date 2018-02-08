@@ -1,18 +1,115 @@
-//// OomFoo //// 1.1.7 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.8 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
 
 
-
-
-//// AFRAME AND VUE
-
-
 //// Instance containers.
-const outers = window.outers = []
+const outers = window.outers = [] //@TODO remove `window.outers = `
+const inners = window.inners = [] //@TODO remove `window.inners = `
 
+
+
+
+//// TEMPLATES
+
+
+//// Templates are coded as `template.scene.innerHTML = `...` to switch on HTML
+//// highlighting in Atom.
+const template = {}
+
+
+//// <member-table> shows a table of class and instance members.
+template.memberTable = {}; template.memberTable.innerHTML = `
+<table v-bind:class="{ hid: doHide }">
+<caption v-html="caption"></caption>
+<tr v-for="val, key in obj">
+  <td>{{key}}</td>
+  <td>
+    <input v-if="isWritable(obj, key)" v-model="obj[key]">
+    <span v-else title="Read Only">{{val}}</span>
+  </td>
+</tr>
+</table>`
+
+
+//// All A-Frame components must already be registered by the time the scene
+//// appears in the DOM. This `oomDemo` template contains the <a-scene>, and it
+//// will only appear in the DOM when we run `new Vue({ el: '#demo' })` below,
+//// which happens AFTER our Oom A-Frame components have been registered.
+template.oomDemo = {}; template.oomDemo.innerHTML = `
+<div class="oom-component container">
+
+  <!-- The A-Frame scene -->
+  <a-scene embedded vr-mode-ui="enabled:false">
+    <a-assets>
+      <a-mixin id="rotate"
+               attribute="rotation"
+               dur="10000"
+               fill="forwards"
+               to="0 360 0"
+               repeat="indefinite"
+      ></a-mixin>
+    </a-assets>
+    <a-oomfoo position="0 1.5 -3"
+              :firstprop="instance.firstProp"
+              :secondprop="instance.secondProp">
+      <a-animation mixin="rotate"></a-animation>
+    </a-oomfoo>
+  </a-scene>
+
+  <!-- Header and buttons -->
+  <div class="row">
+    <div class="col-sm-7 h4">
+      {{static.NAME}}<em class="text-muted">#{{instance.UUID}}</em>
+      {{instance.index+1}}&nbsp;of&nbsp;{{static.tally}}
+    </div>
+    <div class="col-sm-5 rr">
+      <span class="btn btn-sm btn-primary" @click="toggleHideData">{{ui.hideData ? 'Show' : 'Hide'}} Data</span>
+      <span class="btn btn-sm btn-primary" @click="toggleHideInners">{{ui.hideInners ? 'Show' : 'Hide'}} Inners</span>
+    </div>
+  </div>
+
+  <!-- Class and instance members -->
+  <member-table :obj="static"   :do-hide="ui.hideData"
+    :caption="static.NAME+' static data:'"></member-table>
+  <member-table :obj="instance" :do-hide="ui.hideData"
+    :caption="static.NAME+'<em>#'+instance.UUID+'</em>&nbsp; instance data:'"></member-table>
+
+  <!-- Composition - other instances contained in this OomFoo instance -->
+  <div v-bind:class="{ hid: ui.hideInners }">
+    <oom-base-sub v-bind="instance"></oom-base-sub>
+    <oom-base-sub v-bind="instance"></oom-base-sub>
+  </div>
+
+</div>
+`
+
+
+////
+template.oomBaseSub = {}; template.oomBaseSub.innerHTML = `
+<div class="oom-component oom-base-sub container">
+<div class="row">
+<div class="col-sm-7 h4">
+  {{static.NAME}}<em class="text-muted">#{{instance.UUID}}</em>
+  {{instance.index+1}}&nbsp;of&nbsp;{{static.tally}}
+</div>
+<div class="col-sm-5 rr">
+  <span class="btn btn-sm btn-primary" @click="toggleHideData">{{ui.hideData ? 'Show' : 'Hide'}} Data</span>
+</div>
+</div>
+<member-table :obj="static"   :do-hide="ui.hideData"
+:caption="static.NAME+' static data:'"></member-table>
+<member-table :obj="instance" :do-hide="ui.hideData"
+:caption="static.NAME+'<em>#'+instance.UUID+'</em>&nbsp; instance data:'"></member-table>
+<table v-bind:class="{ hid: ui.hideData }">
+<caption>Props, passed from outer components:</caption>
+<tr><td>firstProp</td><td>{{firstProp}}</td></tr>
+<tr><td>UUID</td><td>{{UUID}}</td></tr>
+</table>
+</div>
+`
 
 
 
@@ -23,16 +120,27 @@ const outers = window.outers = []
 //// Register 'oomfoo', an A-Frame component version of OomFoo.
 AFRAME.registerComponent('oomfoo', {
     schema: apiToAframeSchema(ROOT.OOM.OomFoo.api)
-  , init: function () { this.el.setAttribute(
-        'material'
-      , { color:['red','green','blue','yellow','#007bff'][this.data.firstprop] }
-    )}
-  , update: function () {}
+  , init: function () {}
+  , update: function (oldData) {
+        for (let key in AFRAME.utils.diff(oldData, this.data) )
+            if (oldData[key] !== this.data[key]) // did change
+                this.updateAttribute(key)
+    }
   , tick: function () { }
   , remove: function () {}
   , pause: function () {}
   , play: function () {}
-});
+
+  , updateAttribute: function (key) {
+        ({
+            firstprop: v => this.el.setAttribute('material', {
+                color: ['red','green','blue','yellow','#007bff'][v]
+            })
+          , secondprop: v => v
+        })[key](this.data[key])
+    }
+
+})
 
 
 ////
@@ -50,22 +158,9 @@ AFRAME.registerPrimitive('a-oomfoo', extendDeep({}, meshMixin, {
       , height: 'geometry.height'
       , width: 'geometry.width'
       , firstprop: 'oomfoo.firstprop'
+      , secondprop: 'oomfoo.secondprop'
     }
 }))
-
-
-//// All components must be registered before the scene appears in the DOM.
-document.querySelector('#aframe-only-demo').innerHTML = `
-<a-scene embedded vr-mode-ui="enabled:false">
-  <a-oomfoo firstprop="4" position="0 1.5 -3">
-    <a-animation attribute="rotation"
-                 dur="10000"
-                 fill="forwards"
-                 to="0 360 0"
-                 repeat="indefinite"></a-animation>
-  </a-oomfoo>
-</a-scene>
-`
 
 
 
@@ -73,19 +168,9 @@ document.querySelector('#aframe-only-demo').innerHTML = `
 //// VUE
 
 
-//// Register <property-table>, used by all Oom components in this demo.
-Vue.component('property-table', {
-    template: `
-  <table v-bind:class="{ hid: doHide }">
-    <caption v-html="caption"></caption>
-    <tr v-for="val, key in obj">
-      <td>{{key}}</td>
-      <td>
-        <input v-if="isWritable(obj, key)" v-model="obj[key]">
-        <span v-else title="Read Only">{{val}}</span>
-      </td>
-    </tr>
-  </table>`
+//// Register <member-table>, which shows a table of class and instance members.
+Vue.component('member-table', {
+    template: template.memberTable.innerHTML
   , props: {
         doHide: Boolean
       , caption: String
@@ -97,29 +182,13 @@ Vue.component('property-table', {
 })
 
 
-//// Register <oom-oomfoo>, a Vue component version of OomFoo.
-Vue.component('oom-oomfoo', {
-    template: `
-<div class="oom-component oom-oomfoo container">
-  <div class="row">
-    <div class="col-sm-7 h4">
-      {{static.NAME}}<em class="text-muted">#{{instance.UUID}}</em>
-      {{instance.index+1}}&nbsp;of&nbsp;{{static.tally}}
-    </div>
-    <div class="col-sm-5 rr">
-      <span class="btn btn-sm btn-primary" @click="toggleHideData">{{ui.hideData ? 'Show' : 'Hide'}} Data</span>
-    </div>
-  </div>
-  <property-table :obj="static"   :do-hide="ui.hideData"
-    :caption="static.NAME+' static data:'"></property-table>
-  <property-table :obj="instance" :do-hide="ui.hideData"
-    :caption="static.NAME+'<em>#'+instance.UUID+'</em>&nbsp; instance data:'"></property-table>
-</div>
-`
+//// Register <oom-demo>, the Vue component which contains this demo.
+Vue.component('oom-demo', {
+    template: template.oomDemo.innerHTML
   , data: function () { return {
         instance: outers[outers.length-1].api
       , static: ROOT.OOM.OomFoo.api
-      , ui: { hideData:true, hideInners:true }
+      , ui: { hideData:false, hideInners:false }
     } }
 
   , methods: {
@@ -130,29 +199,65 @@ Vue.component('oom-oomfoo', {
     //// Generate an instance of OomFoo.
   , beforeCreate: function () {
         outers.push( new ROOT.OOM.OomFoo({
-            firstProp: outers.length + 50
+            firstProp: outers.length + 4
           , secondProp: new Date
         }) )
     }
 
-    //// Xx.
+    //// Wrap Vue’s reactive getters and setters with our own.
   , created: function () {
-
-        //// Wrap Vue’s reactive getters and setters with our own.
         wrapApiGettersAndSetters(outers[outers.length-1])
         wrapApiGettersAndSetters(ROOT.OOM.OomFoo)
-
     }
 
 })
 
 
+//// Register <a-oomfoo-wrap>, to tell Vue about the A-Frame primative for OomFoo.
+// Vue.component('a-oomfoo-wrap', {
+//     template: template.aOomfoo.innerHTML
+//   , data: function () { return {
+//         instance: outers[outers.length-1].api
+//       , static: ROOT.OOM.OomFoo.api
+//     } }
+// })
 
 
-//// Create the root instance for the Vue-only demo.
-new Vue({
-    el: '#vue-only-demo'
+//// Register <oom-base-sub>, a Vue component version of OomFoo.Base.Sub.
+Vue.component('oom-base-sub', {
+    template: template.oomBaseSub.innerHTML
+  , data: function () { return {
+        instance: inners[inners.length-1].api
+      , static: ROOT.OOM.OomFoo.Base.Sub.api
+      , ui: { hideData:false }
+    } }
+
+  , props: {
+        firstProp: Number
+      , UUID: String
+    }
+
+  , methods: {
+        toggleHideData
+    }
+
+    //// Generate an instance of OomFoo.Base.Sub.
+  , beforeCreate: function () {
+        inners.push( new ROOT.OOM.OomFoo.Base.Sub({
+            thirdProp: 'inners.length: ' + inners.length
+        }) )
+    }
+
+    //// Wrap Vue’s reactive getters and setters with our own.
+  , created: function () {
+        wrapApiGettersAndSetters(outers[outers.length-1])
+        wrapApiGettersAndSetters(ROOT.OOM.OomFoo.Base.Sub)
+    }
 })
+
+
+//// Create the root instance for the demo.
+new Vue({ el: '#demo' })
 
 
 
@@ -193,7 +298,7 @@ function wrapApiGettersAndSetters (obj) {
         }
         const wrappedSetter = function wrappedSetter (val) {
             if ('firstProp' === propName || 'index' === propName) val = +val //@TODO automate type casting from string
-            console.log('Set ' + propName + ' to ' + val);
+            // console.log('Set ' + propName + ' to ' + val);
             return vueReactiveSetter(val)
         }
         // console.log('wrapped '+propName+' on '+obj.api.UUID)
@@ -208,7 +313,8 @@ function wrapApiGettersAndSetters (obj) {
 
 function apiToAframeSchema (api) {
     return {
-        firstprop: { type:'int', default:3 }
+        firstprop:  { type:'int', default:3 }
+      , secondprop: { type:'string' }
     }
 }
 

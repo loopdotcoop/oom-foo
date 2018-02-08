@@ -24,3 +24,4 @@
 1.1.5 oomtility/init.js --standard-demo to speed up oom-foo development
 1.1.6 Demos show very basic A-Frame scene
 1.1.7 Demo uses a custom A-Frame primative <a-oomfoo> for OomFoo
+1.1.8 Demo uses Vue to link `firstProp` (0 to 4) to A-Frame cube colour

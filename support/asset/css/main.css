@@ -48,14 +48,14 @@ body {
 
 
 
-/* AFRAME-ONLY DEMO */
+/* AFRAME SCENE IN DEMO */
 
-#aframe-only-demo a-scene {
+#demo a-scene {
     height: 400px!important;
-    margin-top: 1em;
+    margin-bottom: 0.5em;
     border-radius: 4px;
 }
-#aframe-only-demo a-scene .a-canvas {
+#demo a-scene .a-canvas {
     background: #9900ff;
     border-radius: 4px;
 }
@@ -63,32 +63,32 @@ body {
 
 
 
-/* VUE-ONLY DEMO */
+/* PROPERTY-TABLES IN DEMO */
 
-#vue-only-demo .oom-component {
+#demo .oom-component {
     padding-top: 0.5em;
     margin-bottom: 0.5em;
     border-radius: 4px;
     background: rgba(0,64,128,0.1);
 }
-#vue-only-demo >.oom-component {
+#demo >.oom-component {
     font-size: 1.5em;
     line-height: 1.15;
 }
-#vue-only-demo table {
+#demo table {
     width: 100%;
     margin-bottom: 0.5em;
 }
-#vue-only-demo td {
+#demo td {
     padding: 0.2em 0.5em;
     font-size: 0.8em;
     border: 1px solid rgba(0,64,128,0.3);
     background: rgba(255,255,255,0.3);
 }
-#vue-only-demo td:first-child {
+#demo td:first-child {
     width: 0;
 }
-#vue-only-demo table caption {
+#demo table caption {
     font-size: 0.7em;
     padding: 0 0 0.2em 0;
     caption-side: top;

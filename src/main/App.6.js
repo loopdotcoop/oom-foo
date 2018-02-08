@@ -1,10 +1,10 @@
-//// OomFoo //// 1.1.7 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+//// OomFoo //// 1.1.8 //// February 2018 //// http://oom-foo.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
 const META = {
     NAME:     'OomFoo'
-  , VERSION:  '1.1.7' // OOMBUMPABLE
+  , VERSION:  '1.1.8' // OOMBUMPABLE
   , HOMEPAGE: 'http://oom-foo.loop.coop/'
   , REMARKS:  'Initial test of the oom-hub architecture'
 }
