@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Bump'
-    , VERSION  = '1.1.8'
+    , VERSION  = '1.2.0'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , HELP =
@@ -19,7 +19,7 @@ ${NAME} also updates the date in ‘src/’ file toplines and in ‘README.md’
 By default, Oomtility Bump increments the ‘patch’ (eg from 1.2.3 to 1.2.4).
 Options exist to bump minor or major parts, or set the version to anything.
 
-Note that the current version is retrieved from ‘src/main/App.6.js’s topline.
+Note that the current version is retrieved from ‘src/main/Bases.6.js’s topline.
 
 Installation
 ------------
@@ -83,10 +83,10 @@ const fs = require('fs')
 //// Set constants.
 const rxV = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
 const rxMth = new RegExp(`^${monthNames().slice(1).join('|')}$`)
-const topline = (fs.readFileSync(`src/main/App.6.js`)+'').split('\n')[0]
+const topline = (fs.readFileSync(`src/main/Bases.6.js`)+'').split('\n')[0]
 const [
     x1          // four slashes
-  , projectTC   // titlecase, eg 'FooBar'
+  , projectTC   // titlecase with a dot, eg 'Oom.Foo'
   , x2          // four slashes
   , projectV    // current project version, eg ‘1.2.3’
   , x3          // four slashes
@@ -95,14 +95,14 @@ const [
   , x4          // four slashes
   , projectURL  // project URL, eg ‘http://oom-foo.loop.coop/’
 ] = topline.split(' ')
-if (! /^[A-Z][a-zA-Z]+$/.test(projectTC) )
-    return console.warn(`App.6.js’s topline title '${projectTC}' is invalid`)
+if (! /^Oom\.[A-Z][a-z]+$/.test(projectTC) )
+    return console.warn(`Bases.6.js’s topline title '${projectTC}' is invalid`)
 if (! rxV.test(projectV) )
-    return console.warn(`App.6.js’s topline version '${projectV}' is invalid`)
+    return console.warn(`Bases.6.js’s topline version '${projectV}' is invalid`)
 if (! rxMth.test(projectMth) )
-    return console.warn(`App.6.js’s topline month '${projectMth}' is invalid`)
+    return console.warn(`Bases.6.js’s topline month '${projectMth}' is invalid`)
 if (! /^20\d\d$/.test(projectYYYY) )
-    return console.warn(`App.6.js’s topline year '${projectYYYY}' is invalid`)
+    return console.warn(`Bases.6.js’s topline year '${projectYYYY}' is invalid`)
 const currV = projectV.split('.').map( v => +v )
 const rxProjectV = new RegExp(projectV, 'g')
 

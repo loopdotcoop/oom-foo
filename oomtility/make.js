@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Make'
-    , VERSION  = '1.1.8'
+    , VERSION  = '1.2.0'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Made by ${NAME} ${VERSION} //\\\\//\\\\ `
@@ -90,17 +90,18 @@ const fs = require('fs')
     , wrapped = require('./wrapped.js')
 
 //// Set constants.
-const topline = (fs.readFileSync(`src/main/App.6.js`)+'').split('\n')[0]
-const projectTC = topline.split(' ')[1]         // titlecase, eg 'FooBar'
-const projectV  = topline.split(' ')[3]         // major.minor.patch, eg '1.2.3'
-const projectLC = process.cwd().split('/').pop()// lowercase, eg 'foo-bar'
-const projectNH = projectLC.replace(/-/g,'')    // no hyphens, eg 'foobar'
+const topline = (fs.readFileSync(`src/main/Bases.6.js`)+'').split('\n')[0]
+const projectTC = topline.split(' ')[1] // titlecase with a dot, eg 'Oom.Foo'
+const projectV  = topline.split(' ')[3] // major.minor.patch, eg '1.2.3'
+const projectLC = process.cwd().split('/').pop() // lowercase, eg 'foo-bar'
 if ( projectLC.toLowerCase() != projectLC) return console.warn(
     `Project '${projectLC}' contains uppercase letters`)
-if ( projectTC.toLowerCase() != projectNH) return console.warn(
-    `Project '${projectLC}' is called '${projectTC}' in src/main/App.6.js`)
+if ( projectTC.toLowerCase().replace(/\./g,'-') != projectLC) return console.warn(
+    `Project '${projectLC}' is called '${projectTC}' in src/main/Bases.6.js`)
+if (! /^Oom\.[A-Z][a-z]+$/.test(projectTC) )
+    return console.warn(`Bases.6.js’s topline title '${projectTC}' is invalid`)
 
-//// Simplifies moving ‘App.6.js’ to the start of concatenation.
+//// Simplifies moving ‘Bases.6.js’ to the start of concatenation.
 Array.prototype.move = function(from, to) { // stackoverflow.com/a/7180095
     this.splice(to, 0, this.splice(from, 1)[0]) }
 
@@ -128,9 +129,9 @@ fs.readdirSync('dist/main').forEach( name => {
 //// 1. Concatenate files in ‘src/main/’ to ‘dist/main/project.6.js’
 mains = fs.readdirSync('src/main')
 es6 = []
-if ( -1 === (pos = mains.indexOf('App.6.js')) )
-    return console.warn('No ‘src/main/App.6.js’')
-mains.move(pos, 0) // ‘src/main/App.6.js’ must go first (`move()` defined above)
+if ( -1 === (pos = mains.indexOf('Bases.6.js')) )
+    return console.warn('No ‘src/main/Bases.6.js’')
+mains.move(pos, 0) // ‘src/main/Bases.6.js’ must go 1st (`move()` defined above)
 mains.forEach( name => {
     if ( '.6.js' !== name.slice(-5) ) return
     es6.push('//\\\\//\\\\ src/main/' + name)

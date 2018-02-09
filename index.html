@@ -15,7 +15,7 @@
             maximum-scale=1.0, user-scalable=no">
 
 <!-- Search engine meta -->
-<title>OomFoo</title>
+<title>Oom.Foo</title>
 <meta name="description"
    content="Initial test of the oom-hub architecture">
 <link rel="author" href="README.md">
@@ -26,7 +26,7 @@
 <meta name="twitter:creator" content="@richplastow">
 <meta property="og:type"     content="website">
 <meta property="og:locale"   content="en_GB">
-<meta property="og:title"    content="OomFoo">
+<meta property="og:title"    content="Oom.Foo">
 <meta property="og:url"      content="http://oom-foo.loop.coop/">
 <meta property="og:image"
        content="http://oom-foo.loop.coop/support/asset/logo/logo-1200x1200.svg">
@@ -41,8 +41,8 @@
 <link rel="manifest"                  href="support/asset/icon/manifest.json">
 <link rel="mask-icon" color="#9900ff" href="support/asset/icon/safari-pinned-tab.svg">
 <link rel="shortcut icon"             href="support/asset/icon/favicon.ico">
-<meta name="apple-mobile-web-app-title" content="OomFoo">
-<meta name="application-name"           content="OomFoo">
+<meta name="apple-mobile-web-app-title" content="Oom.Foo">
+<meta name="application-name"           content="Oom.Foo">
 <meta name="msapplication-config"       content="support/asset/icon/browserconfig.xml">
 <meta name="theme-color"                content="#9900ff">
 
@@ -115,7 +115,7 @@
 </select>
 
 <!-- Header and Navigation menu -->
-<h1>OomFoo
+<h1>Oom.Foo
   <span id="version">&hellip;</span> <span id="ecma"></span>&nbsp;</h1>
 <nav>
   <a href="index.html" id="home-link">Home</a> &nbsp;
@@ -139,20 +139,20 @@
 
 
 
-<img id="logo" alt="OomFoo Logo" src="support/asset/logo/logo-1200x1200.svg">
+<img id="logo" alt="Oom.Foo Logo" src="support/asset/logo/logo-1200x1200.svg">
 
 <!-- Load the proper format scripts, according to the '#ecmaswitch' menu -->
 <script src="support/asset/js/ecmaswitch.js"></script>
 <script>ECMASwitch.load('./')</script>
 
 <!-- Link to the proper homepage domain, if we’re not already there -->
-<script>if ( 0 > location.href.indexOf(OOM.OomFoo.HOMEPAGE) )
-$('#home-link').attr('href', OOM.OomFoo.HOMEPAGE)</script>
+<script>if ( 0 > location.href.indexOf(Oom.Foo.HOMEPAGE) )
+$('#home-link').attr('href', Oom.Foo.HOMEPAGE)</script>
 
 
 
 <!-- Display the repo version and JavaScript standard -->
-<script>$('#version').html(OOM.OomFoo.VERSION||'(no VERSION)')
+<script>$('#version').html(Oom.Foo.VERSION||'(no VERSION)')
 $('#ecma').html('ES'+['5','5 min','6','6 dev'][~~document.cookie.split('~')[1]])
 </script>
 

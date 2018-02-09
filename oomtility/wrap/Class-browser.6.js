@@ -12,7 +12,7 @@ isApp ? `
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
-const Class = OOM.${{classname}}
+const Class = ${{classname}}
 
 
 

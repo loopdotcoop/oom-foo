@@ -1,9 +1,9 @@
-//// OomFoo //// 1.1.8 //// February 2018 //// http://oom-foo.loop.coop/ ///////
+${{topline}}
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
-
+return console.log('@TODO fix demo');
 
 //// Instance containers.
 const outers = window.outers = [] //@TODO remove `window.outers = `
@@ -77,7 +77,7 @@ template.oomDemo = {}; template.oomDemo.innerHTML = `
   <member-table :obj="instance" :do-hide="ui.hideData"
     :caption="static.NAME+'<em>#'+instance.UUID+'</em>&nbsp; instance data:'"></member-table>
 
-  <!-- Composition - other instances contained in this OomFoo instance -->
+  <!-- Composition - other instances contained in this ${{projectTC}} instance -->
   <div v-bind:class="{ hid: ui.hideInners }">
     <oom-base-sub v-bind="instance"></oom-base-sub>
     <oom-base-sub v-bind="instance"></oom-base-sub>
@@ -117,9 +117,9 @@ template.oomBaseSub = {}; template.oomBaseSub.innerHTML = `
 //// AFRAME
 
 
-//// Register 'oomfoo', an A-Frame component version of OomFoo.
+//// Register 'oomfoo', an A-Frame component version of ${{projectTC}}.
 AFRAME.registerComponent('oomfoo', {
-    schema: apiToAframeSchema(ROOT.OOM.OomFoo.api)
+    schema: apiToAframeSchema(ROOT.${{projectTC}}.api)
   , init: function () {}
   , update: function (oldData) {
         for (let key in AFRAME.utils.diff(oldData, this.data) )
@@ -187,7 +187,7 @@ Vue.component('oom-demo', {
     template: template.oomDemo.innerHTML
   , data: function () { return {
         instance: outers[outers.length-1].api
-      , static: ROOT.OOM.OomFoo.api
+      , static: ROOT.${{projectTC}}.api
       , ui: { hideData:false, hideInners:false }
     } }
 
@@ -196,9 +196,9 @@ Vue.component('oom-demo', {
       , toggleHideInners
     }
 
-    //// Generate an instance of OomFoo.
+    //// Generate an instance of ${{projectTC}}.
   , beforeCreate: function () {
-        outers.push( new ROOT.OOM.OomFoo({
+        outers.push( new ROOT.${{projectTC}}({
             firstProp: outers.length + 4
           , secondProp: new Date
         }) )
@@ -207,28 +207,28 @@ Vue.component('oom-demo', {
     //// Wrap Vue’s reactive getters and setters with our own.
   , created: function () {
         wrapApiGettersAndSetters(outers[outers.length-1])
-        wrapApiGettersAndSetters(ROOT.OOM.OomFoo)
+        wrapApiGettersAndSetters(ROOT.${{projectTC}})
     }
 
 })
 
 
-//// Register <a-oomfoo-wrap>, to tell Vue about the A-Frame primative for OomFoo.
+//// Register <a-oomfoo-wrap>, to tell Vue about the A-Frame primative for ${{projectTC}}.
 // Vue.component('a-oomfoo-wrap', {
 //     template: template.aOomfoo.innerHTML
 //   , data: function () { return {
 //         instance: outers[outers.length-1].api
-//       , static: ROOT.OOM.OomFoo.api
+//       , static: ROOT.${{projectTC}}.api
 //     } }
 // })
 
 
-//// Register <oom-base-sub>, a Vue component version of OomFoo.Base.Sub.
+//// Register <oom-base-sub>, a Vue component version of ${{classname}}.
 Vue.component('oom-base-sub', {
     template: template.oomBaseSub.innerHTML
   , data: function () { return {
         instance: inners[inners.length-1].api
-      , static: ROOT.OOM.OomFoo.Base.Sub.api
+      , static: ROOT.${{classname}}.api
       , ui: { hideData:false }
     } }
 
@@ -241,9 +241,9 @@ Vue.component('oom-base-sub', {
         toggleHideData
     }
 
-    //// Generate an instance of OomFoo.Base.Sub.
+    //// Generate an instance of ${{classname}}.
   , beforeCreate: function () {
-        inners.push( new ROOT.OOM.OomFoo.Base.Sub({
+        inners.push( new ROOT.${{classname}}({
             thirdProp: 'inners.length: ' + inners.length
         }) )
     }
@@ -251,7 +251,7 @@ Vue.component('oom-base-sub', {
     //// Wrap Vue’s reactive getters and setters with our own.
   , created: function () {
         wrapApiGettersAndSetters(outers[outers.length-1])
-        wrapApiGettersAndSetters(ROOT.OOM.OomFoo.Base.Sub)
+        wrapApiGettersAndSetters(ROOT.${{classname}})
     }
 })
 

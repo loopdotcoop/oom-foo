@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Auto'
-    , VERSION  = '1.1.8'
+    , VERSION  = '1.2.0'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Initialised by ${NAME} ${VERSION}\n`
@@ -85,10 +85,10 @@ const rxClassname
     = /^[A-Z][A-Za-z0-9]+(\.[A-Z][A-Za-z0-9]+)*$/
 const rxMethodname
     = /^([A-Z][A-Za-z0-9]+\.)?([A-Z][A-Za-z0-9]+\.)*[a-z][A-Za-z0-9]+$/
-const topline = (fs.readFileSync(`src/main/App.6.js`)+'').split('\n')[0]
+const topline = (fs.readFileSync(`src/main/Bases.6.js`)+'').split('\n')[0]
 const [
     x1          // four slashes
-  , projectTC   // titlecase, eg 'FooBar'
+  , projectTC   // titlecase with a dot, eg 'Oom.Foo'
   , x2          // four slashes
   , projectV    // current project version, eg ‘1.2.3’
   , x3          // four slashes
@@ -98,15 +98,16 @@ const [
   , projectURL  // project URL, eg ‘http://oom-foo.loop.coop/’
 ] = topline.split(' ')
 const projectLC = process.cwd().split('/').pop() // lowercase, eg 'foo-bar'
-const projectNH = projectLC.replace(/-/g,'')     // no hyphens, eg 'foobar'
 if ( projectLC.toLowerCase() != projectLC) return console.warn(
     `Project '${projectLC}' contains uppercase letters`)
-if ( projectTC.toLowerCase() != projectNH) return console.warn(
-    `Project '${projectLC}' is called '${projectTC}' in src/main/App.6.js`)
+if ( projectTC.toLowerCase().replace(/\./g,'-') != projectLC) return console.warn(
+    `Project '${projectLC}' is called '${projectTC}' in src/main/Bases.6.js`)
+if (! /^Oom\.[A-Z][a-z]+$/.test(projectTC) )
+    return console.warn(`Bases.6.js’s topline title '${projectTC}' is invalid`)
 const projectRepo = 'https://github.com/loopdotcoop/' + projectLC
 const projectNPM  = 'https://www.npmjs.com/package/' + projectLC
 
-//// Simplifies moving ‘App.6.js’ to the start of concatenation.
+//// Simplifies moving ‘Bases.6.js’ to the start of concatenation.
 Array.prototype.move = function(from, to) { // stackoverflow.com/a/7180095
     this.splice(to, 0, this.splice(from, 1)[0]) }
 
@@ -127,24 +128,24 @@ while ( opt = process.argv.shift() ) {
         console.warn(`Ignoring '${opt}' - not a valid option, class or method`)
 }
 
-//// The special 'App' class name must not be used. The main class defined in
-//// ‘App.6.js’ (same name as the project) must not be extended.
+//// The special 'Bases' class name must not be used. Also, the main class
+//// defined in ‘Bases.6.js’ (same name as the project) cannot appear in `name`.
 for (let i=0, name; name=classes[i]; i++) {
-    if (projectTC === name || 'App' === name)
-        return console.warn(`‘App.6.js’ ${remove
+    if (projectTC === name || 'Bases' === name)
+        return console.warn(`‘Bases.6.js’ ${remove
           ? 'must exist':'already exists'} (it defines '${projectTC}')`)
     if ( projectTC === name.split('.')[0] )
-        return console.warn(`'${name}' invalid: cannot extend '${projectTC}'`)
-    if ('App' === name.split('.')[0] )
-        return console.warn(`'${name}' invalid: 'App' is a reserved class name`)
-    //@TODO must not be alphabetically before 'App'
+        return console.warn(`'${name}' invalid: cannot contain '${projectTC}'`)
+    if ('Bases' === name.split('.')[0] )
+        return console.warn(`'${name}' invalid: reserved class name 'Bases'`)
+    //@TODO must not be alphabetically before 'Bases'?
+    //@TODO re-test all this, it’s probably broken since changing from App to Bases
 }
 
-//// Methods must not be added to the special 'App' class name.
-for (let i=0, name; name=methods[i]; i++) {
-    if ('App' === name.split('.')[0] )
-        return console.warn(`'${name}' invalid: 'App' is a reserved class name`)
-}
+//// Methods must not be added to the special 'Bases' class name.
+for (let i=0, name; name=methods[i]; i++)
+    if ('Bases' === name.split('.')[0] )
+        return console.warn(`'${name}' invalid: reserved class name 'Bases'`)
 
 //// Ignore duplicate class names and method names.
 classes = new Set(classes)
@@ -263,9 +264,9 @@ wrapped.updateDemoFile('support/demo.html', 'support')
 
 //// 2. support/asset/js/ecmaswitch.js          `var classFiles = '...'` updated
 mains = fs.readdirSync('src/main')
-if ( -1 === (pos = mains.indexOf('App.6.js')) )
-    return console.warn('No ‘src/main/App.6.js’')
-mains.move(pos, 0) // ‘src/main/App.6.js’ must go first (`move()` defined above)
+if ( -1 === (pos = mains.indexOf('Bases.6.js')) )
+    return console.warn('No ‘src/main/Bases.6.js’')
+mains.move(pos, 0) // ‘src/main/Bases.6.js’ must go 1st (`move()` defined above)
 wrapped.updateECMASwitch('support/asset/js/ecmaswitch.js', mains, projectLC)
 
 
@@ -289,97 +290,61 @@ console.log(
 
 ////
 function generateClass (name, path) {
-    wrapped.writeClass6Js({
-        isApp: false
-      , isTop: 2 > name.split('.').length
-      , classname: `${projectTC}.${name}`
-      , topline
-      , remarks: '@TODO'
-    }, path)
+    wrapped.writeClass6Js( getClassConfig(name), path )
 }
 
 
 ////
 function generateClassUniversal (name, path) {
-    wrapped.writeClassUniversal6Js({
-        isApp: false
-      , isTop: 2 > name.split('.').length
-      , classname: `${projectTC}.${name}`
-      , topline
-    }, path)
+    wrapped.writeClassUniversal6Js( getClassConfig(name), path )
 }
 
 
 ////
 function generateClassBrowser (name, path) {
-    wrapped.writeClassBrowser6Js({
-        isApp: false
-      , isTop: 2 > name.split('.').length
-      , classname: `${projectTC}.${name}`
-      , topline
-    }, path)
+    wrapped.writeClassBrowser6Js( getClassConfig(name), path )
 }
 
 
 ////
 function generateClassNonbrowser (name, path) {
-    wrapped.writeClassNonbrowser6Js({
-        isApp: false
-      , isTop: 2 > name.split('.').length
-      , classname: `${projectTC}.${name}`
-      , topline
-    }, path)
+    wrapped.writeClassNonbrowser6Js( getClassConfig(name), path )
 }
 
 
 ////
 function generateDemoScript (name, path) {
-    wrapped.writeDemo6Js({
-        classname: `${projectTC}.${name}`
-      , nameLC: name.replace(/\./g,'-').toLowerCase()
-      , projectTC
-      , projectLC
-      , topline
-    }, path)
+    wrapped.writeDemo6Js( getDemoConfig(name), path )
 }
 
 
 ////
 function generateDemoPage (name, path) {
-    wrapped.writeClassDemoHtml({
-        classname: `${projectTC}.${name}`
-      , nameLC: name.replace(/\./g,'-').toLowerCase()
-      , tagname: 'oom-' + name.split('.').pop().toLowerCase()
-      , projectTC
-      , name
-      , homepage: projectURL
-      , repo: projectRepo
-      , npm: projectNPM
-    }, path)
+    wrapped.writeClassDemoHtml( getDemoConfig(name), path )
 }
 
 
 ////
 function generateMethod (name, path) {
-    wrapped.writeMethod6Js( getConfig(name), path )
+    wrapped.writeMethod6Js( getMethodConfig(name), path )
 }
 
 
 ////
 function generateMethodUniversal (name, path) {
-    wrapped.writeMethodUniversal6Js( getConfig(name), path )
+    wrapped.writeMethodUniversal6Js( getMethodConfig(name), path )
 }
 
 
 ////
 function generateMethodBrowser (name, path) {
-    wrapped.writeMethodBrowser6Js( getConfig(name), path )
+    wrapped.writeMethodBrowser6Js( getMethodConfig(name), path )
 }
 
 
 ////
 function generateMethodNonbrowser (name, path) {
-    wrapped.writeMethodNonbrowser6Js( getConfig(name), path )
+    wrapped.writeMethodNonbrowser6Js( getMethodConfig(name), path )
 }
 
 
@@ -404,16 +369,47 @@ function generateOrRemove (name, path, generator) {
 
 
 ////
-function getConfig (name) {
-    const parts = name.split('.')
+function getClassConfig (name) {
+    const classname = `${projectTC}.${name}`
     return {
-        classname: `${projectTC}${1<parts.length?'.':''}${parts.slice(0,-1).join('.')}`
-      , methodname: `${projectTC}.${name}`
-      , methodshort: parts.pop()
+        isApp: false //@TODO remove from all Oomtility
+      , isTop: 2 > name.split('.').length
+      , classname
+      , topline
+      , remarks: '@TODO'
+      , extendname: classname.split('.').slice(0,-1).join('.')
+    }
+}
+
+
+////
+function getMethodConfig (name) {
+    const methodname = `${projectTC}.${name}`
+    return {
+        classname: methodname.split('.').slice(0,-1).join('.')
+      , methodname
+      , methodshort: methodname.split('.').pop()
       , topline
       , remarks: '@TODO'
     }
 }
+
+
+////
+function getDemoConfig(name) {
+    const config = getClassConfig(name)
+    return Object.assign({}, config, {
+        nameLC: name.replace(/\./g,'-').toLowerCase()
+      , projectTC
+      , projectLC
+      , tagname: 'oom-' + name.split('.').pop().toLowerCase()
+      , name
+      , homepage: projectURL
+      , repo: projectRepo
+      , npm: projectNPM
+    })
+}
+
 
 
 

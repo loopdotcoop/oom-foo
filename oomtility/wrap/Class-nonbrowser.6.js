@@ -7,7 +7,7 @@ isApp ? `
 `:''
 }}}
 !function (ROOT) { 'use strict'
-const Class = OOM.${{classname}}
+const Class = ${{classname}}
 
 
 

@@ -4,11 +4,6 @@ ${{topline}}
 
 const META = {
     NAME:     '${{classname}}'
-${{{
-isApp ? `
-  , VERSION:  '${version}' // OOMBUMPABLE
-  , HOMEPAGE: '${homepage}'`:''
-}}}
   , REMARKS:  '${{remarks}}'
 }
 
@@ -23,37 +18,25 @@ const PROPS = {
 
 
 //// Shortcuts to Oom’s global namespace and toolkit.
-const OOM     = ROOT.OOM    = ROOT.OOM    || {}
-const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
+const Oom = ROOT.Oom
+const TOOLKIT = Oom.TOOLKIT
 
 
-${{{
-isApp ? `
-//// Define \`${classname}\`, this module’s main entry point.`:`
-//// Define the \`${classname}\` class.`
-}}}
-${{{
-isTop ? `
-const Class = OOM.${classname} = class ${classname.split('.').pop()} {`:`
-const Class = OOM.${classname} = class ${classname.split('.').pop()} extends OOM.${classname.split('.').slice(0, -1).join('.')} {`
-}}}
+//// Define the `${{classname}}` class.
+const Class = ${{classname}} = class extends ${{extendname}} {
 
-    constructor (config={}, hub=OOM.hub) {
-${{{
-isTop ? `
-        //// Properties added to \`api\` are exposed to Vue etc.
+    constructor (config={}, hub=Oom.HUB) {
+        super(config, hub)
+
+        //// Properties added to `api` are exposed to Vue etc.
         const api = this.api = {}
-
+${{{
+isTop ? `
         //// api.UUID: Oom instances have universally unique IDs (57 billion combos).
         Object.defineProperty(api, 'UUID', { enumerable:true, configurable:false, value:
             '123456'.replace( /./g,         c=>TOOLKIT.rndCh(48,122) )    // 0-z
                     .replace( /[:-@\\[-\`]/g, c=>TOOLKIT.rndCh(97,122) ) }) // a-z
-`:`
-        super(config, hub)
-
-        //// Properties added to \`api\` are exposed to Vue etc.
-        const api = this.api = {}
-`
+` : ''
 }}}
 
         //// hub: Oom instances keep a reference to the oom-hub.
@@ -201,85 +184,11 @@ isApp ? `
 
     }
 
-}//${{classname}}
+}; TOOLKIT.name(Class, '${{classname}}')
 
 
 
 
-${{{
-isApp ? `
-//// TOOLKIT FUNCTIONS
-
-
-//// Return a random character within char-code start/end positions 's' and 'e'.
-TOOLKIT.rndCh = TOOLKIT.rndCh || ( (s, e) =>
-    String.fromCharCode(Math.random() * (e-s) + s) )
-
-
-//// @TODO describe these three
-TOOLKIT.applyDefault = TOOLKIT.applyDefault || ( (valid, config) => {
-    if ( config.hasOwnProperty(valid.name) )
-        return true // \`true\` here signifies default didn’t need to be applied
-    if (! valid.hasOwnProperty('default') )
-        return false // \`false\` signifies a missing mandatory field
-    config[valid.name] = 'function' === typeof valid.default
-      ? valid.default(config) // a value can depend on another config value
-      : valid.default
-    return true // \`true\` here signifies default was successfully applied
-})
-
-TOOLKIT.validateType = TOOLKIT.validateType || ( (valid, value) => {
-    const ME = \`TOOLKIT.validateType: \`, C = 'constructor'
-    if (null === valid.type)
-        return (null === value) ? null : \`is not null\`
-    if ('undefined' === typeof valid.type)
-        return ('undefined' === typeof value) ? null : \`is not undefined\`
-    if (! valid.type.name )
-        throw new TypeError(ME+valid.name+\`’s valid.type has no name\`)
-    if (! value[C] || ! value[C].name )
-        throw new TypeError(ME+valid.name+\`’s value has no \${C}.name\`)
-    return (valid.type.name === value[C].name)
-      ? null : \`has \${C}.name \${value[C].name} not \${valid.type.name}\`
-})
-
-TOOLKIT.validateRange = TOOLKIT.validateRange || ( (valid, value) => {
-    if (null != valid.min && valid.min > value)
-        return \`is less than the minimum \${valid.min}\`
-    if (null != valid.max && valid.max < value)
-        return \`is greater than the maximum \${valid.max}\`
-    if (null != valid.step && ((value/valid.step) % 1))
-        return \`\${value} ÷ \${valid.step} leaves \${(value/valid.step) % 1}\`
-})
-
-
-//// Cross-platform millisecond-timer.
-TOOLKIT.getNow = TOOLKIT.getNow || ( () => {
-    let now
-    if ( // Node.js
-        'object'   === typeof ROOT.process
-     && 'function' === typeof ROOT.process.hrtime) {
-        const hrtime = ROOT.process.hrtime()
-        now = ( (hrtime[0] * 1e9) + hrtime[1] ) / 1e6 // in milliseconds
-    } else { // modern browser @TODO legacy browser
-        now = ROOT.performance.now()
-    }
-    return now
-})
-
-
-//// Convert an object like { FOO:1, BAR:2 } to
-//// { FOO:{ value:1, enumerable:true }, BAR:{ value:2, enumerable:true} }
-//// making it suitable to pass to \`Object.defineProperties()\`.
-TOOLKIT.toPropsObj = TOOLKIT.toPropsObj || ( src => {
-    const obj = {}
-    for (let k in src) obj[k] = { value:src[k], enumerable:true }
-    return obj
-})
-
-
-
-`:''
-}}}
 //// PRIVATE FUNCTIONS
 
 

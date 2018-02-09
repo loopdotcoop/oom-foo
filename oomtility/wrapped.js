@@ -13,7 +13,7 @@ const rxBinaryExt = module.exports.rxBinaryExt =
     new RegExp( '\\.' + BINARY_EXTS.join('$|\\.') + '$', 'i')
 
 const NAME     = 'Oomtility Wrapped'
-    , VERSION  = '1.1.8'
+    , VERSION  = '1.2.0'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
 
@@ -194,7 +194,7 @@ function getHtmlBottom (config) {
     return `
 
 <!-- Display the repo version and JavaScript standard -->
-<script>$('#version').html(OOM.${projectTC}.VERSION||'(no VERSION)')
+<script>$('#version').html(${projectTC}.VERSION||'(no VERSION)')
 $('#ecma').html('ES'+['5','5 min','6','6 dev'][~~document.cookie.split('~')[1]])
 </script>
 
@@ -333,10 +333,10 @@ module.exports.writeAppNonbrowser6Js = function (configOrig, path) {
 
 
 module.exports.writeAppDemo6Js = function (configOrig, path) {
-const config = Object.assign({}, configOrig, {
-    nameLC: configOrig.projectTC.toLowerCase()
-})
-module.exports.writeDemo6Js(config, path)
+    const config = Object.assign({}, configOrig, {
+        nameLC: configOrig.projectTC.toLowerCase()
+    })
+    module.exports.writeDemo6Js(config, path)
 }
 
 
@@ -398,209 +398,6 @@ module.exports.writeDemoAppHtml = function (configOrig, path) {
 
 
 
-module.exports.writeMethod6Js = function (config, path) {
-const {
-    methodname
-  , topline
-  , remarks
-} = config
-const parts = methodname.split('.')
-const classname = parts.slice(0,-1).join('.')
-const shortname = parts.pop()
-const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
-const flag = 'a'
-fs.writeFileSync(path, ''
-  + `${topline}
-
-!function (ROOT) { 'use strict'
-
-const META = {
-    NAME:     { value:'${methodname}' }
-  , REMARKS:  { value:'${remarks}' }
-}
-
-
-//// Shortcuts to Oom’s namespace and toolkit.
-const OOM     = ROOT.OOM    = ROOT.OOM    || {}
-const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}
-
-
-//// Define the \`${methodname}()\` method.
-const method = OOM.${classname}.prototype.${shortname} = function (abc) {
-    let err, ME = \`${methodname}(): \` // error prefix
-    if (! (this instanceof OOM.${classname})) throw new Error(ME
-      + \`Must not be called as ${classname}.prototype.${shortname}()\`)
-    if ( err = TOOLKIT.validateType({ type:'string' }, abc) )
-        throw new TypeError(ME+\`abc \${err}\`)
-
-    this.xyz++
-    return abc + ' ok!'
-
-}//${methodname}()
-
-//// A tally of the number of times \`${shortname}()\` is called.
-OOM.${classname}.prototype.xyz = 0
-
-
-//// Add static constants to the \`${shortname}()\` method.
-Object.defineProperties(method, META)
-
-
-
-
-}( 'object' === typeof global ? global : this ) // \`window\` in a browser
-`
-, { encoding, flag } )
-}
-
-
-
-
-module.exports.writeMethodUniversal6Js = function (config, path) {
-const {
-    methodname
-  , topline
-} = config
-const parts = methodname.split('.')
-const classname = parts.slice(0,-1).join('.')
-const shortname = parts.pop()
-const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
-const flag = 'a'
-fs.writeFileSync(path, ''
-  + `${topline}
-
-!function (ROOT) { 'use strict'
-if ('function' != typeof jQuery) throw Error('jQuery not found')
-jQuery( function($) {
-const Class = OOM.${classname}
-
-
-
-
-test('The ${methodname}() method', () => {
-    const protoMethod = Class.prototype.${shortname}
-    is('function' === typeof protoMethod, 'prototype.${shortname}() is a function')
-    is('${methodname}' === protoMethod.NAME, "NAME is '${methodname}'")
-})
-
-
-
-
-test('+ve ${shortname}()', () => {
-    const instance1 = Class.testInstanceFactory()
-    is('123 ok!' === instance1.${shortname}('123'),
-       "\`${shortname}('123')\` returns '123 ok!'")
-    instance1.${shortname}('456')
-    is(2 === instance1.xyz,
-       'After two calls, \`xyz\` is 2')
-
-    const instance2 = Class.testInstanceFactory()
-    instance2.${shortname}('789')
-    is(1 === instance2.xyz,
-       'A second instance has its own \`xyz\` property')
-
-})
-
-
-
-
-test('-ve ${shortname}()', () => {
-    const protoMethod = Class.prototype.${shortname}
-    throws( () => protoMethod('123')
-      , '${methodname}(): Must not be called as ${classname}.prototype.${shortname}()'
-      , 'Prototype call')
-    const instance = Class.testInstanceFactory()
-    throws( () => instance.${shortname}(123)
-      , '${methodname}(): abc has constructor.name Number not String'
-      , 'Passing a number into \`abc\`')
-
-
-})
-
-
-
-
-})//jQuery()
-}( 'object' === typeof global ? global : this ) // \`window\` in a browser
-`
-, { encoding, flag } )
-}
-
-
-
-
-module.exports.writeMethodBrowser6Js = function (config, path) {
-const {
-    methodname
-  , topline
-} = config
-const parts = methodname.split('.')
-const classname = parts.slice(0,-1).join('.')
-const shortname = parts.pop()
-const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
-const flag = 'a'
-fs.writeFileSync(path, ''
-  + `${topline}
-
-!function (ROOT) { 'use strict'
-if ('function' != typeof jQuery) throw Error('jQuery not found')
-jQuery( function($) {
-const Class = OOM.${classname}
-
-
-
-
-test('Browser test the ${methodname}() method', () => {
-    is(true, '@TODO')
-})
-
-
-
-
-})//jQuery()
-}( 'object' === typeof global ? global : this ) // \`window\` in a browser
-`
-, { encoding, flag } )
-}
-
-
-
-
-module.exports.writeMethodNonbrowser6Js = function (config, path) {
-const {
-    methodname
-  , topline
-} = config
-const parts = methodname.split('.')
-const classname = parts.slice(0,-1).join('.')
-const shortname = parts.pop()
-const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
-const flag = 'a'
-fs.writeFileSync(path, ''
-  + `${topline}
-
-!function (ROOT) { 'use strict'
-if ('function' != typeof jQuery) throw Error('jQuery not found')
-const Class = OOM.${classname}
-
-
-
-
-test('Nonbrowser test the ${methodname}() method', () => {
-    is(true, '@TODO')
-})
-
-
-
-
-}( 'object' === typeof global ? global : this ) // \`window\` in a browser
-`
-, { encoding, flag } )
-}
-
-
-
-
 module.exports.writeDemoHtml = function (configOrig, path) {
 const config = Object.assign({}, configOrig, {
     title: `${configOrig.projectTC} Demo`
@@ -619,10 +416,6 @@ fs.writeFileSync(path, ''
 
 <!-- BEGIN DYNAMIC SECTION /////////////////////////////////////////////////////
   //// This dynamic section is kept up to date by ‘oomtility/make.js’ ////// -->
-
-  <a href="demo-app.html">
-  <b>OomFoo Demo</b>
-  </a><br>
 
 <!-- END DYNAMIC SECTION ///////////////////////////////////////////////// -->
 
@@ -684,9 +477,6 @@ fs.writeFileSync(path, ''
 //// This dynamic section is initialised by ‘oomtility/init.js’, and then //////
 //// modified by ‘oomtility/auto.js’ and ‘oomtility/make.js’ ///////////////////
 
-    , [ null, null, null, '../src/test/App-universal.6.js' ]
-    , [ null, null, null, '../src/test/App-browser.6.js' ]
-
 //// END DYNAMIC SECTION ///////////////////////////////////////////////////////
 
   ])</script>
@@ -722,8 +512,8 @@ fs.writeFileSync(path, ''
 <script>ECMASwitch.load('./')</script>
 
 <!-- Link to the proper homepage domain, if we’re not already there -->
-<script>if ( 0 > location.href.indexOf(OOM.${projectTC}.HOMEPAGE) )
-$('#home-link').attr('href', OOM.${projectTC}.HOMEPAGE)</script>
+<script>if ( 0 > location.href.indexOf(${projectTC}.HOMEPAGE) )
+$('#home-link').attr('href', ${projectTC}.HOMEPAGE)</script>
 
 ` + getHtmlBottom(config)
   , { encoding, flag } )
@@ -744,6 +534,204 @@ fs.writeFileSync(path, ''
   + '*.log\n'
   + 'npm-debug.log.*\n'
   + 'node_modules/*\n'
+  + ''
+  , { encoding, flag } )
+}
+
+
+
+
+//// An Oomtility Wrap of Bases.6.js \\//\\// https://oomtility.loop.coop ////
+module.exports.writeBases6Js = function (config, path) {
+const {
+    classname
+  , remarks
+  , version
+  , homepage
+  , topline
+} = config
+const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
+const flag = 'a'
+fs.writeFileSync(path, ''
+  + (topline)+'\n'
+  + '\n'
+  + '!function (ROOT) { \'use strict\'\n'
+  + '\n'
+  + 'const META = {\n'
+  + '    NAME:     \''+(classname)+'\'\n'
+  + '  , VERSION:  \''+(version)+'\' // OOMBUMPABLE\n'
+  + '  , HOMEPAGE: \''+(homepage)+'\'\n'
+  + '  , REMARKS:  \''+(remarks)+'\'\n'
+  + '}\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '//// THE Oom CLASS AND NAMESPACE\n'
+  + '\n'
+  + '\n'
+  + '//// If not already present, define `Oom`, the base class for all Oom classes,\n'
+  + '//// which is also Oom\u2019s global namespace. Also, define a shortcut to it.\n'
+  + 'const Oom = ROOT.Oom = ROOT.Oom || class Oom {\n'
+  + '}//Oom\n'
+  + '\n'
+  + '\n'
+  + '//// Shortcut to Oom\u2019s global toolkit (created if not present).\n'
+  + 'const TOOLKIT = Oom.TOOLKIT = assignToolkit(Oom.TOOLKIT) //@TODO test with sever'
+  + 'al modules\n'
+  + '\n'
+  + '\n'
+  + '//// Define `Oom.'+(classname)+'`, this module\u2019s specialism of `Oom`.\n'
+  + 'Oom.'+(classname)+' = class extends Oom {\n'
+  + '}; TOOLKIT.name(Oom.'+(classname)+', \'Oom.'+(classname)+'\')\n'
+  + 'Object.defineProperties(Oom.'+(classname)+', TOOLKIT.toPropsObj(META) )\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '//// THE Oom.El CLASS\n'
+  + '\n'
+  + '\n'
+  + '//// If not present, define `Oom.El`. It\u2019s used for displaying one or more o'
+  + 'f:\n'
+  + '//// - A Vue component\n'
+  + '//// - An A-Frame \u2018primative\u2019 entity\n'
+  + '//// - An OomBox\n'
+  + '//// You can configure your Oom.El instance\u2019s nesting rules (analogous to\n'
+  + '//// the way <table>, <tr> and <td> work).\n'
+  + 'Oom.El = Oom.El || class extends Oom {\n'
+  + '}; TOOLKIT.name(Oom.El, \'Oom.El\')\n'
+  + '\n'
+  + '\n'
+  + '//// Define `Oom.'+(classname)+'.El`, this module\u2019s specialism of `Oom.El`.\n'
+  + 'Oom.'+(classname)+'.El = class extends Oom.'+(classname)+' {\n'
+  + '}; TOOLKIT.name(Oom.'+(classname)+'.El, \'Oom.'+(classname)+'.El\')\n'
+  + '//@TODO add the `el` property\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '//// THE Oom.Mix CLASS\n'
+  + '\n'
+  + '\n'
+  + '//// If not present, define `Oom.Mix`. It\u2019s used for creating an A-Frame\n'
+  + '//// component, but not an A-Frame primative entity (use `Oom.El` or `Oom.ElMix`\n'
+  + '//// for that). It\u2019s intended for attributes like \'position\' and \'materia'
+  + 'l\', not\n'
+  + '//// like \'sphere\' or \'camera\'. It may optionally define an A-Frame `system`'
+  + '.\n'
+  + 'Oom.Mix = Oom.Mix || class extends Oom {\n'
+  + '}; TOOLKIT.name(Oom.Mix, \'Oom.Mix\')\n'
+  + '\n'
+  + '\n'
+  + '//// Define `Oom.'+(classname)+'.Mix`, this module\u2019s specialism of `Oom.Mix`.\n'
+  + 'Oom.'+(classname)+'.Mix = class extends Oom.'+(classname)+' {\n'
+  + '}; TOOLKIT.name(Oom.'+(classname)+'.Mix, \'Oom.'+(classname)+'.Mix\')\n'
+  + '//@TODO add the `mix` property\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '//// THE Oom.ElMix CLASS\n'
+  + '\n'
+  + '\n'
+  + '//// If not present, define `Oom.ElMix`. It combines features of `Oom.El` and,\n'
+  + '//// `Oom.Mix`, typically to create an A-Frame \u2018primative\u2019 entity which '
+  + 'is based\n'
+  + '//// on an A-Frame component.\n'
+  + 'Oom.ElMix = Oom.ElMix || class extends Oom {\n'
+  + '}; TOOLKIT.name(Oom.ElMix, \'Oom.ElMix\')\n'
+  + '\n'
+  + '\n'
+  + '//// Define `Oom.'+(classname)+'.ElMix`, this module\u2019s specialism of `Oom.ElMix`.\n'
+  + 'Oom.'+(classname)+'.ElMix = class extends Oom.'+(classname)+' {\n'
+  + '}; TOOLKIT.name(Oom.'+(classname)+'.ElMix, \'Oom.'+(classname)+'.ElMix\')\n'
+  + '//@TODO add the `elMix` property\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '//// TOOLKIT FUNCTIONS\n'
+  + '\n'
+  + '\n'
+  + 'function assignToolkit (TOOLKIT={}) { return Object.assign({}, {\n'
+  + '\n'
+  + '    //// Return a random character within char-code start/end positions \'s\' an'
+  + 'd \'e\'.\n'
+  + '    rndCh: (s, e) => String.fromCharCode(Math.random() * (e-s) + s)\n'
+  + '\n'
+  + '\n'
+  + '    //// @TODO describe these three\n'
+  + '  , applyDefault: (valid, config) => {\n'
+  + '        if ( config.hasOwnProperty(valid.name) )\n'
+  + '            return true // `true` here signifies default didn\u2019t need to be a'
+  + 'pplied\n'
+  + '        if (! valid.hasOwnProperty(\'default\') )\n'
+  + '            return false // `false` signifies a missing mandatory field\n'
+  + '        config[valid.name] = \'function\' === typeof valid.default\n'
+  + '          ? valid.default(config) // a value can depend on another config value\n'
+  + '          : valid.default\n'
+  + '        return true // `true` here signifies default was successfully applied\n'
+  + '    }\n'
+  + '\n'
+  + '  , validateType: (valid, value) => {\n'
+  + '        const ME = `TOOLKIT.validateType: `, C = \'constructor\'\n'
+  + '        if (null === valid.type)\n'
+  + '            return (null === value) ? null : `is not null`\n'
+  + '        if (\'undefined\' === typeof valid.type)\n'
+  + '            return (\'undefined\' === typeof value) ? null : `is not undefined`\n'
+  + '        if (! valid.type.name )\n'
+  + '            throw new TypeError(ME+valid.name+`\u2019s valid.type has no name`)\n'
+  + '        if (! value[C] || ! value[C].name )\n'
+  + '            throw new TypeError(ME+valid.name+`\u2019s value has no ${C}.name`)\n'
+  + '        return (valid.type.name === value[C].name)\n'
+  + '          ? null : `has ${C}.name ${value[C].name} not ${valid.type.name}`\n'
+  + '    }\n'
+  + '\n'
+  + '  , validateRange: (valid, value) => {\n'
+  + '        if (null != valid.min && valid.min > value)\n'
+  + '            return `is less than the minimum ${valid.min}`\n'
+  + '        if (null != valid.max && valid.max < value)\n'
+  + '            return `is greater than the maximum ${valid.max}`\n'
+  + '        if (null != valid.step && ((value/valid.step) % 1))\n'
+  + '            return `${value} \u00f7 ${valid.step} leaves ${(value/valid.step) % 1'
+  + '}`\n'
+  + '    }\n'
+  + '\n'
+  + '\n'
+  + '    //// Get milliseconds since context began, to several decimal places.\n'
+  + '  , getNow: () => {\n'
+  + '        let now\n'
+  + '        if ( // Node.js\n'
+  + '            \'object\'   === typeof ROOT.process\n'
+  + '         && \'function\' === typeof ROOT.process.hrtime) {\n'
+  + '            const hrtime = ROOT.process.hrtime()\n'
+  + '            now = ( (hrtime[0] * 1e9) + hrtime[1] ) / 1e6 // in milliseconds\n'
+  + '        } else { // modern browser @TODO legacy browser\n'
+  + '            now = ROOT.performance.now()\n'
+  + '        }\n'
+  + '        return now\n'
+  + '    }\n'
+  + '\n'
+  + '\n'
+  + '    //// Convert an object like { FOO:1, BAR:2 } to\n'
+  + '    //// { FOO:{ value:1, enumerable:true }, BAR:{ value:2, enumerable:true} }\n'
+  + '    //// making it suitable to pass to `Object.defineProperties()`.\n'
+  + '  , toPropsObj: src => {\n'
+  + '        const obj = {}\n'
+  + '        for (let k in src) obj[k] = { value:src[k], enumerable:true }\n'
+  + '        return obj\n'
+  + '    }\n'
+  + '\n'
+  + '\n'
+  + '    //// Set the unwritable `name` property of `obj`, eg `name(myFn, \'myFn\')`.\n'
+  + '  , name: (obj, name) =>\n'
+  + '        Object.defineProperty(obj, \'name\', { value:name, writable:false })\n'
+  + '\n'
+  + '}, TOOLKIT) }//assignToolkit()\n'
+  + '\n'
+  + '\n'
+  + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
   + ''
   , { encoding, flag } )
 }
@@ -804,7 +792,7 @@ isApp ? `
   + '!function (ROOT) { \'use strict\'\n'
   + 'if (\'function\' !== typeof jQuery) throw Error(\'jQuery not found\')\n'
   + 'jQuery( function($) {\n'
-  + 'const Class = OOM.'+(classname)+'\n'
+  + 'const Class = '+(classname)+'\n'
   + '\n'
   + '\n'
   + '\n'
@@ -843,7 +831,7 @@ isApp ? `
 `:''
 ) + '\n'
   + '!function (ROOT) { \'use strict\'\n'
-  + 'const Class = OOM.'+(classname)+'\n'
+  + 'const Class = '+(classname)+'\n'
   + '\n'
   + '\n'
   + '\n'
@@ -868,8 +856,6 @@ module.exports.writeClassUniversal6Js = function (config, path) {
 const {
     isApp
   , classname
-  , version
-  , homepage
   , topline
 } = config
 const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
@@ -890,7 +876,7 @@ isApp ? `
   + '!function (ROOT) { \'use strict\'\n'
   + 'if (\'function\' !== typeof jQuery) throw Error(\'jQuery not found\')\n'
   + 'jQuery( function($) {\n'
-  + 'const Class = OOM.'+(classname)+'\n'
+  + 'const Class = '+(classname)+'\n'
   + '\n'
   + '\n'
   + '\n'
@@ -908,21 +894,11 @@ isApp ? `
   + '\n'
   + '\n'
   + 'test(\'+ve '+(classname)+' class\', () => {\n'
-  + '    is(\'object\' === typeof OOM, \'The OOM namespace object exists\')' + (
-    isApp ? `
-    is('undefined' === typeof ${classname}, '${classname} is not global')`:''
-) + '\n'
+  + '    is(\'function\' === typeof ROOT.Oom, \'The Oom namespace class exists\')\n'
   + '    is(\'function\' === typeof Class, \''+(classname)+' is a function\')\n'
   + '    is( (\''+(classname)+'\' === Class.NAME && \''+(classname)+'\' === Class.api.NAME)\n'
   + '      , \'NAME and api.NAME is '+(classname)+'\')\n'
-  + '    is(\''+(classname.split('.').pop())+'\' === Class.name, \'name is '+(classname.split('.').pop())+'\')' + (
-    isApp ? `
-    is( ('${version}' === Class.VERSION && '${version}' === Class.api.VERSION) // OOMBUMPABLE (twice!)
-      , 'VERSION and api.VERSION is ${version}') // OOMBUMPABLE
-    is( ('${homepage}' === Class.HOMEPAGE && '${homepage}' === Class.api.HOMEPAGE)
-      , 'HOMEPAGE and api.HOMEPAGE is ${homepage}')
-    //@TODO test for REMARKS`:''
-) + '\n'
+  + '    is(\''+(classname)+'\' === Class.name, \'name is '+(classname)+'\')\n'
   + '})\n'
   + '\n'
   + '\n'
@@ -938,7 +914,7 @@ isApp ? `
   + '\n'
   + '\n'
   + '' + (
-isApp ? `
+true /*@TODO ony once */ ? `
 //// EXTEND KLUD.JS
 
 //// Test for an expected exception.
@@ -977,10 +953,9 @@ const {
   , isTop
   , title
   , classname
+  , extendname
   , remarks
-  , version
   , date
-  , homepage
   , topline
 } = config
 const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
@@ -991,11 +966,7 @@ fs.writeFileSync(path, ''
   + '!function (ROOT) { \'use strict\'\n'
   + '\n'
   + 'const META = {\n'
-  + '    NAME:     \''+(classname)+'\'' + (
-isApp ? `
-  , VERSION:  '${version}' // OOMBUMPABLE
-  , HOMEPAGE: '${homepage}'`:''
-) + '\n'
+  + '    NAME:     \''+(classname)+'\'\n'
   + '  , REMARKS:  \''+(remarks)+'\'\n'
   + '}\n'
   + '\n'
@@ -1010,34 +981,24 @@ isApp ? `
   + '\n'
   + '\n'
   + '//// Shortcuts to Oom\u2019s global namespace and toolkit.\n'
-  + 'const OOM     = ROOT.OOM    = ROOT.OOM    || {}\n'
-  + 'const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}\n'
+  + 'const Oom = ROOT.Oom\n'
+  + 'const TOOLKIT = Oom.TOOLKIT\n'
   + '\n'
-  + '' + (
-isApp ? `
-//// Define \`${classname}\`, this module’s main entry point.`:`
-//// Define the \`${classname}\` class.`
-) + '' + (
-isTop ? `
-const Class = OOM.${classname} = class ${classname.split('.').pop()} {`:`
-const Class = OOM.${classname} = class ${classname.split('.').pop()} extends OOM.${classname.split('.').slice(0, -1).join('.')} {`
-) + '\n'
   + '\n'
-  + '    constructor (config={}, hub=OOM.hub) {' + (
+  + '//// Define the `'+(classname)+'` class.\n'
+  + 'const Class = '+(classname)+' = class extends '+(extendname)+' {\n'
+  + '\n'
+  + '    constructor (config={}, hub=Oom.HUB) {\n'
+  + '        super(config, hub)\n'
+  + '\n'
+  + '        //// Properties added to `api` are exposed to Vue etc.\n'
+  + '        const api = this.api = {}' + (
 isTop ? `
-        //// Properties added to \`api\` are exposed to Vue etc.
-        const api = this.api = {}
-
         //// api.UUID: Oom instances have universally unique IDs (57 billion combos).
         Object.defineProperty(api, 'UUID', { enumerable:true, configurable:false, value:
             '123456'.replace( /./g,         c=>TOOLKIT.rndCh(48,122) )    // 0-z
                     .replace( /[:-@\\[-\`]/g, c=>TOOLKIT.rndCh(97,122) ) }) // a-z
-`:`
-        super(config, hub)
-
-        //// Properties added to \`api\` are exposed to Vue etc.
-        const api = this.api = {}
-`
+` : ''
 ) + '\n'
   + '\n'
   + '        //// hub: Oom instances keep a reference to the oom-hub.\n'
@@ -1183,84 +1144,11 @@ isApp ? `
   + '\n'
   + '    }\n'
   + '\n'
-  + '}//'+(classname)+'\n'
+  + '}; TOOLKIT.name(Class, \''+(classname)+'\')\n'
   + '\n'
   + '\n'
   + '\n'
-  + '' + (
-isApp ? `
-//// TOOLKIT FUNCTIONS
-
-
-//// Return a random character within char-code start/end positions 's' and 'e'.
-TOOLKIT.rndCh = TOOLKIT.rndCh || ( (s, e) =>
-    String.fromCharCode(Math.random() * (e-s) + s) )
-
-
-//// @TODO describe these three
-TOOLKIT.applyDefault = TOOLKIT.applyDefault || ( (valid, config) => {
-    if ( config.hasOwnProperty(valid.name) )
-        return true // \`true\` here signifies default didn’t need to be applied
-    if (! valid.hasOwnProperty('default') )
-        return false // \`false\` signifies a missing mandatory field
-    config[valid.name] = 'function' === typeof valid.default
-      ? valid.default(config) // a value can depend on another config value
-      : valid.default
-    return true // \`true\` here signifies default was successfully applied
-})
-
-TOOLKIT.validateType = TOOLKIT.validateType || ( (valid, value) => {
-    const ME = \`TOOLKIT.validateType: \`, C = 'constructor'
-    if (null === valid.type)
-        return (null === value) ? null : \`is not null\`
-    if ('undefined' === typeof valid.type)
-        return ('undefined' === typeof value) ? null : \`is not undefined\`
-    if (! valid.type.name )
-        throw new TypeError(ME+valid.name+\`’s valid.type has no name\`)
-    if (! value[C] || ! value[C].name )
-        throw new TypeError(ME+valid.name+\`’s value has no \${C}.name\`)
-    return (valid.type.name === value[C].name)
-      ? null : \`has \${C}.name \${value[C].name} not \${valid.type.name}\`
-})
-
-TOOLKIT.validateRange = TOOLKIT.validateRange || ( (valid, value) => {
-    if (null != valid.min && valid.min > value)
-        return \`is less than the minimum \${valid.min}\`
-    if (null != valid.max && valid.max < value)
-        return \`is greater than the maximum \${valid.max}\`
-    if (null != valid.step && ((value/valid.step) % 1))
-        return \`\${value} ÷ \${valid.step} leaves \${(value/valid.step) % 1}\`
-})
-
-
-//// Cross-platform millisecond-timer.
-TOOLKIT.getNow = TOOLKIT.getNow || ( () => {
-    let now
-    if ( // Node.js
-        'object'   === typeof ROOT.process
-     && 'function' === typeof ROOT.process.hrtime) {
-        const hrtime = ROOT.process.hrtime()
-        now = ( (hrtime[0] * 1e9) + hrtime[1] ) / 1e6 // in milliseconds
-    } else { // modern browser @TODO legacy browser
-        now = ROOT.performance.now()
-    }
-    return now
-})
-
-
-//// Convert an object like { FOO:1, BAR:2 } to
-//// { FOO:{ value:1, enumerable:true }, BAR:{ value:2, enumerable:true} }
-//// making it suitable to pass to \`Object.defineProperties()\`.
-TOOLKIT.toPropsObj = TOOLKIT.toPropsObj || ( src => {
-    const obj = {}
-    for (let k in src) obj[k] = { value:src[k], enumerable:true }
-    return obj
-})
-
-
-
-`:''
-) + '\n'
+  + '\n'
   + '//// PRIVATE FUNCTIONS\n'
   + '\n'
   + '\n'
@@ -1293,15 +1181,20 @@ TOOLKIT.toPropsObj = TOOLKIT.toPropsObj || ( src => {
 
 //// An Oomtility Wrap of Demo.6.js \\//\\// https://oomtility.loop.coop ////
 module.exports.writeDemo6Js = function (config, path) {
+const {
+    projectTC
+  , classname
+  , topline
+} = config
 const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
 const flag = 'a'
 fs.writeFileSync(path, ''
-  + '//// OomFoo //// 1.1.8 //// February 2018 //// http://oom-foo.loop.coop/ ///////\n'
+  + (topline)+'\n'
   + '\n'
   + '!function (ROOT) { \'use strict\'\n'
   + 'if (\'function\' !== typeof jQuery) throw Error(\'jQuery not found\')\n'
   + 'jQuery( function($) {\n'
-  + '\n'
+  + 'return console.log(\'@TODO fix demo\');\n'
   + '\n'
   + '//// Instance containers.\n'
   + 'const outers = window.outers = [] //@TODO remove `window.outers = `\n'
@@ -1378,7 +1271,7 @@ fs.writeFileSync(path, ''
   + '    :caption="static.NAME+\'<em>#\'+instance.UUID+\'</em>&nbsp; instance data:\''
   + '"></member-table>\n'
   + '\n'
-  + '  <!-- Composition - other instances contained in this OomFoo instance -->\n'
+  + '  <!-- Composition - other instances contained in this '+(projectTC)+' instance -->\n'
   + '  <div v-bind:class="{ hid: ui.hideInners }">\n'
   + '    <oom-base-sub v-bind="instance"></oom-base-sub>\n'
   + '    <oom-base-sub v-bind="instance"></oom-base-sub>\n'
@@ -1420,9 +1313,9 @@ fs.writeFileSync(path, ''
   + '//// AFRAME\n'
   + '\n'
   + '\n'
-  + '//// Register \'oomfoo\', an A-Frame component version of OomFoo.\n'
+  + '//// Register \'oomfoo\', an A-Frame component version of '+(projectTC)+'.\n'
   + 'AFRAME.registerComponent(\'oomfoo\', {\n'
-  + '    schema: apiToAframeSchema(ROOT.OOM.OomFoo.api)\n'
+  + '    schema: apiToAframeSchema(ROOT.'+(projectTC)+'.api)\n'
   + '  , init: function () {}\n'
   + '  , update: function (oldData) {\n'
   + '        for (let key in AFRAME.utils.diff(oldData, this.data) )\n'
@@ -1492,7 +1385,7 @@ fs.writeFileSync(path, ''
   + '    template: template.oomDemo.innerHTML\n'
   + '  , data: function () { return {\n'
   + '        instance: outers[outers.length-1].api\n'
-  + '      , static: ROOT.OOM.OomFoo.api\n'
+  + '      , static: ROOT.'+(projectTC)+'.api\n'
   + '      , ui: { hideData:false, hideInners:false }\n'
   + '    } }\n'
   + '\n'
@@ -1501,9 +1394,9 @@ fs.writeFileSync(path, ''
   + '      , toggleHideInners\n'
   + '    }\n'
   + '\n'
-  + '    //// Generate an instance of OomFoo.\n'
+  + '    //// Generate an instance of '+(projectTC)+'.\n'
   + '  , beforeCreate: function () {\n'
-  + '        outers.push( new ROOT.OOM.OomFoo({\n'
+  + '        outers.push( new ROOT.'+(projectTC)+'({\n'
   + '            firstProp: outers.length + 4\n'
   + '          , secondProp: new Date\n'
   + '        }) )\n'
@@ -1512,29 +1405,28 @@ fs.writeFileSync(path, ''
   + '    //// Wrap Vue\u2019s reactive getters and setters with our own.\n'
   + '  , created: function () {\n'
   + '        wrapApiGettersAndSetters(outers[outers.length-1])\n'
-  + '        wrapApiGettersAndSetters(ROOT.OOM.OomFoo)\n'
+  + '        wrapApiGettersAndSetters(ROOT.'+(projectTC)+')\n'
   + '    }\n'
   + '\n'
   + '})\n'
   + '\n'
   + '\n'
-  + '//// Register <a-oomfoo-wrap>, to tell Vue about the A-Frame primative for OomFo'
-  + 'o.\n'
+  + '//// Register <a-oomfoo-wrap>, to tell Vue about the A-Frame primative for '+(projectTC)+'.\n'
   + '// Vue.component(\'a-oomfoo-wrap\', {\n'
   + '//     template: template.aOomfoo.innerHTML\n'
   + '//   , data: function () { return {\n'
   + '//         instance: outers[outers.length-1].api\n'
-  + '//       , static: ROOT.OOM.OomFoo.api\n'
+  + '//       , static: ROOT.'+(projectTC)+'.api\n'
   + '//     } }\n'
   + '// })\n'
   + '\n'
   + '\n'
-  + '//// Register <oom-base-sub>, a Vue component version of OomFoo.Base.Sub.\n'
+  + '//// Register <oom-base-sub>, a Vue component version of '+(classname)+'.\n'
   + 'Vue.component(\'oom-base-sub\', {\n'
   + '    template: template.oomBaseSub.innerHTML\n'
   + '  , data: function () { return {\n'
   + '        instance: inners[inners.length-1].api\n'
-  + '      , static: ROOT.OOM.OomFoo.Base.Sub.api\n'
+  + '      , static: ROOT.'+(classname)+'.api\n'
   + '      , ui: { hideData:false }\n'
   + '    } }\n'
   + '\n'
@@ -1547,9 +1439,9 @@ fs.writeFileSync(path, ''
   + '        toggleHideData\n'
   + '    }\n'
   + '\n'
-  + '    //// Generate an instance of OomFoo.Base.Sub.\n'
+  + '    //// Generate an instance of '+(classname)+'.\n'
   + '  , beforeCreate: function () {\n'
-  + '        inners.push( new ROOT.OOM.OomFoo.Base.Sub({\n'
+  + '        inners.push( new ROOT.'+(classname)+'({\n'
   + '            thirdProp: \'inners.length: \' + inners.length\n'
   + '        }) )\n'
   + '    }\n'
@@ -1557,7 +1449,7 @@ fs.writeFileSync(path, ''
   + '    //// Wrap Vue\u2019s reactive getters and setters with our own.\n'
   + '  , created: function () {\n'
   + '        wrapApiGettersAndSetters(outers[outers.length-1])\n'
-  + '        wrapApiGettersAndSetters(ROOT.OOM.OomFoo.Base.Sub)\n'
+  + '        wrapApiGettersAndSetters(ROOT.'+(classname)+')\n'
   + '    }\n'
   + '})\n'
   + '\n'
@@ -1639,6 +1531,149 @@ fs.writeFileSync(path, ''
 
 
 
+//// An Oomtility Wrap of Method-browser.6.js \\//\\// https://oomtility.loop.coop ////
+module.exports.writeMethodBrowser6Js = function (config, path) {
+const {
+    classname
+  , methodname
+  , topline
+} = config
+const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
+const flag = 'a'
+fs.writeFileSync(path, ''
+  + (topline)+'\n'
+  + '\n'
+  + '!function (ROOT) { \'use strict\'\n'
+  + 'if (\'function\' !== typeof jQuery) throw Error(\'jQuery not found\')\n'
+  + 'jQuery( function($) {\n'
+  + 'const Class = '+(classname)+'\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + 'test(\'Browser test the '+(methodname)+'() method\', () => {\n'
+  + '    is(true, \'@TODO\')\n'
+  + '})\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '})//jQuery()\n'
+  + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
+  + ''
+  , { encoding, flag } )
+}
+
+
+
+
+//// An Oomtility Wrap of Method-nonbrowser.6.js \\//\\// https://oomtility.loop.coop ////
+module.exports.writeMethodNonbrowser6Js = function (config, path) {
+const {
+    classname
+  , methodname
+  , topline
+} = config
+const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
+const flag = 'a'
+fs.writeFileSync(path, ''
+  + (topline)+'\n'
+  + '\n'
+  + '!function (ROOT) { \'use strict\'\n'
+  + 'if (\'function\' !== typeof jQuery) throw Error(\'jQuery not found\')\n'
+  + 'jQuery( function($) {\n'
+  + 'const Class = '+(classname)+'\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + 'test(\'Nonbrowser test the '+(methodname)+'() method\', () => {\n'
+  + '    is(true, \'@TODO\')\n'
+  + '})\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '})//jQuery()\n'
+  + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
+  + ''
+  , { encoding, flag } )
+}
+
+
+
+
+//// An Oomtility Wrap of Method-universal.6.js \\//\\// https://oomtility.loop.coop ////
+module.exports.writeMethodUniversal6Js = function (config, path) {
+const {
+    classname
+  , methodname
+  , methodshort
+  , topline
+} = config
+const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
+const flag = 'a'
+fs.writeFileSync(path, ''
+  + (topline)+'\n'
+  + '\n'
+  + '!function (ROOT) { \'use strict\'\n'
+  + 'if (\'function\' !== typeof jQuery) throw Error(\'jQuery not found\')\n'
+  + 'jQuery( function($) {\n'
+  + 'const Class = '+(classname)+'\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + 'test(\'The '+(methodname)+'() method\', () => {\n'
+  + '    const protoMethod = Class.prototype.'+(methodshort)+'\n'
+  + '    is(\'function\' === typeof protoMethod, \'prototype.'+(methodshort)+'() is a function\')\n'
+  + '    is(\''+(methodname)+'\' === protoMethod.NAME, "NAME is \''+(methodname)+'\'"+protoMethod.NAME)\n'
+  + '})\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + 'test(\'+ve '+(methodshort)+'()\', () => {\n'
+  + '    const instance1 = Class.testInstanceFactory()\n'
+  + '    is(\'123 ok!\' === instance1.'+(methodshort)+'(\'123\'),\n'
+  + '       "`'+(methodshort)+'(\'123\')` returns \'123 ok!\'")\n'
+  + '    instance1.'+(methodshort)+'(\'456\')\n'
+  + '    is(2 === instance1.'+(methodshort)+'_calltally,\n'
+  + '       \'After two calls, `'+(methodshort)+'_calltally` is 2\')\n'
+  + '\n'
+  + '    const instance2 = Class.testInstanceFactory()\n'
+  + '    instance2.'+(methodshort)+'(\'789\')\n'
+  + '    is(1 === instance2.'+(methodshort)+'_calltally,\n'
+  + '       \'A second instance has its own `'+(methodshort)+'_calltally` property\')\n'
+  + '\n'
+  + '})\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + 'test(\'-ve '+(methodshort)+'()\', () => {\n'
+  + '    const protoMethod = Class.prototype.'+(methodshort)+'\n'
+  + '    throws( () => protoMethod(\'123\')\n'
+  + '      , \''+(methodname)+'(): Must not be called as '+(classname)+'.prototype.'+(methodshort)+'()\'\n'
+  + '      , \'Prototype call\')\n'
+  + '    const instance = Class.testInstanceFactory()\n'
+  + '    throws( () => instance.'+(methodshort)+'(123)\n'
+  + '      , \''+(methodname)+'(): abc has constructor.name Number not String\'\n'
+  + '      , \'Passing a number into `abc`\')\n'
+  + '})\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '})//jQuery()\n'
+  + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
+  + ''
+  , { encoding, flag } )
+}
+
+
+
+
 //// An Oomtility Wrap of Method.6.js \\//\\// https://oomtility.loop.coop ////
 module.exports.writeMethod6Js = function (config, path) {
 const {
@@ -1656,35 +1691,38 @@ fs.writeFileSync(path, ''
   + '!function (ROOT) { \'use strict\'\n'
   + '\n'
   + 'const META = {\n'
-  + '    NAME:     { value:\''+(methodname)+'\' }\n'
-  + '  , REMARKS:  { value:\''+(remarks)+'\' }\n'
+  + '    NAME:     \''+(methodname)+'\'\n'
+  + '  , REMARKS:  \''+(remarks)+'\'\n'
   + '}\n'
   + '\n'
   + '\n'
-  + '//// Shortcuts to Oom\u0019s namespace and toolkit.\n'
-  + 'const OOM     = ROOT.OOM    = ROOT.OOM    || {}\n'
-  + 'const TOOLKIT = OOM.TOOLKIT = OOM.TOOLKIT || {}\n'
+  + '//// Shortcuts to Oom\u2019s global namespace and toolkit, and this method\u2019s '
+  + 'class.\n'
+  + 'const Oom = ROOT.Oom\n'
+  + 'const TOOLKIT = Oom.TOOLKIT\n'
+  + 'const Class = '+(classname)+'\n'
   + '\n'
   + '\n'
   + '//// Define the `'+(methodname)+'()` method.\n'
-  + 'const method = OOM.'+(classname)+'.prototype.'+(methodshort)+' = function (abc) {\n'
+  + 'const method = Class.prototype.'+(methodshort)+' = function (abc) {\n'
   + '    let err, ME = `'+(methodname)+'(): ` // error prefix\n'
-  + '    if (! (this instanceof OOM.'+(classname)+')) throw new Error(ME\n'
+  + '    if (! (this instanceof Class)) throw new Error(ME\n'
   + '      + `Must not be called as '+(classname)+'.prototype.'+(methodshort)+'()`)\n'
   + '    if ( err = TOOLKIT.validateType({ type:String }, abc) )\n'
   + '        throw new TypeError(ME+`abc ${err}`)\n'
   + '\n'
-  + '    this.xyz++\n'
+  + '    this.'+(methodshort)+'_calltally++\n'
   + '    return abc + \' ok!\'\n'
   + '\n'
   + '}//'+(methodname)+'()\n'
   + '\n'
+  + '\n'
   + '//// A tally of the number of times `'+(methodshort)+'()` is called.\n'
-  + 'OOM.'+(classname)+'.prototype.xyz = 0\n'
+  + 'Class.prototype.'+(methodshort)+'_calltally = 0\n'
   + '\n'
   + '\n'
   + '//// Add static constants to the `'+(methodshort)+'()` method.\n'
-  + 'Object.defineProperties(method, META)\n'
+  + 'Object.defineProperties( method, TOOLKIT.toPropsObj(META) )\n'
   + '\n'
   + '\n'
   + '\n'
@@ -18931,14 +18969,14 @@ const {
 const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
 const flag = 'a'
 fs.writeFileSync(path, ''
-  + '//// ECMASwitch //// 1.1.8 //// January 2018 //// ecmaswitch.loop.coop/ ///////\n'
+  + '//// ECMASwitch //// 1.2.0 //// January 2018 //// ecmaswitch.loop.coop/ ///////\n'
   + '\n'
   + '!function (ROOT) { \'use strict\'\n'
   + '\n'
   + '//// Create the namespace-object if it does not already exist and add constants.\n'
   + 'var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}\n'
   + 'ECMASwitch.NAME     = \'ECMASwitch\'\n'
-  + 'ECMASwitch.VERSION  = \'1.1.8\'\n'
+  + 'ECMASwitch.VERSION  = \'1.2.0\'\n'
   + 'ECMASwitch.HOMEPAGE = \'http://ecmaswitch.loop.coop/\'\n'
   + '\n'
   + '//// Polyfill `document` for non-browser contexts.\n'
