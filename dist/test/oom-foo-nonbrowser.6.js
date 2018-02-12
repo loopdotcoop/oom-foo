@@ -2,9 +2,10 @@
 
 
 
-//// Oom.Foo //// 1.2.0 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
+title('Oom.Foo.El.Hero Nonbrowser')
 const Class = Oom.Foo.El.Hero
 
 
@@ -26,9 +27,10 @@ test('Nonbrowser test the Oom.Foo.El.Hero class', () => {
 
 
 
-//// Oom.Foo //// 1.2.0 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
+title('Oom.Foo.El.Hero.Sub Nonbrowser')
 const Class = Oom.Foo.El.Hero.Sub
 
 
@@ -50,11 +52,12 @@ test('Nonbrowser test the Oom.Foo.El.Hero.Sub class', () => {
 
 
 
-//// Oom.Foo //// 1.2.0 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
+title('Oom.Foo.El.Hero.Sub.subFn Nonbrowser')
 const Class = Oom.Foo.El.Hero.Sub
 
 
@@ -77,11 +80,12 @@ test('Nonbrowser test the Oom.Foo.El.Hero.Sub.subFn() method', () => {
 
 
 
-//// Oom.Foo //// 1.2.0 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
+title('Oom.Foo.El.Hero.heroFn Nonbrowser')
 const Class = Oom.Foo.El.Hero
 
 
@@ -104,9 +108,10 @@ test('Nonbrowser test the Oom.Foo.El.Hero.heroFn() method', () => {
 
 
 
-//// Oom.Foo //// 1.2.0 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
+title('Oom.Foo.ElMix.FooBar Nonbrowser')
 const Class = Oom.Foo.ElMix.FooBar
 
 
@@ -128,9 +133,10 @@ test('Nonbrowser test the Oom.Foo.ElMix.FooBar class', () => {
 
 
 
-//// Oom.Foo //// 1.2.0 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
+title('Oom.Foo.ElMix.FooBar.Sub Nonbrowser')
 const Class = Oom.Foo.ElMix.FooBar.Sub
 
 
@@ -152,11 +158,12 @@ test('Nonbrowser test the Oom.Foo.ElMix.FooBar.Sub class', () => {
 
 
 
-//// Oom.Foo //// 1.2.0 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
+title('Oom.Foo.ElMix.FooBar.Sub.subFn Nonbrowser')
 const Class = Oom.Foo.ElMix.FooBar.Sub
 
 
@@ -179,11 +186,12 @@ test('Nonbrowser test the Oom.Foo.ElMix.FooBar.Sub.subFn() method', () => {
 
 
 
-//// Oom.Foo //// 1.2.0 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
+title('Oom.Foo.ElMix.FooBar.fbFn Nonbrowser')
 const Class = Oom.Foo.ElMix.FooBar
 
 
@@ -206,9 +214,10 @@ test('Nonbrowser test the Oom.Foo.ElMix.FooBar.fbFn() method', () => {
 
 
 
-//// Oom.Foo //// 1.2.0 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
+title('Oom.Foo.Mix.Red Nonbrowser')
 const Class = Oom.Foo.Mix.Red
 
 
@@ -230,9 +239,10 @@ test('Nonbrowser test the Oom.Foo.Mix.Red class', () => {
 
 
 
-//// Oom.Foo //// 1.2.0 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
+title('Oom.Foo.Mix.Red.Sub Nonbrowser')
 const Class = Oom.Foo.Mix.Red.Sub
 
 
@@ -254,11 +264,12 @@ test('Nonbrowser test the Oom.Foo.Mix.Red.Sub class', () => {
 
 
 
-//// Oom.Foo //// 1.2.0 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
+title('Oom.Foo.Mix.Red.Sub.subFn Nonbrowser')
 const Class = Oom.Foo.Mix.Red.Sub
 
 
@@ -281,11 +292,12 @@ test('Nonbrowser test the Oom.Foo.Mix.Red.Sub.subFn() method', () => {
 
 
 
-//// Oom.Foo //// 1.2.0 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
+title('Oom.Foo.Mix.Red.redFn Nonbrowser')
 const Class = Oom.Foo.Mix.Red
 
 
@@ -308,9 +320,10 @@ test('Nonbrowser test the Oom.Foo.Mix.Red.redFn() method', () => {
 
 
 
-//// Oom.Foo //// 1.2.0 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
+title('Oom.Foo.Plain Nonbrowser')
 const Class = Oom.Foo.Plain
 
 
@@ -332,9 +345,10 @@ test('Nonbrowser test the Oom.Foo.Plain class', () => {
 
 
 
-//// Oom.Foo //// 1.2.0 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
+title('Oom.Foo.Plain.Sub Nonbrowser')
 const Class = Oom.Foo.Plain.Sub
 
 
@@ -356,11 +370,12 @@ test('Nonbrowser test the Oom.Foo.Plain.Sub class', () => {
 
 
 
-//// Oom.Foo //// 1.2.0 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
+title('Oom.Foo.Plain.Sub.subFn Nonbrowser')
 const Class = Oom.Foo.Plain.Sub
 
 
@@ -383,11 +398,12 @@ test('Nonbrowser test the Oom.Foo.Plain.Sub.subFn() method', () => {
 
 
 
-//// Oom.Foo //// 1.2.0 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
+title('Oom.Foo.Plain.plnFn Nonbrowser')
 const Class = Oom.Foo.Plain
 
 
@@ -406,4 +422,4 @@ test('Nonbrowser test the Oom.Foo.Plain.plnFn() method', () => {
 
 
 
-//// Made by Oomtility Make 1.2.0 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.2.1 //\\//\\ http://oomtility.loop.coop //////////

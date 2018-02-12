@@ -14,6 +14,7 @@ isApp ? `
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
+title('${{classname}} Universal')
 const Class = ${{classname}}
 
 

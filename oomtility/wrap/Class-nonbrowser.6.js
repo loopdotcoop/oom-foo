@@ -7,6 +7,7 @@ isApp ? `
 `:''
 }}}
 !function (ROOT) { 'use strict'
+title('${{classname}} Nonbrowser')
 const Class = ${{classname}}
 
 

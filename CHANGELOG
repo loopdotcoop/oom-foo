@@ -26,3 +26,4 @@
 1.1.7 Demo uses a custom A-Frame primative <a-oomfoo> for OomFoo
 1.1.8 Demo uses Vue to link `firstProp` (0 to 4) to A-Frame cube colour
 1.2.0 Initial ‘src/main/Bases.6.js’, El, Mix and ElMix
+1.2.1 Bases.6.js has a test. Better ‘support/test.html’ test results display

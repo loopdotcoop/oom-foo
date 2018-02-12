@@ -48,6 +48,62 @@ body {
 
 
 
+/* TEST */
+
+.kludjs li {
+    list-style: none;
+}
+ul.kludjs >li {
+    font-weight: bold;
+}
+.kludjs-item {
+    font-weight: normal;
+}
+.kludjs-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+}
+.kludjs li.kludjs-title {
+    padding: 0.3em 0.8em;
+    margin: 0 -10px 0 -5px;
+    border-radius: 4px;
+    background: rgba(0,0,0,0.05);
+    transition: background-color 0.2s;
+}
+.kludjs li.kludjs-title.kludjs-pass {
+    background: rgba(0,255,0,0.05);
+}
+.kludjs li.kludjs-title.kludjs-fail {
+    background: rgba(255,0,0,0.05);
+}
+.kludjs li.kludjs-title:hover {
+    background: rgba(0,0,0,0.1);
+}
+.kludjs li.kludjs-title.kludjs-pass:hover {
+    background: rgba(0,255,0,0.1);
+}
+.kludjs li.kludjs-title.kludjs-fail:hover {
+    background: rgba(255,0,0,0.1);
+}
+.kludjs li.kludjs-title.kludjs-pass::before,
+.kludjs li.kludjs-title.kludjs-fail::before {
+    margin: 0 1.5em 0 -0.5em;
+}
+.kludjs-title span {
+    position: absolute;
+    margin-left: -1em;
+    transform-origin: center;
+    transform: rotate(90deg);
+    transition: transform 0.2s;
+}
+.kludjs-title.collapsed span {
+    transform: rotate(0);
+}
+
+
+
+
 /* AFRAME SCENE IN DEMO */
 
 #demo a-scene {
