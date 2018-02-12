@@ -126,7 +126,7 @@ function extendKludJs () {
             })
         $title.data('orig-html', $title.html())
 
-        //// If a previous title which passes exists, collapse it.
+        //// If a previous title which passes exists, collapse it. @TODO collapse the final title
         const $prevTitle = $title.prevAll('.kludjs-title').first()
         if ( $prevTitle[0] && $prevTitle.data('pass')===$prevTitle.data('all') )
             collapseTitle($prevTitle)

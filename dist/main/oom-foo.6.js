@@ -2,13 +2,13 @@
 
 
 
-//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.2 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 
 const META = {
     NAME:     'Foo'
-  , VERSION:  '1.2.1' // OOMBUMPABLE
+  , VERSION:  '1.2.2' // OOMBUMPABLE
   , HOMEPAGE: 'http://oom-foo.loop.coop/'
   , REMARKS:  'Initial test of the oom-hub architecture'
 }
@@ -181,7 +181,7 @@ function assignToolkit (TOOLKIT={}) { return Object.assign({}, {
 
 
 
-//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.2 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 
@@ -320,7 +320,7 @@ Object.defineProperties( Class.api, TOOLKIT.toPropsObj(META) )
 
 
 
-//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.2 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 
@@ -459,7 +459,7 @@ Object.defineProperties( Class.api, TOOLKIT.toPropsObj(META) )
 
 
 
-//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.2 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 
@@ -508,7 +508,7 @@ Object.defineProperties( method, TOOLKIT.toPropsObj(META) )
 
 
 
-//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.2 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 
@@ -557,7 +557,7 @@ Object.defineProperties( method, TOOLKIT.toPropsObj(META) )
 
 
 
-//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.2 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 
@@ -696,7 +696,7 @@ Object.defineProperties( Class.api, TOOLKIT.toPropsObj(META) )
 
 
 
-//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.2 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 
@@ -835,7 +835,7 @@ Object.defineProperties( Class.api, TOOLKIT.toPropsObj(META) )
 
 
 
-//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.2 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 
@@ -884,7 +884,7 @@ Object.defineProperties( method, TOOLKIT.toPropsObj(META) )
 
 
 
-//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.2 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 
@@ -933,7 +933,7 @@ Object.defineProperties( method, TOOLKIT.toPropsObj(META) )
 
 
 
-//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.2 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 
@@ -1072,7 +1072,7 @@ Object.defineProperties( Class.api, TOOLKIT.toPropsObj(META) )
 
 
 
-//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.2 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 
@@ -1211,7 +1211,7 @@ Object.defineProperties( Class.api, TOOLKIT.toPropsObj(META) )
 
 
 
-//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.2 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 
@@ -1260,7 +1260,7 @@ Object.defineProperties( method, TOOLKIT.toPropsObj(META) )
 
 
 
-//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.2 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 
@@ -1309,7 +1309,7 @@ Object.defineProperties( method, TOOLKIT.toPropsObj(META) )
 
 
 
-//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.2 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 
@@ -1488,7 +1488,7 @@ Object.defineProperties( Class.api, TOOLKIT.toPropsObj(META) )
 
 
 
-//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.2 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 
@@ -1627,7 +1627,7 @@ Object.defineProperties( Class.api, TOOLKIT.toPropsObj(META) )
 
 
 
-//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.2 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 
@@ -1676,7 +1676,7 @@ Object.defineProperties( method, TOOLKIT.toPropsObj(META) )
 
 
 
-//// Oom.Foo //// 1.2.1 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.2 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 
@@ -1721,4 +1721,4 @@ Object.defineProperties( method, TOOLKIT.toPropsObj(META) )
 
 
 
-//// Made by Oomtility Make 1.2.1 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.2.2 //\\//\\ http://oomtility.loop.coop //////////
