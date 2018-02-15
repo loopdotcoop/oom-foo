@@ -13,8 +13,61 @@ const rxBinaryExt = module.exports.rxBinaryExt =
     new RegExp( '\\.' + BINARY_EXTS.join('$|\\.') + '$', 'i')
 
 const NAME     = 'Oomtility Wrapped'
-    , VERSION  = '1.2.2'
+    , VERSION  = '1.2.3'
     , HOMEPAGE = 'http://oomtility.loop.coop'
+
+
+
+
+////@TODO delete the following six functions, or else reinstate them for ‘Bases’
+
+module.exports.writeApp6Js = function (configOrig, path) {
+    const config = Object.assign({}, configOrig, {
+        isApp: true
+      , isTop: 3 > configOrig.classname.split('.').length
+    })
+    module.exports.writeClass6Js(config, path)
+}
+
+module.exports.writeAppUniversal6Js = function (configOrig, path) {
+    const config = Object.assign({}, configOrig, {
+        isApp: true
+      , isTop: 3 > configOrig.classname.split('.').length
+    })
+    module.exports.writeClassUniversal6Js(config, path)
+}
+
+module.exports.writeAppBrowser6Js = function (configOrig, path) {
+    const config = Object.assign({}, configOrig, {
+        isApp: true
+      , isTop: 3 > configOrig.classname.split('.').length
+    })
+    module.exports.writeClassBrowser6Js(config, path)
+}
+
+module.exports.writeAppNonbrowser6Js = function (configOrig, path) {
+    const config = Object.assign({}, configOrig, {
+        isApp: true
+      , isTop: 3 > configOrig.classname.split('.').length
+    })
+    module.exports.writeClassNonbrowser6Js(config, path)
+}
+
+module.exports.writeAppDemo6Js = function (configOrig, path) {
+    const config = Object.assign({}, configOrig, {
+        nameLC: configOrig.projectTC.toLowerCase()
+    })
+    module.exports.writeDemo6Js(config, path)
+}
+
+module.exports.writeDemoAppHtml = function (configOrig, path) {
+    const config = Object.assign({}, configOrig, {
+        name: 'App'
+      , nameLC: 'app'
+      , tagname: 'oom-' + configOrig.projectTC.toLowerCase()
+    })
+    return module.exports.writeClassDemoHtml(config, path)
+}
 
 
 
@@ -288,58 +341,6 @@ module.exports.updateTestFile = function (htmlPath, tests) {
 }
 
 
-module.exports.writeApp6Js = function (configOrig, path) {
-    const config = Object.assign({}, configOrig, {
-        isApp: true
-      , isTop: 3 > configOrig.classname.split('.').length
-    })
-    module.exports.writeClass6Js(config, path)
-}
-
-
-
-
-module.exports.writeAppUniversal6Js = function (configOrig, path) {
-    const config = Object.assign({}, configOrig, {
-        isApp: true
-      , isTop: 3 > configOrig.classname.split('.').length
-    })
-    module.exports.writeClassUniversal6Js(config, path)
-}
-
-
-
-
-module.exports.writeAppBrowser6Js = function (configOrig, path) {
-    const config = Object.assign({}, configOrig, {
-        isApp: true
-      , isTop: 3 > configOrig.classname.split('.').length
-    })
-    module.exports.writeClassBrowser6Js(config, path)
-}
-
-
-
-
-module.exports.writeAppNonbrowser6Js = function (configOrig, path) {
-    const config = Object.assign({}, configOrig, {
-        isApp: true
-      , isTop: 3 > configOrig.classname.split('.').length
-    })
-    module.exports.writeClassNonbrowser6Js(config, path)
-}
-
-
-
-
-module.exports.writeAppDemo6Js = function (configOrig, path) {
-    const config = Object.assign({}, configOrig, {
-        nameLC: configOrig.projectTC.toLowerCase()
-    })
-    module.exports.writeDemo6Js(config, path)
-}
-
-
 
 
 module.exports.writeClassDemoHtml = function (configOrig, path) {
@@ -381,18 +382,6 @@ fs.writeFileSync(path, ''
 
 ` + getHtmlBottom(config)
 , { encoding, flag } )
-}
-
-
-
-
-module.exports.writeDemoAppHtml = function (configOrig, path) {
-    const config = Object.assign({}, configOrig, {
-        name: 'App'
-      , nameLC: 'app'
-      , tagname: 'oom-' + configOrig.projectTC.toLowerCase()
-    })
-    return module.exports.writeClassDemoHtml(config, path)
 }
 
 
@@ -522,8 +511,628 @@ $('#home-link').attr('href', ${projectTC}.HOMEPAGE)</script>
 
 
 
-//// BEGIN wrap.js OUTPUT //////////////////////////////////////////////////////
-//// oomtility/wrap/ files, processed by oomtility/wrap.js /////////////////////
+//// BEGIN oomtility/wrap/auto/ OUTPUT /////////////////////////////////////////
+//// Files processed by oomtility/wrap.js //////////////////////////////////////
+
+//// An Oomtility Wrap of Post-universal.6.js \\//\\// https://oomtility.loop.coop ////
+module.exports.writePostUniversal6Js = function (config, path) {
+const {
+    isApp
+  , classname
+  , topline
+} = config
+const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
+const flag = 'a'
+fs.writeFileSync(path, ''
+  + (topline)+'\n'
+  + 'console.log(\'Post-universal.6.js\');' + (
+isApp ? `
+//// Node.js:    7.2.0
+//// Rhino:      @TODO get Rhino working
+//// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
+//// Windows 7:  IE 9, Safari 5.1
+//// OS X 10.6:  Firefox 6, Chrome 16 (and probably lower), Opera 12, Safari 5.1
+//// iOS:        iPad 3rd (iOS 6) Safari, iPad Air (iOS 7) Chrome
+//// Android:    Xperia Tipo (Android 4), Pixel XL (Android 7.1)
+`:''
+) + '\n'
+  + '!function (ROOT) { \'use strict\'\n'
+  + 'if (\'function\' !== typeof jQuery) throw Error(\'jQuery not found\')\n'
+  + 'jQuery( function($) {\n'
+  + 'title(\''+(classname)+' Universal\')\n'
+  + 'const Class = '+(classname)+'\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '//// Instantiates a typical '+(classname)+' instance for unit testing its methods.\n'
+  + 'Class.testInstanceFactory = () =>\n'
+  + '    new Class({\n'
+  + '        firstProp: 100\n'
+  + '      , secondProp: new Date\n'
+  + '    },{\n'
+  + '        /* @TODO hub API */\n'
+  + '    })\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + 'test(\'+ve '+(classname)+' class\', () => {\n'
+  + '    is(\'function\' === typeof ROOT.Oom, \'The Oom namespace class exists\')\n'
+  + '    is(\'function\' === typeof Class, \''+(classname)+' is a function\')\n'
+  + '    is( (\''+(classname)+'\' === Class.NAME && \''+(classname)+'\' === Class.api.NAME)\n'
+  + '      , \'NAME and api.NAME is '+(classname)+'\')\n'
+  + '    is(\''+(classname)+'\' === Class.name, \'name is '+(classname)+'\')\n'
+  + '})\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + 'test(\'+ve '+(classname)+' instance\', () => {\n'
+  + '    const instance = Class.testInstanceFactory()\n'
+  + '    is(instance instanceof Class, \'Is an instance of '+(classname)+'\')\n'
+  + '    is(Class === instance.constructor, \'`constructor` is '+(classname)+'\')\n'
+  + '    is(\'object\' === typeof instance.hub, \'`hub` property is an object\')\n'
+  + '})\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '})//jQuery()\n'
+  + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
+  + ''
+  , { encoding, flag } )
+}
+
+
+
+
+//// An Oomtility Wrap of Post.6.js \\//\\// https://oomtility.loop.coop ////
+module.exports.writePost6Js = function (config, path) {
+const {
+    isApp
+  , isTop
+  , title
+  , classname
+  , extendname
+  , remarks
+  , date
+  , topline
+} = config
+const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
+const flag = 'a'
+fs.writeFileSync(path, ''
+  + (topline)+'\n'
+  + 'console.log(\'Post.6.js\');\n'
+  + '!function (ROOT) { \'use strict\'\n'
+  + '\n'
+  + 'const META = {\n'
+  + '    NAME:     \''+(classname)+'\'\n'
+  + '  , REMARKS:  \''+(remarks)+'\'\n'
+  + '}\n'
+  + '\n'
+  + 'const PROPS = {\n'
+  + '    propA: Number // or set to `null` to accept any type\n'
+  + '  , propB: [ String, Number ] // multiple possible types\n'
+  + '  , propC: { type:String, required:true } // a required string\n'
+  + '  , propD: { type:Number, default:100 } // a number with default value\n'
+  + '  , propE: { type:Object, default:function(){return[1]} } // must use factory fn\n'
+  + '  , propF: { validator:function(v){return v>10} } // custom validator\n'
+  + '}\n'
+  + '\n'
+  + '\n'
+  + '//// Shortcuts to Oom\u2019s global namespace and toolkit.\n'
+  + 'const Oom = ROOT.Oom\n'
+  + 'const TOOLKIT = Oom.TOOLKIT\n'
+  + '\n'
+  + '\n'
+  + '//// Define the `'+(classname)+'` class.\n'
+  + 'const Class = '+(classname)+' = class extends '+(extendname)+' {\n'
+  + '\n'
+  + '    constructor (config={}, hub=Oom.HUB) {\n'
+  + '        super(config, hub)\n'
+  + '\n'
+  + '        //// Properties added to `api` are exposed to Vue etc.\n'
+  + '        const api = this.api = {}' + (
+isTop ? `
+        //// api.UUID: Oom instances have universally unique IDs (57 billion combos).
+        Object.defineProperty(api, 'UUID', { enumerable:true, configurable:false, value:
+            '123456'.replace( /./g,         c=>TOOLKIT.rndCh(48,122) )    // 0-z
+                    .replace( /[:-@\\[-\`]/g, c=>TOOLKIT.rndCh(97,122) ) }) // a-z
+` : ''
+) + '\n'
+  + '\n'
+  + '        //// hub: Oom instances keep a reference to the oom-hub.\n'
+  + '        Object.defineProperty(this, \'hub\', { value:hub })\n'
+  + '\n'
+  + '        //// Validate the configuration object.\n'
+  + '        this._validateConstructor(config)\n'
+  + '\n'
+  + '        //// Record config\u2019s values to the `api` object.\n'
+  + '        this.validConstructor.forEach( valid => {\n'
+  + '            const value = config[valid.name]\n'
+  + '            Object.defineProperty(this.api, valid.name, {\n'
+  + '                value, enumerable:true, configurable:true, writable:true })\n'
+  + '        })' + (
+isTop ? `
+        //// ready: a Promise which resolves when the instance has initialised.
+        Object.defineProperty(this, 'ready', { value: this._getReady() })
+`:''
+) + '\n'
+  + '\n'
+  + '        //// api.index: the first instance of this class is `0`, the second is `'
+  + '1`, etc.\n'
+  + '        if (Class === this.constructor) // not being called by a child-class\n'
+  + '            api.index = Class.api.tally++ // also, update the static `tally`\n'
+  + '    }\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '' + (
+isTop ? `
+    //// Returns a Promise which is recorded as the \`ready\` property, after
+    //// the constructor() has validated \`config\` and recorded the config
+    //// properties. Sub-classes can override _getReady() if they need to do
+    //// other async preparation.
+    //// Called by: constructor()
+    _getReady () {
+
+        //// setupStart: the time that \`new ${classname}({...})\` was called.
+        if (this.setupStart)
+            throw new Error(\`${classname}._getReady(): Can only run once\`)
+        Object.defineProperty(this, 'setupStart', { value:TOOLKIT.getNow() })
+
+        //// \`${classname}\` does no setup, so could resolve the \`ready\`
+        //// Promise immediately. However, to make _getReady()’s behavior
+        //// consistent with classes which have a slow async setup, we introduce
+        //// a miniscule delay.
+        return new Promise( (resolve, reject) => { setTimeout( () => {
+
+            //// setupEnd: the time that \`_getReady()\` finished running.
+            Object.defineProperty(this, 'setupEnd', { value:TOOLKIT.getNow() })
+
+            //// Define the instance’s \`ready\` property.
+            resolve({
+                setupDelay: this.setupEnd - this.setupStart
+            })
+        }, 0)})
+
+    }
+
+
+
+`:''
+) + '\n'
+  + '    //// Ensures the `config` argument passed to the `constructor()` is valid.\n'
+  + '    //// Called by: constructor()\n'
+  + '    _validateConstructor (config) {\n'
+  + '        let err, value, ME = `'+(classname)+'._validateConstructor(): ` // error prefix\n'
+  + '        if (\'object\' !== typeof config)\n'
+  + '            throw new Error(ME+`config is type ${typeof config} not object`)\n'
+  + '        this.validConstructor.forEach( valid => {\n'
+  + '            if (! TOOLKIT.applyDefault(valid, config) )\n'
+  + '                throw new TypeError(ME+`config.${valid.name} is mandatory`)\n'
+  + '            value = config[valid.name]\n'
+  + '            if ( err = TOOLKIT.validateType(valid, value) )\n'
+  + '                throw new TypeError(ME+`config.${valid.name} ${err}`)\n'
+  + '            if ( err = TOOLKIT.validateRange(valid, value) )\n'
+  + '                throw new RangeError(ME+`config.${valid.name} ${err}`)\n'
+  + '        })\n'
+  + '    }\n'
+  + '\n'
+  + '\n'
+  + '    //// Defines what the `config` argument passed to the `constructor()`\n'
+  + '    //// should look like. Note that all of the `config` values are recorded\n'
+  + '    //// as immutable instance properties.\n'
+  + '    //// Called by: constructor()\n'
+  + '    //// Called by: constructor() > _validateConstructor()\n'
+  + '    //// Can also be used to auto-generate unit tests and auto-build GUIs.\n'
+  + '    get validConstructor () { return [' + (
+isApp ? `
+        {
+            title:   'First Prop'
+          , name:    'firstProp' // in Vue, a key-name in \`props\`
+          , alias:   'fp'
+
+          , tooltip: 'An example numeric property, intended as a placeholder'
+          , devtip:  'You should replace this placeholder with a real property'
+          , form:    'range'
+          , power:   1 // eg \`8\` for an exponential range-slider
+          , suffix:  'Units'
+
+          , type:    Number // \`props.firstProp.type\` in Vue
+          , min:     1
+          , max:     100
+          , step:    1
+          , default: 50 // implies \`props.firstProp.required: false\` in Vue
+          //@TODO \`props.firstProp.validator\`
+        }
+      , {
+            title:   'Second Prop'
+          , name:    'secondProp'
+          , alias:   'sp'
+
+          , tooltip: 'An example object property, intended as a placeholder'
+          , devtip:  'You should replace this placeholder with a real property'
+          , form:    'hidden'
+
+          , type:    Date
+          // no \`default\`, so \`props.firstProp.required: true\` in Vue
+        }
+`:`
+        {
+            title:   'Third Prop'
+          , name:    'thirdProp'
+          , alias:   'tp'
+
+          , tooltip: 'An example object property, intended as a placeholder'
+          , devtip:  'You should replace this placeholder with a real property'
+          , form:    'text'
+
+          , type:    String
+          , default: 'Some default text'
+        }
+`
+) + '\n'
+  + '\n'
+  + '    ]}\n'
+  + '\n'
+  + '    xxx (config) {\n'
+  + '        const { hub, a, b, c } = this\n'
+  + '        const { xx, yy, zz } = config\n'
+  + '\n'
+  + '        ////\n'
+  + '\n'
+  + '    }\n'
+  + '\n'
+  + '}; TOOLKIT.name(Class, \''+(classname)+'\')\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '//// PRIVATE FUNCTIONS\n'
+  + '\n'
+  + '\n'
+  + '//// Place any private functions here.\n'
+  + '// function noop () {}\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '//// FINISHING UP\n'
+  + '\n'
+  + '\n'
+  + '//// Properties added to `api` are exposed to Vue etc.\n'
+  + 'Class.api = { tally: 0 } // `tally` counts instantiations\n'
+  + '\n'
+  + '//// Expose the `'+(classname)+'` class\u2019s static constants.\n'
+  + 'Object.defineProperties( Class    , TOOLKIT.toPropsObj(META) )\n'
+  + 'Object.defineProperties( Class.api, TOOLKIT.toPropsObj(META) )\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
+  + ''
+  , { encoding, flag } )
+}
+
+
+
+
+//// An Oomtility Wrap of Router-universal.6.js \\//\\// https://oomtility.loop.coop ////
+module.exports.writeRouterUniversal6Js = function (config, path) {
+const {
+    isApp
+  , classname
+  , topline
+} = config
+const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
+const flag = 'a'
+fs.writeFileSync(path, ''
+  + (topline)+'\n'
+  + 'console.log(\'Router-universal.6.js\');' + (
+isApp ? `
+//// Node.js:    7.2.0
+//// Rhino:      @TODO get Rhino working
+//// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
+//// Windows 7:  IE 9, Safari 5.1
+//// OS X 10.6:  Firefox 6, Chrome 16 (and probably lower), Opera 12, Safari 5.1
+//// iOS:        iPad 3rd (iOS 6) Safari, iPad Air (iOS 7) Chrome
+//// Android:    Xperia Tipo (Android 4), Pixel XL (Android 7.1)
+`:''
+) + '\n'
+  + '!function (ROOT) { \'use strict\'\n'
+  + 'if (\'function\' !== typeof jQuery) throw Error(\'jQuery not found\')\n'
+  + 'jQuery( function($) {\n'
+  + 'title(\''+(classname)+' Universal\')\n'
+  + 'const Class = '+(classname)+'\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '//// Instantiates a typical '+(classname)+' instance for unit testing its methods.\n'
+  + 'Class.testInstanceFactory = () =>\n'
+  + '    new Class({\n'
+  + '        firstProp: 100\n'
+  + '      , secondProp: new Date\n'
+  + '    },{\n'
+  + '        /* @TODO hub API */\n'
+  + '    })\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + 'test(\'+ve '+(classname)+' class\', () => {\n'
+  + '    is(\'function\' === typeof ROOT.Oom, \'The Oom namespace class exists\')\n'
+  + '    is(\'function\' === typeof Class, \''+(classname)+' is a function\')\n'
+  + '    is( (\''+(classname)+'\' === Class.NAME && \''+(classname)+'\' === Class.api.NAME)\n'
+  + '      , \'NAME and api.NAME is '+(classname)+'\')\n'
+  + '    is(\''+(classname)+'\' === Class.name, \'name is '+(classname)+'\')\n'
+  + '})\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + 'test(\'+ve '+(classname)+' instance\', () => {\n'
+  + '    const instance = Class.testInstanceFactory()\n'
+  + '    is(instance instanceof Class, \'Is an instance of '+(classname)+'\')\n'
+  + '    is(Class === instance.constructor, \'`constructor` is '+(classname)+'\')\n'
+  + '    is(\'object\' === typeof instance.hub, \'`hub` property is an object\')\n'
+  + '})\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '})//jQuery()\n'
+  + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
+  + ''
+  , { encoding, flag } )
+}
+
+
+
+
+//// An Oomtility Wrap of Router.6.js \\//\\// https://oomtility.loop.coop ////
+module.exports.writeRouter6Js = function (config, path) {
+const {
+    isApp
+  , isTop
+  , title
+  , classname
+  , extendname
+  , remarks
+  , date
+  , topline
+} = config
+const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
+const flag = 'a'
+fs.writeFileSync(path, ''
+  + (topline)+'\n'
+  + 'console.log(\'Router.6.js\');\n'
+  + '!function (ROOT) { \'use strict\'\n'
+  + '\n'
+  + 'const META = {\n'
+  + '    NAME:     \''+(classname)+'\'\n'
+  + '  , REMARKS:  \''+(remarks)+'\'\n'
+  + '}\n'
+  + '\n'
+  + 'const PROPS = {\n'
+  + '    propA: Number // or set to `null` to accept any type\n'
+  + '  , propB: [ String, Number ] // multiple possible types\n'
+  + '  , propC: { type:String, required:true } // a required string\n'
+  + '  , propD: { type:Number, default:100 } // a number with default value\n'
+  + '  , propE: { type:Object, default:function(){return[1]} } // must use factory fn\n'
+  + '  , propF: { validator:function(v){return v>10} } // custom validator\n'
+  + '}\n'
+  + '\n'
+  + '\n'
+  + '//// Shortcuts to Oom\u2019s global namespace and toolkit.\n'
+  + 'const Oom = ROOT.Oom\n'
+  + 'const TOOLKIT = Oom.TOOLKIT\n'
+  + '\n'
+  + '\n'
+  + '//// Define the `'+(classname)+'` class.\n'
+  + 'const Class = '+(classname)+' = class extends '+(extendname)+' {\n'
+  + '\n'
+  + '    constructor (config={}, hub=Oom.HUB) {\n'
+  + '        super(config, hub)\n'
+  + '\n'
+  + '        //// Properties added to `api` are exposed to Vue etc.\n'
+  + '        const api = this.api = {}' + (
+isTop ? `
+        //// api.UUID: Oom instances have universally unique IDs (57 billion combos).
+        Object.defineProperty(api, 'UUID', { enumerable:true, configurable:false, value:
+            '123456'.replace( /./g,         c=>TOOLKIT.rndCh(48,122) )    // 0-z
+                    .replace( /[:-@\\[-\`]/g, c=>TOOLKIT.rndCh(97,122) ) }) // a-z
+` : ''
+) + '\n'
+  + '\n'
+  + '        //// hub: Oom instances keep a reference to the oom-hub.\n'
+  + '        Object.defineProperty(this, \'hub\', { value:hub })\n'
+  + '\n'
+  + '        //// Validate the configuration object.\n'
+  + '        this._validateConstructor(config)\n'
+  + '\n'
+  + '        //// Record config\u2019s values to the `api` object.\n'
+  + '        this.validConstructor.forEach( valid => {\n'
+  + '            const value = config[valid.name]\n'
+  + '            Object.defineProperty(this.api, valid.name, {\n'
+  + '                value, enumerable:true, configurable:true, writable:true })\n'
+  + '        })' + (
+isTop ? `
+        //// ready: a Promise which resolves when the instance has initialised.
+        Object.defineProperty(this, 'ready', { value: this._getReady() })
+`:''
+) + '\n'
+  + '\n'
+  + '        //// api.index: the first instance of this class is `0`, the second is `'
+  + '1`, etc.\n'
+  + '        if (Class === this.constructor) // not being called by a child-class\n'
+  + '            api.index = Class.api.tally++ // also, update the static `tally`\n'
+  + '    }\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '' + (
+isTop ? `
+    //// Returns a Promise which is recorded as the \`ready\` property, after
+    //// the constructor() has validated \`config\` and recorded the config
+    //// properties. Sub-classes can override _getReady() if they need to do
+    //// other async preparation.
+    //// Called by: constructor()
+    _getReady () {
+
+        //// setupStart: the time that \`new ${classname}({...})\` was called.
+        if (this.setupStart)
+            throw new Error(\`${classname}._getReady(): Can only run once\`)
+        Object.defineProperty(this, 'setupStart', { value:TOOLKIT.getNow() })
+
+        //// \`${classname}\` does no setup, so could resolve the \`ready\`
+        //// Promise immediately. However, to make _getReady()’s behavior
+        //// consistent with classes which have a slow async setup, we introduce
+        //// a miniscule delay.
+        return new Promise( (resolve, reject) => { setTimeout( () => {
+
+            //// setupEnd: the time that \`_getReady()\` finished running.
+            Object.defineProperty(this, 'setupEnd', { value:TOOLKIT.getNow() })
+
+            //// Define the instance’s \`ready\` property.
+            resolve({
+                setupDelay: this.setupEnd - this.setupStart
+            })
+        }, 0)})
+
+    }
+
+
+
+`:''
+) + '\n'
+  + '    //// Ensures the `config` argument passed to the `constructor()` is valid.\n'
+  + '    //// Called by: constructor()\n'
+  + '    _validateConstructor (config) {\n'
+  + '        let err, value, ME = `'+(classname)+'._validateConstructor(): ` // error prefix\n'
+  + '        if (\'object\' !== typeof config)\n'
+  + '            throw new Error(ME+`config is type ${typeof config} not object`)\n'
+  + '        this.validConstructor.forEach( valid => {\n'
+  + '            if (! TOOLKIT.applyDefault(valid, config) )\n'
+  + '                throw new TypeError(ME+`config.${valid.name} is mandatory`)\n'
+  + '            value = config[valid.name]\n'
+  + '            if ( err = TOOLKIT.validateType(valid, value) )\n'
+  + '                throw new TypeError(ME+`config.${valid.name} ${err}`)\n'
+  + '            if ( err = TOOLKIT.validateRange(valid, value) )\n'
+  + '                throw new RangeError(ME+`config.${valid.name} ${err}`)\n'
+  + '        })\n'
+  + '    }\n'
+  + '\n'
+  + '\n'
+  + '    //// Defines what the `config` argument passed to the `constructor()`\n'
+  + '    //// should look like. Note that all of the `config` values are recorded\n'
+  + '    //// as immutable instance properties.\n'
+  + '    //// Called by: constructor()\n'
+  + '    //// Called by: constructor() > _validateConstructor()\n'
+  + '    //// Can also be used to auto-generate unit tests and auto-build GUIs.\n'
+  + '    get validConstructor () { return [' + (
+isApp ? `
+        {
+            title:   'First Prop'
+          , name:    'firstProp' // in Vue, a key-name in \`props\`
+          , alias:   'fp'
+
+          , tooltip: 'An example numeric property, intended as a placeholder'
+          , devtip:  'You should replace this placeholder with a real property'
+          , form:    'range'
+          , power:   1 // eg \`8\` for an exponential range-slider
+          , suffix:  'Units'
+
+          , type:    Number // \`props.firstProp.type\` in Vue
+          , min:     1
+          , max:     100
+          , step:    1
+          , default: 50 // implies \`props.firstProp.required: false\` in Vue
+          //@TODO \`props.firstProp.validator\`
+        }
+      , {
+            title:   'Second Prop'
+          , name:    'secondProp'
+          , alias:   'sp'
+
+          , tooltip: 'An example object property, intended as a placeholder'
+          , devtip:  'You should replace this placeholder with a real property'
+          , form:    'hidden'
+
+          , type:    Date
+          // no \`default\`, so \`props.firstProp.required: true\` in Vue
+        }
+`:`
+        {
+            title:   'Third Prop'
+          , name:    'thirdProp'
+          , alias:   'tp'
+
+          , tooltip: 'An example object property, intended as a placeholder'
+          , devtip:  'You should replace this placeholder with a real property'
+          , form:    'text'
+
+          , type:    String
+          , default: 'Some default text'
+        }
+`
+) + '\n'
+  + '\n'
+  + '    ]}\n'
+  + '\n'
+  + '    xxx (config) {\n'
+  + '        const { hub, a, b, c } = this\n'
+  + '        const { xx, yy, zz } = config\n'
+  + '\n'
+  + '        ////\n'
+  + '\n'
+  + '    }\n'
+  + '\n'
+  + '}; TOOLKIT.name(Class, \''+(classname)+'\')\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '//// PRIVATE FUNCTIONS\n'
+  + '\n'
+  + '\n'
+  + '//// Place any private functions here.\n'
+  + '// function noop () {}\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '//// FINISHING UP\n'
+  + '\n'
+  + '\n'
+  + '//// Properties added to `api` are exposed to Vue etc.\n'
+  + 'Class.api = { tally: 0 } // `tally` counts instantiations\n'
+  + '\n'
+  + '//// Expose the `'+(classname)+'` class\u2019s static constants.\n'
+  + 'Object.defineProperties( Class    , TOOLKIT.toPropsObj(META) )\n'
+  + 'Object.defineProperties( Class.api, TOOLKIT.toPropsObj(META) )\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
+  + ''
+  , { encoding, flag } )
+}
+
+
+
+
+//// END oomtility/wrap/auto/ OUTPUT ///////////////////////////////////////////
+
+
+
+
+//// BEGIN oomtility/wrap/ OUTPUT //////////////////////////////////////////////
+//// Files processed by oomtility/wrap.js //////////////////////////////////////
 
 //// An Oomtility Wrap of .gitignore \\//\\// https://oomtility.loop.coop ////
 module.exports.writeGitignore = function (config, path) {
@@ -676,17 +1285,16 @@ fs.writeFileSync(path, ''
   + '            $(`<li class="kludjs-title"><span>\u25b6</span> ${text}</li>`)\n'
   + '           .appendTo( $(\'ul.kludjs\') )\n'
   + '           .click( function () {\n'
-  + '                let $i = $(this)\n'
-  + '                collapseTitle($i, ! $i.hasClass(\'collapsed\'))\n'
+  + '                let $title = $(this)\n'
+  + '                ROOT.collapseTitle( $title, ! $title.hasClass(\'collapsed\') )\n'
   + '            })\n'
   + '        $title.data(\'orig-html\', $title.html())\n'
   + '\n'
   + '        //// If a previous title which passes exists, collapse it. @TODO collaps'
   + 'e the final title\n'
   + '        const $prevTitle = $title.prevAll(\'.kludjs-title\').first()\n'
-  + '        if ( $prevTitle[0] && $prevTitle.data(\'pass\')===$prevTitle.data(\'all'
-  + '\') )\n'
-  + '            collapseTitle($prevTitle)\n'
+  + '        if ($prevTitle[0])\n'
+  + '            ROOT.collapseTitle($prevTitle, null, true)\n'
   + '    })\n'
   + '\n'
   + '    //// Test for an expected exception.\n'
@@ -707,7 +1315,8 @@ fs.writeFileSync(path, ''
   + '        if (didntThrow) is(0, pre + \' did not throw an error\')\n'
   + '    })\n'
   + '\n'
-  + '    ////\n'
+  + '    //// Add a \u2018Total\u2019 heading, and make Klud.js\u2019s `test()` title-aw'
+  + 'are.\n'
   + '    if (\'undefined\' !== typeof window) {\n'
   + '        const oldTest = ROOT.test\n'
   + '        const $total = $(\'<h4> Total: </h4>\')\n'
@@ -728,12 +1337,13 @@ fs.writeFileSync(path, ''
   + '        }\n'
   + '    }\n'
   + '\n'
-  + '    function collapseTitle( $i, doCollapse=true) { // `$i` is jQuery title el\n'
+  + '    //// Collapse (or uncollapse) jQuery title element `$i`, and all its tests.\n'
+  + '    ROOT.collapseTitle = ROOT.collapseTitle || ( ( $i, doCollapse, ifPass) => {\n'
+  + '        if (ifPass) doCollapse = $i.data(\'pass\') === $i.data(\'all\')\n'
   + '        $i[(doCollapse?\'add\':\'remove\')+\'Class\'](\'collapsed\')\n'
-  + '        const collapse = $i.hasClass(\'collapsed\')\n'
-  + '        while ( ($i=$i.next()) && $i[0] && !$i.hasClass(\'kludjs-title\') )\n'
-  + '            $i[ collapse ? \'hide\' : \'show\' ]()\n'
-  + '    }\n'
+  + '        while ( ($i=$i.next()) && $i[0] && ! $i.hasClass(\'kludjs-title\') )\n'
+  + '            $i[ doCollapse ? \'hide\' : \'show\' ]()\n'
+  + '    } )\n'
   + '\n'
   + '    function updateHeading ($el, pass, all) {\n'
   + '        $el\n'
@@ -965,7 +1575,6 @@ const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
 const flag = 'a'
 fs.writeFileSync(path, ''
   + '# Changelog\n'
-  + '\n'
   + ''
   , { encoding, flag } )
 }
@@ -1024,7 +1633,8 @@ isApp ? `
   + '\n'
   + '\n'
   + '\n'
-  + '\n'
+  + '//// Collapse final test section if it passed. See src/test/Bases-universal.6.js\n'
+  + 'let $t=$(\'.kludjs-title\').last();if($t[0])ROOT.collapseTitle($t,null,true)\n'
   + '})//jQuery()\n'
   + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
   + ''
@@ -1136,30 +1746,7 @@ isApp ? `
   + '\n'
   + '\n'
   + '\n'
-  + '' + (
-true /*@TODO ony once */ ? `
-//// EXTEND KLUD.JS
-
-//// Test for an expected exception.
-ROOT.throws = ROOT.throws || ( (fn, expect, prefix) => {
-    let nl = // newline plus colon and indent (klud.js test for Node.js, btw)
-        'undefined' === typeof window ? ':\\n    ' : ':<br>'+' &nbsp;'.repeat(6)
-    let didntThrow = true
-    try {
-        fn()
-    } catch (e) {
-        didntThrow = false
-        const ok = expect === e.message
-        is(ok, \`\${prefix} has \${ok?'':'un'}expected error\${ok?'':nl+e.message}\`)
-    }
-    if (didntThrow) is(0, prefix + \` did not throw an error\`)
-})
-
-
-
-
-`:''
-) + '\n'
+  + '\n'
   + '})//jQuery()\n'
   + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
   + ''
@@ -19195,14 +19782,14 @@ const {
 const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
 const flag = 'a'
 fs.writeFileSync(path, ''
-  + '//// ECMASwitch //// 1.2.2 //// January 2018 //// ecmaswitch.loop.coop/ ///////\n'
+  + '//// ECMASwitch //// 1.2.3 //// January 2018 //// ecmaswitch.loop.coop/ ///////\n'
   + '\n'
   + '!function (ROOT) { \'use strict\'\n'
   + '\n'
   + '//// Create the namespace-object if it does not already exist and add constants.\n'
   + 'var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}\n'
   + 'ECMASwitch.NAME     = \'ECMASwitch\'\n'
-  + 'ECMASwitch.VERSION  = \'1.2.2\'\n'
+  + 'ECMASwitch.VERSION  = \'1.2.3\'\n'
   + 'ECMASwitch.HOMEPAGE = \'http://ecmaswitch.loop.coop/\'\n'
   + '\n'
   + '//// Polyfill `document` for non-browser contexts.\n'
@@ -37920,7 +38507,7 @@ fs.writeFileSync(path, ''
 
 
 
-//// END wrap.js OUTPUT ////////////////////////////////////////////////////////
+//// END oomtility/wrap/ OUTPUT ////////////////////////////////////////////////
 
 
 

@@ -1,5 +1,5 @@
 ${{topline}}
-
+console.log('Router-universal.6.js');
 ${{{
 isApp ? `
 //// Node.js:    7.2.0

@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Make'
-    , VERSION  = '1.2.2'
+    , VERSION  = '1.2.3'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Made by ${NAME} ${VERSION} //\\\\//\\\\ `
@@ -60,6 +60,7 @@ X. support/docs.html                       Documentation for each class @TODO mo
 
 Options
 -------
+-6  --es6-only  Don’t make .5.js or .5.min.js
 -h  --help      Show this help message
 -v  --version   Show the current ${NAME} version
 
@@ -106,12 +107,14 @@ Array.prototype.move = function(from, to) { // stackoverflow.com/a/7180095
     this.splice(to, 0, this.splice(from, 1)[0]) }
 
 //// Declare variables.
-let opt, es6, es5, min, mains, demos, tests, pos, names, writeFileTally = 0
+let opt, es6, es5, min, mains, demos, tests, pos, names
+  , es6Only, writeFileTally = 0
 
 //// Deal with command-line options.
 while ( opt = process.argv.shift() ) {
-    if ('-h' === opt || '--help'    === opt) return console.log(HELP)
-    if ('-v' === opt || '--version' === opt) return console.log(NAME, VERSION)
+    if ('-6' === opt || '--es6-only' === opt) { es6Only = true; continue }
+    if ('-h' === opt || '--help'     === opt) return console.log(HELP)
+    if ('-v' === opt || '--version'  === opt) return console.log(NAME, VERSION)
 }
 
 
@@ -142,31 +145,33 @@ writeFileSyncAndTally( `dist/main/${projectLC}.6.js`, es6 )
 
 
 //// 2. Transpile the new ‘project.6.js’ to ‘project.5.js’
-try {
-    es5 = traceurFix( traceur.compile(es6, { blockBinding:true }) )
-} catch(e) {
-    if ( 'MultipleErrors' === e.name && /^<compile-source>:/.test(e.message) )
-        return console.warn(
-            e.errors.length + ` syntax errors in dist/main/${projectLC}.6.js\n`
-          + `Starting with ${e.errors[0].slice(17)}\n`
-          + `Atom user? Try $ atom dist/main/${projectLC}.6.js:`
-          + e.errors[0].split(':').slice(1,3).join(':')
-        )
-    throw(e)
+if (! es6Only) {
+    try {
+        es5 = traceurFix( traceur.compile(es6, { blockBinding:true }) )
+    } catch(e) {
+        if ( 'MultipleErrors' === e.name && /^<compile-source>:/.test(e.message) )
+            return console.warn(
+                e.errors.length + ` syntax errors in dist/main/${projectLC}.6.js\n`
+              + `Starting with ${e.errors[0].slice(17)}\n`
+              + `Atom user? Try $ atom dist/main/${projectLC}.6.js:`
+              + e.errors[0].split(':').slice(1,3).join(':')
+            )
+        throw(e)
+    }
+    es5 = removeSourceMapRef(es5)
+    writeFileSyncAndTally(
+        `dist/main/${projectLC}.5.js`
+      , topline + '\n\n' + es5 + BYLINE
+    )
+
+
+    //// 3. Minify ‘project.5.js’ to ‘project.5.min.js’
+    min = uglify.minify( es5, minConfig(`dist/main/${projectLC}.5.min.js`) )
+    writeFileSyncAndTally(
+        `dist/main/${projectLC}.5.min.js`
+      , topline + '\n\n' + min.code + BYLINE
+    )
 }
-es5 = removeSourceMapRef(es5)
-writeFileSyncAndTally(
-    `dist/main/${projectLC}.5.js`
-  , topline + '\n\n' + es5 + BYLINE
-)
-
-
-//// 3. Minify ‘project.5.js’ to ‘project.5.min.js’
-min = uglify.minify( es5, minConfig(`dist/main/${projectLC}.5.min.js`) )
-writeFileSyncAndTally(
-    `dist/main/${projectLC}.5.min.js`
-  , topline + '\n\n' + min.code + BYLINE
-)
 
 
 
@@ -196,15 +201,18 @@ es6.forEach( (orig, i) => {
     writeFileSyncAndTally( `dist/demo/${names[i]}.6.js`, orig + BYLINE )
     })
 
+
 //// 5. Transpile ES6 files in ‘dist/demo/’ to ES5
-es6.forEach( (orig, i) => {
-    let es5 = traceurFix( traceur.compile(orig, { blockBinding:true }) )
-    es5 = removeSourceMapRef(es5)
-    writeFileSyncAndTally(
-        `dist/demo/${names[i]}.5.js`
-      , topline + '\n\n' + es5 + BYLINE
-    )
+if (! es6Only)
+    es6.forEach( (orig, i) => {
+        let es5 = traceurFix( traceur.compile(orig, { blockBinding:true }) )
+        es5 = removeSourceMapRef(es5)
+        writeFileSyncAndTally(
+            `dist/demo/${names[i]}.5.js`
+          , topline + '\n\n' + es5 + BYLINE
+        )
     })
+
 
 
 
@@ -258,21 +266,23 @@ writeFileSyncAndTally(
 
 
 //// 7. Transpile the ‘browser’ and ‘universal’ files to ES5
-es5 = {}
-es5.browser = es6.browser
-  ? topline + '\n\n' + traceur.compile(es6.browser, { blockBinding:true })
-  : `//// ${projectTC} ${projectV} has no browser tests`
-writeFileSyncAndTally(
-    `dist/test/${projectLC}-browser.5.js`
-  , removeSourceMapRef( traceurFix(es5.browser) ) + BYLINE
-)
-es5.universal = es6.universal
-  ? topline + '\n\n' + traceur.compile(es6.universal, { blockBinding:true })
-  : `//// ${projectTC} ${projectV} has no universal tests`
-writeFileSyncAndTally(
-    `dist/test/${projectLC}-universal.5.js`
-  , removeSourceMapRef( traceurFix(es5.universal) ) + BYLINE
-)
+if (! es6Only) {
+    es5 = {}
+    es5.browser = es6.browser
+      ? topline + '\n\n' + traceur.compile(es6.browser, { blockBinding:true })
+      : `//// ${projectTC} ${projectV} has no browser tests`
+    writeFileSyncAndTally(
+        `dist/test/${projectLC}-browser.5.js`
+      , removeSourceMapRef( traceurFix(es5.browser) ) + BYLINE
+    )
+    es5.universal = es6.universal
+      ? topline + '\n\n' + traceur.compile(es6.universal, { blockBinding:true })
+      : `//// ${projectTC} ${projectV} has no universal tests`
+    writeFileSyncAndTally(
+        `dist/test/${projectLC}-universal.5.js`
+      , removeSourceMapRef( traceurFix(es5.universal) ) + BYLINE
+    )
+}
 
 
 
@@ -297,7 +307,8 @@ wrapped.updateTestFile('support/test.html', tests) // `tests` from previous step
 
 
 //// Show the result.
-console.log(NAME+` made ${writeFileTally} file${1===writeFileTally?'':'s'}`)
+console.log(NAME+`${es6Only ? ', in ES6-only mode,' : ''
+    } made ${writeFileTally} file${1===writeFileTally?'':'s'}`)
 
 
 

@@ -15,9 +15,9 @@
             maximum-scale=1.0, user-scalable=no">
 
 <!-- Search engine meta -->
-<title>Oom.Foo Demo</title>
+<title>Oom.Foo.Post Demo</title>
 <meta name="description"
-   content="Usage examples for ‘Oom.Foo’.">
+   content="Usage example for ‘Oom.Foo.Post’.">
 <link rel="author" href="../README.md">
 
 <!-- Twitter Card, and Open Graph for Facebook, LinkedIn, Google+, etc -->
@@ -26,12 +26,12 @@
 <meta name="twitter:creator" content="@richplastow">
 <meta property="og:type"     content="website">
 <meta property="og:locale"   content="en_GB">
-<meta property="og:title"    content="Oom.Foo Demo">
+<meta property="og:title"    content="Oom.Foo.Post Demo">
 <meta property="og:url"      content="http://oom-foo.loop.coop/">
 <meta property="og:image"
        content="http://oom-foo.loop.coop/support/asset/logo/logo-1200x1200.svg">
 <meta property="og:description"
-       content="Usage examples for ‘Oom.Foo’.">
+       content="Usage example for ‘Oom.Foo.Post’.">
 
 <!-- From realfavicongenerator.net - see README.md for settings -->
 <link rel="apple-touch-icon" sizes="180x180" href="asset/icon/apple-touch-icon.png">
@@ -39,12 +39,12 @@
 <link rel="icon" type="image/png" sizes="32x32" href="asset/icon/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="asset/icon/favicon-16x16.png">
 <link rel="manifest"                  href="asset/icon/manifest.json">
-<link rel="mask-icon" color="#9900ff" href="asset/icon/safari-pinned-tab.svg">
+<link rel="mask-icon" color="undefined" href="asset/icon/safari-pinned-tab.svg">
 <link rel="shortcut icon"             href="asset/icon/favicon.ico">
-<meta name="apple-mobile-web-app-title" content="Oom.Foo Demo">
-<meta name="application-name"           content="Oom.Foo Demo">
+<meta name="apple-mobile-web-app-title" content="Oom.Foo.Post Demo">
+<meta name="application-name"           content="Oom.Foo.Post Demo">
 <meta name="msapplication-config"       content="asset/icon/browserconfig.xml">
-<meta name="theme-color"                content="#9900ff">
+<meta name="theme-color"                content="undefined">
 
 
 
@@ -115,7 +115,7 @@
 </select>
 
 <!-- Header and Navigation menu -->
-<h1>Oom.Foo Demo
+<h1>Oom.Foo.Post Demo
   <span id="version">&hellip;</span> <span id="ecma"></span>&nbsp;</h1>
 <nav>
   <a href="../index.html" id="home-link">Home</a> &nbsp;
@@ -125,7 +125,7 @@
   <a href="https://www.npmjs.com/package/oom-foo">NPM</a> &nbsp;&nbsp;
 </nav>
 
-<h2>Usage examples for ‘Oom.Foo’.</h2>
+<h2>Usage example for ‘Oom.Foo.Post’.</h2>
 
 <!-- Upgrade message for Internet Explorer 8 and below --><!--[if lte IE 8]>
 <script>document.getElementById('version').innerHTML='Not Supported'</script>
@@ -138,23 +138,22 @@
 <!-- CONTENT -->
 
 
-<!-- BEGIN DYNAMIC SECTION /////////////////////////////////////////////////////
-  //// This dynamic section is kept up to date by ‘oomtility/make.js’ ////// -->
+<!-- Display the demo -->
+<div id="demo">
+  <oom-demo>Loading...</oom-demo>
+</div>
 
-
-  <a href="demo-post.html">
-  <b>Oom.Foo.Post Demo</b>
-  </a><br>
-
-  <a href="demo-router.html">
-  <b>Oom.Foo.Router Demo</b>
-  </a><br>
-
-<!-- END DYNAMIC SECTION ///////////////////////////////////////////////// -->
 
 <!-- Load the proper format scripts, according to the '#ecmaswitch' menu -->
 <script src="asset/js/ecmaswitch.js"></script>
-<script>ECMASwitch.load('../')</script>
+<script>ECMASwitch.load('../', [
+    [
+        '../dist/demo/post-demo.5.js'
+      , '../dist/demo/post-demo.5.js' // no need to minify a demo script
+      , '../dist/demo/post-demo.6.js'
+      ,  '../src/demo/Post-demo.6.js'
+    ]
+])</script>
 
 
 

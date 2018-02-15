@@ -2,7 +2,7 @@
 
 //// YOU MAY NEED TO ADD MORE CONST NAMES IN HERE:
 const CONSTS = {
-    isApp:       0
+    isApp:       0//@TODO remove from all oomtility
   , isTop:       0
   , title:       0
   , projectTC:   0
@@ -25,7 +25,7 @@ const CONSTS = {
 }
 
 const NAME     = 'Oomtility Wrap'
-    , VERSION  = '1.2.2'
+    , VERSION  = '1.2.3'
     , HOMEPAGE = 'https://oomtility.loop.coop'
     , HELP =
 `
@@ -50,9 +50,10 @@ $ oomwrap foo.js bar/baz.png  # Output \`writeFooJs()\` and \`writeBazPng()\`
 
 Options
 -------
--d  --dummy     Write output to the console (stdout), not ‘oomtility/wrapped.js’
--h  --help      Show this help message
--v  --version   Show the current ${NAME} version
+-a  --auto-only  Only process ‘oomtility/wrap/auto/’, not ‘oomtility/wrap/’
+-d  --dummy      Send output to the console (stdout), not ‘oomtility/wrapped.js’
+-h  --help       Show this help message
+-v  --version    Show the current ${NAME} version
 
 This script lives at ${HOMEPAGE}
 `
@@ -79,19 +80,25 @@ const fs = require('fs')
     , { rxBinaryExt } = require('./wrapped.js')
 
 //// Declare variables.
-let opt, dummy, paths = [], out = [], tally = 0
+let opt, autoOnly, dummy, wraps = [], autos = [], out, tally = 0
 
 //// Deal with command-line options.
 while ( opt = process.argv.shift() ) {
-    if ('-h' === opt || '--help'    === opt) return console.log(HELP)
-    if ('-d' === opt || '--dummy'   === opt) { dummy = true; continue }
-    if ('-v' === opt || '--version' === opt) return console.log(NAME, VERSION)
-    paths.push(opt)
+    if ('-a' === opt || '--auto-only' === opt) { autoOnly = true; continue }
+    if ('-d' === opt || '--dummy'     === opt) { dummy = true; continue }
+    if ('-h' === opt || '--help'      === opt) return console.log(HELP)
+    if ('-v' === opt || '--version'   === opt) return console.log(NAME, VERSION)
+    wraps.push(opt)
 }
 
-//// If no paths were specified, wrap the contents of ‘oomtility/wrap/’.
-if (0 === paths.length)
-    paths = fs.readdirSync('oomtility/wrap/').map( p => 'oomtility/wrap/' + p)
+//// If no wrap-paths were specified, wrap the contents of ‘oomtility/wrap/’ and
+//// ‘oomtility/wrap/auto/’.
+const autoPath = 'oomtility/wrap/auto/'
+const wrapPath = 'oomtility/wrap/'
+if (0 === wraps.length)
+    autos = fs.readdirSync(autoPath).map(p => autoPath + p)
+if (0 === wraps.length && ! autoOnly)
+    wraps = fs.readdirSync(wrapPath).map(p => wrapPath + p)
 
 
 
@@ -99,9 +106,64 @@ if (0 === paths.length)
 //// CONVERT FILES
 
 
-//// Convert each file in `paths`.
-paths.forEach( path => {
+//// Convert each file in `autos`.
+if (autos.length) {
+
+    //// Wrap each path.
+    out = []
+    autos.forEach(doWrap)
+
+    //// Write the result to console (if `--dummy` is set), or else the
+    //// dynamic section of ‘oomtility/wrapped.js’.
+    out = out.join('\n')
+    if (dummy) {
+        console.log(out)
+    } else {
+        updateWrappedJs('oomtility/wrapped.js', out
+          , 'BEGIN oomtility/wrap/auto/ OUTPUT //////////'
+          , 'END oomtility/wrap/auto/ OUTPUT //////////'
+        )
+    }
+
+}
+
+
+//// Convert each file in `wraps`.
+if (wraps.length) {
+
+    //// Wrap each path.
+    out = []
+    wraps.forEach(doWrap)
+
+    //// Write the result to console (if `--dummy` is set), or else the
+    //// dynamic section of ‘oomtility/wrapped.js’.
+    out = out.join('\n')
+    if (dummy) {
+        console.log(out)
+    } else {
+        updateWrappedJs('oomtility/wrapped.js', out
+          , 'BEGIN oomtility/wrap/ OUTPUT //////////'
+          , 'END oomtility/wrap/ OUTPUT //////////'
+        )
+    }
+
+}
+
+
+//// Show a result.
+console.log(NAME+`${autoOnly ? ', in auto-only mode,' : ''
+    } processed ${tally} file${1===tally?'':'s'}`)
+
+
+
+
+//// UTILITY
+
+
+//// Wraps a path.
+function doWrap (path) {
     if ( '.DS_Store' === path.slice(-9) ) return
+    if ( 'auto' === path.slice(-4) ) return
     tally++
     const wrapped = []
     const expectedConsts = Object.assign({}, CONSTS)
@@ -241,23 +303,10 @@ paths.forEach( path => {
     //// Finish off the function.
     out = out.concat('}\n\n\n\n')
 
-})
-
-
-//// Write the result to console (if `--dummy` is set), or else the
-//// ‘DYNAMIC SECTION’ of ‘oomtility/wrapped.js’.
-out = out.join('\n')
-if (dummy) {
-    console.log(out)
-} else {
-    updateWrappedJs('oomtility/wrapped.js', out)
-    console.log(NAME + ` processed ${tally} file${1===tally?'':'s'}`)
 }
 
 
-
-//// UTILITY
-
+////
 function encodeUTF16 (str, u='\\u', path, num) {
     let pos=0, out='', code, hex
 
@@ -386,6 +435,7 @@ function getLineLengthReduction (line, pos, len) {
 
 
 //// Similar to `lcToTc()` in ‘init.js’. 'foo/bar-baz.txt' to 'writeBarBazTxt'.
+//// Identical to pathToFnName() in auto.js @TODO D.R.Y.
 function pathToFnName (path) {
     return 'write' + (
         path.split('/').pop().split(/[- .]/g).map(
@@ -396,17 +446,17 @@ function pathToFnName (path) {
 
 
 ////
-function updateWrappedJs (wrappedPath, out) {
+function updateWrappedJs (wrappedPath, out, startMarker, endMarker) {
     let start = 0, end = 0
       , orig = (fs.readFileSync(wrappedPath, 'binary')+'').split('\n')
     for (; start<orig.length; start++)
-        if (0 < orig[start].indexOf('BEGIN wrap.js OUTPUT //////////') ) break
+        if (0 < orig[start].indexOf(startMarker) ) break
     for (; end<orig.length; end++)
-        if (0 < orig[end].indexOf('END wrap.js OUTPUT ////////////')   ) break
+        if (0 < orig[end].indexOf(endMarker)   ) break
     if ( start === orig.length || end === orig.length)
         return console.warn(`Couldn’t find dynamic section in ‘${wrappedPath}’`)
     out = orig.slice(0, start+1).concat([
-`//// oomtility/wrap/ files, processed by oomtility/wrap.js /////////////////////
+`//// Files processed by oomtility/wrap.js //////////////////////////////////////
 `], [out], orig.slice(end))
     fs.writeFileSync( wrappedPath, out.join('\n'), 'binary' )
 }

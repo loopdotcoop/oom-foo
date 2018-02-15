@@ -121,15 +121,15 @@ function extendKludJs () {
             $(`<li class="kludjs-title"><span>▶</span> ${text}</li>`)
            .appendTo( $('ul.kludjs') )
            .click( function () {
-                let $i = $(this)
-                collapseTitle($i, ! $i.hasClass('collapsed'))
+                let $title = $(this)
+                ROOT.collapseTitle( $title, ! $title.hasClass('collapsed') )
             })
         $title.data('orig-html', $title.html())
 
         //// If a previous title which passes exists, collapse it. @TODO collapse the final title
         const $prevTitle = $title.prevAll('.kludjs-title').first()
-        if ( $prevTitle[0] && $prevTitle.data('pass')===$prevTitle.data('all') )
-            collapseTitle($prevTitle)
+        if ($prevTitle[0])
+            ROOT.collapseTitle($prevTitle, null, true)
     })
 
     //// Test for an expected exception.
@@ -147,7 +147,7 @@ function extendKludJs () {
         if (didntThrow) is(0, pre + ' did not throw an error')
     })
 
-    ////
+    //// Add a ‘Total’ heading, and make Klud.js’s `test()` title-aware.
     if ('undefined' !== typeof window) {
         const oldTest = ROOT.test
         const $total = $('<h4> Total: </h4>')
@@ -166,12 +166,13 @@ function extendKludJs () {
         }
     }
 
-    function collapseTitle( $i, doCollapse=true) { // `$i` is jQuery title el
+    //// Collapse (or uncollapse) jQuery title element `$i`, and all its tests.
+    ROOT.collapseTitle = ROOT.collapseTitle || ( ( $i, doCollapse, ifPass) => {
+        if (ifPass) doCollapse = $i.data('pass') === $i.data('all')
         $i[(doCollapse?'add':'remove')+'Class']('collapsed')
-        const collapse = $i.hasClass('collapsed')
-        while ( ($i=$i.next()) && $i[0] && !$i.hasClass('kludjs-title') )
-            $i[ collapse ? 'hide' : 'show' ]()
-    }
+        while ( ($i=$i.next()) && $i[0] && ! $i.hasClass('kludjs-title') )
+            $i[ doCollapse ? 'hide' : 'show' ]()
+    } )
 
     function updateHeading ($el, pass, all) {
         $el

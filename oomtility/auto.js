@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Auto'
-    , VERSION  = '1.2.2'
+    , VERSION  = '1.2.3'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Initialised by ${NAME} ${VERSION}\n`
@@ -210,15 +210,15 @@ classes.forEach( name => { generateOrRemove(
 
 methods.forEach( name => { generateOrRemove(
     name
-  , `src/main/${-1===name.indexOf('.')?'App.':''}${name}.6.js`
+  , `src/main/${-1===name.indexOf('.')?'App.':''}${name}.6.js`//@TODO fix
   , generateMethod
-) }) // note that we prefix a top-level method’s filename with ‘App.’
+) }) // note that we prefix a top-level method’s filename with ‘App.’@TODO fix
 
 
 //// 8.  src/test/Base.Sub.foo-universal.6.js    Basic unit tests you’ll add to
 methods.forEach( name => { generateOrRemove(
     name
-  , `src/test/${-1===name.indexOf('.')?'App.':''}${name}-universal.6.js`
+  , `src/test/${-1===name.indexOf('.')?'App.':''}${name}-universal.6.js`//@TODO fix
   , generateMethodUniversal
 ) })
 
@@ -227,7 +227,7 @@ methods.forEach( name => { generateOrRemove(
 
 methods.forEach( name => { generateOrRemove(
     name
-  , `src/test/${-1===name.indexOf('.')?'App.':''}${name}-browser.6.js`
+  , `src/test/${-1===name.indexOf('.')?'App.':''}${name}-browser.6.js`//@TODO fix
   , generateMethodBrowser
 ) })
 
@@ -236,7 +236,7 @@ methods.forEach( name => { generateOrRemove(
 
 methods.forEach( name => { generateOrRemove(
     name
-  , `src/test/${-1===name.indexOf('.')?'App.':''}${name}-nonbrowser.6.js`
+  , `src/test/${-1===name.indexOf('.')?'App.':''}${name}-nonbrowser.6.js`//@TODO fix
   , generateMethodNonbrowser
 ) })
 
@@ -290,61 +290,71 @@ console.log(
 
 ////
 function generateClass (name, path) {
-    wrapped.writeClass6Js( getClassConfig(name), path )
+    const fn = ( wrapped[ pathToFnName(path) ] || wrapped.writeClass6Js )
+    fn( getClassConfig(name), path )
 }
 
 
 ////
 function generateClassUniversal (name, path) {
-    wrapped.writeClassUniversal6Js( getClassConfig(name), path )
+    const fn = ( wrapped[ pathToFnName(path) ] || wrapped.writeClassUniversal6Js )
+    fn( getClassConfig(name), path )
 }
 
 
 ////
 function generateClassBrowser (name, path) {
-    wrapped.writeClassBrowser6Js( getClassConfig(name), path )
+    const fn = ( wrapped[ pathToFnName(path) ] || wrapped.writeClassBrowser6Js )
+    fn( getClassConfig(name), path )
 }
 
 
 ////
 function generateClassNonbrowser (name, path) {
-    wrapped.writeClassNonbrowser6Js( getClassConfig(name), path )
+    const fn = ( wrapped[ pathToFnName(path) ] || wrapped.writeClassNonbrowser6Js )
+    fn( getClassConfig(name), path )
 }
 
 
 ////
 function generateDemoScript (name, path) {
-    wrapped.writeDemo6Js( getDemoConfig(name), path )
+    const fn = ( wrapped[ pathToFnName(path) ] || wrapped.writeDemo6Js )
+    fn( getDemoConfig(name), path )
 }
 
 
 ////
 function generateDemoPage (name, path) {
-    wrapped.writeClassDemoHtml( getDemoConfig(name), path )
+    const fn = ( wrapped[ pathToFnName(path) ] || wrapped.writeClassDemoHtml )
+    fn( getDemoConfig(name), path )
 }
 
 
 ////
 function generateMethod (name, path) {
-    wrapped.writeMethod6Js( getMethodConfig(name), path )
+    const fn = ( wrapped[ pathToFnName(path) ] || wrapped.writeMethod6Js )
+    fn( getMethodConfig(name), path )
 }
 
 
 ////
 function generateMethodUniversal (name, path) {
-    wrapped.writeMethodUniversal6Js( getMethodConfig(name), path )
+    const fn = ( wrapped[ pathToFnName(path) ] || wrapped.writeMethodUniversal6Js )
+    fn( getMethodConfig(name), path )
 }
 
 
 ////
 function generateMethodBrowser (name, path) {
-    wrapped.writeMethodBrowser6Js( getMethodConfig(name), path )
+    const fn = ( wrapped[ pathToFnName(path) ] || wrapped.writeMethodBrowser6Js )
+    fn( getMethodConfig(name), path )
 }
 
 
 ////
 function generateMethodNonbrowser (name, path) {
-    wrapped.writeMethodNonbrowser6Js( getMethodConfig(name), path )
+    const fn = ( wrapped[ pathToFnName(path) ] || wrapped.writeMethodNonbrowser6Js )
+    fn( getMethodConfig(name), path )
 }
 
 
@@ -408,6 +418,17 @@ function getDemoConfig(name) {
       , repo: projectRepo
       , npm: projectNPM
     })
+}
+
+
+//// Similar to `lcToTc()` in ‘init.js’. 'foo/bar-baz.txt' to 'writeBarBazTxt'.
+//// Identical to pathToFnName() in wrap.js @TODO D.R.Y.
+function pathToFnName (path) {
+    return 'write' + (
+        path.split('/').pop().split(/[- .]/g).map(
+            w => w ? w[0].toUpperCase() + w.substr(1) : ''
+        ).join('')
+    )
 }
 
 

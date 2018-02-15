@@ -28,3 +28,4 @@
 1.2.0 Initial ‘src/main/Bases.6.js’, El, Mix and ElMix
 1.2.1 Bases.6.js has a test. Better ‘support/test.html’ test results display
 1.2.2 With `$ oominit --minimal`, the opposite of `$ oominit --kitchen-sink`
+1.2.3 `$ oominit --website --faster; oomwrap --auto-only; oommake --es6-only`

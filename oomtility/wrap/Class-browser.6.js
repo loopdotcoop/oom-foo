@@ -24,6 +24,7 @@ test('Browser test the ${{classname}} class', () => {
 
 
 
-
+//// Collapse final test section if it passed. See src/test/Bases-universal.6.js
+let $t=$('.kludjs-title').last();if($t[0])ROOT.collapseTitle($t,null,true)
 })//jQuery()
 }( 'object' === typeof global ? global : this ) // `window` in a browser

@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Test'
-    , VERSION  = '1.2.2'
+    , VERSION  = '1.2.3'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , HELP =
@@ -80,8 +80,8 @@ while ( opt = process.argv.shift() ) {
 //// RUN TESTS
 
 
-//// Stub the environment, to make it appear more browser-like.
-global.jQuery = global.$ = onload => { onload() }
+//// For Node.js, stub jQuery’s ability to run functions when a browser’s ready.
+global.jQuery = onload => { onload() }
 
 //// In '--quieter' mode, capture calls to `console.log()` etc.
 let captured, oldConsoleLog, oldConsoleWarn, oldConsoleError
