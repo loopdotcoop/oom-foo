@@ -15,7 +15,7 @@ isApp ? `
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
 title('${{classname}} Universal')
-const Class = ${{classname}}
+const Class = ${{classname}}, stat = Class.stat
 
 
 
@@ -35,9 +35,9 @@ Class.testInstanceFactory = () =>
 test('+ve ${{classname}} class', () => {
     is('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
     is('function' === typeof Class, '${{classname}} is a function')
-    is( ('${{classname}}' === Class.NAME && '${{classname}}' === Class.api.NAME)
-      , 'NAME and api.NAME is ${{classname}}')
-    is('${{classname}}' === Class.name, 'name is ${{classname}}')
+    try { Class.name = stat.NAME = 'Changed!'} catch (e) {}
+    is( ('${{classname}}' === Class.name && '${{classname}}' === stat.NAME)
+      , 'name and stat.NAME are ${{classname}}')
 })
 
 
@@ -45,9 +45,12 @@ test('+ve ${{classname}} class', () => {
 
 test('+ve ${{classname}} instance', () => {
     const instance = Class.testInstanceFactory()
+    const attr = instance.attr
     is(instance instanceof Class, 'Is an instance of ${{classname}}')
     is(Class === instance.constructor, '`constructor` is ${{classname}}')
-    is('object' === typeof instance.hub, '`hub` property is an object')
+    is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
+      , '`attr.UUID` is a six-character string')
+    // is('object' === typeof instance.hub, '`hub` property is an object')
 })
 
 

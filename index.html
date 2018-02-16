@@ -146,13 +146,12 @@
 <script>ECMASwitch.load('./')</script>
 
 <!-- Link to the proper homepage domain, if we’re not already there -->
-<script>if ( 0 > location.href.indexOf(Oom.Foo.HOMEPAGE) )
-$('#home-link').attr('href', Oom.Foo.HOMEPAGE)</script>
-
+<script>if ( 0 > location.href.indexOf(Oom.Foo.stat.HOMEPAGE) )
+$('#home-link').attr('href', Oom.Foo.stat.HOMEPAGE)</script>
 
 
 <!-- Display the repo version and JavaScript standard -->
-<script>$('#version').html(Oom.Foo.VERSION||'(no VERSION)')
+<script>$('#version').html(Oom.Foo.stat.VERSION||'(no VERSION)')
 $('#ecma').html('ES'+['5','5 min','6','6 dev'][~~document.cookie.split('~')[1]])
 </script>
 

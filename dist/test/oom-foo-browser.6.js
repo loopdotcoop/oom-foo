@@ -2,7 +2,7 @@
 
 
 
-//// Oom.Foo //// 1.2.3 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.4 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -31,7 +31,7 @@ let $t=$('.kludjs-title').last();if($t[0])ROOT.collapseTitle($t,null,true)
 
 
 
-//// Oom.Foo //// 1.2.3 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.4 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -56,4 +56,4 @@ let $t=$('.kludjs-title').last();if($t[0])ROOT.collapseTitle($t,null,true)
 
 
 
-//// Made by Oomtility Make 1.2.3 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.2.4 //\\//\\ http://oomtility.loop.coop //////////

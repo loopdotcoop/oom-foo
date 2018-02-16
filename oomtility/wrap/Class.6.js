@@ -3,8 +3,8 @@ ${{topline}}
 !function (ROOT) { 'use strict'
 
 const META = {
-    NAME:     '${{classname}}'
-  , REMARKS:  '${{remarks}}'
+    NAME:    '${{classname}}'
+  , REMARKS: '${{remarks}}'
 }
 
 const PROPS = {
@@ -19,36 +19,22 @@ const PROPS = {
 
 //// Shortcuts to Oom’s global namespace and toolkit.
 const Oom = ROOT.Oom
-const TOOLKIT = Oom.TOOLKIT
+const KIT = Oom.KIT
 
 
 //// Define the `${{classname}}` class.
 const Class = ${{classname}} = class extends ${{extendname}} {
 
-    constructor (config={}, hub=Oom.HUB) {
-        super(config, hub)
-
-        //// Properties added to `api` are exposed to Vue etc.
-        const api = this.api = {}
-${{{
-isTop ? `
-        //// api.UUID: Oom instances have universally unique IDs (57 billion combos).
-        Object.defineProperty(api, 'UUID', { enumerable:true, configurable:false, value:
-            '123456'.replace( /./g,         c=>TOOLKIT.rndCh(48,122) )    // 0-z
-                    .replace( /[:-@\\[-\`]/g, c=>TOOLKIT.rndCh(97,122) ) }) // a-z
-` : ''
-}}}
-
-        //// hub: Oom instances keep a reference to the oom-hub.
-        Object.defineProperty(this, 'hub', { value:hub })
+    constructor (config={}) {
+        super(config)
 
         //// Validate the configuration object.
         this._validateConstructor(config)
-
-        //// Record config’s values to the `api` object.
+/*
+        //// Record config’s values to the `attr` object.
         this.validConstructor.forEach( valid => {
             const value = config[valid.name]
-            Object.defineProperty(this.api, valid.name, {
+            Object.defineProperty(this.attr, valid.name, {
                 value, enumerable:true, configurable:true, writable:true })
         })
 ${{{
@@ -58,9 +44,10 @@ isTop ? `
 `:''
 }}}
 
-        //// api.index: the first instance of this class is `0`, the second is `1`, etc.
+        //// attr.index: the first instance of this class is `0`, the second is `1`, etc.
         if (Class === this.constructor) // not being called by a child-class
-            api.index = Class.api.tally++ // also, update the static `tally`
+            attr.index = Class.stat.tally++ // also, update the static `tally`
+*/
     }
 
 
@@ -78,7 +65,7 @@ isTop ? `
         //// setupStart: the time that \`new ${classname}({...})\` was called.
         if (this.setupStart)
             throw new Error(\`${classname}._getReady(): Can only run once\`)
-        Object.defineProperty(this, 'setupStart', { value:TOOLKIT.getNow() })
+        Object.defineProperty(this, 'setupStart', { value:KIT.getNow() })
 
         //// \`${classname}\` does no setup, so could resolve the \`ready\`
         //// Promise immediately. However, to make _getReady()’s behavior
@@ -87,7 +74,7 @@ isTop ? `
         return new Promise( (resolve, reject) => { setTimeout( () => {
 
             //// setupEnd: the time that \`_getReady()\` finished running.
-            Object.defineProperty(this, 'setupEnd', { value:TOOLKIT.getNow() })
+            Object.defineProperty(this, 'setupEnd', { value:KIT.getNow() })
 
             //// Define the instance’s \`ready\` property.
             resolve({
@@ -108,12 +95,12 @@ isTop ? `
         if ('object' !== typeof config)
             throw new Error(ME+`config is type ${typeof config} not object`)
         this.validConstructor.forEach( valid => {
-            if (! TOOLKIT.applyDefault(valid, config) )
+            if (! KIT.applyDefault(valid, config) )
                 throw new TypeError(ME+`config.${valid.name} is mandatory`)
             value = config[valid.name]
-            if ( err = TOOLKIT.validateType(valid, value) )
+            if ( err = KIT.validateType(valid, value) )
                 throw new TypeError(ME+`config.${valid.name} ${err}`)
-            if ( err = TOOLKIT.validateRange(valid, value) )
+            if ( err = KIT.validateRange(valid, value) )
                 throw new RangeError(ME+`config.${valid.name} ${err}`)
         })
     }
@@ -184,7 +171,7 @@ isApp ? `
 
     }
 
-}; TOOLKIT.name(Class, '${{classname}}')
+}; KIT.name(Class, '${{classname}}')
 
 
 
@@ -201,12 +188,9 @@ isApp ? `
 //// FINISHING UP
 
 
-//// Properties added to `api` are exposed to Vue etc.
-Class.api = { tally: 0 } // `tally` counts instantiations
-
-//// Expose the `${{classname}}` class’s static constants.
-Object.defineProperties( Class    , TOOLKIT.toPropsObj(META) )
-Object.defineProperties( Class.api, TOOLKIT.toPropsObj(META) )
+//// Add properties to `${{classname}}.stat` - exposed to Vue etc.
+${{classname}}.stat = {}
+KIT.unwritables(${{classname}}.stat, META, { insts:0 })
 
 
 

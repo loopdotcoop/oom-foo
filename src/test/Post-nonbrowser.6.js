@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.3 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.4 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 title('Oom.Foo.Post Nonbrowser')

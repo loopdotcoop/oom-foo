@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Make'
-    , VERSION  = '1.2.3'
+    , VERSION  = '1.2.4'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Made by ${NAME} ${VERSION} //\\\\//\\\\ `
@@ -93,7 +93,7 @@ const fs = require('fs')
 //// Set constants.
 const topline = (fs.readFileSync(`src/main/Bases.6.js`)+'').split('\n')[0]
 const projectTC = topline.split(' ')[1] // titlecase with a dot, eg 'Oom.Foo'
-const projectV  = topline.split(' ')[3] // major.minor.patch, eg '1.2.3'
+const projectV  = topline.split(' ')[3] // major.minor.patch, eg 'x1.2.3'
 const projectLC = process.cwd().split('/').pop() // lowercase, eg 'foo-bar'
 if ( projectLC.toLowerCase() != projectLC) return console.warn(
     `Project '${projectLC}' contains uppercase letters`)

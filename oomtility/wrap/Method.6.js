@@ -10,7 +10,7 @@ const META = {
 
 //// Shortcuts to Oom’s global namespace and toolkit, and this method’s class.
 const Oom = ROOT.Oom
-const TOOLKIT = Oom.TOOLKIT
+const KIT = Oom.KIT
 const Class = ${{classname}}
 
 
@@ -19,7 +19,7 @@ const method = Class.prototype.${{methodshort}} = function (abc) {
     let err, ME = `${{methodname}}(): ` // error prefix
     if (! (this instanceof Class)) throw new Error(ME
       + `Must not be called as ${{classname}}.prototype.${{methodshort}}()`)
-    if ( err = TOOLKIT.validateType({ type:String }, abc) )
+    if ( err = KIT.validateType({ type:String }, abc) )
         throw new TypeError(ME+`abc ${err}`)
 
     this.${{methodshort}}_calltally++
@@ -33,7 +33,7 @@ Class.prototype.${{methodshort}}_calltally = 0
 
 
 //// Add static constants to the `${{methodshort}}()` method.
-Object.defineProperties( method, TOOLKIT.toPropsObj(META) )
+Object.defineProperties( method, KIT.toPropsObj(META) )
 
 
 

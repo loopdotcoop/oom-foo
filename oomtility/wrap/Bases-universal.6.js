@@ -17,84 +17,78 @@ jQuery( function($) {
 extendKludJs()
 
 
+//// Establish whether the oom-foo module’s definition of Oom is being used.
+let r; if (!(r=ROOT.Oom) || !(r=r.${{classname}}) || !(r=r.stat) || !(r=r.LOADED_FIRST))
+    throw Error('Can’t test: ROOT.Oom.${{classname}}.stat.LOADED_FIRST does not exist')
+const LOADED_FIRST = ROOT.Oom.${{classname}}.stat.LOADED_FIRST
+
+
 //// Show a title for the first set of tests, with a ‘▶’ button for collapsing.
-title('Bases')
+title('Bases Universal')
 
 
 
+
+//// THE Oom CLASS
 
 test('+ve Oom class', () => {
-    const Class = ROOT.Oom
+    const Class = ROOT.Oom, stat = Class.stat
     is('function' === typeof Class, 'Oom is a function')
-    is(('Oom' === Class.name), 'Oom.name is Oom')
+    try { Class.name = stat.NAME = stat.HOMEPAGE = 'Changed!'} catch (e) {}
+    is( ('Oom' === Class.name && 'Oom' === stat.NAME)
+      , 'name and stat.NAME are Oom')
+    is( ('http://oom.loop.coop/' === stat.HOMEPAGE)
+      , 'stat.HOMEPAGE is \'http://oom.loop.coop/\'')
     //@TODO more tests
 })
+
+
+//// Only run the following test if the Oom class was defined in this module.
+if (LOADED_FIRST)
+    test('+ve Oom class, defined in this module', () => {
+        const Class = ROOT.Oom, stat = Class.stat
+        try { stat.VERSION = stat.REMARKS = 'Changed!'} catch (e) {}
+        is( ('${{version}}' === stat.VERSION) // OOMBUMPABLE
+          , 'stat.VERSION is ${{version}}') // OOMBUMPABLE
+        is( ('Base class for all Oom classes' === stat.REMARKS)
+          , 'stat.REMARKS is \'Base class for all Oom classes\'')
+    })
 
 
 test('+ve Oom instance', () => {
-    const Class = ROOT.Oom
-    const instance = new Class()
+    const Class = ROOT.Oom, instance = new Class(), attr = instance.attr
     is(instance instanceof Class, 'Is an instance of Oom')
     is(Class === instance.constructor, '`constructor` is Oom')
+    is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
+      , '`attr.UUID` is a six-character string')
     //@TODO more tests
 })
 
 
 
 
+//// THE Oom.${{classname}} CLASS
+
 test('+ve Oom.${{classname}} class', () => {
-    const Class = ROOT.Oom.${{classname}}
+    const Class = ROOT.Oom.${{classname}}, stat = Class.stat
     is('function' === typeof Class, 'Oom.${{classname}} is a function')
-    is(('Oom.${{classname}}' === Class.name), 'Oom.${{classname}}.name is Oom.${{classname}}')
+    try { Class.name = stat.NAME = stat.HOMEPAGE = stat.VERSION = 'Changed!'} catch (e) {}
+    is( ('Oom.${{classname}}' === Class.name && 'Oom.${{classname}}' === stat.NAME)
+      , 'name and stat.NAME are Oom.${{classname}}')
+    is( ('${{homepage}}' === stat.HOMEPAGE)
+      , 'stat.HOMEPAGE is \'${{homepage}}\'')
+    is( ('${{version}}' === stat.VERSION) // OOMBUMPABLE
+      , 'stat.VERSION is ${{version}}') // OOMBUMPABLE
     //@TODO more tests
 })
 
 
 test('+ve Oom.${{classname}} instance', () => {
-    const Class = ROOT.Oom.${{classname}}
-    const instance = new Class()
+    const Class = ROOT.Oom.${{classname}}, instance = new Class(), attr = instance.attr
     is(instance instanceof Class, 'Is an instance of Oom.${{classname}}')
     is(Class === instance.constructor, '`constructor` is Oom.${{classname}}')
-    //@TODO more tests
-})
-
-
-
-
-test('+ve Oom.El class', () => {
-    const Class = ROOT.Oom.El
-    is('function' === typeof Class, 'Oom.El is a function')
-    is(('Oom.El' === Class.name), 'Oom.El.name is Oom.El')
-    //@TODO more tests
-})
-
-
-test('+ve Oom.El instance', () => {
-    const Class = ROOT.Oom.El
-    const instance = new Class()
-    is(instance instanceof Class, 'Is an instance of Oom.El')
-    is(Class === instance.constructor, '`constructor` is Oom.El')
-    // is('pink' === instance.state.color, '@TODO better test')
-    //@TODO more tests
-})
-
-
-
-
-test('+ve Oom.${{classname}}.El class', () => {
-    const Class = ROOT.Oom.${{classname}}.El
-    is('function' === typeof Class, 'Oom.${{classname}}.El is a function')
-    is(('Oom.${{classname}}.El' === Class.name), 'Oom.${{classname}}.El.name is Oom.${{classname}}.El')
-    //@TODO more tests
-})
-
-
-test('+ve Oom.${{classname}}.El instance', () => {
-    const Class = ROOT.Oom.${{classname}}.El
-    const instance = new Class()
-    is(instance instanceof Class, 'Is an instance of Oom.${{classname}}.El')
-    is(Class === instance.constructor, '`constructor` is Oom.${{classname}}.El')
-    // is(instance.state.el instanceof ROOT.Oom.El, 'Has an instance of Oom.El')
+    is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
+      , '`attr.UUID` is a six-character string')
     //@TODO more tests
 })
 

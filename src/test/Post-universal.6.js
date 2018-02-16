@@ -1,10 +1,10 @@
-//// Oom.Foo //// 1.2.3 //// February 2018 //// http://oom-foo.loop.coop/ //////
-console.log('Post-universal.6.js');
+//// Oom.Foo //// 1.2.4 //// February 2018 //// http://oom-foo.loop.coop/ //////
+
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
 title('Oom.Foo.Post Universal')
-const Class = Oom.Foo.Post
+const Class = Oom.Foo.Post, stat = Class.stat
 
 
 
@@ -24,9 +24,9 @@ Class.testInstanceFactory = () =>
 test('+ve Oom.Foo.Post class', () => {
     is('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
     is('function' === typeof Class, 'Oom.Foo.Post is a function')
-    is( ('Oom.Foo.Post' === Class.NAME && 'Oom.Foo.Post' === Class.api.NAME)
-      , 'NAME and api.NAME is Oom.Foo.Post')
-    is('Oom.Foo.Post' === Class.name, 'name is Oom.Foo.Post')
+    try { Class.name = stat.NAME = 'Changed!'} catch (e) {}
+    is( ('Oom.Foo.Post' === Class.name && 'Oom.Foo.Post' === stat.NAME)
+      , 'name and stat.NAME are Oom.Foo.Post')
 })
 
 
@@ -34,9 +34,12 @@ test('+ve Oom.Foo.Post class', () => {
 
 test('+ve Oom.Foo.Post instance', () => {
     const instance = Class.testInstanceFactory()
+    const attr = instance.attr
     is(instance instanceof Class, 'Is an instance of Oom.Foo.Post')
     is(Class === instance.constructor, '`constructor` is Oom.Foo.Post')
-    is('object' === typeof instance.hub, '`hub` property is an object')
+    is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
+      , '`attr.UUID` is a six-character string')
+    // is('object' === typeof instance.hub, '`hub` property is an object')
 })
 
 

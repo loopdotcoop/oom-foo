@@ -2,102 +2,94 @@ ${{topline}}
 
 !function (ROOT) { 'use strict'
 
+//// Metadata for Oom.${{classname}}
 const META = {
-    NAME:     '${{classname}}'
+    NAME:     'Oom.${{classname}}'
   , VERSION:  '${{version}}' // OOMBUMPABLE
   , HOMEPAGE: '${{homepage}}'
   , REMARKS:  '${{remarks}}'
+  , LOADED_FIRST: ! ROOT.Oom // true if the Oom class is defined by this module
 }
 
 
 
 
-//// THE Oom CLASS AND NAMESPACE
+//// KIT
+
+
+//// Oom’s toolkit (created if not present). @TODO test with several modules
+const KIT = assignKit(META.LOADED_FIRST || ! ROOT.Oom.KIT ? {} :  ROOT.Oom.KIT)
+
+
+
+
+//// Oom CLASS AND NAMESPACE
 
 
 //// If not already present, define `Oom`, the base class for all Oom classes,
 //// which is also Oom’s global namespace. Also, define a shortcut to it.
-const Oom = ROOT.Oom = ROOT.Oom || class Oom {
-}//Oom
+const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
+
+    constructor (config={}) {
+
+        //// Define `attr`, a container for public instance-attributes. It’s a
+        //// plain object, which Vue prefers.
+        const attr = this.attr = {}
+
+        //// attr.UUID: Oom instances have universally unique IDs.
+        KIT.unwritables( attr, { UUID: KIT.generateUUID() } )
+
+    }
+
+} : ROOT.Oom
 
 
-//// Shortcut to Oom’s global toolkit (created if not present).
-const TOOLKIT = Oom.TOOLKIT = assignToolkit(Oom.TOOLKIT) //@TODO test with several modules
+//// Add properties to `Oom.stat` - these will be exposed to Vue etc.
+if (META.LOADED_FIRST) {
+    Oom.stat = {}
+    KIT.unwritables( Oom.stat, {
+        NAME:     'Oom'
+      , VERSION:  META.VERSION
+      , HOMEPAGE: 'http://oom.loop.coop/'
+      , REMARKS:  'Base class for all Oom classes'
+    }, { insts:   0 }) // counts instantiations
+}
+
+
+//// Expose `KIT` globally.
+Oom.KIT = KIT
+
+
+
+
+//// Oom.${{classname}} CLASS
 
 
 //// Define `Oom.${{classname}}`, this module’s specialism of `Oom`.
 Oom.${{classname}} = class extends Oom {
-}; TOOLKIT.name(Oom.${{classname}}, 'Oom.${{classname}}')
-Object.defineProperties(Oom.${{classname}}, TOOLKIT.toPropsObj(META) )
+}; KIT.name(Oom.${{classname}}, 'Oom.${{classname}}')
+
+
+//// Add properties to `Oom.${{classname}}.stat` - these will be exposed to Vue etc.
+Oom.${{classname}}.stat = {}
+KIT.unwritables(Oom.${{classname}}.stat, META, { insts:0 })
 
 
 
 
-//// THE Oom.El CLASS
+//// KIT FUNCTIONS
 
 
-//// If not present, define `Oom.El`. It’s used for displaying one or more of:
-//// - A Vue component
-//// - An A-Frame ‘primative’ entity
-//// - An OomBox
-//// You can configure your Oom.El instance’s nesting rules (analogous to
-//// the way <table>, <tr> and <td> work).
-Oom.El = Oom.El || class extends Oom {
-}; TOOLKIT.name(Oom.El, 'Oom.El')
+function assignKit (KIT={}) { return Object.assign({}, {
 
-
-//// Define `Oom.${{classname}}.El`, this module’s specialism of `Oom.El`.
-Oom.${{classname}}.El = class extends Oom.${{classname}} {
-}; TOOLKIT.name(Oom.${{classname}}.El, 'Oom.${{classname}}.El')
-//@TODO add the `el` property
-
-
-
-
-//// THE Oom.Mix CLASS
-
-
-//// If not present, define `Oom.Mix`. It’s used for creating an A-Frame
-//// component, but not an A-Frame primative entity (use `Oom.El` or `Oom.ElMix`
-//// for that). It’s intended for attributes like 'position' and 'material', not
-//// like 'sphere' or 'camera'. It may optionally define an A-Frame `system`.
-Oom.Mix = Oom.Mix || class extends Oom {
-}; TOOLKIT.name(Oom.Mix, 'Oom.Mix')
-
-
-//// Define `Oom.${{classname}}.Mix`, this module’s specialism of `Oom.Mix`.
-Oom.${{classname}}.Mix = class extends Oom.${{classname}} {
-}; TOOLKIT.name(Oom.${{classname}}.Mix, 'Oom.${{classname}}.Mix')
-//@TODO add the `mix` property
-
-
-
-
-//// THE Oom.ElMix CLASS
-
-
-//// If not present, define `Oom.ElMix`. It combines features of `Oom.El` and,
-//// `Oom.Mix`, typically to create an A-Frame ‘primative’ entity which is based
-//// on an A-Frame component.
-Oom.ElMix = Oom.ElMix || class extends Oom {
-}; TOOLKIT.name(Oom.ElMix, 'Oom.ElMix')
-
-
-//// Define `Oom.${{classname}}.ElMix`, this module’s specialism of `Oom.ElMix`.
-Oom.${{classname}}.ElMix = class extends Oom.${{classname}} {
-}; TOOLKIT.name(Oom.${{classname}}.ElMix, 'Oom.${{classname}}.ElMix')
-//@TODO add the `elMix` property
-
-
-
-
-//// TOOLKIT FUNCTIONS
-
-
-function assignToolkit (TOOLKIT={}) { return Object.assign({}, {
-
-    //// Return a random character within char-code start/end positions 's' and 'e'.
-    rndCh: (s, e) => String.fromCharCode(Math.random() * (e-s) + s)
+    //// Creates a sequence of six random characters (57 billion combinations),
+    //// containing only uppercase and lowercase letters and digits.
+    generateUUID: () => {
+        const rndCh = (s, e) => String.fromCharCode( Math.random() * (e-s) + s )
+        return 'x'.repeat(6)
+           .replace( /./g,           c => rndCh(48,122) ) // ascii 0-z
+           .replace( /[:-@\\[-\`]/g, c => rndCh(97,122) ) // ascii a-z
+    }
 
 
     //// @TODO describe these three
@@ -113,7 +105,7 @@ function assignToolkit (TOOLKIT={}) { return Object.assign({}, {
     }
 
   , validateType: (valid, value) => {
-        const ME = `TOOLKIT.validateType: `, C = 'constructor'
+        const ME = `KIT.validateType: `, C = 'constructor'
         if (null === valid.type)
             return (null === value) ? null : `is not null`
         if ('undefined' === typeof valid.type)
@@ -151,21 +143,23 @@ function assignToolkit (TOOLKIT={}) { return Object.assign({}, {
     }
 
 
-    //// Convert an object like { FOO:1, BAR:2 } to
-    //// { FOO:{ value:1, enumerable:true }, BAR:{ value:2, enumerable:true} }
-    //// making it suitable to pass to `Object.defineProperties()`.
-  , toPropsObj: src => {
-        const obj = {}
-        for (let k in src) obj[k] = { value:src[k], enumerable:true }
-        return obj
-    }
+    //// Adds one or more enumerable read-only values to `obj`.
+    //// Each source object, eg { FOO:1, BAR:2 }, will be converted to
+    //// { FOO:{ enumerable:true, value:1 }, BAR:{ enumerable:true, value:2 } }
+  , unwritables: (obj, ...srcs) =>
+        srcs.forEach( src => {
+            const def = {}
+            for (let k in src) def[k] = { enumerable:true, value:src[k] }
+            Object.defineProperties(obj, def)
+        })
 
 
-    //// Set the unwritable `name` property of `obj`, eg `name(myFn, 'myFn')`.
-  , name: (obj, name) =>
-        Object.defineProperty(obj, 'name', { value:name, writable:false })
+    //// Set the unwritable non-enumerable `name` property of `obj`,
+    //// eg `name(myFn, 'myFn')`.
+  , name: (obj, value) =>
+        Object.defineProperty(obj, 'name', { value })
 
-}, TOOLKIT) }//assignToolkit()
+}, KIT) }//assignKit()
 
 
 }( 'object' === typeof global ? global : this ) // `window` in a browser

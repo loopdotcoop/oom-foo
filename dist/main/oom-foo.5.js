@@ -1,74 +1,55 @@
-//// Oom.Foo //// 1.2.3 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.4 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
-    NAME: 'Foo',
-    VERSION: '1.2.3',
+    NAME: 'Oom.Foo',
+    VERSION: '1.2.4',
     HOMEPAGE: 'http://oom-foo.loop.coop/',
-    REMARKS: 'Initial test of the oom-hub architecture'
+    REMARKS: 'Initial test of the oom-hub architecture',
+    LOADED_FIRST: !ROOT.Oom
   };
-  var Oom = ROOT.Oom = ROOT.Oom || function() {
-    function Oom() {}
+  var KIT = assignKit(META.LOADED_FIRST || !ROOT.Oom.KIT ? {} : ROOT.Oom.KIT);
+  var Oom = ROOT.Oom = META.LOADED_FIRST ? function() {
+    function Oom() {
+      var config = arguments[0] !== (void 0) ? arguments[0] : {};
+      var attr = this.attr = {};
+      KIT.unwritables(attr, {UUID: KIT.generateUUID()});
+    }
     return ($traceurRuntime.createClass)(Oom, {}, {});
-  }();
-  var TOOLKIT = Oom.TOOLKIT = assignToolkit(Oom.TOOLKIT);
+  }() : ROOT.Oom;
+  if (META.LOADED_FIRST) {
+    Oom.stat = {};
+    KIT.unwritables(Oom.stat, {
+      NAME: 'Oom',
+      VERSION: META.VERSION,
+      HOMEPAGE: 'http://oom.loop.coop/',
+      REMARKS: 'Base class for all Oom classes'
+    }, {insts: 0});
+  }
+  Oom.KIT = KIT;
   Oom.Foo = function($__super) {
     function $__1() {
       $traceurRuntime.superConstructor($__1).apply(this, arguments);
     }
     return ($traceurRuntime.createClass)($__1, {}, {}, $__super);
   }(Oom);
-  TOOLKIT.name(Oom.Foo, 'Oom.Foo');
-  Object.defineProperties(Oom.Foo, TOOLKIT.toPropsObj(META));
-  Oom.El = Oom.El || function($__super) {
-    function $__3() {
-      $traceurRuntime.superConstructor($__3).apply(this, arguments);
-    }
-    return ($traceurRuntime.createClass)($__3, {}, {}, $__super);
-  }(Oom);
-  TOOLKIT.name(Oom.El, 'Oom.El');
-  Oom.Foo.El = function($__super) {
-    function $__5() {
-      $traceurRuntime.superConstructor($__5).apply(this, arguments);
-    }
-    return ($traceurRuntime.createClass)($__5, {}, {}, $__super);
-  }(Oom.Foo);
-  TOOLKIT.name(Oom.Foo.El, 'Oom.Foo.El');
-  Oom.Mix = Oom.Mix || function($__super) {
-    function $__7() {
-      $traceurRuntime.superConstructor($__7).apply(this, arguments);
-    }
-    return ($traceurRuntime.createClass)($__7, {}, {}, $__super);
-  }(Oom);
-  TOOLKIT.name(Oom.Mix, 'Oom.Mix');
-  Oom.Foo.Mix = function($__super) {
-    function $__9() {
-      $traceurRuntime.superConstructor($__9).apply(this, arguments);
-    }
-    return ($traceurRuntime.createClass)($__9, {}, {}, $__super);
-  }(Oom.Foo);
-  TOOLKIT.name(Oom.Foo.Mix, 'Oom.Foo.Mix');
-  Oom.ElMix = Oom.ElMix || function($__super) {
-    function $__11() {
-      $traceurRuntime.superConstructor($__11).apply(this, arguments);
-    }
-    return ($traceurRuntime.createClass)($__11, {}, {}, $__super);
-  }(Oom);
-  TOOLKIT.name(Oom.ElMix, 'Oom.ElMix');
-  Oom.Foo.ElMix = function($__super) {
-    function $__13() {
-      $traceurRuntime.superConstructor($__13).apply(this, arguments);
-    }
-    return ($traceurRuntime.createClass)($__13, {}, {}, $__super);
-  }(Oom.Foo);
-  TOOLKIT.name(Oom.Foo.ElMix, 'Oom.Foo.ElMix');
-  function assignToolkit() {
-    var TOOLKIT = arguments[0] !== (void 0) ? arguments[0] : {};
+  KIT.name(Oom.Foo, 'Oom.Foo');
+  Oom.Foo.stat = {};
+  KIT.unwritables(Oom.Foo.stat, META, {insts: 0});
+  function assignKit() {
+    var KIT = arguments[0] !== (void 0) ? arguments[0] : {};
     return Object.assign({}, {
-      rndCh: function(s, e) {
-        return String.fromCharCode(Math.random() * (e - s) + s);
+      generateUUID: function() {
+        var rndCh = function(s, e) {
+          return String.fromCharCode(Math.random() * (e - s) + s);
+        };
+        return 'x'.repeat(6).replace(/./g, function(c) {
+          return rndCh(48, 122);
+        }).replace(/[:-@\\[-\`]/g, function(c) {
+          return rndCh(97, 122);
+        });
       },
       applyDefault: function(valid, config) {
         if (config.hasOwnProperty(valid.name))
@@ -79,7 +60,7 @@
         return true;
       },
       validateType: function(valid, value) {
-        var ME = "TOOLKIT.validateType: ",
+        var ME = "KIT.validateType: ",
             C = 'constructor';
         if (null === valid.type)
           return (null === value) ? null : "is not null";
@@ -109,25 +90,26 @@
         }
         return now;
       },
-      toPropsObj: function(src) {
-        var obj = {};
-        for (var k in src)
-          obj[k] = {
-            value: src[k],
-            enumerable: true
-          };
-        return obj;
-      },
-      name: function(obj, name) {
-        return Object.defineProperty(obj, 'name', {
-          value: name,
-          writable: false
+      unwritables: function(obj) {
+        for (var srcs = [],
+            $__4 = 1; $__4 < arguments.length; $__4++)
+          srcs[$__4 - 1] = arguments[$__4];
+        return srcs.forEach(function(src) {
+          var def = {};
+          for (var k in src)
+            def[k] = {
+              enumerable: true,
+              value: src[k]
+            };
+          Object.defineProperties(obj, def);
         });
+      },
+      name: function(obj, value) {
+        return Object.defineProperty(obj, 'name', {value: value});
       }
-    }, TOOLKIT);
+    }, KIT);
   }
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
-console.log('Post.6.js');
 !function(ROOT) {
   'use strict';
   var META = {
@@ -156,48 +138,23 @@ console.log('Post.6.js');
       }}
   };
   var Oom = ROOT.Oom;
-  var TOOLKIT = Oom.TOOLKIT;
+  var KIT = Oom.KIT;
   var Class = Oom.Foo.Post = function($__super) {
     function $__0() {
       var config = arguments[0] !== (void 0) ? arguments[0] : {};
-      var hub = arguments[1] !== (void 0) ? arguments[1] : Oom.HUB;
-      var $__17;
-      $traceurRuntime.superConstructor($__0).call(this, config, hub);
-      var api = this.api = {};
-      Object.defineProperty(api, 'UUID', {
-        enumerable: true,
-        configurable: false,
-        value: '123456'.replace(/./g, function(c) {
-          return TOOLKIT.rndCh(48, 122);
-        }).replace(/[:-@\[-`]/g, function(c) {
-          return TOOLKIT.rndCh(97, 122);
-        })
-      });
-      Object.defineProperty(this, 'hub', {value: hub});
+      $traceurRuntime.superConstructor($__0).call(this, config);
       this._validateConstructor(config);
-      this.validConstructor.forEach(($__17 = this, function(valid) {
-        var value = config[valid.name];
-        Object.defineProperty($__17.api, valid.name, {
-          value: value,
-          enumerable: true,
-          configurable: true,
-          writable: true
-        });
-      }));
-      Object.defineProperty(this, 'ready', {value: this._getReady()});
-      if (Class === this.constructor)
-        api.index = Class.api.tally++;
     }
     return ($traceurRuntime.createClass)($__0, {
       _getReady: function() {
-        var $__17 = this;
+        var $__3 = this;
         if (this.setupStart)
           throw new Error("Oom.Foo.Post._getReady(): Can only run once");
-        Object.defineProperty(this, 'setupStart', {value: TOOLKIT.getNow()});
+        Object.defineProperty(this, 'setupStart', {value: KIT.getNow()});
         return new Promise(function(resolve, reject) {
           setTimeout(function() {
-            Object.defineProperty($__17, 'setupEnd', {value: TOOLKIT.getNow()});
-            resolve({setupDelay: $__17.setupEnd - $__17.setupStart});
+            Object.defineProperty($__3, 'setupEnd', {value: KIT.getNow()});
+            resolve({setupDelay: $__3.setupEnd - $__3.setupStart});
           }, 0);
         });
       },
@@ -208,12 +165,12 @@ console.log('Post.6.js');
         if ('object' !== (typeof config === 'undefined' ? 'undefined' : $traceurRuntime.typeof(config)))
           throw new Error(ME + ("config is type " + (typeof config === 'undefined' ? 'undefined' : $traceurRuntime.typeof(config)) + " not object"));
         this.validConstructor.forEach(function(valid) {
-          if (!TOOLKIT.applyDefault(valid, config))
+          if (!KIT.applyDefault(valid, config))
             throw new TypeError(ME + ("config." + valid.name + " is mandatory"));
           value = config[valid.name];
-          if (err = TOOLKIT.validateType(valid, value))
+          if (err = KIT.validateType(valid, value))
             throw new TypeError(ME + ("config." + valid.name + " " + err));
-          if (err = TOOLKIT.validateRange(valid, value))
+          if (err = KIT.validateRange(valid, value))
             throw new RangeError(ME + ("config." + valid.name + " " + err));
         });
       },
@@ -230,24 +187,22 @@ console.log('Post.6.js');
         }];
       },
       xxx: function(config) {
-        var $__18 = this,
-            hub = $__18.hub,
-            a = $__18.a,
-            b = $__18.b,
-            c = $__18.c;
-        var $__19 = config,
-            xx = $__19.xx,
-            yy = $__19.yy,
-            zz = $__19.zz;
+        var $__5 = this,
+            hub = $__5.hub,
+            a = $__5.a,
+            b = $__5.b,
+            c = $__5.c;
+        var $__6 = config,
+            xx = $__6.xx,
+            yy = $__6.yy,
+            zz = $__6.zz;
       }
     }, {}, $__super);
   }(Oom.Foo);
-  TOOLKIT.name(Class, 'Oom.Foo.Post');
-  Class.api = {tally: 0};
-  Object.defineProperties(Class, TOOLKIT.toPropsObj(META));
-  Object.defineProperties(Class.api, TOOLKIT.toPropsObj(META));
+  KIT.name(Class, 'Oom.Foo.Post');
+  Oom.Foo.Post.stat = {};
+  KIT.unwritables(Oom.Foo.Post.stat, META, {insts: 0});
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
-console.log('Router.6.js');
 !function(ROOT) {
   'use strict';
   var META = {
@@ -276,48 +231,23 @@ console.log('Router.6.js');
       }}
   };
   var Oom = ROOT.Oom;
-  var TOOLKIT = Oom.TOOLKIT;
+  var KIT = Oom.KIT;
   var Class = Oom.Foo.Router = function($__super) {
     function $__0() {
       var config = arguments[0] !== (void 0) ? arguments[0] : {};
-      var hub = arguments[1] !== (void 0) ? arguments[1] : Oom.HUB;
-      var $__17;
-      $traceurRuntime.superConstructor($__0).call(this, config, hub);
-      var api = this.api = {};
-      Object.defineProperty(api, 'UUID', {
-        enumerable: true,
-        configurable: false,
-        value: '123456'.replace(/./g, function(c) {
-          return TOOLKIT.rndCh(48, 122);
-        }).replace(/[:-@\[-`]/g, function(c) {
-          return TOOLKIT.rndCh(97, 122);
-        })
-      });
-      Object.defineProperty(this, 'hub', {value: hub});
+      $traceurRuntime.superConstructor($__0).call(this, config);
       this._validateConstructor(config);
-      this.validConstructor.forEach(($__17 = this, function(valid) {
-        var value = config[valid.name];
-        Object.defineProperty($__17.api, valid.name, {
-          value: value,
-          enumerable: true,
-          configurable: true,
-          writable: true
-        });
-      }));
-      Object.defineProperty(this, 'ready', {value: this._getReady()});
-      if (Class === this.constructor)
-        api.index = Class.api.tally++;
     }
     return ($traceurRuntime.createClass)($__0, {
       _getReady: function() {
-        var $__17 = this;
+        var $__3 = this;
         if (this.setupStart)
           throw new Error("Oom.Foo.Router._getReady(): Can only run once");
-        Object.defineProperty(this, 'setupStart', {value: TOOLKIT.getNow()});
+        Object.defineProperty(this, 'setupStart', {value: KIT.getNow()});
         return new Promise(function(resolve, reject) {
           setTimeout(function() {
-            Object.defineProperty($__17, 'setupEnd', {value: TOOLKIT.getNow()});
-            resolve({setupDelay: $__17.setupEnd - $__17.setupStart});
+            Object.defineProperty($__3, 'setupEnd', {value: KIT.getNow()});
+            resolve({setupDelay: $__3.setupEnd - $__3.setupStart});
           }, 0);
         });
       },
@@ -328,12 +258,12 @@ console.log('Router.6.js');
         if ('object' !== (typeof config === 'undefined' ? 'undefined' : $traceurRuntime.typeof(config)))
           throw new Error(ME + ("config is type " + (typeof config === 'undefined' ? 'undefined' : $traceurRuntime.typeof(config)) + " not object"));
         this.validConstructor.forEach(function(valid) {
-          if (!TOOLKIT.applyDefault(valid, config))
+          if (!KIT.applyDefault(valid, config))
             throw new TypeError(ME + ("config." + valid.name + " is mandatory"));
           value = config[valid.name];
-          if (err = TOOLKIT.validateType(valid, value))
+          if (err = KIT.validateType(valid, value))
             throw new TypeError(ME + ("config." + valid.name + " " + err));
-          if (err = TOOLKIT.validateRange(valid, value))
+          if (err = KIT.validateRange(valid, value))
             throw new RangeError(ME + ("config." + valid.name + " " + err));
         });
       },
@@ -350,25 +280,24 @@ console.log('Router.6.js');
         }];
       },
       xxx: function(config) {
-        var $__18 = this,
-            hub = $__18.hub,
-            a = $__18.a,
-            b = $__18.b,
-            c = $__18.c;
-        var $__19 = config,
-            xx = $__19.xx,
-            yy = $__19.yy,
-            zz = $__19.zz;
+        var $__5 = this,
+            hub = $__5.hub,
+            a = $__5.a,
+            b = $__5.b,
+            c = $__5.c;
+        var $__6 = config,
+            xx = $__6.xx,
+            yy = $__6.yy,
+            zz = $__6.zz;
       }
     }, {}, $__super);
   }(Oom.Foo);
-  TOOLKIT.name(Class, 'Oom.Foo.Router');
-  Class.api = {tally: 0};
-  Object.defineProperties(Class, TOOLKIT.toPropsObj(META));
-  Object.defineProperties(Class.api, TOOLKIT.toPropsObj(META));
+  KIT.name(Class, 'Oom.Foo.Router');
+  Oom.Foo.Router.stat = {};
+  KIT.unwritables(Oom.Foo.Router.stat, META, {insts: 0});
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
 
 
 
 
-//// Made by Oomtility Make 1.2.3 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.2.4 //\\//\\ http://oomtility.loop.coop //////////

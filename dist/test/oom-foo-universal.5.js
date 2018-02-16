@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.3 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.4 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 "use strict";
 !function(ROOT) {
@@ -7,50 +7,57 @@
     throw Error('jQuery not found');
   jQuery(function($) {
     extendKludJs();
-    title('Bases');
+    var r;
+    if (!(r = ROOT.Oom) || !(r = r.Foo) || !(r = r.stat) || !(r = r.LOADED_FIRST))
+      throw Error('Can’t test: ROOT.Oom.Foo.stat.LOADED_FIRST does not exist');
+    var LOADED_FIRST = ROOT.Oom.Foo.stat.LOADED_FIRST;
+    title('Bases Universal');
     test('+ve Oom class', function() {
-      var Class = ROOT.Oom;
+      var Class = ROOT.Oom,
+          stat = Class.stat;
       is('function' === typeof Class, 'Oom is a function');
-      is(('Oom' === Class.name), 'Oom.name is Oom');
+      try {
+        Class.name = stat.NAME = stat.HOMEPAGE = 'Changed!';
+      } catch (e) {}
+      is(('Oom' === Class.name && 'Oom' === stat.NAME), 'name and stat.NAME are Oom');
+      is(('http://oom.loop.coop/' === stat.HOMEPAGE), 'stat.HOMEPAGE is \'http://oom.loop.coop/\'');
     });
+    if (LOADED_FIRST)
+      test('+ve Oom class, defined in this module', function() {
+        var Class = ROOT.Oom,
+            stat = Class.stat;
+        try {
+          stat.VERSION = stat.REMARKS = 'Changed!';
+        } catch (e) {}
+        is(('1.2.4' === stat.VERSION), 'stat.VERSION is 1.2.4');
+        is(('Base class for all Oom classes' === stat.REMARKS), 'stat.REMARKS is \'Base class for all Oom classes\'');
+      });
     test('+ve Oom instance', function() {
-      var Class = ROOT.Oom;
-      var instance = new Class();
+      var Class = ROOT.Oom,
+          instance = new Class(),
+          attr = instance.attr;
       is(instance instanceof Class, 'Is an instance of Oom');
       is(Class === instance.constructor, '`constructor` is Oom');
+      is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID), '`attr.UUID` is a six-character string');
     });
     test('+ve Oom.Foo class', function() {
-      var Class = ROOT.Oom.Foo;
+      var Class = ROOT.Oom.Foo,
+          stat = Class.stat;
       is('function' === typeof Class, 'Oom.Foo is a function');
-      is(('Oom.Foo' === Class.name), 'Oom.Foo.name is Oom.Foo');
+      try {
+        Class.name = stat.NAME = stat.HOMEPAGE = stat.VERSION = 'Changed!';
+      } catch (e) {}
+      is(('Oom.Foo' === Class.name && 'Oom.Foo' === stat.NAME), 'name and stat.NAME are Oom.Foo');
+      is(('http://oom-foo.loop.coop/' === stat.HOMEPAGE), 'stat.HOMEPAGE is \'http://oom-foo.loop.coop/\'');
+      is(('1.2.4' === stat.VERSION), 'stat.VERSION is 1.2.4');
     });
     test('+ve Oom.Foo instance', function() {
-      var Class = ROOT.Oom.Foo;
-      var instance = new Class();
+      var Class = ROOT.Oom.Foo,
+          instance = new Class(),
+          attr = instance.attr;
       is(instance instanceof Class, 'Is an instance of Oom.Foo');
       is(Class === instance.constructor, '`constructor` is Oom.Foo');
-    });
-    test('+ve Oom.El class', function() {
-      var Class = ROOT.Oom.El;
-      is('function' === typeof Class, 'Oom.El is a function');
-      is(('Oom.El' === Class.name), 'Oom.El.name is Oom.El');
-    });
-    test('+ve Oom.El instance', function() {
-      var Class = ROOT.Oom.El;
-      var instance = new Class();
-      is(instance instanceof Class, 'Is an instance of Oom.El');
-      is(Class === instance.constructor, '`constructor` is Oom.El');
-    });
-    test('+ve Oom.Foo.El class', function() {
-      var Class = ROOT.Oom.Foo.El;
-      is('function' === typeof Class, 'Oom.Foo.El is a function');
-      is(('Oom.Foo.El' === Class.name), 'Oom.Foo.El.name is Oom.Foo.El');
-    });
-    test('+ve Oom.Foo.El instance', function() {
-      var Class = ROOT.Oom.Foo.El;
-      var instance = new Class();
-      is(instance instanceof Class, 'Is an instance of Oom.Foo.El');
-      is(Class === instance.constructor, '`constructor` is Oom.Foo.El');
+      is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID), '`attr.UUID` is a six-character string');
     });
     function extendKludJs() {
       ROOT.title = ROOT.title || (function(text) {
@@ -120,14 +127,14 @@
     }
   });
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
-console.log('Post-universal.6.js');
 !function(ROOT) {
   'use strict';
   if ('function' !== typeof jQuery)
     throw Error('jQuery not found');
   jQuery(function($) {
     title('Oom.Foo.Post Universal');
-    var Class = Oom.Foo.Post;
+    var Class = Oom.Foo.Post,
+        stat = Class.stat;
     Class.testInstanceFactory = function() {
       return new Class({
         firstProp: 100,
@@ -137,25 +144,28 @@ console.log('Post-universal.6.js');
     test('+ve Oom.Foo.Post class', function() {
       is('function' === typeof ROOT.Oom, 'The Oom namespace class exists');
       is('function' === typeof Class, 'Oom.Foo.Post is a function');
-      is(('Oom.Foo.Post' === Class.NAME && 'Oom.Foo.Post' === Class.api.NAME), 'NAME and api.NAME is Oom.Foo.Post');
-      is('Oom.Foo.Post' === Class.name, 'name is Oom.Foo.Post');
+      try {
+        Class.name = stat.NAME = 'Changed!';
+      } catch (e) {}
+      is(('Oom.Foo.Post' === Class.name && 'Oom.Foo.Post' === stat.NAME), 'name and stat.NAME are Oom.Foo.Post');
     });
     test('+ve Oom.Foo.Post instance', function() {
       var instance = Class.testInstanceFactory();
+      var attr = instance.attr;
       is(instance instanceof Class, 'Is an instance of Oom.Foo.Post');
       is(Class === instance.constructor, '`constructor` is Oom.Foo.Post');
-      is('object' === $traceurRuntime.typeof(instance.hub), '`hub` property is an object');
+      is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID), '`attr.UUID` is a six-character string');
     });
   });
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
-console.log('Router-universal.6.js');
 !function(ROOT) {
   'use strict';
   if ('function' !== typeof jQuery)
     throw Error('jQuery not found');
   jQuery(function($) {
     title('Oom.Foo.Router Universal');
-    var Class = Oom.Foo.Router;
+    var Class = Oom.Foo.Router,
+        stat = Class.stat;
     Class.testInstanceFactory = function() {
       return new Class({
         firstProp: 100,
@@ -165,14 +175,17 @@ console.log('Router-universal.6.js');
     test('+ve Oom.Foo.Router class', function() {
       is('function' === typeof ROOT.Oom, 'The Oom namespace class exists');
       is('function' === typeof Class, 'Oom.Foo.Router is a function');
-      is(('Oom.Foo.Router' === Class.NAME && 'Oom.Foo.Router' === Class.api.NAME), 'NAME and api.NAME is Oom.Foo.Router');
-      is('Oom.Foo.Router' === Class.name, 'name is Oom.Foo.Router');
+      try {
+        Class.name = stat.NAME = 'Changed!';
+      } catch (e) {}
+      is(('Oom.Foo.Router' === Class.name && 'Oom.Foo.Router' === stat.NAME), 'name and stat.NAME are Oom.Foo.Router');
     });
     test('+ve Oom.Foo.Router instance', function() {
       var instance = Class.testInstanceFactory();
+      var attr = instance.attr;
       is(instance instanceof Class, 'Is an instance of Oom.Foo.Router');
       is(Class === instance.constructor, '`constructor` is Oom.Foo.Router');
-      is('object' === $traceurRuntime.typeof(instance.hub), '`hub` property is an object');
+      is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID), '`attr.UUID` is a six-character string');
     });
   });
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
@@ -180,4 +193,4 @@ console.log('Router-universal.6.js');
 
 
 
-//// Made by Oomtility Make 1.2.3 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.2.4 //\\//\\ http://oomtility.loop.coop //////////
