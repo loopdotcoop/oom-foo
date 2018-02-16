@@ -30,3 +30,4 @@
 1.2.2 With `$ oominit --minimal`, the opposite of `$ oominit --kitchen-sink`
 1.2.3 `$ oominit --website --faster; oomwrap --auto-only; oommake --es6-only`
 1.2.4 `Oom.stat` for static properties, `myOom.attr` for instance properties
+1.2.5 `Oom` has `stat.instTally` and `attr.INST_INDEX`

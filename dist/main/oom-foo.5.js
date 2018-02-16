@@ -16,9 +16,14 @@
       var config = arguments[0] !== (void 0) ? arguments[0] : {};
       var attr = this.attr = {};
       KIT.unwritables(attr, {UUID: KIT.generateUUID()});
+      if (Oom === this.constructor) {
+        KIT.unwritables(attr, {INST_INDEX: Oom.stat.instTally});
+        KIT.unwritables(Oom.stat, {instTally: Oom.stat.instTally + 1});
+      }
     }
     return ($traceurRuntime.createClass)(Oom, {}, {});
   }() : ROOT.Oom;
+  KIT.name(Oom, 'Oom');
   if (META.LOADED_FIRST) {
     Oom.stat = {};
     KIT.unwritables(Oom.stat, {
@@ -26,7 +31,7 @@
       VERSION: META.VERSION,
       HOMEPAGE: 'http://oom.loop.coop/',
       REMARKS: 'Base class for all Oom classes'
-    }, {insts: 0});
+    }, {instTally: 0});
   }
   Oom.KIT = KIT;
   Oom.Foo = function($__super) {
@@ -37,7 +42,7 @@
   }(Oom);
   KIT.name(Oom.Foo, 'Oom.Foo');
   Oom.Foo.stat = {};
-  KIT.unwritables(Oom.Foo.stat, META, {insts: 0});
+  KIT.unwritables(Oom.Foo.stat, META, {instTally: 0});
   function assignKit() {
     var KIT = arguments[0] !== (void 0) ? arguments[0] : {};
     return Object.assign({}, {
@@ -92,20 +97,24 @@
       },
       unwritables: function(obj) {
         for (var srcs = [],
-            $__4 = 1; $__4 < arguments.length; $__4++)
-          srcs[$__4 - 1] = arguments[$__4];
+            $__3 = 1; $__3 < arguments.length; $__3++)
+          srcs[$__3 - 1] = arguments[$__3];
         return srcs.forEach(function(src) {
           var def = {};
           for (var k in src)
             def[k] = {
               enumerable: true,
-              value: src[k]
+              value: src[k],
+              configurable: /[a-z]/.test(k)
             };
           Object.defineProperties(obj, def);
         });
       },
       name: function(obj, value) {
-        return Object.defineProperty(obj, 'name', {value: value});
+        return Object.defineProperty(obj, 'name', {
+          value: value,
+          configurable: false
+        });
       }
     }, KIT);
   }
@@ -147,14 +156,14 @@
     }
     return ($traceurRuntime.createClass)($__0, {
       _getReady: function() {
-        var $__3 = this;
+        var $__2 = this;
         if (this.setupStart)
           throw new Error("Oom.Foo.Post._getReady(): Can only run once");
         Object.defineProperty(this, 'setupStart', {value: KIT.getNow()});
         return new Promise(function(resolve, reject) {
           setTimeout(function() {
-            Object.defineProperty($__3, 'setupEnd', {value: KIT.getNow()});
-            resolve({setupDelay: $__3.setupEnd - $__3.setupStart});
+            Object.defineProperty($__2, 'setupEnd', {value: KIT.getNow()});
+            resolve({setupDelay: $__2.setupEnd - $__2.setupStart});
           }, 0);
         });
       },
@@ -187,15 +196,15 @@
         }];
       },
       xxx: function(config) {
-        var $__5 = this,
-            hub = $__5.hub,
-            a = $__5.a,
-            b = $__5.b,
-            c = $__5.c;
-        var $__6 = config,
-            xx = $__6.xx,
-            yy = $__6.yy,
-            zz = $__6.zz;
+        var $__4 = this,
+            hub = $__4.hub,
+            a = $__4.a,
+            b = $__4.b,
+            c = $__4.c;
+        var $__5 = config,
+            xx = $__5.xx,
+            yy = $__5.yy,
+            zz = $__5.zz;
       }
     }, {}, $__super);
   }(Oom.Foo);
@@ -240,14 +249,14 @@
     }
     return ($traceurRuntime.createClass)($__0, {
       _getReady: function() {
-        var $__3 = this;
+        var $__2 = this;
         if (this.setupStart)
           throw new Error("Oom.Foo.Router._getReady(): Can only run once");
         Object.defineProperty(this, 'setupStart', {value: KIT.getNow()});
         return new Promise(function(resolve, reject) {
           setTimeout(function() {
-            Object.defineProperty($__3, 'setupEnd', {value: KIT.getNow()});
-            resolve({setupDelay: $__3.setupEnd - $__3.setupStart});
+            Object.defineProperty($__2, 'setupEnd', {value: KIT.getNow()});
+            resolve({setupDelay: $__2.setupEnd - $__2.setupStart});
           }, 0);
         });
       },
@@ -280,15 +289,15 @@
         }];
       },
       xxx: function(config) {
-        var $__5 = this,
-            hub = $__5.hub,
-            a = $__5.a,
-            b = $__5.b,
-            c = $__5.c;
-        var $__6 = config,
-            xx = $__6.xx,
-            yy = $__6.yy,
-            zz = $__6.zz;
+        var $__4 = this,
+            hub = $__4.hub,
+            a = $__4.a,
+            b = $__4.b,
+            c = $__4.c;
+        var $__5 = config,
+            xx = $__5.xx,
+            yy = $__5.yy,
+            zz = $__5.zz;
       }
     }, {}, $__super);
   }(Oom.Foo);

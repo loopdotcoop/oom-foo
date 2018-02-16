@@ -16,19 +16,18 @@
       var Class = ROOT.Oom,
           stat = Class.stat;
       is('function' === typeof Class, 'Oom is a function');
-      try {
-        Class.name = stat.NAME = stat.HOMEPAGE = 'Changed!';
-      } catch (e) {}
+      tryHardSet(Class, 'name', 'Changed!');
+      tryHardSet(stat, 'NAME,HOMEPAGE', 'Changed!');
       is(('Oom' === Class.name && 'Oom' === stat.NAME), 'name and stat.NAME are Oom');
       is(('http://oom.loop.coop/' === stat.HOMEPAGE), 'stat.HOMEPAGE is \'http://oom.loop.coop/\'');
+      trySoftSet(stat, 'instTally', 55);
+      is(0 === stat.instTally, 'stat.instTally is zero');
     });
     if (LOADED_FIRST)
       test('+ve Oom class, defined in this module', function() {
         var Class = ROOT.Oom,
             stat = Class.stat;
-        try {
-          stat.VERSION = stat.REMARKS = 'Changed!';
-        } catch (e) {}
+        tryHardSet(stat, 'VERSION,REMARKS', 'Changed!');
         is(('1.2.4' === stat.VERSION), 'stat.VERSION is 1.2.4');
         is(('Base class for all Oom classes' === stat.REMARKS), 'stat.REMARKS is \'Base class for all Oom classes\'');
       });
@@ -38,15 +37,18 @@
           attr = instance.attr;
       is(instance instanceof Class, 'Is an instance of Oom');
       is(Class === instance.constructor, '`constructor` is Oom');
+      tryHardSet(attr, 'UUID', 'Changed!');
       is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID), '`attr.UUID` is a six-character string');
+      tryHardSet(attr, 'INST_INDEX', 99);
+      is(0 === attr.INST_INDEX, 'attr.INST_INDEX is zero');
+      is(1 === Class.stat.instTally, 'stat.instTally has incremented to `1`');
     });
     test('+ve Oom.Foo class', function() {
       var Class = ROOT.Oom.Foo,
           stat = Class.stat;
       is('function' === typeof Class, 'Oom.Foo is a function');
-      try {
-        Class.name = stat.NAME = stat.HOMEPAGE = stat.VERSION = 'Changed!';
-      } catch (e) {}
+      tryHardSet(Class, 'name', 'Changed!');
+      tryHardSet(stat, 'NAME,HOMEPAGE,VERSION', 'Changed!');
       is(('Oom.Foo' === Class.name && 'Oom.Foo' === stat.NAME), 'name and stat.NAME are Oom.Foo');
       is(('http://oom-foo.loop.coop/' === stat.HOMEPAGE), 'stat.HOMEPAGE is \'http://oom-foo.loop.coop/\'');
       is(('1.2.4' === stat.VERSION), 'stat.VERSION is 1.2.4');
@@ -90,6 +92,28 @@
         }
         if (didntThrow)
           is(0, pre + ' did not throw an error');
+      });
+      ROOT.trySoftSet = ROOT.trySoftSet || (function(obj, keylist, value) {
+        keylist.split(',').forEach(function(key) {
+          try {
+            obj[key] = value;
+          } catch (e) {}
+        });
+      });
+      ROOT.tryHardSet = ROOT.tryHardSet || (function(obj, keylist, value) {
+        keylist.split(',').forEach(function(key) {
+          try {
+            obj[key] = value;
+          } catch (e) {}
+          var def = {
+            enumerable: true,
+            value: value,
+            configurable: true
+          };
+          try {
+            Object.defineProperty(obj, key, def);
+          } catch (e) {}
+        });
       });
       if ('undefined' !== typeof window) {
         var oldTest = ROOT.test;

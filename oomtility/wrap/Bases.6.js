@@ -39,9 +39,16 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
         //// attr.UUID: Oom instances have universally unique IDs.
         KIT.unwritables( attr, { UUID: KIT.generateUUID() } )
 
+        //// attr.INST_INDEX: the first Oom instance is 0, the second is 1, etc.
+        //// Also increment this class’s (static) tally of instantiations.
+        if (Oom === this.constructor) { // not being called by a child-class
+            KIT.unwritables( attr, { INST_INDEX: Oom.stat.instTally })
+            KIT.unwritables(Oom.stat, { instTally: Oom.stat.instTally+1 })
+        }
     }
 
 } : ROOT.Oom
+KIT.name(Oom, 'Oom') // prevents `name` from being changed
 
 
 //// Add properties to `Oom.stat` - these will be exposed to Vue etc.
@@ -52,7 +59,7 @@ if (META.LOADED_FIRST) {
       , VERSION:  META.VERSION
       , HOMEPAGE: 'http://oom.loop.coop/'
       , REMARKS:  'Base class for all Oom classes'
-    }, { insts:   0 }) // counts instantiations
+    }, { instTally:0 }) // counts instantiations
 }
 
 
@@ -72,7 +79,7 @@ Oom.${{classname}} = class extends Oom {
 
 //// Add properties to `Oom.${{classname}}.stat` - these will be exposed to Vue etc.
 Oom.${{classname}}.stat = {}
-KIT.unwritables(Oom.${{classname}}.stat, META, { insts:0 })
+KIT.unwritables(Oom.${{classname}}.stat, META, { instTally:0 })
 
 
 
@@ -143,21 +150,22 @@ function assignKit (KIT={}) { return Object.assign({}, {
     }
 
 
-    //// Adds one or more enumerable read-only values to `obj`.
-    //// Each source object, eg { FOO:1, BAR:2 }, will be converted to
-    //// { FOO:{ enumerable:true, value:1 }, BAR:{ enumerable:true, value:2 } }
+    //// Adds one or more enumerable read-only property to `obj`. A property
+    //// name which contains a lowercase letter is treated as configurable.
+    //// Can also be used to change the value of existing properties. @TODO does Vue croak when that happens?
   , unwritables: (obj, ...srcs) =>
         srcs.forEach( src => {
             const def = {}
-            for (let k in src) def[k] = { enumerable:true, value:src[k] }
+            for (let k in src) def[k] = {
+                enumerable:true, value:src[k], configurable:/[a-z]/.test(k) }
             Object.defineProperties(obj, def)
         })
 
 
-    //// Set the unwritable non-enumerable `name` property of `obj`,
-    //// eg `name(myFn, 'myFn')`.
+    //// Set the unwritable, unconfigurable, non-enumerable `name` property of
+    //// `obj`. Usage: `name(myFn, 'myFn')`.
   , name: (obj, value) =>
-        Object.defineProperty(obj, 'name', { value })
+        Object.defineProperty(obj, 'name', { value, configurable:false })
 
 }, KIT) }//assignKit()
 

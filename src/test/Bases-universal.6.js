@@ -1,4 +1,4 @@
-// //// Oom.Foo //// 1.0.0 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.4 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -34,11 +34,14 @@ title('Bases Universal')
 test('+ve Oom class', () => {
     const Class = ROOT.Oom, stat = Class.stat
     is('function' === typeof Class, 'Oom is a function')
-    try { Class.name = stat.NAME = stat.HOMEPAGE = 'Changed!'} catch (e) {}
+    tryHardSet(Class, 'name', 'Changed!')
+    tryHardSet(stat, 'NAME,HOMEPAGE', 'Changed!')
     is( ('Oom' === Class.name && 'Oom' === stat.NAME)
       , 'name and stat.NAME are Oom')
     is( ('http://oom.loop.coop/' === stat.HOMEPAGE)
       , 'stat.HOMEPAGE is \'http://oom.loop.coop/\'')
+    trySoftSet(stat, 'instTally', 55)
+    is(0 === stat.instTally, 'stat.instTally is zero')
     //@TODO more tests
 })
 
@@ -47,7 +50,7 @@ test('+ve Oom class', () => {
 if (LOADED_FIRST)
     test('+ve Oom class, defined in this module', () => {
         const Class = ROOT.Oom, stat = Class.stat
-        try { stat.VERSION = stat.REMARKS = 'Changed!'} catch (e) {}
+        tryHardSet(stat, 'VERSION,REMARKS', 'Changed!')
         is( ('1.2.4' === stat.VERSION) // OOMBUMPABLE
           , 'stat.VERSION is 1.2.4') // OOMBUMPABLE
         is( ('Base class for all Oom classes' === stat.REMARKS)
@@ -59,8 +62,12 @@ test('+ve Oom instance', () => {
     const Class = ROOT.Oom, instance = new Class(), attr = instance.attr
     is(instance instanceof Class, 'Is an instance of Oom')
     is(Class === instance.constructor, '`constructor` is Oom')
+    tryHardSet(attr, 'UUID', 'Changed!')
     is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
       , '`attr.UUID` is a six-character string')
+    tryHardSet(attr, 'INST_INDEX', 99)
+    is(0 === attr.INST_INDEX, 'attr.INST_INDEX is zero')
+    is(1 === Class.stat.instTally, 'stat.instTally has incremented to `1`')
     //@TODO more tests
 })
 
@@ -72,7 +79,8 @@ test('+ve Oom instance', () => {
 test('+ve Oom.Foo class', () => {
     const Class = ROOT.Oom.Foo, stat = Class.stat
     is('function' === typeof Class, 'Oom.Foo is a function')
-    try { Class.name = stat.NAME = stat.HOMEPAGE = stat.VERSION = 'Changed!'} catch (e) {}
+    tryHardSet(Class, 'name', 'Changed!')
+    tryHardSet(stat, 'NAME,HOMEPAGE,VERSION', 'Changed!')
     is( ('Oom.Foo' === Class.name && 'Oom.Foo' === stat.NAME)
       , 'name and stat.NAME are Oom.Foo')
     is( ('http://oom-foo.loop.coop/' === stat.HOMEPAGE)
@@ -139,6 +147,21 @@ function extendKludJs () {
             is(ok,`${pre} has ${ok?'':'un'}expected error${ok?'':nl+e.message}`)
         }
         if (didntThrow) is(0, pre + ' did not throw an error')
+    })
+
+    //// Simulate an accidental attempt to modify an object’s properties.
+    ROOT.trySoftSet = ROOT.trySoftSet || ( (obj, keylist, value) => {
+        keylist.split(',').forEach( key => {
+            try { obj[key] = value } catch(e) {} })
+    })
+
+    //// Simulate a determined attempt to modify an object’s properties.
+    ROOT.tryHardSet = ROOT.tryHardSet || ( (obj, keylist, value) => {
+        keylist.split(',').forEach( key => {
+            try { obj[key] = value } catch(e) {}
+            const def = { enumerable:true, value, configurable:true }
+            try { Object.defineProperty(obj, key, def) } catch(e) {}
+        })
     })
 
     //// Add a ‘Total’ heading, and make Klud.js’s `test()` title-aware.
