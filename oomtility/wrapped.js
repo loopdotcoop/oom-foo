@@ -13,7 +13,7 @@ const rxBinaryExt = module.exports.rxBinaryExt =
     new RegExp( '\\.' + BINARY_EXTS.join('$|\\.') + '$', 'i')
 
 const NAME     = 'Oomtility Wrapped'
-    , VERSION  = '1.2.4'
+    , VERSION  = '1.2.5'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
 
@@ -19174,14 +19174,14 @@ const {
 const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
 const flag = 'a'
 fs.writeFileSync(path, ''
-  + '//// ECMASwitch //// 1.2.4 //// February 2018 //// ecmaswitch.loop.coop/ ///////\n'
+  + '//// ECMASwitch //// 1.2.5 //// February 2018 //// ecmaswitch.loop.coop/ ///////\n'
   + '\n'
   + '!function (ROOT) { \'use strict\'\n'
   + '\n'
   + '//// Create the namespace-object if it does not already exist and add constants.\n'
   + 'var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}\n'
   + 'ECMASwitch.NAME     = \'ECMASwitch\'\n'
-  + 'ECMASwitch.VERSION  = \'1.2.4\'\n'
+  + 'ECMASwitch.VERSION  = \'1.2.5\'\n'
   + 'ECMASwitch.HOMEPAGE = \'http://ecmaswitch.loop.coop/\'\n'
   + '\n'
   + '//// Polyfill `document` for non-browser contexts.\n'
