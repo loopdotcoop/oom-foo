@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.4 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.6 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
     NAME: 'Oom.Foo',
-    VERSION: '1.2.4',
+    VERSION: '1.2.6',
     HOMEPAGE: 'http://oom-foo.loop.coop/',
     REMARKS: 'Initial test of the oom-hub architecture',
     LOADED_FIRST: !ROOT.Oom
@@ -18,7 +18,7 @@
       KIT.unwritables(attr, {UUID: KIT.generateUUID()});
       if (Oom === this.constructor) {
         KIT.unwritables(attr, {INST_INDEX: Oom.stat.instTally});
-        KIT.unwritables(Oom.stat, {instTally: Oom.stat.instTally + 1});
+        Oom.stat.instTally++;
       }
     }
     return ($traceurRuntime.createClass)(Oom, {}, {});
@@ -33,6 +33,15 @@
       REMARKS: 'Base class for all Oom classes'
     }, {instTally: 0});
   }
+  Object.defineProperty(Oom, 'enduserMainVueTemplate', {get: function(innerHTML) {
+      return innerHTML = ("\n<div id=\"ok\">\n  \${this.stat.NAME} is " + this.stat.NAME + "<br>\n  {<b></b>{stat.NAME}} is {{stat.NAME}}<br>\n  {<b></b>{stat.instTally}} is {{stat.instTally}}\n</div>\n");
+    }});
+  Oom.enduserMainVue = {
+    template: Oom.enduserMainVueTemplate,
+    data: function() {
+      return {stat: Oom.stat};
+    }
+  };
   Oom.KIT = KIT;
   Oom.Foo = function($__super) {
     function $__1() {
@@ -101,12 +110,16 @@
           srcs[$__3 - 1] = arguments[$__3];
         return srcs.forEach(function(src) {
           var def = {};
-          for (var k in src)
+          for (var k in src) {
+            var configurable = /[a-z]/.test(k);
+            var writable = /[a-z]/.test(k);
             def[k] = {
+              configurable: configurable,
+              writable: writable,
               enumerable: true,
-              value: src[k],
-              configurable: /[a-z]/.test(k)
+              value: src[k]
             };
+          }
           Object.defineProperties(obj, def);
         });
       },
@@ -309,4 +322,4 @@
 
 
 
-//// Made by Oomtility Make 1.2.4 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.2.6 //\\//\\ http://oomtility.loop.coop //////////

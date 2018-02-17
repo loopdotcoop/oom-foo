@@ -2,14 +2,14 @@
 
 
 
-//// Oom.Foo //// 1.2.4 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.6 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 
 //// Metadata for Oom.Foo
 const META = {
     NAME:     'Oom.Foo'
-  , VERSION:  '1.2.4' // OOMBUMPABLE
+  , VERSION:  '1.2.6' // OOMBUMPABLE
   , HOMEPAGE: 'http://oom-foo.loop.coop/'
   , REMARKS:  'Initial test of the oom-hub architecture'
   , LOADED_FIRST: ! ROOT.Oom // true if the Oom class is defined by this module
@@ -47,7 +47,8 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
         //// Also increment this class’s (static) tally of instantiations.
         if (Oom === this.constructor) { // not being called by a child-class
             KIT.unwritables( attr, { INST_INDEX: Oom.stat.instTally })
-            KIT.unwritables(Oom.stat, { instTally: Oom.stat.instTally+1 })
+            Oom.stat.instTally++
+            // KIT.unwritables(Oom.stat, { instTally: Oom.stat.instTally+1 })
         }
     }
 
@@ -64,6 +65,56 @@ if (META.LOADED_FIRST) {
       , HOMEPAGE: 'http://oom.loop.coop/'
       , REMARKS:  'Base class for all Oom classes'
     }, { instTally:0 }) // counts instantiations
+}
+
+
+//// @TODO move these to Bases+enduser.6.js
+Object.defineProperty(Oom, 'enduserMainVueTemplate', {
+get: function (innerHTML) { return innerHTML = `
+<div id="ok">
+  \${this.stat.NAME} is ${this.stat.NAME}<br>
+  {<b></b>{stat.NAME}} is {{stat.NAME}}<br>
+  {<b></b>{stat.instTally}} is {{stat.instTally}}
+</div>
+`} })
+
+
+Oom.enduserMainVue = {
+    template: Oom.enduserMainVueTemplate
+
+  , data: function () { return {
+        stat: Oom.stat
+    } }
+
+/*
+  , data: function () { return {
+        instance: inners[inners.length-1].api
+      , static: ROOT.Oom.Foo.Post.api
+      , ui: { hideData:false }
+    } }
+
+  , props: {
+        firstProp: Number
+      , UUID: String
+    }
+
+  , methods: {
+        // toggleHideData
+    }
+
+    //// Generate an instance of Oom.Foo.Post.
+  , beforeCreate: function () {
+        inners.push( new ROOT.Oom.Foo.Post({
+            thirdProp: 'inners.length: ' + inners.length
+        }) )
+    }
+
+    //// Wrap Vue’s reactive getters and setters with our own.
+  , created: function () {
+        wrapApiGettersAndSetters(outers[outers.length-1])
+        wrapApiGettersAndSetters(ROOT.Oom.Foo.Post)
+    }
+*/
 }
 
 
@@ -160,8 +211,11 @@ function assignKit (KIT={}) { return Object.assign({}, {
   , unwritables: (obj, ...srcs) =>
         srcs.forEach( src => {
             const def = {}
-            for (let k in src) def[k] = {
-                enumerable:true, value:src[k], configurable:/[a-z]/.test(k) }
+            for (let k in src) {
+                const configurable = /[a-z]/.test(k)
+                const writable     = /[a-z]/.test(k)
+                def[k] = { configurable, writable, enumerable:true, value:src[k] }
+            }
             Object.defineProperties(obj, def)
         })
 
@@ -183,7 +237,7 @@ function assignKit (KIT={}) { return Object.assign({}, {
 
 
 
-//// Oom.Foo //// 1.2.4 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.6 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 
@@ -349,7 +403,7 @@ KIT.unwritables(Oom.Foo.Post.stat, META, { insts:0 })
 
 
 
-//// Oom.Foo //// 1.2.4 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.6 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 
@@ -511,4 +565,4 @@ KIT.unwritables(Oom.Foo.Router.stat, META, { insts:0 })
 
 
 
-//// Made by Oomtility Make 1.2.4 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.2.6 //\\//\\ http://oomtility.loop.coop //////////

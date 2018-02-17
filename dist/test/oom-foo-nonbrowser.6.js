@@ -2,7 +2,7 @@
 
 
 
-//// Oom.Foo //// 1.2.4 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.6 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 title('Oom.Foo.Post Nonbrowser')
@@ -27,7 +27,7 @@ test('Nonbrowser test the Oom.Foo.Post class', () => {
 
 
 
-//// Oom.Foo //// 1.2.4 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.6 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 title('Oom.Foo.Router Nonbrowser')
@@ -48,4 +48,4 @@ test('Nonbrowser test the Oom.Foo.Router class', () => {
 
 
 
-//// Made by Oomtility Make 1.2.4 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.2.6 //\\//\\ http://oomtility.loop.coop //////////

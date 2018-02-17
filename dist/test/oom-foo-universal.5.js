@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.4 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.6 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 "use strict";
 !function(ROOT) {
@@ -20,7 +20,6 @@
       tryHardSet(stat, 'NAME,HOMEPAGE', 'Changed!');
       is(('Oom' === Class.name && 'Oom' === stat.NAME), 'name and stat.NAME are Oom');
       is(('http://oom.loop.coop/' === stat.HOMEPAGE), 'stat.HOMEPAGE is \'http://oom.loop.coop/\'');
-      trySoftSet(stat, 'instTally', 55);
       is(0 === stat.instTally, 'stat.instTally is zero');
     });
     if (LOADED_FIRST)
@@ -28,7 +27,7 @@
         var Class = ROOT.Oom,
             stat = Class.stat;
         tryHardSet(stat, 'VERSION,REMARKS', 'Changed!');
-        is(('1.2.4' === stat.VERSION), 'stat.VERSION is 1.2.4');
+        is(('1.2.6' === stat.VERSION), 'stat.VERSION is 1.2.6');
         is(('Base class for all Oom classes' === stat.REMARKS), 'stat.REMARKS is \'Base class for all Oom classes\'');
       });
     test('+ve Oom instance', function() {
@@ -51,7 +50,7 @@
       tryHardSet(stat, 'NAME,HOMEPAGE,VERSION', 'Changed!');
       is(('Oom.Foo' === Class.name && 'Oom.Foo' === stat.NAME), 'name and stat.NAME are Oom.Foo');
       is(('http://oom-foo.loop.coop/' === stat.HOMEPAGE), 'stat.HOMEPAGE is \'http://oom-foo.loop.coop/\'');
-      is(('1.2.4' === stat.VERSION), 'stat.VERSION is 1.2.4');
+      is(('1.2.6' === stat.VERSION), 'stat.VERSION is 1.2.6');
     });
     test('+ve Oom.Foo instance', function() {
       var Class = ROOT.Oom.Foo,
@@ -217,4 +216,4 @@
 
 
 
-//// Made by Oomtility Make 1.2.4 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.2.6 //\\//\\ http://oomtility.loop.coop //////////
