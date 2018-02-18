@@ -1,6 +1,7 @@
-//// Oom.Foo //// 1.2.6 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.7 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
+return //@TODO convert to Mocha
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
 title('Oom.Foo.Post Browser')

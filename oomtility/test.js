@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Test'
-    , VERSION  = '1.2.6'
+    , VERSION  = '1.2.7'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , HELP =
@@ -14,6 +14,17 @@ It can also launch ‘support/test.html’ in your default browser.
 
 Installation
 ------------
+You’ll need Mocha and Chai installed globally before running test.js:
+$ npm install -g mocha; npm install -g chai
+
+If you get permission errors, run this before:
+$ sudo chmod -R a+w $(npm root -q -g); sudo chmod -R a+w $(npm bin -q -g)
+...and this after:
+$ sudo chmod -R a-w $(npm root -q -g); sudo chmod -R a-w $(npm bin -q -g)
+
+If you get \`require()\` errors, try:
+$ export NODE_PATH=$(npm root -q -g)
+
 If you haven’t done it already, you should set up the \`oomtest\` alias:
 $ node oomtility/alias.js
 
@@ -37,7 +48,23 @@ This script lives at ${HOMEPAGE}
 `
 
 
-//// Validate the environment.
+//// Validate the environment for `$ mocha oomtility/test.js`, and run tests.
+if ( process.argv[1] && 'mocha/bin/_mocha' === process.argv[1].slice(-16) ) {
+    //@TODO validate the environment
+    const readdirSync = require('fs').readdirSync, CWD = process.cwd()
+    readdirSync(CWD+'/src/main/')
+       .filter( p => '.6.js' === p.slice(-5) )
+       .forEach(p => require(CWD+'/src/main/'+p) )
+    readdirSync(CWD+'/src/test/') // first run all the universal tests...
+       .filter( p => '-universal.6.js' === p.slice(-15) )
+       .forEach(p => require(CWD+'/src/test/'+p) )
+    readdirSync(CWD+'/src/test/') // ...then run all the nonbrowser tests
+       .filter( p => '-nonbrowser.6.js' === p.slice(-16) )
+       .forEach(p => require(CWD+'/src/test/'+p) )
+    return
+}
+
+//// Validate the environment for `$ node oomtility/test.js` or `$ oomtest`.
 const nodePath = process.argv.shift()
 const selfPath = process.argv.shift()
 if ( '/oomtility/test.js' !== selfPath.slice(-18) )
@@ -53,15 +80,11 @@ if ('function' !== typeof require)
 //// SETUP
 
 
+//// Load library functionality.
+const { spawn } = require('child_process')
+
 //// Set constants.
 const projectLC = process.cwd().split('/').pop() // lowercase, eg 'foo-bar'
-
-//// Load the assertion library and its reporter.
-require('../support/asset/js/klud.min.js')
-require('../support/asset/js/report.min.js')
-
-//// Load the Production ES6 verion of the app.
-require(`../dist/main/${projectLC}.6.js`)
 
 //// Declare variables.
 let opt, browser, quieter
@@ -77,12 +100,52 @@ while ( opt = process.argv.shift() ) {
 
 
 
-//// RUN TESTS
+//// RUN MOCHA
 
 
-//// For Node.js, stub jQuery’s ability to run functions when a browser’s ready.
-global.jQuery = onload => { onload() }
+//// Spawn a Mocha sub-process.
+const subProc = spawn('mocha', ['oomtility/test.js'])
+subProc.stdout.on('data', data => subprocOut(data) )
+subProc.stderr.on('data', data => subprocOut(data, `mocha: stderr`) )
+subProc.on('exit', (code, signal) => {
+    if (code) subprocOut(
+        `exited with code ${code} and signal ${signal}`, 'mocha')
+})
 
+
+//// Launch the browser tests.
+if (browser) {
+    const exec = require('child_process').exec
+    exec(
+        'open file://' + process.cwd() + '/support/test.html'
+      , function(error, stdout, stderr) {
+            if (error) console.warn(error)
+        }
+    )
+}
+
+
+
+
+//// UTILITY
+
+
+////
+function subprocOut (data, prefix) {
+    (data+'').split('\n').forEach( line => {
+        if ( '' === line.trim() ) return
+        if ( quieter && ! /\d+ passing \(\d+ms\)$/.test(line) ) return
+        console.log(prefix ? `${prefix}: ${line}` : line)
+    })
+}
+
+
+}()
+
+
+
+
+/* Kept for reference:
 //// In '--quieter' mode, capture calls to `console.log()` etc.
 let captured, oldConsoleLog, oldConsoleWarn, oldConsoleError
 if (quieter) {
@@ -103,34 +166,20 @@ if (quieter) {
     console.error = captureConsole.error
 }
 
-//// Run parts of the test-suite compatible with a non-browser runtime.
-require(`../dist/test/${projectLC}-universal.6.js`)
-require(`../dist/test/${projectLC}-nonbrowser.6.js`)
+...run code which uses console here...
 
 //// In '--quieter' mode, show a summary of the tests.
 if (quieter) {
     console.log   = oldConsoleLog
     console.warn  = oldConsoleWarn
     console.error = oldConsoleError
-    const fails = captured.filter( // green tick is '\x1b[32m\u2714\x1b[0m'
-        l => '\x1b[31m\u2718\x1b[0m' === l.slice(0,10) ? l : null )
-    if (fails.length)
-        console.log(fails.join(''))
-    else
-        console.log(
-            NAME+` passed ${captured.length} test${1===captured.length?'':'s'}`)
+console.log(captured);
+    // const fails = captured.filter( // green tick is '\x1b[32m\u2714\x1b[0m'
+    //     l => '\x1b[31m\u2718\x1b[0m' === l.slice(0,10) ? l : null )
+    // if (fails.length)
+    //     console.log(fails.join(''))
+    // else
+    //     console.log(
+    //         NAME+` passed ${captured.length} test${1===captured.length?'':'s'}`)
 }
-
-//// Launch the browser tests.
-if (browser) {
-    const exec = require('child_process').exec
-    exec(
-        'open file://' + process.cwd() + '/support/test.html'
-      , function(error, stdout, stderr) {
-            if (error) console.warn(error)
-        }
-    )
-}
-
-
-}()
+*/

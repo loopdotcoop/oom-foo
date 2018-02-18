@@ -80,6 +80,8 @@ Designed, developed and authored by Rich Plastow for Loop.Coop.
   - jQuery 3.3.1 (slim)
   - Vue 2.5.13
   - A-Frame 0.7.0
+  - Chai 4.1.2
+  - Mocha 5.0.1 @TODO minify
   - Promise Polyfill (for IE11)
   - ECMASwitch
 

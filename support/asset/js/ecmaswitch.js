@@ -1,11 +1,12 @@
-//// ECMASwitch //// 1.2.6 //// February 2018 //// ecmaswitch.loop.coop/ ///////
+//// ECMASwitch //// 1.2.7 //// February 2018 //// ecmaswitch.loop.coop/ ///////
 
 !function (ROOT) { 'use strict'
 
 //// Create the namespace-object if it does not already exist and add constants.
 var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}
+var s, onAllLoadedFn
 ECMASwitch.NAME     = 'ECMASwitch'
-ECMASwitch.VERSION  = '1.2.6'
+ECMASwitch.VERSION  = '1.2.7'
 ECMASwitch.HOMEPAGE = 'http://ecmaswitch.loop.coop/'
 
 //// Polyfill `document` for non-browser contexts.
@@ -31,27 +32,47 @@ var classFiles = 'Bases,Post,Router'
 //// PUBLIC API
 
 ////
-ECMASwitch.load = function (path, names) {
+ECMASwitch.hasLoaded = function (el) {
+    var matches = []
+      , position
+      , elFilename = el.src.split('/').pop()
+    for (var i=0; i<s.length; i++) {
+        var expectedFilename = s[i].split('/').pop()
+        if ( elFilename === expectedFilename ) {
+            matches.push(expectedFilename)
+            position = i
+        }
+    }
+    if (0 === matches.length) throw Error(elFilename+' not expected')
+    if (1 !== matches.length) throw Error(matches.length+' matches for '+elFilename)
+    s.splice(position,1)
+    if (0 === s.length && onAllLoadedFn)
+        onAllLoadedFn()
+}
+
+////
+ECMASwitch.load = function (path, names, onAllLoaded) {
     if (! path) throw Error("ECMASwitch.load(): Set `path`, eg './' or '../'")
+    if (onAllLoaded) onAllLoadedFn = onAllLoaded
     var f = ~~d.cookie.split('~')[1] // script format, 0 - 3
       , p = path + ( (3 == f) ? 'src/' : 'dist/' ) // get path to proper format
-      , s = // src values
-          (1 == f) ? [ // ES5 Minified
-              path + 'support/asset/js/traceur-runtime.min.js'
-            , p + 'main/' + projectLC + '.5.min.js'
-          ]
-        : (2 == f) ? [ // ES6 Production
-              p + 'main/' + projectLC + '.6.js'
-          ]
-        : (3 == f) ?   // ES6 Development
-              (p+'main/'+classFiles.replace(/,/g,'.6.js|'+p+'main/')+'.6.js')
-             .split('|')
-        : [            // ES5 Production (the default, if no cookies been set)
-              path + 'support/asset/js/traceur-runtime.min.js'
-            , p + 'main/' + projectLC + '.5.js'
-          ]
-      , B = '<script src="'  // begin
+      , B = '<script onload="ECMASwitch.hasLoaded(this)" src="'  // begin
       , E = '"></'+'script>' // end
+    s = // src values
+        (1 == f) ? [ // ES5 Minified
+            path + 'support/asset/js/traceur-runtime.min.js'
+          , p + 'main/' + projectLC + '.5.min.js'
+        ]
+      : (2 == f) ? [ // ES6 Production
+            p + 'main/' + projectLC + '.6.js'
+        ]
+      : (3 == f) ?   // ES6 Development
+            (p+'main/'+classFiles.replace(/,/g,'.6.js|'+p+'main/')+'.6.js')
+           .split('|')
+      : [            // ES5 Production (the default, if no cookies been set)
+            path + 'support/asset/js/traceur-runtime.min.js'
+          , p + 'main/' + projectLC + '.5.js'
+        ]
     names = names || []
     for (var i=0; i<names.length; i++) if (names[i][f]) s.push( names[i][f] )
     s.unshift(path + 'support/asset/js/polyfill.min.js') //@TODO only load for legacy browsers

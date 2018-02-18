@@ -3,6 +3,36 @@ ${{topline}}
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
+
+const
+    eq = chai.assert.strictEqual
+  , ok = chai.assert.isOk
+
+describe(`1st Browser`, () => {
+    describe(`+ve Oom class`, () => {
+        it(`should be a class`, () => {
+            const Class = ROOT.Oom, stat = Class.stat
+            eq('function', typeof Class, 'Oom should be a function')
+        })
+    })
+})
+
+describe(`2nd Browser`, () => {
+    describe(`+ve Oom class`, () => {
+        it(`should be a class`, () => {
+            const Class = ROOT.Oom, stat = Class.stat
+            eq('function', typeof Class, 'Oom should be a function')
+        })
+    })
+})
+
+})//jQuery()
+}( 'object' === typeof global ? global : this ) // `window` in a browser
+
+/*
+!function (ROOT) { 'use strict'
+if ('function' !== typeof jQuery) throw Error('jQuery not found')
+jQuery( function($) {
 title('Bases Browser')
 
 
@@ -40,3 +70,4 @@ test('+ve Oom.enduserMainVue', function (next) {
 let $t=$('.kludjs-title').last();if($t[0])ROOT.collapseTitle($t,null,true)
 })//jQuery()
 }( 'object' === typeof global ? global : this ) // `window` in a browser
+*/

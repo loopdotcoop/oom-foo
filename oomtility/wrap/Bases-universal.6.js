@@ -1,5 +1,82 @@
 ${{topline}}
 
+!function (ROOT) { 'use strict'
+if ('function' !== typeof ROOT.jQuery) ROOT.jQuery = fn => fn()
+ROOT.jQuery( function($) {
+
+const
+    chai     = ROOT.chai     || require('chai')
+  , mocha    = ROOT.mocha    || require('mocha')
+  , assert   = ROOT.assert   || chai.assert
+  , expect   = ROOT.expect   || chai.expect
+  , describe = ROOT.describe || mocha.describe
+  , it       = ROOT.it       || mocha.it
+  , eq       = assert.strictEqual
+  , ok       = assert.isOk
+
+describe(`Bases Universal`, () => {
+    describe(`+ve Oom class`, () => {
+        it(`should be a class`, () => {
+            const Class = ROOT.Oom, stat = Class.stat
+            eq('function', typeof Class, 'Oom should be a function')
+        })
+    })
+})
+
+describe(`Another Universal`, () => {
+    describe(`+ve Oom class`, () => {
+        it(`should be a class`, () => {
+            const Class = ROOT.Oom, stat = Class.stat
+            eq('function', typeof Class, 'Oom should be a function')
+        })
+    })
+})
+
+
+if ('object' !== typeof global) mocha.run() // is browser @TODO better test
+
+
+
+/*
+describe(`Test specific browser '${TestClassName}'`, () => {
+
+    describe('perform() response', () => {
+        const ctx = new (ROOT.AudioContext||ROOT.webkitAudioContext)()
+        const cache = {}
+
+        it(`With no events, promise should respond with expected buffers`, () => {
+            const testInstance = new TestClass({
+                audioContext:     ctx
+              , sharedCache:      cache
+              , samplesPerBuffer: 2340
+              , sampleRate:       23400
+              , channelCount:     2
+            })
+            return testInstance.perform({
+                bufferCount:     8
+              , cyclesPerBuffer: 234
+              , isLooping:       true
+              , events:          []
+            }).then( buffers => {
+                buffers.forEach( (buffer,i) => {
+                    eq( buffer.id, undefined, `buffers[${i}].id should not exist` )
+                    const channelDataL = buffer.data.getChannelData(0)
+                    const channelDataR = buffer.data.getChannelData(1)
+                    // if (0 == i) {
+                    //     const ui8 = new Uint8Array(channelDataL.buffer);
+                    //     console.log('first two F32 (buffers[0] left channel)', channelDataL.slice(0,2));
+                    //     console.log('first eight UI8 (buffers[0] left channel)', ui8.slice(0,8));
+                    //     console.log('last two F32 (buffers[0] left channel)', channelDataL.slice(-2));
+                    //     console.log('last eight UI8 (buffers[0] left channel)', ui8.slice(-8));
+                    // }
+                    eq(channelDataL.length, 2340, `buffers[${i}].data.getChannelData(0) (left channel) has wrong length`)
+*/
+
+})//jQuery()
+}( 'object' === typeof global ? global : this ) // `window` in a browser
+
+/*
+
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
 //// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
@@ -209,3 +286,4 @@ function extendKludJs () {
 
 })//jQuery()
 }( 'object' === typeof global ? global : this ) // `window` in a browser
+*/

@@ -2,8 +2,38 @@
 
 
 
-//// Oom.Foo //// 1.2.6 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.7 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
+!function (ROOT) { 'use strict'
+if ('function' !== typeof jQuery) throw Error('jQuery not found')
+jQuery( function($) {
+
+const
+    eq = chai.assert.strictEqual
+  , ok = chai.assert.isOk
+
+describe(`1st Browser`, () => {
+    describe(`+ve Oom class`, () => {
+        it(`should be a class`, () => {
+            const Class = ROOT.Oom, stat = Class.stat
+            eq('function', typeof Class, 'Oom should be a function')
+        })
+    })
+})
+
+describe(`2nd Browser`, () => {
+    describe(`+ve Oom class`, () => {
+        it(`should be a class`, () => {
+            const Class = ROOT.Oom, stat = Class.stat
+            eq('function', typeof Class, 'Oom should be a function')
+        })
+    })
+})
+
+})//jQuery()
+}( 'object' === typeof global ? global : this ) // `window` in a browser
+
+/*
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
@@ -44,6 +74,7 @@ test('+ve Oom.enduserMainVue', function (next) {
 let $t=$('.kludjs-title').last();if($t[0])ROOT.collapseTitle($t,null,true)
 })//jQuery()
 }( 'object' === typeof global ? global : this ) // `window` in a browser
+*/
 
 
 
@@ -52,9 +83,10 @@ let $t=$('.kludjs-title').last();if($t[0])ROOT.collapseTitle($t,null,true)
 
 
 
-//// Oom.Foo //// 1.2.6 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.7 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
+return //@TODO convert to Mocha
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
 title('Oom.Foo.Post Browser')
@@ -81,9 +113,10 @@ let $t=$('.kludjs-title').last();if($t[0])ROOT.collapseTitle($t,null,true)
 
 
 
-//// Oom.Foo //// 1.2.6 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.7 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
+return //@TODO convert to Mocha
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
 title('Oom.Foo.Router Browser')
@@ -106,4 +139,4 @@ let $t=$('.kludjs-title').last();if($t[0])ROOT.collapseTitle($t,null,true)
 
 
 
-//// Made by Oomtility Make 1.2.6 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.2.7 //\\//\\ http://oomtility.loop.coop //////////

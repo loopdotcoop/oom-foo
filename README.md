@@ -2,8 +2,8 @@
 
 #### Initial test of the oom-hub architecture
 
-+ __Last update:__  2018/02/17 <!-- OOMBUMPABLE -->
-+ __Version:__      1.2.6 <!-- OOMBUMPABLE -->
++ __Last update:__  2018/02/18 <!-- OOMBUMPABLE -->
++ __Version:__      1.2.7 <!-- OOMBUMPABLE -->
 
 [Homepage](http://oom-foo.loop.coop/) &nbsp;
 [Repo](https://github.com/loopdotcoop/oom-foo) &nbsp;
@@ -80,6 +80,8 @@ Designed, developed and authored by Rich Plastow for Loop.Coop.
   - jQuery 3.3.1 (slim)
   - Vue 2.5.13
   - A-Frame 0.7.0
+  - Chai 4.1.2
+  - Mocha 5.0.1 @TODO minify
   - Promise Polyfill (for IE11)
   - ECMASwitch
 

@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.6 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.7 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 "use strict";
 !function(ROOT) {
@@ -6,24 +6,31 @@
   if ('function' !== typeof jQuery)
     throw Error('jQuery not found');
   jQuery(function($) {
-    title('Bases Browser');
-    test('+ve Oom.enduserMainVue', function(next) {
-      var Class = ROOT.Oom;
-      var $test = $('<h1 id="test"><oom-test>Loading...</oom-test></h1>');
-      $('body').append($test);
-      console.log($test);
-      Vue.component('oom-test', Class.enduserMainVue);
-      new Vue({el: '#test'});
-      var expected = '\n  ${this.stat.NAME} is Oom' + '\n  {{stat.NAME}} is Oom' + '\n  {{stat.instTally}} is 1\n';
-      is(($('#ok')[0] && expected === $('#ok').text()), 'div#ok exists and contains the expected text');
-    }, true);
-    var $t = $('.kludjs-title').last();
-    if ($t[0])
-      ROOT.collapseTitle($t, null, true);
+    var eq = chai.assert.strictEqual,
+        ok = chai.assert.isOk;
+    describe("1st Browser", function() {
+      describe("+ve Oom class", function() {
+        it("should be a class", function() {
+          var Class = ROOT.Oom,
+              stat = Class.stat;
+          eq('function', (typeof Class === 'undefined' ? 'undefined' : $traceurRuntime.typeof(Class)), 'Oom should be a function');
+        });
+      });
+    });
+    describe("2nd Browser", function() {
+      describe("+ve Oom class", function() {
+        it("should be a class", function() {
+          var Class = ROOT.Oom,
+              stat = Class.stat;
+          eq('function', (typeof Class === 'undefined' ? 'undefined' : $traceurRuntime.typeof(Class)), 'Oom should be a function');
+        });
+      });
+    });
   });
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
 !function(ROOT) {
   'use strict';
+  return;
   if ('function' !== typeof jQuery)
     throw Error('jQuery not found');
   jQuery(function($) {
@@ -39,6 +46,7 @@
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
 !function(ROOT) {
   'use strict';
+  return;
   if ('function' !== typeof jQuery)
     throw Error('jQuery not found');
   jQuery(function($) {
@@ -56,4 +64,4 @@
 
 
 
-//// Made by Oomtility Make 1.2.6 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.2.7 //\\//\\ http://oomtility.loop.coop //////////

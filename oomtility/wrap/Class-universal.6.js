@@ -12,6 +12,7 @@ isApp ? `
 `:''
 }}}
 !function (ROOT) { 'use strict'
+return //@TODO convert to Mocha
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
 title('${{classname}} Universal')

@@ -7,6 +7,7 @@ isApp ? `
 `:''
 }}}
 !function (ROOT) { 'use strict'
+return //@TODO convert to Mocha
 title('${{classname}} Nonbrowser')
 const Class = ${{classname}}
 

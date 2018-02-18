@@ -2,7 +2,7 @@
 
 
 
-//// Oom.Foo //// 1.2.6 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.7 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -331,4 +331,4 @@ function apiToAframeSchema (api) {
 
 
 
-//// Made by Oomtility Make 1.2.6 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.2.7 //\\//\\ http://oomtility.loop.coop //////////

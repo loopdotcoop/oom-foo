@@ -1,6 +1,7 @@
-//// Oom.Foo //// 1.2.6 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.7 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
+return //@TODO convert to Mocha
 title('Oom.Foo.Router Nonbrowser')
 const Class = Oom.Foo.Router
 
