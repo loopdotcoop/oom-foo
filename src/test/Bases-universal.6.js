@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.8 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.9 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 ROOT.testify = testify // make `testify()` available to all test files
@@ -96,8 +96,8 @@ if (LOADED_FIRST)
     test('+ve Oom class, defined in this module', () => {
         const Class = ROOT.Oom, stat = Class.stat
         tryHardSet(stat, 'VERSION,REMARKS', 'Changed!')
-        is( ('1.2.8' === stat.VERSION) // OOMBUMPABLE
-          , 'stat.VERSION is 1.2.8') // OOMBUMPABLE
+        is( ('1.2.9' === stat.VERSION) // OOMBUMPABLE
+          , 'stat.VERSION is 1.2.9') // OOMBUMPABLE
         is( ('Base class for all Oom classes' === stat.REMARKS)
           , 'stat.REMARKS is \'Base class for all Oom classes\'')
     })
@@ -130,8 +130,8 @@ test('+ve Oom.Foo class', () => {
       , 'name and stat.NAME are Oom.Foo')
     is( ('http://oom-foo.loop.coop/' === stat.HOMEPAGE)
       , 'stat.HOMEPAGE is \'http://oom-foo.loop.coop/\'')
-    is( ('1.2.8' === stat.VERSION) // OOMBUMPABLE
-      , 'stat.VERSION is 1.2.8') // OOMBUMPABLE
+    is( ('1.2.9' === stat.VERSION) // OOMBUMPABLE
+      , 'stat.VERSION is 1.2.9') // OOMBUMPABLE
     //@TODO more tests
 })
 

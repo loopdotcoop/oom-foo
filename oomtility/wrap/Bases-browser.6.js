@@ -2,22 +2,81 @@ ${{topline}}
 
 !function (ROOT) { 'use strict'
 const { chai, mocha, assert, expect, describe, it, eq, ok } = ROOT.testify()
-describe(`Bases Browser`, () => {
+describe('Bases Browser', () => {
 
 
 
 
-describe(`+ve Oom class`, () => {
-    const Class = Oom, stat = Class.stat
-    it(`@TODO`, () => {
-        ok(true, '@TODO')
-    })
+beforeEach(function () {
+})
+
+afterEach(function () {
 })
 
 
 
+describe('+ve Oom.enduserMainVue', function () {
+    const
+        Class = ROOT.Oom
+      , testsAfterUpdate = [] // push a test in here before causing a component mod
 
-})//describe()
+    $('body').append('<h1 id="test"><oom-test>Loading...</oom-test></h1>')
+    initVueTests(Class.enduserMainVue, testAfterMounted, testsAfterUpdate)
+
+    beforeEach(function () {
+    })
+
+    afterEach(function () {
+    })
+
+    after(function () {
+        $('#test').remove()
+    })
+
+    function testAfterMounted () {
+
+        //// The current `instTally` depends on what previous test suites did.
+        const initialInstTally = Class.stat.instTally
+
+        it('Generates a viable Vue component', function () {
+            eq( 1, $('#test').length      , 'div#test exists')
+            const lines = textToLines( $('#test').text() )
+            eq(lines[0], '${this.stat.NAME} is Oom'
+              , 'First line bakes stat.NAME into template')
+            eq(lines[1], '{{stat.NAME}} is Oom'
+              , 'Second line gets stat.NAME via Vue')
+            eq(lines[2], '{{stat.instTally}} is 0'
+              , 'Third line gets stat.instTally via Vue')
+        })
+
+
+        it('Vue updates HTML when static properties change', function (done) {
+
+            //// Schedule a modification on Vue’s next tick. If we did it right
+            //// now, it might modify the state that the previous test sees.
+            const that = this
+            Vue.nextTick( x => {
+                testsAfterUpdate.push( updateTestFn.bind(that) )
+                const instance = new Class()
+            })
+
+            //// Tests HTML after Vue has finished processing the modification.
+            function updateTestFn () {
+                const lines = textToLines( $('#test').text() )
+                eq(lines[2], '{{stat.instTally}} is 1'
+                  , 'Third line shows Vue sees stat.instTally has updated')
+                done()
+            }
+        })
+
+    }
+
+})//describe('+ve Oom.enduserMainVue')
+
+
+
+
+})//describe('Bases Browser')
 
 
 //// Calling `mocha.run()` here will run all of the test files, including the
@@ -27,45 +86,34 @@ $(mocha.run)
 
 }(window)
 
-/*
-!function (ROOT) { 'use strict'
-if ('function' !== typeof jQuery) throw Error('jQuery not found')
-jQuery( function($) {
-title('Bases Browser')
 
 
 
-
-test('+ve Oom.enduserMainVue', function (next) {
-    const Class = ROOT.Oom
-    const $test = $('<h1 id="test"><oom-test>Loading...</oom-test></h1>')
-    $('body').append($test)
-    console.log($test);
-    Vue.component('oom-test', Class.enduserMainVue)
-    new Vue({ el: '#test' })
-    const expected =
-        '\n  ${this.stat.NAME} is Oom'
-      + '\n  {{stat.NAME}} is Oom'
-      + '\n  {{stat.instTally}} is 1\n'
-    is( ( $('#ok')[0] && expected === $('#ok').text() )
-      , 'div#ok exists and contains the expected text')
-    // setTimeout( function () {
-    //     const expected =
-    //         '\n  ${this.stat.NAME} is Oom'
-    //       + '\n  {{stat.NAME}} is Oom'
-    //       + '\n  {{stat.instTally}} is 2\n'
-    //     is( ( expected === $('#ok').text() )
-    //       , 'div#ok shows instTally has incremented')
-    //     next()
-    // }, 100)
-    //@TODO more tests
-}, true) // `true` enables async
+//// UTILITY
 
 
+//// Sets up a Vue component for testing. When Vue is ready, it will run
+//// `testAfterMounted()`, which should
+function initVueTests (
+    origDefinition   // the original Vue component def, eg `Oom.devMainVue`
+  , testAfterMounted // a function to run after Vue finishes its initial render
+  , testsAfterUpdate // array of tests to run after the component is modified
+) {
+    const
+        definition = Object.assign({}, origDefinition, {
+            updated: function () { // wraps original `update()` and runs tests
+                if (origDefinition.updated) origDefinition.updated.call(this)
+                let utFn; while( utFn = testsAfterUpdate.shift() ) utFn()
+        } })
+      , cmp = Vue.component('oom-test', definition)
+      , vue = new Vue({
+            el: '#test'
+          , mounted: testAfterMounted
+        })
+}
 
 
-//// Collapse final test section if it passed. See src/test/Bases-universal.6.js
-let $t=$('.kludjs-title').last();if($t[0])ROOT.collapseTitle($t,null,true)
-})//jQuery()
-}( 'object' === typeof global ? global : this ) // `window` in a browser
-*/
+//// Converts a multiline string to an array of strings, and trims whitespace.
+function textToLines (text) {
+    return text.trim().split('\n').map( l => l.trim() )
+}

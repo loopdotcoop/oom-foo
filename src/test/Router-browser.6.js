@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.8 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.9 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
 const { chai, mocha, assert, expect, describe, it, eq, ok } = ROOT.testify()

@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.8 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.9 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
     NAME: 'Oom.Foo',
-    VERSION: '1.2.8',
+    VERSION: '1.2.9',
     HOMEPAGE: 'http://oom-foo.loop.coop/',
     REMARKS: 'Initial test of the oom-hub architecture',
     LOADED_FIRST: !ROOT.Oom
@@ -322,4 +322,4 @@
 
 
 
-//// Made by Oomtility Make 1.2.8 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.2.9 //\\//\\ http://oomtility.loop.coop //////////
