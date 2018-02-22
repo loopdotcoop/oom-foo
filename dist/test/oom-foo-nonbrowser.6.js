@@ -2,23 +2,29 @@
 
 
 
-//// Oom.Foo //// 1.2.7 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.8 //// February 2018 //// http://oom-foo.loop.coop/ //////
+
 
 !function (ROOT) { 'use strict'
-return //@TODO convert to Mocha
-title('Oom.Foo.Post Nonbrowser')
-const Class = Oom.Foo.Post
+const { chai, mocha, assert, expect, describe, it, eq, ok } = ROOT.testify()
+describe(`Oom.Foo.Post Nonbrowser`, () => {
 
 
 
 
-test('Nonbrowser test the Oom.Foo.Post class', () => {
-    is(true, '@TODO')
+const Class = Oom.Foo.Post, stat = Class.stat
+
+
+describe(`+ve Oom.Foo.Post class`, () => {
+    it(`should be a class`, () => {
+        eq('function', typeof Class, 'Oom.Foo.Post should be a function')
+    })
 })
 
 
 
 
+})//describe()
 }( 'object' === typeof global ? global : this ) // `window` in a browser
 
 
@@ -28,26 +34,32 @@ test('Nonbrowser test the Oom.Foo.Post class', () => {
 
 
 
-//// Oom.Foo //// 1.2.7 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.8 //// February 2018 //// http://oom-foo.loop.coop/ //////
+
 
 !function (ROOT) { 'use strict'
-return //@TODO convert to Mocha
-title('Oom.Foo.Router Nonbrowser')
-const Class = Oom.Foo.Router
+const { chai, mocha, assert, expect, describe, it, eq, ok } = ROOT.testify()
+describe(`Oom.Foo.Router Nonbrowser`, () => {
 
 
 
 
-test('Nonbrowser test the Oom.Foo.Router class', () => {
-    is(true, '@TODO')
+const Class = Oom.Foo.Router, stat = Class.stat
+
+
+describe(`+ve Oom.Foo.Router class`, () => {
+    it(`should be a class`, () => {
+        eq('function', typeof Class, 'Oom.Foo.Router should be a function')
+    })
 })
 
 
 
 
+})//describe()
 }( 'object' === typeof global ? global : this ) // `window` in a browser
 
 
 
 
-//// Made by Oomtility Make 1.2.7 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.2.8 //\\//\\ http://oomtility.loop.coop //////////

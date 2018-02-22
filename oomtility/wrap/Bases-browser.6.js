@@ -1,33 +1,31 @@
 ${{topline}}
 
 !function (ROOT) { 'use strict'
-if ('function' !== typeof jQuery) throw Error('jQuery not found')
-jQuery( function($) {
+const { chai, mocha, assert, expect, describe, it, eq, ok } = ROOT.testify()
+describe(`Bases Browser`, () => {
 
-const
-    eq = chai.assert.strictEqual
-  , ok = chai.assert.isOk
 
-describe(`1st Browser`, () => {
-    describe(`+ve Oom class`, () => {
-        it(`should be a class`, () => {
-            const Class = ROOT.Oom, stat = Class.stat
-            eq('function', typeof Class, 'Oom should be a function')
-        })
+
+
+describe(`+ve Oom class`, () => {
+    const Class = Oom, stat = Class.stat
+    it(`@TODO`, () => {
+        ok(true, '@TODO')
     })
 })
 
-describe(`2nd Browser`, () => {
-    describe(`+ve Oom class`, () => {
-        it(`should be a class`, () => {
-            const Class = ROOT.Oom, stat = Class.stat
-            eq('function', typeof Class, 'Oom should be a function')
-        })
-    })
-})
 
-})//jQuery()
-}( 'object' === typeof global ? global : this ) // `window` in a browser
+
+
+})//describe()
+
+
+//// Calling `mocha.run()` here will run all of the test files, including the
+//// ones which haven’t loaded yet. Note that `mocha.run()` does not need to be
+//// called when running Mocha tests under Node.js.
+$(mocha.run)
+
+}(window)
 
 /*
 !function (ROOT) { 'use strict'

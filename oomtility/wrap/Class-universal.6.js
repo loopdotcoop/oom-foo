@@ -1,5 +1,62 @@
 ${{topline}}
 
+!function (ROOT) { 'use strict'
+const { chai, mocha, assert, expect, describe, it, eq, ok } = ROOT.testify()
+describe(`${{classname}} Universal`, () => {
+
+
+
+
+const Class = ${{classname}}, stat = Class.stat
+
+//// Instantiates a typical ${{classname}} instance for unit testing its methods.
+Class.testInstanceFactory = () =>
+    new Class({
+        firstProp: 100
+      , secondProp: new Date
+    },{
+        /* @TODO hub API */
+    })
+
+
+
+
+describe(`+ve ${{classname}} class`, () => {
+
+    it(`should be a class`, () => {
+        ok('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
+        ok('function' === typeof Class, '${{classname}} is a function')
+        try { Class.name = stat.NAME = 'Changed!'} catch (e) {}
+        ok( ('${{classname}}' === Class.name && '${{classname}}' === stat.NAME)
+          , 'name and stat.NAME are ${{classname}}')
+    })
+
+})
+
+
+
+
+describe('+ve ${{classname}} instance', () => {
+
+    it(`should be an instance`, () => {
+        const instance = Class.testInstanceFactory()
+        const attr = instance.attr
+        ok(instance instanceof Class, 'Is an instance of ${{classname}}')
+        ok(Class === instance.constructor, '`constructor` is ${{classname}}')
+        ok('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
+          , '`attr.UUID` is a six-character string')
+        // is('object' === typeof instance.hub, '`hub` property is an object')
+    })
+
+})
+
+
+
+
+})//describe()
+}( 'object' === typeof global ? global : this ) // `window` in a browser
+
+/*
 ${{{
 isApp ? `
 //// Node.js:    7.2.0
@@ -27,7 +84,7 @@ Class.testInstanceFactory = () =>
         firstProp: 100
       , secondProp: new Date
     },{
-        /* @TODO hub API */
+        // @TODO hub API
     })
 
 
@@ -59,3 +116,4 @@ test('+ve ${{classname}} instance', () => {
 
 })//jQuery()
 }( 'object' === typeof global ? global : this ) // `window` in a browser
+*/

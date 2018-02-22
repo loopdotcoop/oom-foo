@@ -2,82 +2,50 @@
 
 
 
-//// Oom.Foo //// 1.2.7 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.8 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
-if ('function' !== typeof ROOT.jQuery) ROOT.jQuery = fn => fn()
-ROOT.jQuery( function($) {
-
-const
-    chai     = ROOT.chai     || require('chai')
-  , mocha    = ROOT.mocha    || require('mocha')
-  , assert   = ROOT.assert   || chai.assert
-  , expect   = ROOT.expect   || chai.expect
-  , describe = ROOT.describe || mocha.describe
-  , it       = ROOT.it       || mocha.it
-  , eq       = assert.strictEqual
-  , ok       = assert.isOk
-
+ROOT.testify = testify // make `testify()` available to all test files
+const { chai, mocha, assert, expect, describe, it, eq, ok } = ROOT.testify()
 describe(`Bases Universal`, () => {
-    describe(`+ve Oom class`, () => {
-        it(`should be a class`, () => {
-            const Class = ROOT.Oom, stat = Class.stat
-            eq('function', typeof Class, 'Oom should be a function')
-        })
-    })
-})
 
-describe(`Another Universal`, () => {
-    describe(`+ve Oom class`, () => {
-        it(`should be a class`, () => {
-            const Class = ROOT.Oom, stat = Class.stat
-            eq('function', typeof Class, 'Oom should be a function')
-        })
+
+
+
+describe(`+ve Oom class`, () => {
+    it(`should be a class`, () => {
+        const Class = ROOT.Oom, stat = Class.stat
+        eq('function', typeof Class, 'Oom should be a function')
     })
 })
 
 
-if ('object' !== typeof global) mocha.run() // is browser @TODO better test
 
 
-
-/*
-describe(`Test specific browser '${TestClassName}'`, () => {
-
-    describe('perform() response', () => {
-        const ctx = new (ROOT.AudioContext||ROOT.webkitAudioContext)()
-        const cache = {}
-
-        it(`With no events, promise should respond with expected buffers`, () => {
-            const testInstance = new TestClass({
-                audioContext:     ctx
-              , sharedCache:      cache
-              , samplesPerBuffer: 2340
-              , sampleRate:       23400
-              , channelCount:     2
-            })
-            return testInstance.perform({
-                bufferCount:     8
-              , cyclesPerBuffer: 234
-              , isLooping:       true
-              , events:          []
-            }).then( buffers => {
-                buffers.forEach( (buffer,i) => {
-                    eq( buffer.id, undefined, `buffers[${i}].id should not exist` )
-                    const channelDataL = buffer.data.getChannelData(0)
-                    const channelDataR = buffer.data.getChannelData(1)
-                    // if (0 == i) {
-                    //     const ui8 = new Uint8Array(channelDataL.buffer);
-                    //     console.log('first two F32 (buffers[0] left channel)', channelDataL.slice(0,2));
-                    //     console.log('first eight UI8 (buffers[0] left channel)', ui8.slice(0,8));
-                    //     console.log('last two F32 (buffers[0] left channel)', channelDataL.slice(-2));
-                    //     console.log('last eight UI8 (buffers[0] left channel)', ui8.slice(-8));
-                    // }
-                    eq(channelDataL.length, 2340, `buffers[${i}].data.getChannelData(0) (left channel) has wrong length`)
-*/
-
-})//jQuery()
+})//describe()
 }( 'object' === typeof global ? global : this ) // `window` in a browser
+
+
+
+
+//// UTILITY
+
+//// Reduces boilerplate at the top of the test files. Bases-browser.6.js adds
+//// it to global scope, so that the following test files can use it.
+function testify () {
+    this.chai  = this.chai  || require('chai')  // only `require()` Chai once
+    this.mocha = this.mocha || require('mocha') // only `require()` Mocha once
+    return {
+        chai
+      , mocha
+      , assert:   chai.assert
+      , expect:   chai.expect
+      , eq:       chai.assert.strictEqual
+      , ok:       chai.assert.isOk
+      , describe: this.describe || mocha.describe // browser || Node.js
+      , it:       this.it       || mocha.it       // browser || Node.js
+    }
+}
 
 /*
 
@@ -132,8 +100,8 @@ if (LOADED_FIRST)
     test('+ve Oom class, defined in this module', () => {
         const Class = ROOT.Oom, stat = Class.stat
         tryHardSet(stat, 'VERSION,REMARKS', 'Changed!')
-        is( ('1.2.7' === stat.VERSION) // OOMBUMPABLE
-          , 'stat.VERSION is 1.2.7') // OOMBUMPABLE
+        is( ('1.2.8' === stat.VERSION) // OOMBUMPABLE
+          , 'stat.VERSION is 1.2.8') // OOMBUMPABLE
         is( ('Base class for all Oom classes' === stat.REMARKS)
           , 'stat.REMARKS is \'Base class for all Oom classes\'')
     })
@@ -166,8 +134,8 @@ test('+ve Oom.Foo class', () => {
       , 'name and stat.NAME are Oom.Foo')
     is( ('http://oom-foo.loop.coop/' === stat.HOMEPAGE)
       , 'stat.HOMEPAGE is \'http://oom-foo.loop.coop/\'')
-    is( ('1.2.7' === stat.VERSION) // OOMBUMPABLE
-      , 'stat.VERSION is 1.2.7') // OOMBUMPABLE
+    is( ('1.2.8' === stat.VERSION) // OOMBUMPABLE
+      , 'stat.VERSION is 1.2.8') // OOMBUMPABLE
     //@TODO more tests
 })
 
@@ -299,8 +267,65 @@ function extendKludJs () {
 
 
 
-//// Oom.Foo //// 1.2.7 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.8 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
+!function (ROOT) { 'use strict'
+const { chai, mocha, assert, expect, describe, it, eq, ok } = ROOT.testify()
+describe(`Oom.Foo.Post Universal`, () => {
+
+
+
+
+const Class = Oom.Foo.Post, stat = Class.stat
+
+//// Instantiates a typical Oom.Foo.Post instance for unit testing its methods.
+Class.testInstanceFactory = () =>
+    new Class({
+        firstProp: 100
+      , secondProp: new Date
+    },{
+        /* @TODO hub API */
+    })
+
+
+
+
+describe(`+ve Oom.Foo.Post class`, () => {
+
+    it(`should be a class`, () => {
+        ok('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
+        ok('function' === typeof Class, 'Oom.Foo.Post is a function')
+        try { Class.name = stat.NAME = 'Changed!'} catch (e) {}
+        ok( ('Oom.Foo.Post' === Class.name && 'Oom.Foo.Post' === stat.NAME)
+          , 'name and stat.NAME are Oom.Foo.Post')
+    })
+
+})
+
+
+
+
+describe('+ve Oom.Foo.Post instance', () => {
+
+    it(`should be an instance`, () => {
+        const instance = Class.testInstanceFactory()
+        const attr = instance.attr
+        ok(instance instanceof Class, 'Is an instance of Oom.Foo.Post')
+        ok(Class === instance.constructor, '`constructor` is Oom.Foo.Post')
+        ok('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
+          , '`attr.UUID` is a six-character string')
+        // is('object' === typeof instance.hub, '`hub` property is an object')
+    })
+
+})
+
+
+
+
+})//describe()
+}( 'object' === typeof global ? global : this ) // `window` in a browser
+
+/*
 !function (ROOT) { 'use strict'
 return //@TODO convert to Mocha
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -317,7 +342,7 @@ Class.testInstanceFactory = () =>
         firstProp: 100
       , secondProp: new Date
     },{
-        /* @TODO hub API */
+        // @TODO hub API
     })
 
 
@@ -349,6 +374,7 @@ test('+ve Oom.Foo.Post instance', () => {
 
 })//jQuery()
 }( 'object' === typeof global ? global : this ) // `window` in a browser
+*/
 
 
 
@@ -357,8 +383,65 @@ test('+ve Oom.Foo.Post instance', () => {
 
 
 
-//// Oom.Foo //// 1.2.7 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.8 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
+!function (ROOT) { 'use strict'
+const { chai, mocha, assert, expect, describe, it, eq, ok } = ROOT.testify()
+describe(`Oom.Foo.Router Universal`, () => {
+
+
+
+
+const Class = Oom.Foo.Router, stat = Class.stat
+
+//// Instantiates a typical Oom.Foo.Router instance for unit testing its methods.
+Class.testInstanceFactory = () =>
+    new Class({
+        firstProp: 100
+      , secondProp: new Date
+    },{
+        /* @TODO hub API */
+    })
+
+
+
+
+describe(`+ve Oom.Foo.Router class`, () => {
+
+    it(`should be a class`, () => {
+        ok('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
+        ok('function' === typeof Class, 'Oom.Foo.Router is a function')
+        try { Class.name = stat.NAME = 'Changed!'} catch (e) {}
+        ok( ('Oom.Foo.Router' === Class.name && 'Oom.Foo.Router' === stat.NAME)
+          , 'name and stat.NAME are Oom.Foo.Router')
+    })
+
+})
+
+
+
+
+describe('+ve Oom.Foo.Router instance', () => {
+
+    it(`should be an instance`, () => {
+        const instance = Class.testInstanceFactory()
+        const attr = instance.attr
+        ok(instance instanceof Class, 'Is an instance of Oom.Foo.Router')
+        ok(Class === instance.constructor, '`constructor` is Oom.Foo.Router')
+        ok('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
+          , '`attr.UUID` is a six-character string')
+        // is('object' === typeof instance.hub, '`hub` property is an object')
+    })
+
+})
+
+
+
+
+})//describe()
+}( 'object' === typeof global ? global : this ) // `window` in a browser
+
+/*
 !function (ROOT) { 'use strict'
 return //@TODO convert to Mocha
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -375,7 +458,7 @@ Class.testInstanceFactory = () =>
         firstProp: 100
       , secondProp: new Date
     },{
-        /* @TODO hub API */
+        // @TODO hub API
     })
 
 
@@ -407,8 +490,9 @@ test('+ve Oom.Foo.Router instance', () => {
 
 })//jQuery()
 }( 'object' === typeof global ? global : this ) // `window` in a browser
+*/
 
 
 
 
-//// Made by Oomtility Make 1.2.7 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.2.8 //\\//\\ http://oomtility.loop.coop //////////

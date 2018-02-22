@@ -33,3 +33,4 @@
 1.2.5 `Oom` has `stat.instTally` and `attr.INST_INDEX`
 1.2.6 Initial `Oom` Browser test, testing a Vue component
 1.2.7 Using Chai and Mocha instead of klud.js
+1.2.8 All wrap/Bases-* and wrap/Class-* tests use Mocha (and no jQuery)

@@ -1,5 +1,30 @@
 ${{topline}}
 
+!function (ROOT) { 'use strict'
+const { chai, mocha, assert, expect, describe, it, eq, ok } = ROOT.testify()
+describe(`${{classname}} Browser`, () => {
+
+
+
+
+const Class = ${{classname}}, stat = Class.stat
+
+
+describe(`+ve ${{classname}} class`, () => {
+    it(`@TODO`, () => {
+        ok(true, '@TODO')
+    })
+})
+
+
+
+
+
+})//describe()
+}(window)
+
+
+/*
 ${{{
 isApp ? `
 //// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
@@ -29,3 +54,4 @@ test('Browser test the ${{classname}} class', () => {
 let $t=$('.kludjs-title').last();if($t[0])ROOT.collapseTitle($t,null,true)
 })//jQuery()
 }( 'object' === typeof global ? global : this ) // `window` in a browser
+*/

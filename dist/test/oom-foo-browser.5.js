@@ -1,67 +1,72 @@
-//// Oom.Foo //// 1.2.7 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.8 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 "use strict";
 !function(ROOT) {
   'use strict';
-  if ('function' !== typeof jQuery)
-    throw Error('jQuery not found');
-  jQuery(function($) {
-    var eq = chai.assert.strictEqual,
-        ok = chai.assert.isOk;
-    describe("1st Browser", function() {
-      describe("+ve Oom class", function() {
-        it("should be a class", function() {
-          var Class = ROOT.Oom,
-              stat = Class.stat;
-          eq('function', (typeof Class === 'undefined' ? 'undefined' : $traceurRuntime.typeof(Class)), 'Oom should be a function');
-        });
-      });
-    });
-    describe("2nd Browser", function() {
-      describe("+ve Oom class", function() {
-        it("should be a class", function() {
-          var Class = ROOT.Oom,
-              stat = Class.stat;
-          eq('function', (typeof Class === 'undefined' ? 'undefined' : $traceurRuntime.typeof(Class)), 'Oom should be a function');
-        });
+  var $__0 = ROOT.testify(),
+      chai = $__0.chai,
+      mocha = $__0.mocha,
+      assert = $__0.assert,
+      expect = $__0.expect,
+      describe = $__0.describe,
+      it = $__0.it,
+      eq = $__0.eq,
+      ok = $__0.ok;
+  describe("Bases Browser", function() {
+    describe("+ve Oom class", function() {
+      var Class = Oom,
+          stat = Class.stat;
+      it("@TODO", function() {
+        ok(true, '@TODO');
       });
     });
   });
-}('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
+  $(mocha.run);
+}(window);
 !function(ROOT) {
   'use strict';
-  return;
-  if ('function' !== typeof jQuery)
-    throw Error('jQuery not found');
-  jQuery(function($) {
-    title('Oom.Foo.Post Browser');
-    var Class = Oom.Foo.Post;
-    test('Browser test the Oom.Foo.Post class', function() {
-      is(true, '@TODO');
+  var $__0 = ROOT.testify(),
+      chai = $__0.chai,
+      mocha = $__0.mocha,
+      assert = $__0.assert,
+      expect = $__0.expect,
+      describe = $__0.describe,
+      it = $__0.it,
+      eq = $__0.eq,
+      ok = $__0.ok;
+  describe("Oom.Foo.Post Browser", function() {
+    var Class = Oom.Foo.Post,
+        stat = Class.stat;
+    describe("+ve Oom.Foo.Post class", function() {
+      it("@TODO", function() {
+        ok(true, '@TODO');
+      });
     });
-    var $t = $('.kludjs-title').last();
-    if ($t[0])
-      ROOT.collapseTitle($t, null, true);
   });
-}('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
+}(window);
 !function(ROOT) {
   'use strict';
-  return;
-  if ('function' !== typeof jQuery)
-    throw Error('jQuery not found');
-  jQuery(function($) {
-    title('Oom.Foo.Router Browser');
-    var Class = Oom.Foo.Router;
-    test('Browser test the Oom.Foo.Router class', function() {
-      is(true, '@TODO');
+  var $__0 = ROOT.testify(),
+      chai = $__0.chai,
+      mocha = $__0.mocha,
+      assert = $__0.assert,
+      expect = $__0.expect,
+      describe = $__0.describe,
+      it = $__0.it,
+      eq = $__0.eq,
+      ok = $__0.ok;
+  describe("Oom.Foo.Router Browser", function() {
+    var Class = Oom.Foo.Router,
+        stat = Class.stat;
+    describe("+ve Oom.Foo.Router class", function() {
+      it("@TODO", function() {
+        ok(true, '@TODO');
+      });
     });
-    var $t = $('.kludjs-title').last();
-    if ($t[0])
-      ROOT.collapseTitle($t, null, true);
   });
-}('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
+}(window);
 
 
 
 
-//// Made by Oomtility Make 1.2.7 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.2.8 //\\//\\ http://oomtility.loop.coop //////////

@@ -2,36 +2,34 @@
 
 
 
-//// Oom.Foo //// 1.2.7 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.8 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
 !function (ROOT) { 'use strict'
-if ('function' !== typeof jQuery) throw Error('jQuery not found')
-jQuery( function($) {
+const { chai, mocha, assert, expect, describe, it, eq, ok } = ROOT.testify()
+describe(`Bases Browser`, () => {
 
-const
-    eq = chai.assert.strictEqual
-  , ok = chai.assert.isOk
 
-describe(`1st Browser`, () => {
-    describe(`+ve Oom class`, () => {
-        it(`should be a class`, () => {
-            const Class = ROOT.Oom, stat = Class.stat
-            eq('function', typeof Class, 'Oom should be a function')
-        })
+
+
+describe(`+ve Oom class`, () => {
+    const Class = Oom, stat = Class.stat
+    it(`@TODO`, () => {
+        ok(true, '@TODO')
     })
 })
 
-describe(`2nd Browser`, () => {
-    describe(`+ve Oom class`, () => {
-        it(`should be a class`, () => {
-            const Class = ROOT.Oom, stat = Class.stat
-            eq('function', typeof Class, 'Oom should be a function')
-        })
-    })
-})
 
-})//jQuery()
-}( 'object' === typeof global ? global : this ) // `window` in a browser
+
+
+})//describe()
+
+
+//// Calling `mocha.run()` here will run all of the test files, including the
+//// ones which haven’t loaded yet. Note that `mocha.run()` does not need to be
+//// called when running Mocha tests under Node.js.
+$(mocha.run)
+
+}(window)
 
 /*
 !function (ROOT) { 'use strict'
@@ -83,8 +81,33 @@ let $t=$('.kludjs-title').last();if($t[0])ROOT.collapseTitle($t,null,true)
 
 
 
-//// Oom.Foo //// 1.2.7 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.8 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
+!function (ROOT) { 'use strict'
+const { chai, mocha, assert, expect, describe, it, eq, ok } = ROOT.testify()
+describe(`Oom.Foo.Post Browser`, () => {
+
+
+
+
+const Class = Oom.Foo.Post, stat = Class.stat
+
+
+describe(`+ve Oom.Foo.Post class`, () => {
+    it(`@TODO`, () => {
+        ok(true, '@TODO')
+    })
+})
+
+
+
+
+
+})//describe()
+}(window)
+
+
+/*
 !function (ROOT) { 'use strict'
 return //@TODO convert to Mocha
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -105,6 +128,7 @@ test('Browser test the Oom.Foo.Post class', () => {
 let $t=$('.kludjs-title').last();if($t[0])ROOT.collapseTitle($t,null,true)
 })//jQuery()
 }( 'object' === typeof global ? global : this ) // `window` in a browser
+*/
 
 
 
@@ -113,8 +137,33 @@ let $t=$('.kludjs-title').last();if($t[0])ROOT.collapseTitle($t,null,true)
 
 
 
-//// Oom.Foo //// 1.2.7 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.8 //// February 2018 //// http://oom-foo.loop.coop/ //////
 
+!function (ROOT) { 'use strict'
+const { chai, mocha, assert, expect, describe, it, eq, ok } = ROOT.testify()
+describe(`Oom.Foo.Router Browser`, () => {
+
+
+
+
+const Class = Oom.Foo.Router, stat = Class.stat
+
+
+describe(`+ve Oom.Foo.Router class`, () => {
+    it(`@TODO`, () => {
+        ok(true, '@TODO')
+    })
+})
+
+
+
+
+
+})//describe()
+}(window)
+
+
+/*
 !function (ROOT) { 'use strict'
 return //@TODO convert to Mocha
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -135,8 +184,9 @@ test('Browser test the Oom.Foo.Router class', () => {
 let $t=$('.kludjs-title').last();if($t[0])ROOT.collapseTitle($t,null,true)
 })//jQuery()
 }( 'object' === typeof global ? global : this ) // `window` in a browser
+*/
 
 
 
 
-//// Made by Oomtility Make 1.2.7 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.2.8 //\\//\\ http://oomtility.loop.coop //////////

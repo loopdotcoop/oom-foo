@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Test'
-    , VERSION  = '1.2.7'
+    , VERSION  = '1.2.8'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , HELP =
@@ -9,7 +9,7 @@ const NAME     = 'Oomtility Test'
 ${NAME} ${VERSION}
 ${'='.repeat( (NAME+VERSION).length+1 )}
 
-This Node.js script runs the ‘universal’ and ‘nonbrowser’ tests in ‘dist/test’.
+This Node.js script runs the ‘universal’ and ‘nonbrowser’ tests in ‘src/test’.
 It can also launch ‘support/test.html’ in your default browser.
 
 Installation
@@ -35,7 +35,7 @@ $ oomtest --version           # Show the current ${NAME} version
 $ oomtest                     # Run ‘universal’ and ‘nonbrowser’ tests in Node
 $ oomtest --browser           # Run Node tests and browser tests
 $ npm test                    # Same as \`$ oomtest\`
-$ npm test -- --browser       # Same as \`$ oomtest --browser\`
+$ npm test -- --browser       # Same as \`$ oomtest --browser\` (note extra \`--\`)
 
 Options
 -------
@@ -133,8 +133,10 @@ if (browser) {
 ////
 function subprocOut (data, prefix) {
     (data+'').split('\n').forEach( line => {
-        if ( '' === line.trim() ) return
-        if ( quieter && ! /\d+ passing \(\d+ms\)$/.test(line) ) return
+        if ( '' === line.trim() )
+            return // don’t output blank lines
+        if ( quieter && ! prefix && ! /^\s*\d+ passing \(\d+ms\)$/.test(line) )
+            return // in ‘quieter’ mode, only output errors or the final line
         console.log(prefix ? `${prefix}: ${line}` : line)
     })
 }

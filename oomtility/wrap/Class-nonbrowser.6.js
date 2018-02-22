@@ -1,24 +1,24 @@
 ${{topline}}
 
-${{{
-isApp ? `
-//// Node.js:    7.2.0
-//// Rhino:      @TODO get Rhino working
-`:''
-}}}
+
 !function (ROOT) { 'use strict'
-return //@TODO convert to Mocha
-title('${{classname}} Nonbrowser')
-const Class = ${{classname}}
+const { chai, mocha, assert, expect, describe, it, eq, ok } = ROOT.testify()
+describe(`${{classname}} Nonbrowser`, () => {
 
 
 
 
-test('Nonbrowser test the ${{classname}} class', () => {
-    is(true, '@TODO')
+const Class = ${{classname}}, stat = Class.stat
+
+
+describe(`+ve ${{classname}} class`, () => {
+    it(`should be a class`, () => {
+        eq('function', typeof Class, '${{classname}} should be a function')
+    })
 })
 
 
 
 
+})//describe()
 }( 'object' === typeof global ? global : this ) // `window` in a browser
