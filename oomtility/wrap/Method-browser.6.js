@@ -9,7 +9,7 @@ const Class = ${{classname}}
 
 
 
-test('Browser test the ${{methodname}}() method', () => {
+test('The ${{methodname}}() method', () => {
     is(true, '@TODO')
 })
 

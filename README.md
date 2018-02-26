@@ -3,7 +3,7 @@
 #### Initial test of the oom-hub architecture
 
 + __Last update:__  2018/02/26 <!-- OOMBUMPABLE -->
-+ __Version:__      1.2.10 <!-- OOMBUMPABLE -->
++ __Version:__      1.2.11 <!-- OOMBUMPABLE -->
 
 [Homepage](http://oom-foo.loop.coop/) &nbsp;
 [Repo](https://github.com/loopdotcoop/oom-foo) &nbsp;

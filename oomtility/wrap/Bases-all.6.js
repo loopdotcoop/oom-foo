@@ -11,7 +11,7 @@ ${{topline}}
 !function (ROOT) { 'use strict'
 ROOT.testify = testify // make `testify()` available to all test files
 const { describe, it, eq, is, tryHardSet } = ROOT.testify()
-describe('Bases Universal', function () {
+describe('Bases All', function () {
 
 
 //// Establish whether the ${{projectLC}} module’s definition of Oom is being used.
@@ -75,7 +75,7 @@ if (LOADED_FIRST)
 
         it('should have the same version as this ${{projectLC}} module', function(){try{
             tryHardSet(stat, 'VERSION', 'Changed!')
-            eq(stat.VERSION, '1.2.10', 'stat.VERSION is 1.2.9') // OOMBUMPABLE
+            eq(stat.VERSION, '1.2.11', 'stat.VERSION is 1.2.11') // OOMBUMPABLE
         }catch(e){console.error(e.message);throw e}})
 
     })
@@ -116,7 +116,7 @@ describe('+ve Oom instance', function () {
 
 
 
-})//describe('Bases Universal'
+})//describe('Bases All'
 }( 'object' === typeof global ? global : this ) // `window` in a browser
 
 
@@ -182,7 +182,7 @@ const LOADED_FIRST = ROOT.Oom.${{classname}}.stat.LOADED_FIRST
 
 
 //// Show a title for the first set of tests, with a ‘▶’ button for collapsing.
-title('Bases Universal')
+title('Bases All')
 
 
 

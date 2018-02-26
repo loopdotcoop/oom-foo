@@ -1,15 +1,15 @@
-//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.11 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 !function (ROOT) { 'use strict'
 const { describe, it, eq, is } = ROOT.testify()
-describe(`Oom.Foo.Router Universal`, () => {
+describe(`Oom.Foo.Post All`, () => {
 
 
 
 
-const Class = Oom.Foo.Router, stat = Class.stat
+const Class = Oom.Foo.Post, stat = Class.stat
 
-//// Instantiates a typical Oom.Foo.Router instance for unit testing its methods.
+//// Instantiates a typical Oom.Foo.Post instance for unit testing its methods.
 Class.testInstanceFactory = () =>
     new Class({
         firstProp: 100
@@ -21,14 +21,14 @@ Class.testInstanceFactory = () =>
 
 
 
-describe(`+ve Oom.Foo.Router class`, () => {
+describe(`+ve Oom.Foo.Post class`, () => {
 
     it(`should be a class`, () => {
         is('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
-        is('function' === typeof Class, 'Oom.Foo.Router is a function')
+        is('function' === typeof Class, 'Oom.Foo.Post is a function')
         try { Class.name = stat.NAME = 'Changed!'} catch (e) {}
-        is( ('Oom.Foo.Router' === Class.name && 'Oom.Foo.Router' === stat.NAME)
-          , 'name and stat.NAME are Oom.Foo.Router')
+        is( ('Oom.Foo.Post' === Class.name && 'Oom.Foo.Post' === stat.NAME)
+          , 'name and stat.NAME are Oom.Foo.Post')
     })
 
 })
@@ -36,13 +36,13 @@ describe(`+ve Oom.Foo.Router class`, () => {
 
 
 
-describe('+ve Oom.Foo.Router instance', () => {
+describe('+ve Oom.Foo.Post instance', () => {
 
     it(`should be an instance`, () => {
         const instance = Class.testInstanceFactory()
         const attr = instance.attr
-        is(instance instanceof Class, 'Is an instance of Oom.Foo.Router')
-        is(Class === instance.constructor, '`constructor` is Oom.Foo.Router')
+        is(instance instanceof Class, 'Is an instance of Oom.Foo.Post')
+        is(Class === instance.constructor, '`constructor` is Oom.Foo.Post')
         is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
           , '`attr.UUID` is a six-character string')
         // is('object' === typeof instance.hub, '`hub` property is an object')
@@ -61,13 +61,13 @@ describe('+ve Oom.Foo.Router instance', () => {
 return //@TODO convert to Mocha
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
-title('Oom.Foo.Router Universal')
-const Class = Oom.Foo.Router, stat = Class.stat
+title('Oom.Foo.Post All')
+const Class = Oom.Foo.Post, stat = Class.stat
 
 
 
 
-//// Instantiates a typical Oom.Foo.Router instance for unit testing its methods.
+//// Instantiates a typical Oom.Foo.Post instance for unit testing its methods.
 Class.testInstanceFactory = () =>
     new Class({
         firstProp: 100
@@ -79,22 +79,22 @@ Class.testInstanceFactory = () =>
 
 
 
-test('+ve Oom.Foo.Router class', () => {
+test('+ve Oom.Foo.Post class', () => {
     is('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
-    is('function' === typeof Class, 'Oom.Foo.Router is a function')
+    is('function' === typeof Class, 'Oom.Foo.Post is a function')
     try { Class.name = stat.NAME = 'Changed!'} catch (e) {}
-    is( ('Oom.Foo.Router' === Class.name && 'Oom.Foo.Router' === stat.NAME)
-      , 'name and stat.NAME are Oom.Foo.Router')
+    is( ('Oom.Foo.Post' === Class.name && 'Oom.Foo.Post' === stat.NAME)
+      , 'name and stat.NAME are Oom.Foo.Post')
 })
 
 
 
 
-test('+ve Oom.Foo.Router instance', () => {
+test('+ve Oom.Foo.Post instance', () => {
     const instance = Class.testInstanceFactory()
     const attr = instance.attr
-    is(instance instanceof Class, 'Is an instance of Oom.Foo.Router')
-    is(Class === instance.constructor, '`constructor` is Oom.Foo.Router')
+    is(instance instanceof Class, 'Is an instance of Oom.Foo.Post')
+    is(Class === instance.constructor, '`constructor` is Oom.Foo.Post')
     is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
       , '`attr.UUID` is a six-character string')
     // is('object' === typeof instance.hub, '`hub` property is an object')

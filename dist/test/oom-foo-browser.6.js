@@ -2,7 +2,7 @@
 
 
 
-//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.11 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 //// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
 //// Windows 7:  IE 9, Safari 5.1
@@ -119,7 +119,7 @@ function simulateInput ($input, val) {
 
 
 
-//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.11 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 !function (ROOT) { 'use strict'
 const { describe, it, eq, is } = ROOT.testify()
@@ -151,7 +151,7 @@ describe(`+ve Oom.Foo.Post class`, () => {
 
 
 
-//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.11 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 !function (ROOT) { 'use strict'
 const { describe, it, eq, is } = ROOT.testify()
@@ -179,4 +179,4 @@ describe(`+ve Oom.Foo.Router class`, () => {
 
 
 
-//// Made by Oomtility Make 1.2.10 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.11 //\\//\\ http://oomtility.loop.coop /////////

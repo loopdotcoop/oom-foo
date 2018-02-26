@@ -2,14 +2,14 @@
 
 
 
-//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.11 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 !function (ROOT) { 'use strict'
 
 //// Metadata for Oom.Foo
 const META = {
     NAME:     'Oom.Foo'
-  , VERSION:  '1.2.10' // OOMBUMPABLE
+  , VERSION:  '1.2.11' // OOMBUMPABLE
   , HOMEPAGE: 'http://oom-foo.loop.coop/'
   , REMARKS:  'Initial test of the oom-hub architecture'
   , LOADED_FIRST: ! ROOT.Oom // true if the Oom class is defined by this module
@@ -333,7 +333,7 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
 
 
 
-//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.11 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 !function (ROOT) { 'use strict'
 
@@ -499,7 +499,7 @@ KIT.define(Oom.Foo.Post.stat, META, { insts:0 })
 
 
 
-//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.11 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 !function (ROOT) { 'use strict'
 
@@ -661,4 +661,4 @@ KIT.define(Oom.Foo.Router.stat, META, { insts:0 })
 
 
 
-//// Made by Oomtility Make 1.2.10 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.11 //\\//\\ http://oomtility.loop.coop /////////

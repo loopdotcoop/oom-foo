@@ -3,7 +3,7 @@ ${{topline}}
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
-title('${{methodname}} Universal')
+title('${{methodname}} All')
 const Class = ${{classname}}
 
 

@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Make'
-    , VERSION  = '1.2.10'
+    , VERSION  = '1.2.11'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Made by ${NAME} ${VERSION} //\\\\//\\\\ `
@@ -46,9 +46,9 @@ Create Files
 5. Transpile ES6 files in ‘dist/demo/’ to ES5
 6. Concatenate files in ‘src/test/’ to:
    - ‘dist/test/project-browser.6.js’        (can only be run in a browser)
-   - ‘dist/test/project-nonbrowser.6.js’     (cannot be run in a browser)
-   - ‘dist/test/project-universal.6.js’      (can run anywhere)
-7. Transpile the ‘browser’ and ‘universal’ files to ES5
+   - ‘dist/test/project-node.6.js’           (cannot be run in a browser)
+   - ‘dist/test/project-all.6.js’            (can run anywhere)
+7. Transpile the ‘browser’ and ‘all’ files to ES5
 
 Edit Files
 ----------
@@ -228,13 +228,13 @@ fs.readdirSync('dist/test').forEach( name => {
 
 //// 6. Concatenate files in ‘src/test/’ to:
 tests = fs.readdirSync('src/test')
-es6 = { browser:[], nonbrowser:[], universal:[] }
+es6 = { browser:[], node:[], all:[] }
 tests.forEach( name => {
     if ( '.6.js' !== name.slice(-5) ) return
     let ua =
-        '-browser.6.js'    === name.slice(-13) ? es6.browser
-      : '-nonbrowser.6.js' === name.slice(-16) ? es6.nonbrowser
-      : '-universal.6.js'  === name.slice(-15) ? es6.universal
+        '-browser.6.js' === name.slice(-13) ? es6.browser
+      : '-node.6.js'    === name.slice(-10) ? es6.node
+      : '-all.6.js'     === name.slice(-9)  ? es6.all
       : []
     ua.push('//\\\\//\\\\ src/test/' + name)
     ua.push( fs.readFileSync('src/test/' + name)+'' )
@@ -244,28 +244,28 @@ tests.forEach( name => {
 es6.browser = es6.browser.join('\n\n\n\n')
 writeFileSyncAndTally(
     `dist/test/${projectLC}-browser.6.js`
-  , (es6.browser || `//// ${projectTC} ${projectV} has no browser tests`)
+  , (es6.browser || `//// ${projectTC} ${projectV} has no ‘browser’ tests`)
       + BYLINE
 )
 
-//// - ‘dist/test/project-nonbrowser.6.js’      (cannot be run in a browser)
-es6.nonbrowser = es6.nonbrowser.join('\n\n\n\n')
+//// - ‘dist/test/project-node.6.js’            (cannot be run in a browser)
+es6.node = es6.node.join('\n\n\n\n')
 writeFileSyncAndTally(
-    `dist/test/${projectLC}-nonbrowser.6.js`
-  , (es6.nonbrowser || `//// ${projectTC} ${projectV} has no nonbrowser tests`)
+    `dist/test/${projectLC}-node.6.js`
+  , (es6.node || `//// ${projectTC} ${projectV} has no ‘node’ tests`)
       + BYLINE
 )
 
-//// - ‘dist/test/project-universal.6.js’       (can run anywhere)
-es6.universal = es6.universal.join('\n\n\n\n')
+//// - ‘dist/test/project-all.6.js’             (can run anywhere)
+es6.all = es6.all.join('\n\n\n\n')
 writeFileSyncAndTally(
-    `dist/test/${projectLC}-universal.6.js`
-  , (es6.universal || `//// ${projectTC} ${projectV} has no universal tests`)
+    `dist/test/${projectLC}-all.6.js`
+  , (es6.all || `//// ${projectTC} ${projectV} has no ‘all’ tests`)
       + BYLINE
 )
 
 
-//// 7. Transpile the ‘browser’ and ‘universal’ files to ES5
+//// 7. Transpile the ‘browser’ and ‘all’ files to ES5
 if (! es6Only) {
     es5 = {}
     es5.browser = es6.browser
@@ -275,12 +275,12 @@ if (! es6Only) {
         `dist/test/${projectLC}-browser.5.js`
       , removeSourceMapRef( traceurFix(es5.browser) ) + BYLINE
     )
-    es5.universal = es6.universal
-      ? topline + '\n\n' + traceur.compile(es6.universal, { blockBinding:true })
-      : `//// ${projectTC} ${projectV} has no universal tests`
+    es5.all = es6.all
+      ? topline + '\n\n' + traceur.compile(es6.all, { blockBinding:true })
+      : `//// ${projectTC} ${projectV} has no ‘all’ tests`
     writeFileSyncAndTally(
-        `dist/test/${projectLC}-universal.5.js`
-      , removeSourceMapRef( traceurFix(es5.universal) ) + BYLINE
+        `dist/test/${projectLC}-all.5.js`
+      , removeSourceMapRef( traceurFix(es5.all) ) + BYLINE
     )
 }
 

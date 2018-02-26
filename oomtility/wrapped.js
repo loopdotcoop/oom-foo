@@ -13,7 +13,7 @@ const rxBinaryExt = module.exports.rxBinaryExt =
     new RegExp( '\\.' + BINARY_EXTS.join('$|\\.') + '$', 'i')
 
 const NAME     = 'Oomtility Wrapped'
-    , VERSION  = '1.2.10'
+    , VERSION  = '1.2.11'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
 
@@ -29,12 +29,12 @@ module.exports.writeApp6Js = function (configOrig, path) {
     module.exports.writeClass6Js(config, path)
 }
 
-module.exports.writeAppUniversal6Js = function (configOrig, path) {
+module.exports.writeAppAll6Js = function (configOrig, path) {
     const config = Object.assign({}, configOrig, {
         isApp: true
       , isTop: 3 > configOrig.classname.split('.').length
     })
-    module.exports.writeClassUniversal6Js(config, path)
+    module.exports.writeClassAll6Js(config, path)
 }
 
 module.exports.writeAppBrowser6Js = function (configOrig, path) {
@@ -45,12 +45,12 @@ module.exports.writeAppBrowser6Js = function (configOrig, path) {
     module.exports.writeClassBrowser6Js(config, path)
 }
 
-module.exports.writeAppNonbrowser6Js = function (configOrig, path) {
+module.exports.writeAppNode6Js = function (configOrig, path) {
     const config = Object.assign({}, configOrig, {
         isApp: true
       , isTop: 3 > configOrig.classname.split('.').length
     })
-    module.exports.writeClassNonbrowser6Js(config, path)
+    module.exports.writeClassNode6Js(config, path)
 }
 
 module.exports.writeAppDemo6Js = function (configOrig, path) {
@@ -328,9 +328,9 @@ module.exports.updateTestFile = function (htmlPath, tests) {
 `//// This dynamic section is initialised by ‘oomtility/init.js’, and then //////
 //// modified by ‘oomtility/auto.js’ and ‘oomtility/make.js’ ///////////////////
 `])
-    //// ‘App-universal.6.js’ defines \`throws()\`, so run it first.
+    //// ‘App-all.6.js’ defines \`throws()\`, so run it first.
     tests.forEach( name => {
-        if ( '-universal.6.js' === name.slice(-15) )
+        if ( '-all.6.js' === name.slice(-9) )
             out.push(`    , [ null, null, null, '../src/test/${name}' ]`)
     })
     tests.forEach( name => {
@@ -449,10 +449,10 @@ fs.writeFileSync(path, ''
 <!-- Load the proper format scripts, according to the '#ecmaswitch' menu -->
 <script src="asset/js/ecmaswitch.js"></script>
 <script>ECMASwitch.load('../', [
-    [ // ‘App-universal.6.js’ defines \`throws()\`, so run it first
-        '../dist/test/${projectLC}-universal.5.js'
-      , '../dist/test/${projectLC}-universal.5.js' // no need to minify a test
-      , '../dist/test/${projectLC}-universal.6.js'
+    [ // ‘Bases-all.6.js’ defines \`testify()\`, so run it first
+        '../dist/test/${projectLC}-all.5.js'
+      , '../dist/test/${projectLC}-all.5.js' // no need to minify a test
+      , '../dist/test/${projectLC}-all.6.js'
       , null
     ]
   , [
@@ -538,139 +538,8 @@ fs.writeFileSync(path, ''
 
 
 
-//// An Oomtility Wrap of Bases-browser.6.js \\//\\// https://oomtility.loop.coop ////
-module.exports.writeBasesBrowser6Js = function (config, path) {
-const {
-    topline
-} = config
-const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
-const flag = 'a'
-fs.writeFileSync(path, ''
-  + (topline)+'\n'
-  + '\n'
-  + '//// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10\n'
-  + '//// Windows 7:  IE 9, Safari 5.1\n'
-  + '//// OS X 10.6:  Firefox 6, Chrome 16 (and probably lower), Opera 12, Safari 5.1\n'
-  + '//// iOS:        iPad 3rd (iOS 6) Safari, iPad Air (iOS 7) Chrome\n'
-  + '//// Android:    Xperia Tipo (Android 4), Pixel XL (Android 7.1)\n'
-  + '\n'
-  + '!function (ROOT) { \'use strict\'\n'
-  + 'const { describe, it, eq, is } = ROOT.testify()\n'
-  + 'describe(\'Bases Browser\', () => {\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + 'describe(\'+ve Oom.devMainVue\', function (done) {\n'
-  + '    $(\'.container\').append(\n'
-  + '        \'<div id="test" class="row"><oom-test>Loading...</oom-test></div>\')\n'
-  + '    const\n'
-  + '        Class = ROOT.Oom\n'
-  + '      , cmp = Vue.component(\'oom-test\', Class.devMainVue)\n'
-  + '      , vue = new Vue({ el:\'#test\', mounted:testAfterMounted })\n'
-  + '\n'
-  + '    after(function () {\n'
-  + '        // $(\'#test\').remove()\n'
-  + '    })\n'
-  + '\n'
-  + '    function testAfterMounted () {\n'
-  + '\n'
-  + '        //// The current `inst_tally` depends on what previous test suites did.\n'
-  + '        let initInstTally\n'
-  + '\n'
-  + '        it(\'should generates a viable Vue component\', function(){try{\n'
-  + '            eq( $(\'#test\').length, 1, \'#test exists\' )\n'
-  + '            eq( $(\'#test .member-table\').length, 1\n'
-  + '              , \'.member-table exists\' )\n'
-  + '        }catch(e){console.error(e.message);throw e}})\n'
-  + '\n'
-  + '\n'
-  + '        //// `Vue.nextTick()` because Vue hasn\u2019t initialised the properties '
-  + 'yet.\n'
-  + '        it(\'Vue should initially show correct static properties\', function (do'
-  + 'ne) {\n'
-  + '            Vue.nextTick((function(){let error;try{\n'
-  + '                initInstTally = Class.stat.inst_tally\n'
-  + '                for (let key in Class.stat) {\n'
-  + '                    const $el = $(`#test .Oom-${key} .val`)\n'
-  + '                    if ( $el.find(\'.read-write\')[0] )\n'
-  + '                        eq( $el.find(\'.read-write\').val(), Class.stat[key]+\''
-  + '\'\n'
-  + '                          , `Vue should set .Oom-${key} to stat.${key}`)\n'
-  + '                    else\n'
-  + '                        eq( $el.text(), Class.stat[key]+\'\'\n'
-  + '                          , `Vue should set .Oom-${key} to stat.${key}`)\n'
-  + '                }\n'
-  + '            }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))\n'
-  + '        }) // `bind(this)` to run the test in Mocha\u2019s context)\n'
-  + '\n'
-  + '\n'
-  + '        it(\'Vue should update HTML when static properties change\', function (d'
-  + 'one) {\n'
-  + '            initInstTally = Class.stat.inst_tally // suite can run in isolation\n'
-  + '            Class.stat.color = \'#000001\'\n'
-  + '            Class.stat.inst_tally = 44\n'
-  + '            const instance = new Class()\n'
-  + '            Vue.nextTick((function(){let error;try{\n'
-  + '                eq( $(\'#test .Oom-inst_tally .val\').text(), (initInstTally+1)+'
-  + '\'\'\n'
-  + '                  , `Vue should see stat.inst_tally has updated`)\n'
-  + '                eq( $(\'#test .Oom-color .val input\').val(), \'#000001\'\n'
-  + '                  , `Vue should see stat.color has updated`)\n'
-  + '            }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))\n'
-  + '        })\n'
-  + '\n'
-  + '\n'
-  + '        it(\'Vue should change read-write static properties after UI input\', fu'
-  + 'nction (done) {\n'
-  + '            simulateInput( $(\'#test .Oom-color .val input\'), \'#339966\')\n'
-  + '            Vue.nextTick((function(){let error;try{\n'
-  + '                eq( Class.stat.color, \'#339966\'\n'
-  + '                  , `<INPUT> change should make Vue update stat.color`,1)\n'
-  + '            }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))\n'
-  + '        })\n'
-  + '\n'
-  + '\n'
-  + '    }\n'
-  + '\n'
-  + '})//describe(\'+ve Oom.devMainVue\')\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + '})//describe(\'Bases Browser\')\n'
-  + '\n'
-  + '\n'
-  + '//// Calling `mocha.run()` here will run all of the test files, including the\n'
-  + '//// ones which haven\u2019t loaded yet. Note that `mocha.run()` does not need to'
-  + ' be\n'
-  + '//// called when running Mocha tests under Node.js.\n'
-  + '$(mocha.run)\n'
-  + '\n'
-  + '}(window)\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + '//// UTILITY\n'
-  + '\n'
-  + '//// Uses jQuery to simulate an <INPUT>\u2019s value being changed. The simple\n'
-  + '//// `$(\'.my-input\').val(\'abc\').trigger(\'input\')` does not trigger Vue.\n'
-  + '//// From https://github.com/vuejs/Discussion/issues/157#issuecomment-273301588\n'
-  + 'function simulateInput ($input, val) {\n'
-  + '    $input.val(\'#339966\')\n'
-  + '    const e = document.createEvent(\'HTMLEvents\')\n'
-  + '    e.initEvent(\'input\', true, true)\n'
-  + '    $input[0].dispatchEvent(e)\n'
-  + '}\n'
-  + ''
-  , { encoding, flag } )
-}
-
-
-
-
-//// An Oomtility Wrap of Bases-universal.6.js \\//\\// https://oomtility.loop.coop ////
-module.exports.writeBasesUniversal6Js = function (config, path) {
+//// An Oomtility Wrap of Bases-all.6.js \\//\\// https://oomtility.loop.coop ////
+module.exports.writeBasesAll6Js = function (config, path) {
 const {
     projectLC
   , classname
@@ -694,7 +563,7 @@ fs.writeFileSync(path, ''
   + '!function (ROOT) { \'use strict\'\n'
   + 'ROOT.testify = testify // make `testify()` available to all test files\n'
   + 'const { describe, it, eq, is, tryHardSet } = ROOT.testify()\n'
-  + 'describe(\'Bases Universal\', function () {\n'
+  + 'describe(\'Bases All\', function () {\n'
   + '\n'
   + '\n'
   + '//// Establish whether the '+(projectLC)+' module\u2019s definition of Oom is being used.\n'
@@ -762,8 +631,8 @@ fs.writeFileSync(path, ''
   + '\n'
   + '        it(\'should have the same version as this '+(projectLC)+' module\', function(){try{\n'
   + '            tryHardSet(stat, \'VERSION\', \'Changed!\')\n'
-  + '            eq(stat.VERSION, \'1.2.10\', \'stat.VERSION is 1.2.9\') // OOMBUMPAB'
-  + 'LE\n'
+  + '            eq(stat.VERSION, \'1.2.11\', \'stat.VERSION is 1.2.11\') // OOMBUMPA'
+  + 'BLE\n'
   + '        }catch(e){console.error(e.message);throw e}})\n'
   + '\n'
   + '    })\n'
@@ -804,7 +673,7 @@ fs.writeFileSync(path, ''
   + '\n'
   + '\n'
   + '\n'
-  + '})//describe(\'Bases Universal\'\n'
+  + '})//describe(\'Bases All\'\n'
   + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
   + '\n'
   + '\n'
@@ -872,7 +741,7 @@ fs.writeFileSync(path, ''
   + '\n'
   + '//// Show a title for the first set of tests, with a \u2018\u25b6\u2019 button for '
   + 'collapsing.\n'
-  + 'title(\'Bases Universal\')\n'
+  + 'title(\'Bases All\')\n'
   + '\n'
   + '\n'
   + '\n'
@@ -1068,6 +937,137 @@ fs.writeFileSync(path, ''
   + '})//jQuery()\n'
   + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
   + '*/\n'
+  + ''
+  , { encoding, flag } )
+}
+
+
+
+
+//// An Oomtility Wrap of Bases-browser.6.js \\//\\// https://oomtility.loop.coop ////
+module.exports.writeBasesBrowser6Js = function (config, path) {
+const {
+    topline
+} = config
+const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
+const flag = 'a'
+fs.writeFileSync(path, ''
+  + (topline)+'\n'
+  + '\n'
+  + '//// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10\n'
+  + '//// Windows 7:  IE 9, Safari 5.1\n'
+  + '//// OS X 10.6:  Firefox 6, Chrome 16 (and probably lower), Opera 12, Safari 5.1\n'
+  + '//// iOS:        iPad 3rd (iOS 6) Safari, iPad Air (iOS 7) Chrome\n'
+  + '//// Android:    Xperia Tipo (Android 4), Pixel XL (Android 7.1)\n'
+  + '\n'
+  + '!function (ROOT) { \'use strict\'\n'
+  + 'const { describe, it, eq, is } = ROOT.testify()\n'
+  + 'describe(\'Bases Browser\', () => {\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + 'describe(\'+ve Oom.devMainVue\', function (done) {\n'
+  + '    $(\'.container\').append(\n'
+  + '        \'<div id="test" class="row"><oom-test>Loading...</oom-test></div>\')\n'
+  + '    const\n'
+  + '        Class = ROOT.Oom\n'
+  + '      , cmp = Vue.component(\'oom-test\', Class.devMainVue)\n'
+  + '      , vue = new Vue({ el:\'#test\', mounted:testAfterMounted })\n'
+  + '\n'
+  + '    after(function () {\n'
+  + '        // $(\'#test\').remove()\n'
+  + '    })\n'
+  + '\n'
+  + '    function testAfterMounted () {\n'
+  + '\n'
+  + '        //// The current `inst_tally` depends on what previous test suites did.\n'
+  + '        let initInstTally\n'
+  + '\n'
+  + '        it(\'should generates a viable Vue component\', function(){try{\n'
+  + '            eq( $(\'#test\').length, 1, \'#test exists\' )\n'
+  + '            eq( $(\'#test .member-table\').length, 1\n'
+  + '              , \'.member-table exists\' )\n'
+  + '        }catch(e){console.error(e.message);throw e}})\n'
+  + '\n'
+  + '\n'
+  + '        //// `Vue.nextTick()` because Vue hasn\u2019t initialised the properties '
+  + 'yet.\n'
+  + '        it(\'Vue should initially show correct static properties\', function (do'
+  + 'ne) {\n'
+  + '            Vue.nextTick((function(){let error;try{\n'
+  + '                initInstTally = Class.stat.inst_tally\n'
+  + '                for (let key in Class.stat) {\n'
+  + '                    const $el = $(`#test .Oom-${key} .val`)\n'
+  + '                    if ( $el.find(\'.read-write\')[0] )\n'
+  + '                        eq( $el.find(\'.read-write\').val(), Class.stat[key]+\''
+  + '\'\n'
+  + '                          , `Vue should set .Oom-${key} to stat.${key}`)\n'
+  + '                    else\n'
+  + '                        eq( $el.text(), Class.stat[key]+\'\'\n'
+  + '                          , `Vue should set .Oom-${key} to stat.${key}`)\n'
+  + '                }\n'
+  + '            }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))\n'
+  + '        }) // `bind(this)` to run the test in Mocha\u2019s context)\n'
+  + '\n'
+  + '\n'
+  + '        it(\'Vue should update HTML when static properties change\', function (d'
+  + 'one) {\n'
+  + '            initInstTally = Class.stat.inst_tally // suite can run in isolation\n'
+  + '            Class.stat.color = \'#000001\'\n'
+  + '            Class.stat.inst_tally = 44\n'
+  + '            const instance = new Class()\n'
+  + '            Vue.nextTick((function(){let error;try{\n'
+  + '                eq( $(\'#test .Oom-inst_tally .val\').text(), (initInstTally+1)+'
+  + '\'\'\n'
+  + '                  , `Vue should see stat.inst_tally has updated`)\n'
+  + '                eq( $(\'#test .Oom-color .val input\').val(), \'#000001\'\n'
+  + '                  , `Vue should see stat.color has updated`)\n'
+  + '            }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))\n'
+  + '        })\n'
+  + '\n'
+  + '\n'
+  + '        it(\'Vue should change read-write static properties after UI input\', fu'
+  + 'nction (done) {\n'
+  + '            simulateInput( $(\'#test .Oom-color .val input\'), \'#339966\')\n'
+  + '            Vue.nextTick((function(){let error;try{\n'
+  + '                eq( Class.stat.color, \'#339966\'\n'
+  + '                  , `<INPUT> change should make Vue update stat.color`,1)\n'
+  + '            }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))\n'
+  + '        })\n'
+  + '\n'
+  + '\n'
+  + '    }\n'
+  + '\n'
+  + '})//describe(\'+ve Oom.devMainVue\')\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '})//describe(\'Bases Browser\')\n'
+  + '\n'
+  + '\n'
+  + '//// Calling `mocha.run()` here will run all of the test files, including the\n'
+  + '//// ones which haven\u2019t loaded yet. Note that `mocha.run()` does not need to'
+  + ' be\n'
+  + '//// called when running Mocha tests under Node.js.\n'
+  + '$(mocha.run)\n'
+  + '\n'
+  + '}(window)\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '//// UTILITY\n'
+  + '\n'
+  + '//// Uses jQuery to simulate an <INPUT>\u2019s value being changed. The simple\n'
+  + '//// `$(\'.my-input\').val(\'abc\').trigger(\'input\')` does not trigger Vue.\n'
+  + '//// From https://github.com/vuejs/Discussion/issues/157#issuecomment-273301588\n'
+  + 'function simulateInput ($input, val) {\n'
+  + '    $input.val(\'#339966\')\n'
+  + '    const e = document.createEvent(\'HTMLEvents\')\n'
+  + '    e.initEvent(\'input\', true, true)\n'
+  + '    $input[0].dispatchEvent(e)\n'
+  + '}\n'
   + ''
   , { encoding, flag } )
 }
@@ -1455,88 +1455,8 @@ fs.writeFileSync(path, ''
 
 
 
-//// An Oomtility Wrap of Class-browser.6.js \\//\\// https://oomtility.loop.coop ////
-module.exports.writeClassBrowser6Js = function (config, path) {
-const {
-    classname
-  , topline
-} = config
-const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
-const flag = 'a'
-fs.writeFileSync(path, ''
-  + (topline)+'\n'
-  + '\n'
-  + '!function (ROOT) { \'use strict\'\n'
-  + 'const { describe, it, eq, is } = ROOT.testify()\n'
-  + 'describe(`'+(classname)+' Browser`, () => {\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + 'const Class = '+(classname)+', stat = Class.stat\n'
-  + '\n'
-  + '\n'
-  + 'describe(`+ve '+(classname)+' class`, () => {\n'
-  + '    it(`@TODO`, () => {\n'
-  + '        is(true, \'@TODO\')\n'
-  + '    })\n'
-  + '})\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + '})//describe()\n'
-  + '}(window)\n'
-  + ''
-  , { encoding, flag } )
-}
-
-
-
-
-//// An Oomtility Wrap of Class-nonbrowser.6.js \\//\\// https://oomtility.loop.coop ////
-module.exports.writeClassNonbrowser6Js = function (config, path) {
-const {
-    classname
-  , topline
-} = config
-const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
-const flag = 'a'
-fs.writeFileSync(path, ''
-  + (topline)+'\n'
-  + '\n'
-  + '\n'
-  + '!function (ROOT) { \'use strict\'\n'
-  + 'const { describe, it, eq, is } = ROOT.testify()\n'
-  + 'describe(`'+(classname)+' Nonbrowser`, () => {\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + 'const Class = '+(classname)+', stat = Class.stat\n'
-  + '\n'
-  + '\n'
-  + 'describe(`+ve '+(classname)+' class`, () => {\n'
-  + '    it(`should be a class`, () => {\n'
-  + '        eq(\'function\', typeof Class, \''+(classname)+' should be a function\')\n'
-  + '    })\n'
-  + '})\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + '})//describe()\n'
-  + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
-  + ''
-  , { encoding, flag } )
-}
-
-
-
-
-//// An Oomtility Wrap of Class-universal.6.js \\//\\// https://oomtility.loop.coop ////
-module.exports.writeClassUniversal6Js = function (config, path) {
+//// An Oomtility Wrap of Class-all.6.js \\//\\// https://oomtility.loop.coop ////
+module.exports.writeClassAll6Js = function (config, path) {
 const {
     isApp
   , classname
@@ -1549,7 +1469,7 @@ fs.writeFileSync(path, ''
   + '\n'
   + '!function (ROOT) { \'use strict\'\n'
   + 'const { describe, it, eq, is } = ROOT.testify()\n'
-  + 'describe(`'+(classname)+' Universal`, () => {\n'
+  + 'describe(`'+(classname)+' All`, () => {\n'
   + '\n'
   + '\n'
   + '\n'
@@ -1619,7 +1539,7 @@ isApp ? `
   + 'return //@TODO convert to Mocha\n'
   + 'if (\'function\' !== typeof jQuery) throw Error(\'jQuery not found\')\n'
   + 'jQuery( function($) {\n'
-  + 'title(\''+(classname)+' Universal\')\n'
+  + 'title(\''+(classname)+' All\')\n'
   + 'const Class = '+(classname)+', stat = Class.stat\n'
   + '\n'
   + '\n'
@@ -1664,6 +1584,86 @@ isApp ? `
   + '})//jQuery()\n'
   + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
   + '*/\n'
+  + ''
+  , { encoding, flag } )
+}
+
+
+
+
+//// An Oomtility Wrap of Class-browser.6.js \\//\\// https://oomtility.loop.coop ////
+module.exports.writeClassBrowser6Js = function (config, path) {
+const {
+    classname
+  , topline
+} = config
+const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
+const flag = 'a'
+fs.writeFileSync(path, ''
+  + (topline)+'\n'
+  + '\n'
+  + '!function (ROOT) { \'use strict\'\n'
+  + 'const { describe, it, eq, is } = ROOT.testify()\n'
+  + 'describe(`'+(classname)+' Browser`, () => {\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + 'const Class = '+(classname)+', stat = Class.stat\n'
+  + '\n'
+  + '\n'
+  + 'describe(`+ve '+(classname)+' class`, () => {\n'
+  + '    it(`@TODO`, () => {\n'
+  + '        is(true, \'@TODO\')\n'
+  + '    })\n'
+  + '})\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '})//describe()\n'
+  + '}(window)\n'
+  + ''
+  , { encoding, flag } )
+}
+
+
+
+
+//// An Oomtility Wrap of Class-node.6.js \\//\\// https://oomtility.loop.coop ////
+module.exports.writeClassNode6Js = function (config, path) {
+const {
+    classname
+  , topline
+} = config
+const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
+const flag = 'a'
+fs.writeFileSync(path, ''
+  + (topline)+'\n'
+  + '\n'
+  + '\n'
+  + '!function (ROOT) { \'use strict\'\n'
+  + 'const { describe, it, eq, is } = ROOT.testify()\n'
+  + 'describe(`'+(classname)+' Node`, () => {\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + 'const Class = '+(classname)+', stat = Class.stat\n'
+  + '\n'
+  + '\n'
+  + 'describe(`+ve '+(classname)+' class`, () => {\n'
+  + '    it(`should be a class`, () => {\n'
+  + '        eq(\'function\', typeof Class, \''+(classname)+' should be a function\')\n'
+  + '    })\n'
+  + '})\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '})//describe()\n'
+  + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
   + ''
   , { encoding, flag } )
 }
@@ -2241,82 +2241,8 @@ fs.writeFileSync(path, ''
 
 
 
-//// An Oomtility Wrap of Method-browser.6.js \\//\\// https://oomtility.loop.coop ////
-module.exports.writeMethodBrowser6Js = function (config, path) {
-const {
-    classname
-  , methodname
-  , topline
-} = config
-const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
-const flag = 'a'
-fs.writeFileSync(path, ''
-  + (topline)+'\n'
-  + '\n'
-  + '!function (ROOT) { \'use strict\'\n'
-  + 'if (\'function\' !== typeof jQuery) throw Error(\'jQuery not found\')\n'
-  + 'jQuery( function($) {\n'
-  + 'title(\''+(methodname)+' Browser\')\n'
-  + 'const Class = '+(classname)+'\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + 'test(\'Browser test the '+(methodname)+'() method\', () => {\n'
-  + '    is(true, \'@TODO\')\n'
-  + '})\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + '})//jQuery()\n'
-  + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
-  + ''
-  , { encoding, flag } )
-}
-
-
-
-
-//// An Oomtility Wrap of Method-nonbrowser.6.js \\//\\// https://oomtility.loop.coop ////
-module.exports.writeMethodNonbrowser6Js = function (config, path) {
-const {
-    classname
-  , methodname
-  , topline
-} = config
-const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
-const flag = 'a'
-fs.writeFileSync(path, ''
-  + (topline)+'\n'
-  + '\n'
-  + '!function (ROOT) { \'use strict\'\n'
-  + 'if (\'function\' !== typeof jQuery) throw Error(\'jQuery not found\')\n'
-  + 'jQuery( function($) {\n'
-  + 'title(\''+(methodname)+' Nonbrowser\')\n'
-  + 'const Class = '+(classname)+'\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + 'test(\'Nonbrowser test the '+(methodname)+'() method\', () => {\n'
-  + '    is(true, \'@TODO\')\n'
-  + '})\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + '\n'
-  + '})//jQuery()\n'
-  + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
-  + ''
-  , { encoding, flag } )
-}
-
-
-
-
-//// An Oomtility Wrap of Method-universal.6.js \\//\\// https://oomtility.loop.coop ////
-module.exports.writeMethodUniversal6Js = function (config, path) {
+//// An Oomtility Wrap of Method-all.6.js \\//\\// https://oomtility.loop.coop ////
+module.exports.writeMethodAll6Js = function (config, path) {
 const {
     classname
   , methodname
@@ -2331,7 +2257,7 @@ fs.writeFileSync(path, ''
   + '!function (ROOT) { \'use strict\'\n'
   + 'if (\'function\' !== typeof jQuery) throw Error(\'jQuery not found\')\n'
   + 'jQuery( function($) {\n'
-  + 'title(\''+(methodname)+' Universal\')\n'
+  + 'title(\''+(methodname)+' All\')\n'
   + 'const Class = '+(classname)+'\n'
   + '\n'
   + '\n'
@@ -2373,6 +2299,80 @@ fs.writeFileSync(path, ''
   + '    throws( () => instance.'+(methodshort)+'(123)\n'
   + '      , \''+(methodname)+'(): abc has constructor.name Number not String\'\n'
   + '      , \'Passing a number into `abc`\')\n'
+  + '})\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '})//jQuery()\n'
+  + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
+  + ''
+  , { encoding, flag } )
+}
+
+
+
+
+//// An Oomtility Wrap of Method-browser.6.js \\//\\// https://oomtility.loop.coop ////
+module.exports.writeMethodBrowser6Js = function (config, path) {
+const {
+    classname
+  , methodname
+  , topline
+} = config
+const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
+const flag = 'a'
+fs.writeFileSync(path, ''
+  + (topline)+'\n'
+  + '\n'
+  + '!function (ROOT) { \'use strict\'\n'
+  + 'if (\'function\' !== typeof jQuery) throw Error(\'jQuery not found\')\n'
+  + 'jQuery( function($) {\n'
+  + 'title(\''+(methodname)+' Browser\')\n'
+  + 'const Class = '+(classname)+'\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + 'test(\'The '+(methodname)+'() method\', () => {\n'
+  + '    is(true, \'@TODO\')\n'
+  + '})\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '})//jQuery()\n'
+  + '}( \'object\' === typeof global ? global : this ) // `window` in a browser\n'
+  + ''
+  , { encoding, flag } )
+}
+
+
+
+
+//// An Oomtility Wrap of Method-node.6.js \\//\\// https://oomtility.loop.coop ////
+module.exports.writeMethodNode6Js = function (config, path) {
+const {
+    classname
+  , methodname
+  , topline
+} = config
+const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
+const flag = 'a'
+fs.writeFileSync(path, ''
+  + (topline)+'\n'
+  + '\n'
+  + '!function (ROOT) { \'use strict\'\n'
+  + 'if (\'function\' !== typeof jQuery) throw Error(\'jQuery not found\')\n'
+  + 'jQuery( function($) {\n'
+  + 'title(\''+(methodname)+' Node\')\n'
+  + 'const Class = '+(classname)+'\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + '\n'
+  + 'test(\'The '+(methodname)+'() method\', () => {\n'
+  + '    is(true, \'@TODO\')\n'
   + '})\n'
   + '\n'
   + '\n'
@@ -20452,8 +20452,7 @@ const {
 const encoding = rxBinaryExt.test(path) ? 'binary' : 'utf8'
 const flag = 'a'
 fs.writeFileSync(path, ''
-  + '//// ECMASwitch //// 1.2.10 //// February 2018 //// ecmaswitch.loop.coop/ //////'
-  + '/\n'
+  + '//// ECMASwitch //// 1.2.11 //// February 2018 //// ecmaswitch.loop.coop/ //////\n'
   + '\n'
   + '!function (ROOT) { \'use strict\'\n'
   + '\n'
@@ -20461,7 +20460,7 @@ fs.writeFileSync(path, ''
   + 'var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}\n'
   + 'var s, onAllLoadedFn\n'
   + 'ECMASwitch.NAME     = \'ECMASwitch\'\n'
-  + 'ECMASwitch.VERSION  = \'1.2.10\'\n'
+  + 'ECMASwitch.VERSION  = \'1.2.11\'\n'
   + 'ECMASwitch.HOMEPAGE = \'http://ecmaswitch.loop.coop/\'\n'
   + '\n'
   + '//// Polyfill `document` for non-browser contexts.\n'

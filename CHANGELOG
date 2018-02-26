@@ -36,3 +36,4 @@
 1.2.8 All wrap/Bases-* and wrap/Class-* tests use Mocha (and no jQuery)
 1.2.9 Bases-browser.6.js tests static properties on Oom.enduserMainVue
 1.2.10 Bases-browser.6.js tests a <member-table>
+1.2.11 *-nonbrowser.6.js and *-universal.6.js become *-node.6.js and *-all.6.js

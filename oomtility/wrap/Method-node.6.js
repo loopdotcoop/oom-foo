@@ -3,13 +3,13 @@ ${{topline}}
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
 jQuery( function($) {
-title('${{methodname}} Nonbrowser')
+title('${{methodname}} Node')
 const Class = ${{classname}}
 
 
 
 
-test('Nonbrowser test the ${{methodname}}() method', () => {
+test('The ${{methodname}}() method', () => {
     is(true, '@TODO')
 })
 

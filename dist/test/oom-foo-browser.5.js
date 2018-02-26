@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.11 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 "use strict";
 !function(ROOT) {
@@ -127,4 +127,4 @@ function simulateInput($input, val) {
 
 
 
-//// Made by Oomtility Make 1.2.10 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.11 //\\//\\ http://oomtility.loop.coop /////////

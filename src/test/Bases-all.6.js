@@ -1,8 +1,4 @@
-//\\//\\ src/test/Bases-universal.6.js
-
-
-
-//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.11 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -15,7 +11,7 @@
 !function (ROOT) { 'use strict'
 ROOT.testify = testify // make `testify()` available to all test files
 const { describe, it, eq, is, tryHardSet } = ROOT.testify()
-describe('Bases Universal', function () {
+describe('Bases All', function () {
 
 
 //// Establish whether the oom-foo module’s definition of Oom is being used.
@@ -79,7 +75,7 @@ if (LOADED_FIRST)
 
         it('should have the same version as this oom-foo module', function(){try{
             tryHardSet(stat, 'VERSION', 'Changed!')
-            eq(stat.VERSION, '1.2.10', 'stat.VERSION is 1.2.9') // OOMBUMPABLE
+            eq(stat.VERSION, '1.2.11', 'stat.VERSION is 1.2.11') // OOMBUMPABLE
         }catch(e){console.error(e.message);throw e}})
 
     })
@@ -120,7 +116,7 @@ describe('+ve Oom instance', function () {
 
 
 
-})//describe('Bases Universal'
+})//describe('Bases All'
 }( 'object' === typeof global ? global : this ) // `window` in a browser
 
 
@@ -186,7 +182,7 @@ const LOADED_FIRST = ROOT.Oom.Foo.stat.LOADED_FIRST
 
 
 //// Show a title for the first set of tests, with a ‘▶’ button for collapsing.
-title('Bases Universal')
+title('Bases All')
 
 
 
@@ -213,8 +209,8 @@ if (LOADED_FIRST)
     test('+ve Oom class, defined in this module', () => {
         const Class = ROOT.Oom, stat = Class.stat
         tryHardSet(stat, 'VERSION,REMARKS', 'Changed!')
-        is( ('1.2.10' === stat.VERSION) // OOMBUMPABLE
-          , 'stat.VERSION is 1.2.10') // OOMBUMPABLE
+        is( ('1.2.11' === stat.VERSION) // OOMBUMPABLE
+          , 'stat.VERSION is 1.2.11') // OOMBUMPABLE
         is( ('Base class for all Oom classes' === stat.REMARKS)
           , 'stat.REMARKS is \'Base class for all Oom classes\'')
     })
@@ -247,8 +243,8 @@ test('+ve Oom.Foo class', () => {
       , 'name and stat.NAME are Oom.Foo')
     is( ('http://oom-foo.loop.coop/' === stat.HOMEPAGE)
       , 'stat.HOMEPAGE is \'http://oom-foo.loop.coop/\'')
-    is( ('1.2.10' === stat.VERSION) // OOMBUMPABLE
-      , 'stat.VERSION is 1.2.10') // OOMBUMPABLE
+    is( ('1.2.11' === stat.VERSION) // OOMBUMPABLE
+      , 'stat.VERSION is 1.2.11') // OOMBUMPABLE
     //@TODO more tests
 })
 
@@ -372,240 +368,3 @@ function extendKludJs () {
 })//jQuery()
 }( 'object' === typeof global ? global : this ) // `window` in a browser
 */
-
-
-
-
-//\\//\\ src/test/Post-universal.6.js
-
-
-
-//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
-
-!function (ROOT) { 'use strict'
-const { describe, it, eq, is } = ROOT.testify()
-describe(`Oom.Foo.Post Universal`, () => {
-
-
-
-
-const Class = Oom.Foo.Post, stat = Class.stat
-
-//// Instantiates a typical Oom.Foo.Post instance for unit testing its methods.
-Class.testInstanceFactory = () =>
-    new Class({
-        firstProp: 100
-      , secondProp: new Date
-    },{
-        /* @TODO hub API */
-    })
-
-
-
-
-describe(`+ve Oom.Foo.Post class`, () => {
-
-    it(`should be a class`, () => {
-        is('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
-        is('function' === typeof Class, 'Oom.Foo.Post is a function')
-        try { Class.name = stat.NAME = 'Changed!'} catch (e) {}
-        is( ('Oom.Foo.Post' === Class.name && 'Oom.Foo.Post' === stat.NAME)
-          , 'name and stat.NAME are Oom.Foo.Post')
-    })
-
-})
-
-
-
-
-describe('+ve Oom.Foo.Post instance', () => {
-
-    it(`should be an instance`, () => {
-        const instance = Class.testInstanceFactory()
-        const attr = instance.attr
-        is(instance instanceof Class, 'Is an instance of Oom.Foo.Post')
-        is(Class === instance.constructor, '`constructor` is Oom.Foo.Post')
-        is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
-          , '`attr.UUID` is a six-character string')
-        // is('object' === typeof instance.hub, '`hub` property is an object')
-    })
-
-})
-
-
-
-
-})//describe()
-}( 'object' === typeof global ? global : this ) // `window` in a browser
-
-/*
-!function (ROOT) { 'use strict'
-return //@TODO convert to Mocha
-if ('function' !== typeof jQuery) throw Error('jQuery not found')
-jQuery( function($) {
-title('Oom.Foo.Post Universal')
-const Class = Oom.Foo.Post, stat = Class.stat
-
-
-
-
-//// Instantiates a typical Oom.Foo.Post instance for unit testing its methods.
-Class.testInstanceFactory = () =>
-    new Class({
-        firstProp: 100
-      , secondProp: new Date
-    },{
-        // @TODO hub API
-    })
-
-
-
-
-test('+ve Oom.Foo.Post class', () => {
-    is('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
-    is('function' === typeof Class, 'Oom.Foo.Post is a function')
-    try { Class.name = stat.NAME = 'Changed!'} catch (e) {}
-    is( ('Oom.Foo.Post' === Class.name && 'Oom.Foo.Post' === stat.NAME)
-      , 'name and stat.NAME are Oom.Foo.Post')
-})
-
-
-
-
-test('+ve Oom.Foo.Post instance', () => {
-    const instance = Class.testInstanceFactory()
-    const attr = instance.attr
-    is(instance instanceof Class, 'Is an instance of Oom.Foo.Post')
-    is(Class === instance.constructor, '`constructor` is Oom.Foo.Post')
-    is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
-      , '`attr.UUID` is a six-character string')
-    // is('object' === typeof instance.hub, '`hub` property is an object')
-})
-
-
-
-
-})//jQuery()
-}( 'object' === typeof global ? global : this ) // `window` in a browser
-*/
-
-
-
-
-//\\//\\ src/test/Router-universal.6.js
-
-
-
-//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
-
-!function (ROOT) { 'use strict'
-const { describe, it, eq, is } = ROOT.testify()
-describe(`Oom.Foo.Router Universal`, () => {
-
-
-
-
-const Class = Oom.Foo.Router, stat = Class.stat
-
-//// Instantiates a typical Oom.Foo.Router instance for unit testing its methods.
-Class.testInstanceFactory = () =>
-    new Class({
-        firstProp: 100
-      , secondProp: new Date
-    },{
-        /* @TODO hub API */
-    })
-
-
-
-
-describe(`+ve Oom.Foo.Router class`, () => {
-
-    it(`should be a class`, () => {
-        is('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
-        is('function' === typeof Class, 'Oom.Foo.Router is a function')
-        try { Class.name = stat.NAME = 'Changed!'} catch (e) {}
-        is( ('Oom.Foo.Router' === Class.name && 'Oom.Foo.Router' === stat.NAME)
-          , 'name and stat.NAME are Oom.Foo.Router')
-    })
-
-})
-
-
-
-
-describe('+ve Oom.Foo.Router instance', () => {
-
-    it(`should be an instance`, () => {
-        const instance = Class.testInstanceFactory()
-        const attr = instance.attr
-        is(instance instanceof Class, 'Is an instance of Oom.Foo.Router')
-        is(Class === instance.constructor, '`constructor` is Oom.Foo.Router')
-        is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
-          , '`attr.UUID` is a six-character string')
-        // is('object' === typeof instance.hub, '`hub` property is an object')
-    })
-
-})
-
-
-
-
-})//describe()
-}( 'object' === typeof global ? global : this ) // `window` in a browser
-
-/*
-!function (ROOT) { 'use strict'
-return //@TODO convert to Mocha
-if ('function' !== typeof jQuery) throw Error('jQuery not found')
-jQuery( function($) {
-title('Oom.Foo.Router Universal')
-const Class = Oom.Foo.Router, stat = Class.stat
-
-
-
-
-//// Instantiates a typical Oom.Foo.Router instance for unit testing its methods.
-Class.testInstanceFactory = () =>
-    new Class({
-        firstProp: 100
-      , secondProp: new Date
-    },{
-        // @TODO hub API
-    })
-
-
-
-
-test('+ve Oom.Foo.Router class', () => {
-    is('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
-    is('function' === typeof Class, 'Oom.Foo.Router is a function')
-    try { Class.name = stat.NAME = 'Changed!'} catch (e) {}
-    is( ('Oom.Foo.Router' === Class.name && 'Oom.Foo.Router' === stat.NAME)
-      , 'name and stat.NAME are Oom.Foo.Router')
-})
-
-
-
-
-test('+ve Oom.Foo.Router instance', () => {
-    const instance = Class.testInstanceFactory()
-    const attr = instance.attr
-    is(instance instanceof Class, 'Is an instance of Oom.Foo.Router')
-    is(Class === instance.constructor, '`constructor` is Oom.Foo.Router')
-    is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
-      , '`attr.UUID` is a six-character string')
-    // is('object' === typeof instance.hub, '`hub` property is an object')
-})
-
-
-
-
-})//jQuery()
-}( 'object' === typeof global ? global : this ) // `window` in a browser
-*/
-
-
-
-
-//// Made by Oomtility Make 1.2.10 //\\//\\ http://oomtility.loop.coop /////////

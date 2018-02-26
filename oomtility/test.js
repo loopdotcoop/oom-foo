@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Test'
-    , VERSION  = '1.2.10'
+    , VERSION  = '1.2.11'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , HELP =
@@ -9,8 +9,8 @@ const NAME     = 'Oomtility Test'
 ${NAME} ${VERSION}
 ${'='.repeat( (NAME+VERSION).length+1 )}
 
-This Node.js script runs the ‘universal’ and ‘nonbrowser’ tests in ‘src/test’.
-It can also launch ‘support/test.html’ in your default browser.
+This Node.js script runs the ‘all’ and ‘node’ tests in ‘src/test’. it can also
+launch ‘support/test.html’ in your default browser.
 
 Installation
 ------------
@@ -32,7 +32,7 @@ Basic Usage
 -----------
 $ cd /path/to/your/oom/repo/  # An Oom repo directory
 $ oomtest --version           # Show the current ${NAME} version
-$ oomtest                     # Run ‘universal’ and ‘nonbrowser’ tests in Node
+$ oomtest                     # Run ‘all’ and ‘node’ tests in Node
 $ oomtest --browser           # Run Node tests and browser tests
 $ npm test                    # Same as \`$ oomtest\`
 $ npm test -- --browser       # Same as \`$ oomtest --browser\` (note extra \`--\`)
@@ -56,10 +56,10 @@ if ( process.argv[1] && 'mocha/bin/_mocha' === process.argv[1].slice(-16) ) {
        .filter( p => '.6.js' === p.slice(-5) )
        .forEach(p => require(CWD+'/src/main/'+p) )
     readdirSync(CWD+'/src/test/') // first run all the universal tests...
-       .filter( p => '-universal.6.js' === p.slice(-15) )
+       .filter( p => '-all.6.js' === p.slice(-9) )
        .forEach(p => require(CWD+'/src/test/'+p) )
-    readdirSync(CWD+'/src/test/') // ...then run all the nonbrowser tests
-       .filter( p => '-nonbrowser.6.js' === p.slice(-16) )
+    readdirSync(CWD+'/src/test/') // ...then run all the node-only tests
+       .filter( p => '-node.6.js' === p.slice(-10) )
        .forEach(p => require(CWD+'/src/test/'+p) )
     return
 }

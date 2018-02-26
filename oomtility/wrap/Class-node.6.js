@@ -3,7 +3,7 @@ ${{topline}}
 
 !function (ROOT) { 'use strict'
 const { describe, it, eq, is } = ROOT.testify()
-describe(`${{classname}} Nonbrowser`, () => {
+describe(`${{classname}} Node`, () => {
 
 
 

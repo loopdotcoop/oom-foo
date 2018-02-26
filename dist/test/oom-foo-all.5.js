@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.11 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 "use strict";
 !function(ROOT) {
@@ -10,7 +10,7 @@
       eq = $__2.eq,
       is = $__2.is,
       tryHardSet = $__2.tryHardSet;
-  describe('Bases Universal', function() {
+  describe('Bases All', function() {
     var r;
     if (!(r = ROOT.Oom) || !(r = r.Foo) || !(r = r.stat) || !(r = r.LOADED_FIRST))
       throw Error('Can’t test: ROOT.Oom.Foo.stat.LOADED_FIRST does not exist');
@@ -67,7 +67,7 @@
         it('should have the same version as this oom-foo module', function() {
           try {
             tryHardSet(stat, 'VERSION', 'Changed!');
-            eq(stat.VERSION, '1.2.10', 'stat.VERSION is 1.2.9');
+            eq(stat.VERSION, '1.2.11', 'stat.VERSION is 1.2.11');
           } catch (e) {
             console.error(e.message);
             throw e;
@@ -137,7 +137,7 @@ function testify() {
       it = $__2.it,
       eq = $__2.eq,
       is = $__2.is;
-  describe("Oom.Foo.Post Universal", function() {
+  describe("Oom.Foo.Post All", function() {
     var Class = Oom.Foo.Post,
         stat = Class.stat;
     Class.testInstanceFactory = function() {
@@ -174,7 +174,7 @@ function testify() {
       it = $__2.it,
       eq = $__2.eq,
       is = $__2.is;
-  describe("Oom.Foo.Router Universal", function() {
+  describe("Oom.Foo.Router All", function() {
     var Class = Oom.Foo.Router,
         stat = Class.stat;
     Class.testInstanceFactory = function() {
@@ -208,4 +208,4 @@ function testify() {
 
 
 
-//// Made by Oomtility Make 1.2.10 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.11 //\\//\\ http://oomtility.loop.coop /////////

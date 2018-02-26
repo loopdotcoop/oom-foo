@@ -1,13 +1,13 @@
-//\\//\\ src/test/Post-nonbrowser.6.js
+//\\//\\ src/test/Post-node.6.js
 
 
 
-//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.11 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 
 !function (ROOT) { 'use strict'
 const { describe, it, eq, is } = ROOT.testify()
-describe(`Oom.Foo.Post Nonbrowser`, () => {
+describe(`Oom.Foo.Post Node`, () => {
 
 
 
@@ -30,16 +30,16 @@ describe(`+ve Oom.Foo.Post class`, () => {
 
 
 
-//\\//\\ src/test/Router-nonbrowser.6.js
+//\\//\\ src/test/Router-node.6.js
 
 
 
-//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.11 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 
 !function (ROOT) { 'use strict'
 const { describe, it, eq, is } = ROOT.testify()
-describe(`Oom.Foo.Router Nonbrowser`, () => {
+describe(`Oom.Foo.Router Node`, () => {
 
 
 
@@ -62,4 +62,4 @@ describe(`+ve Oom.Foo.Router class`, () => {
 
 
 
-//// Made by Oomtility Make 1.2.10 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.11 //\\//\\ http://oomtility.loop.coop /////////

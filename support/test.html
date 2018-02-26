@@ -150,10 +150,10 @@
 <!-- Load the proper format scripts, according to the '#ecmaswitch' menu -->
 <script src="asset/js/ecmaswitch.js"></script>
 <script>ECMASwitch.load('../', [
-    [ // ‘App-universal.6.js’ defines `throws()`, so run it first
-        '../dist/test/oom-foo-universal.5.js'
-      , '../dist/test/oom-foo-universal.5.js' // no need to minify a test
-      , '../dist/test/oom-foo-universal.6.js'
+    [ // ‘Bases-all.6.js’ defines `testify()`, so run it first
+        '../dist/test/oom-foo-all.5.js'
+      , '../dist/test/oom-foo-all.5.js' // no need to minify a test
+      , '../dist/test/oom-foo-all.6.js'
       , null
     ]
   , [
@@ -167,9 +167,9 @@
 //// This dynamic section is initialised by ‘oomtility/init.js’, and then //////
 //// modified by ‘oomtility/auto.js’ and ‘oomtility/make.js’ ///////////////////
 
-    , [ null, null, null, '../src/test/Bases-universal.6.js' ]
-    , [ null, null, null, '../src/test/Post-universal.6.js' ]
-    , [ null, null, null, '../src/test/Router-universal.6.js' ]
+    , [ null, null, null, '../src/test/Bases-all.6.js' ]
+    , [ null, null, null, '../src/test/Post-all.6.js' ]
+    , [ null, null, null, '../src/test/Router-all.6.js' ]
     , [ null, null, null, '../src/test/Bases-browser.6.js' ]
     , [ null, null, null, '../src/test/Post-browser.6.js' ]
     , [ null, null, null, '../src/test/Router-browser.6.js' ]
