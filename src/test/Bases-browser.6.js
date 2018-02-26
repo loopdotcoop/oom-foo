@@ -1,77 +1,84 @@
-//// Oom.Foo //// 1.2.9 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
+
+//// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
+//// Windows 7:  IE 9, Safari 5.1
+//// OS X 10.6:  Firefox 6, Chrome 16 (and probably lower), Opera 12, Safari 5.1
+//// iOS:        iPad 3rd (iOS 6) Safari, iPad Air (iOS 7) Chrome
+//// Android:    Xperia Tipo (Android 4), Pixel XL (Android 7.1)
 
 !function (ROOT) { 'use strict'
-const { chai, mocha, assert, expect, describe, it, eq, ok } = ROOT.testify()
+const { describe, it, eq, is } = ROOT.testify()
 describe('Bases Browser', () => {
 
 
 
-
-beforeEach(function () {
-})
-
-afterEach(function () {
-})
-
-
-
-describe('+ve Oom.enduserMainVue', function () {
+describe('+ve Oom.devMainVue', function (done) {
+    $('.container').append(
+        '<div id="test" class="row"><oom-test>Loading...</oom-test></div>')
     const
         Class = ROOT.Oom
-      , testsAfterUpdate = [] // push a test in here before causing a component mod
-
-    $('body').append('<h1 id="test"><oom-test>Loading...</oom-test></h1>')
-    initVueTests(Class.enduserMainVue, testAfterMounted, testsAfterUpdate)
-
-    beforeEach(function () {
-    })
-
-    afterEach(function () {
-    })
+      , cmp = Vue.component('oom-test', Class.devMainVue)
+      , vue = new Vue({ el:'#test', mounted:testAfterMounted })
 
     after(function () {
-        $('#test').remove()
+        // $('#test').remove()
     })
 
     function testAfterMounted () {
 
-        //// The current `instTally` depends on what previous test suites did.
-        const initialInstTally = Class.stat.instTally
+        //// The current `inst_tally` depends on what previous test suites did.
+        let initInstTally
 
-        it('Generates a viable Vue component', function () {
-            eq( 1, $('#test').length      , 'div#test exists')
-            const lines = textToLines( $('#test').text() )
-            eq(lines[0], '${this.stat.NAME} is Oom'
-              , 'First line bakes stat.NAME into template')
-            eq(lines[1], '{{stat.NAME}} is Oom'
-              , 'Second line gets stat.NAME via Vue')
-            eq(lines[2], '{{stat.instTally}} is 0'
-              , 'Third line gets stat.instTally via Vue')
+        it('should generates a viable Vue component', function(){try{
+            eq( $('#test').length, 1, '#test exists' )
+            eq( $('#test .member-table').length, 1
+              , '.member-table exists' )
+        }catch(e){console.error(e.message);throw e}})
+
+
+        //// `Vue.nextTick()` because Vue hasn’t initialised the properties yet.
+        it('Vue should initially show correct static properties', function (done) {
+            Vue.nextTick((function(){let error;try{
+                initInstTally = Class.stat.inst_tally
+                for (let key in Class.stat) {
+                    const $el = $(`#test .Oom-${key} .val`)
+                    if ( $el.find('.read-write')[0] )
+                        eq( $el.find('.read-write').val(), Class.stat[key]+''
+                          , `Vue should set .Oom-${key} to stat.${key}`)
+                    else
+                        eq( $el.text(), Class.stat[key]+''
+                          , `Vue should set .Oom-${key} to stat.${key}`)
+                }
+            }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
+        }) // `bind(this)` to run the test in Mocha’s context)
+
+
+        it('Vue should update HTML when static properties change', function (done) {
+            initInstTally = Class.stat.inst_tally // suite can run in isolation
+            Class.stat.color = '#000001'
+            Class.stat.inst_tally = 44
+            const instance = new Class()
+            Vue.nextTick((function(){let error;try{
+                eq( $('#test .Oom-inst_tally .val').text(), (initInstTally+1)+''
+                  , `Vue should see stat.inst_tally has updated`)
+                eq( $('#test .Oom-color .val input').val(), '#000001'
+                  , `Vue should see stat.color has updated`)
+            }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
         })
 
 
-        it('Vue updates HTML when static properties change', function (done) {
-
-            //// Schedule a modification on Vue’s next tick. If we did it right
-            //// now, it might modify the state that the previous test sees.
-            const that = this
-            Vue.nextTick( x => {
-                testsAfterUpdate.push( updateTestFn.bind(that) )
-                const instance = new Class()
-            })
-
-            //// Tests HTML after Vue has finished processing the modification.
-            function updateTestFn () {
-                const lines = textToLines( $('#test').text() )
-                eq(lines[2], '{{stat.instTally}} is 1'
-                  , 'Third line shows Vue sees stat.instTally has updated')
-                done()
-            }
+        it('Vue should change read-write static properties after UI input', function (done) {
+            simulateInput( $('#test .Oom-color .val input'), '#339966')
+            Vue.nextTick((function(){let error;try{
+                eq( Class.stat.color, '#339966'
+                  , `<INPUT> change should make Vue update stat.color`,1)
+            }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
         })
+
 
     }
 
-})//describe('+ve Oom.enduserMainVue')
+})//describe('+ve Oom.devMainVue')
 
 
 
@@ -91,29 +98,12 @@ $(mocha.run)
 
 //// UTILITY
 
-
-//// Sets up a Vue component for testing. When Vue is ready, it will run
-//// `testAfterMounted()`, which should
-function initVueTests (
-    origDefinition   // the original Vue component def, eg `Oom.devMainVue`
-  , testAfterMounted // a function to run after Vue finishes its initial render
-  , testsAfterUpdate // array of tests to run after the component is modified
-) {
-    const
-        definition = Object.assign({}, origDefinition, {
-            updated: function () { // wraps original `update()` and runs tests
-                if (origDefinition.updated) origDefinition.updated.call(this)
-                let utFn; while( utFn = testsAfterUpdate.shift() ) utFn()
-        } })
-      , cmp = Vue.component('oom-test', definition)
-      , vue = new Vue({
-            el: '#test'
-          , mounted: testAfterMounted
-        })
-}
-
-
-//// Converts a multiline string to an array of strings, and trims whitespace.
-function textToLines (text) {
-    return text.trim().split('\n').map( l => l.trim() )
+//// Uses jQuery to simulate an <INPUT>’s value being changed. The simple
+//// `$('.my-input').val('abc').trigger('input')` does not trigger Vue.
+//// From https://github.com/vuejs/Discussion/issues/157#issuecomment-273301588
+function simulateInput ($input, val) {
+    $input.val('#339966')
+    const e = document.createEvent('HTMLEvents')
+    e.initEvent('input', true, true)
+    $input[0].dispatchEvent(e)
 }

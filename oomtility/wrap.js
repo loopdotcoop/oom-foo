@@ -25,7 +25,7 @@ const CONSTS = {
 }
 
 const NAME     = 'Oomtility Wrap'
-    , VERSION  = '1.2.9'
+    , VERSION  = '1.2.10'
     , HOMEPAGE = 'https://oomtility.loop.coop'
     , HELP =
 `

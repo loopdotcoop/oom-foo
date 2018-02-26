@@ -2,7 +2,7 @@ ${{topline}}
 
 
 !function (ROOT) { 'use strict'
-const { chai, mocha, assert, expect, describe, it, eq, ok } = ROOT.testify()
+const { describe, it, eq, is } = ROOT.testify()
 describe(`${{classname}} Nonbrowser`, () => {
 
 

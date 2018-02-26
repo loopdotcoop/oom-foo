@@ -1,24 +1,24 @@
-//// Oom.Foo //// 1.2.9 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
     NAME: 'Oom.Foo',
-    VERSION: '1.2.9',
+    VERSION: '1.2.10',
     HOMEPAGE: 'http://oom-foo.loop.coop/',
     REMARKS: 'Initial test of the oom-hub architecture',
     LOADED_FIRST: !ROOT.Oom
   };
-  var KIT = assignKit(META.LOADED_FIRST || !ROOT.Oom.KIT ? {} : ROOT.Oom.KIT);
+  var KIT = assignKIT(META.LOADED_FIRST || !ROOT.Oom.KIT ? {} : ROOT.Oom.KIT);
   var Oom = ROOT.Oom = META.LOADED_FIRST ? function() {
     function Oom() {
       var config = arguments[0] !== (void 0) ? arguments[0] : {};
       var attr = this.attr = {};
-      KIT.unwritables(attr, {UUID: KIT.generateUUID()});
+      KIT.define(attr, {UUID: KIT.generateUUID()});
       if (Oom === this.constructor) {
-        KIT.unwritables(attr, {INST_INDEX: Oom.stat.instTally});
-        Oom.stat.instTally++;
+        KIT.define(attr, {INST_INDEX: Oom.stat.inst_tally});
+        Oom.stat._inst_tally++;
       }
     }
     return ($traceurRuntime.createClass)(Oom, {}, {});
@@ -26,20 +26,55 @@
   KIT.name(Oom, 'Oom');
   if (META.LOADED_FIRST) {
     Oom.stat = {};
-    KIT.unwritables(Oom.stat, {
+    KIT.define(Oom.stat, {
       NAME: 'Oom',
       VERSION: META.VERSION,
       HOMEPAGE: 'http://oom.loop.coop/',
       REMARKS: 'Base class for all Oom classes'
-    }, {instTally: 0});
+    }, {inst_tally: 0}, {color: '#112233'});
   }
-  Object.defineProperty(Oom, 'enduserMainVueTemplate', {get: function(innerHTML) {
-      return innerHTML = ("\n<div id=\"ok\">\n  \${this.stat.NAME} is " + this.stat.NAME + "<br>\n  {<b></b>{stat.NAME}} is {{stat.NAME}}<br>\n  {<b></b>{stat.instTally}} is {{stat.instTally}}\n</div>\n");
+  Object.defineProperty(Oom, 'memberTableVueTemplate', {get: function() {
+      var config = arguments[0] !== (void 0) ? arguments[0] : {};
+      var innerHTML = arguments[1];
+      return innerHTML = "\n<div class=\"col-12 member-table\">\n  <table v-bind:class=\"{ hid:doHide }\">\n    <caption v-html=\"caption\"></caption>\n    <tr v-for=\"val, key in obj\" v-bind:class=\"'Oom-'+key\">\n      <td class=\"key\">{{key}}</td>\n      <td class=\"val\">\n        <input v-if=\"isReadWrite(key)\"    class=\"read-write\" v-model=\"obj[key]\">\n        <span v-else-if=\"isReadOnly(key)\" class=\"read-only\">{{val}}</span>\n        <span v-else-if=\"isConstant(key)\" class=\"constant\">{{val}}</span>\n        <span v-else                      class=\"private\">{{val}}</span>\n      </td>\n    </tr>\n  </table>\n</div>\n";
     }});
-  Oom.enduserMainVue = {
-    template: Oom.enduserMainVueTemplate,
+  Object.defineProperty(Oom, 'devMainVueTemplate', {get: function() {
+      var config = arguments[0] !== (void 0) ? arguments[0] : {};
+      var innerHTML = arguments[1];
+      return innerHTML = "\n<member-table :obj=\"stat\" :do-hide=\"ui.hideData\"\n  :caption=\"stat.NAME+' static members:'\"></member-table>\n";
+    }});
+  Oom.devMainVue = {
+    template: Oom.devMainVueTemplate,
     data: function() {
-      return {stat: Oom.stat};
+      return {
+        stat: Oom.stat,
+        ui: {
+          hideData: false,
+          hideInners: false
+        }
+      };
+    },
+    beforeCreate: function() {
+      var $__4 = KIT,
+          isReadWrite = $__4.isReadWrite,
+          isReadOnly = $__4.isReadOnly,
+          isConstant = $__4.isConstant;
+      Vue.component('member-table', {
+        template: Oom.memberTableVueTemplate,
+        props: {
+          doHide: Boolean,
+          caption: String,
+          obj: Object
+        },
+        methods: {
+          isReadWrite: isReadWrite,
+          isReadOnly: isReadOnly,
+          isConstant: isConstant
+        }
+      });
+    },
+    created: function() {
+      KIT.wrapReadOnly(ROOT.Oom.stat);
     }
   };
   Oom.KIT = KIT;
@@ -51,9 +86,9 @@
   }(Oom);
   KIT.name(Oom.Foo, 'Oom.Foo');
   Oom.Foo.stat = {};
-  KIT.unwritables(Oom.Foo.stat, META, {instTally: 0});
-  function assignKit() {
-    var KIT = arguments[0] !== (void 0) ? arguments[0] : {};
+  KIT.define(Oom.Foo.stat, META, {instTally: 0});
+  function assignKIT() {
+    var previousKIT = arguments[0] !== (void 0) ? arguments[0] : {};
     return Object.assign({}, {
       generateUUID: function() {
         var rndCh = function(s, e) {
@@ -74,7 +109,7 @@
         return true;
       },
       validateType: function(valid, value) {
-        var ME = "KIT.validateType: ",
+        var ME = 'KIT.validateType: ',
             C = 'constructor';
         if (null === valid.type)
           return (null === value) ? null : "is not null";
@@ -104,21 +139,49 @@
         }
         return now;
       },
-      unwritables: function(obj) {
+      define: function(obj) {
         for (var srcs = [],
             $__3 = 1; $__3 < arguments.length; $__3++)
           srcs[$__3 - 1] = arguments[$__3];
         return srcs.forEach(function(src) {
-          var def = {};
+          var ME = 'KIT.define: ',
+              def = {};
+          var $__6 = function(k) {
+            if (KIT.isReadOnly(k)) {
+              def['_' + k] = {
+                writable: true,
+                value: src[k],
+                configurable: true,
+                enumerable: true
+              };
+              def[k] = {
+                get: function() {
+                  return obj['_' + k];
+                },
+                set: function(v) {},
+                configurable: true,
+                enumerable: true
+              };
+            } else if (KIT.isReadWrite(k)) {
+              def[k] = {
+                writable: true,
+                value: src[k],
+                configurable: true,
+                enumerable: true
+              };
+            } else if (KIT.isConstant(k)) {
+              def[k] = {
+                writable: false,
+                value: src[k],
+                configurable: false,
+                enumerable: true
+              };
+            } else {
+              throw Error(ME + k + ' is an invalid property name');
+            }
+          };
           for (var k in src) {
-            var configurable = /[a-z]/.test(k);
-            var writable = /[a-z]/.test(k);
-            def[k] = {
-              configurable: configurable,
-              writable: writable,
-              enumerable: true,
-              value: src[k]
-            };
+            $__6(k);
           }
           Object.defineProperties(obj, def);
         });
@@ -128,8 +191,18 @@
           value: value,
           configurable: false
         });
+      },
+      wrapReadOnly: function(obj) {},
+      isReadOnly: function(k) {
+        return -1 !== k.indexOf('_') && /^[a-z][_a-z0-9]+$/.test(k);
+      },
+      isReadWrite: function(k) {
+        return /^[a-z][A-Za-z0-9]*$/.test(k);
+      },
+      isConstant: function(k) {
+        return /^[A-Z][_A-Z0-9]*$/.test(k);
       }
-    }, KIT);
+    }, previousKIT);
   }
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
 !function(ROOT) {
@@ -223,7 +296,7 @@
   }(Oom.Foo);
   KIT.name(Class, 'Oom.Foo.Post');
   Oom.Foo.Post.stat = {};
-  KIT.unwritables(Oom.Foo.Post.stat, META, {insts: 0});
+  KIT.define(Oom.Foo.Post.stat, META, {insts: 0});
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
 !function(ROOT) {
   'use strict';
@@ -316,10 +389,10 @@
   }(Oom.Foo);
   KIT.name(Class, 'Oom.Foo.Router');
   Oom.Foo.Router.stat = {};
-  KIT.unwritables(Oom.Foo.Router.stat, META, {insts: 0});
+  KIT.define(Oom.Foo.Router.stat, META, {insts: 0});
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
 
 
 
 
-//// Made by Oomtility Make 1.2.9 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.2.10 //\\//\\ http://oomtility.loop.coop /////////

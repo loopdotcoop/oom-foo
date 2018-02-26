@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.9 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 !function (ROOT) { 'use strict'
 
@@ -150,7 +150,7 @@ const Class = Oom.Foo.Router = class extends Oom.Foo {
 
 //// Add properties to `Oom.Foo.Router.stat` - exposed to Vue etc.
 Oom.Foo.Router.stat = {}
-KIT.unwritables(Oom.Foo.Router.stat, META, { insts:0 })
+KIT.define(Oom.Foo.Router.stat, META, { insts:0 })
 
 
 

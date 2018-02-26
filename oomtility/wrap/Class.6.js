@@ -190,7 +190,7 @@ isApp ? `
 
 //// Add properties to `${{classname}}.stat` - exposed to Vue etc.
 ${{classname}}.stat = {}
-KIT.unwritables(${{classname}}.stat, META, { insts:0 })
+KIT.define(${{classname}}.stat, META, { insts:0 })
 
 
 

@@ -1,7 +1,7 @@
 ${{topline}}
 
 !function (ROOT) { 'use strict'
-const { chai, mocha, assert, expect, describe, it, eq, ok } = ROOT.testify()
+const { describe, it, eq, is } = ROOT.testify()
 describe(`${{classname}} Universal`, () => {
 
 
@@ -24,10 +24,10 @@ Class.testInstanceFactory = () =>
 describe(`+ve ${{classname}} class`, () => {
 
     it(`should be a class`, () => {
-        ok('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
-        ok('function' === typeof Class, '${{classname}} is a function')
+        is('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
+        is('function' === typeof Class, '${{classname}} is a function')
         try { Class.name = stat.NAME = 'Changed!'} catch (e) {}
-        ok( ('${{classname}}' === Class.name && '${{classname}}' === stat.NAME)
+        is( ('${{classname}}' === Class.name && '${{classname}}' === stat.NAME)
           , 'name and stat.NAME are ${{classname}}')
     })
 
@@ -41,9 +41,9 @@ describe('+ve ${{classname}} instance', () => {
     it(`should be an instance`, () => {
         const instance = Class.testInstanceFactory()
         const attr = instance.attr
-        ok(instance instanceof Class, 'Is an instance of ${{classname}}')
-        ok(Class === instance.constructor, '`constructor` is ${{classname}}')
-        ok('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
+        is(instance instanceof Class, 'Is an instance of ${{classname}}')
+        is(Class === instance.constructor, '`constructor` is ${{classname}}')
+        is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
           , '`attr.UUID` is a six-character string')
         // is('object' === typeof instance.hub, '`hub` property is an object')
     })

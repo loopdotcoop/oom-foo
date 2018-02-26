@@ -2,14 +2,14 @@
 
 
 
-//// Oom.Foo //// 1.2.9 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 !function (ROOT) { 'use strict'
 
 //// Metadata for Oom.Foo
 const META = {
     NAME:     'Oom.Foo'
-  , VERSION:  '1.2.9' // OOMBUMPABLE
+  , VERSION:  '1.2.10' // OOMBUMPABLE
   , HOMEPAGE: 'http://oom-foo.loop.coop/'
   , REMARKS:  'Initial test of the oom-hub architecture'
   , LOADED_FIRST: ! ROOT.Oom // true if the Oom class is defined by this module
@@ -22,7 +22,7 @@ const META = {
 
 
 //// Oom’s toolkit (created if not present). @TODO test with several modules
-const KIT = assignKit(META.LOADED_FIRST || ! ROOT.Oom.KIT ? {} :  ROOT.Oom.KIT)
+const KIT = assignKIT(META.LOADED_FIRST || ! ROOT.Oom.KIT ? {} :  ROOT.Oom.KIT)
 
 
 
@@ -41,14 +41,13 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
         const attr = this.attr = {}
 
         //// attr.UUID: Oom instances have universally unique IDs.
-        KIT.unwritables( attr, { UUID: KIT.generateUUID() } )
+        KIT.define( attr, { UUID: KIT.generateUUID() } )
 
         //// attr.INST_INDEX: the first Oom instance is 0, the second is 1, etc.
         //// Also increment this class’s (static) tally of instantiations.
         if (Oom === this.constructor) { // not being called by a child-class
-            KIT.unwritables( attr, { INST_INDEX: Oom.stat.instTally })
-            Oom.stat.instTally++
-            // KIT.unwritables(Oom.stat, { instTally: Oom.stat.instTally+1 })
+            KIT.define( attr, { INST_INDEX: Oom.stat.inst_tally })
+            Oom.stat._inst_tally++ // underlying value of a read-only property
         }
     }
 
@@ -59,31 +58,53 @@ KIT.name(Oom, 'Oom') // prevents `name` from being changed
 //// Add properties to `Oom.stat` - these will be exposed to Vue etc.
 if (META.LOADED_FIRST) {
     Oom.stat = {}
-    KIT.unwritables( Oom.stat, {
+    KIT.define( Oom.stat,
+    { // static constant properties
         NAME:     'Oom'
       , VERSION:  META.VERSION
       , HOMEPAGE: 'http://oom.loop.coop/'
       , REMARKS:  'Base class for all Oom classes'
-    }, { instTally:0 }) // counts instantiations
+    }, { // public read-only properties (these have underscore-prefixed shadows)
+        inst_tally: 0 // counts instantiations
+    }, { // public readable writable properties
+        color: '#112233'
+    })
 }
 
-
-//// @TODO move these to Bases+enduser.6.js
-Object.defineProperty(Oom, 'enduserMainVueTemplate', {
-get: function (innerHTML) { return innerHTML = `
-<div id="ok">
-  \${this.stat.NAME} is ${this.stat.NAME}<br>
-  {<b></b>{stat.NAME}} is {{stat.NAME}}<br>
-  {<b></b>{stat.instTally}} is {{stat.instTally}}
+//// <member-table> shows a table of class and instance members.
+Object.defineProperty(Oom, 'memberTableVueTemplate', {
+get: function (config={}, innerHTML) { return innerHTML = `
+<div class="col-12 member-table">
+  <table v-bind:class="{ hid:doHide }">
+    <caption v-html="caption"></caption>
+    <tr v-for="val, key in obj" v-bind:class="'Oom-'+key">
+      <td class="key">{{key}}</td>
+      <td class="val">
+        <input v-if="isReadWrite(key)"    class="read-write" v-model="obj[key]">
+        <span v-else-if="isReadOnly(key)" class="read-only">{{val}}</span>
+        <span v-else-if="isConstant(key)" class="constant">{{val}}</span>
+        <span v-else                      class="private">{{val}}</span>
+      </td>
+    </tr>
+  </table>
 </div>
 `} })
 
 
-Oom.enduserMainVue = {
-    template: Oom.enduserMainVueTemplate
+////
+Object.defineProperty(Oom, 'devMainVueTemplate', {
+get: function (config={}, innerHTML) { return innerHTML = `
+<member-table :obj="stat" :do-hide="ui.hideData"
+  :caption="stat.NAME+' static members:'"></member-table>
+`} })
+
+
+Oom.devMainVue = {
+    template: Oom.devMainVueTemplate
 
   , data: function () { return {
         stat: Oom.stat
+      , ui: { hideData:false, hideInners:false }
     } }
 
 /*
@@ -101,20 +122,31 @@ Oom.enduserMainVue = {
   , methods: {
         // toggleHideData
     }
-
-    //// Generate an instance of Oom.Foo.Post.
+*/
+    //// Register any component dependencies not already registered.
   , beforeCreate: function () {
-        inners.push( new ROOT.Oom.Foo.Post({
-            thirdProp: 'inners.length: ' + inners.length
-        }) )
+
+        //@TODO if not already registered
+        //// <member-table> shows a table of class and instance members.
+        const { isReadWrite, isReadOnly, isConstant } = KIT
+        Vue.component('member-table', {
+            template: Oom.memberTableVueTemplate
+          , props: {
+                doHide: Boolean
+              , caption: String
+              , obj: Object
+            }
+          , methods: { isReadWrite, isReadOnly, isConstant }
+        })
+
     }
 
     //// Wrap Vue’s reactive getters and setters with our own.
   , created: function () {
-        wrapApiGettersAndSetters(outers[outers.length-1])
-        wrapApiGettersAndSetters(ROOT.Oom.Foo.Post)
+        // KIT.wrapReadOnly(outers[outers.length-1]) //@TODO instance
+        KIT.wrapReadOnly(ROOT.Oom.stat)
     }
-*/
+
 }
 
 
@@ -134,7 +166,7 @@ Oom.Foo = class extends Oom {
 
 //// Add properties to `Oom.Foo.stat` - these will be exposed to Vue etc.
 Oom.Foo.stat = {}
-KIT.unwritables(Oom.Foo.stat, META, { instTally:0 })
+KIT.define(Oom.Foo.stat, META, { instTally:0 })
 
 
 
@@ -142,7 +174,7 @@ KIT.unwritables(Oom.Foo.stat, META, { instTally:0 })
 //// KIT FUNCTIONS
 
 
-function assignKit (KIT={}) { return Object.assign({}, {
+function assignKIT (previousKIT={}) { return Object.assign({}, {
 
     //// Creates a sequence of six random characters (57 billion combinations),
     //// containing only uppercase and lowercase letters and digits.
@@ -167,7 +199,7 @@ function assignKit (KIT={}) { return Object.assign({}, {
     }
 
   , validateType: (valid, value) => {
-        const ME = `KIT.validateType: `, C = 'constructor'
+        const ME = 'KIT.validateType: ', C = 'constructor'
         if (null === valid.type)
             return (null === value) ? null : `is not null`
         if ('undefined' === typeof valid.type)
@@ -205,16 +237,32 @@ function assignKit (KIT={}) { return Object.assign({}, {
     }
 
 
-    //// Adds one or more enumerable read-only property to `obj`. A property
-    //// name which contains a lowercase letter is treated as configurable.
+    //// Adds one or more property to `obj`.
     //// Can also be used to change the value of existing properties. @TODO does Vue croak when that happens?
-  , unwritables: (obj, ...srcs) =>
+  , define: (obj, ...srcs) =>
         srcs.forEach( src => {
-            const def = {}
+            const ME = 'KIT.define: ', def = {}
             for (let k in src) {
-                const configurable = /[a-z]/.test(k)
-                const writable     = /[a-z]/.test(k)
-                def[k] = { configurable, writable, enumerable:true, value:src[k] }
+                if ( KIT.isReadOnly(k) ) { // eg 'foo_bar'
+                    def['_'+k] = { // private property, still visible to Vue
+                        writable:true, value:src[k]
+                      , configurable:true, enumerable:true }
+                    def[k] = { // public read-only property (not a constant)
+                        get: function ()  { return obj['_'+k] }
+                      , set: function (v) { } // read-only
+                      , configurable:true, enumerable:true }
+                } else if ( KIT.isReadWrite(k) ) { // eg 'fooBar'
+                    // obj[k] = src[k]
+                    def[k] = { // public property
+                        writable:true, value:src[k]
+                      , configurable:true, enumerable:true }
+                } else if ( KIT.isConstant(k) ) { // eg 'FOO_BAR'
+                    def[k] = { // public constant
+                        writable:false, value:src[k]
+                      , configurable:false, enumerable:true }
+                } else {
+                    throw Error(ME+k+' is an invalid property name')
+                }
             }
             Object.defineProperties(obj, def)
         })
@@ -225,7 +273,55 @@ function assignKit (KIT={}) { return Object.assign({}, {
   , name: (obj, value) =>
         Object.defineProperty(obj, 'name', { value, configurable:false })
 
-}, KIT) }//assignKit()
+    //// Wraps Vue’s reactive getter and setter for each read-only property.
+    //// The wrapper prevents the property being set directly, and gets from the
+    //// ‘shadow’ property (same name, but underscore prefixed). `wrapReadOnly()
+    //// should be called after Vue creates a component.
+  , wrapReadOnly: obj => {
+/* @TODO reinstate or remove
+        for (let k in obj) {
+            if (! KIT.isReadOnly(k) ) continue // ignore constant and read-write
+            const { get, set } = Object.getOwnPropertyDescriptor(obj, k)
+            // const propertyDescriptor =
+            //     Object.getOwnPropertyDescriptor(obj, k)
+            // const vueReactiveGetter = propertyDescriptor.get
+            // const vueReactiveSetter = propertyDescriptor.set
+            // if (! vueReactiveGetter) { continue } // probably a non-writable property
+            if ('wrappedGet' === get.name) { console.log('!!!');continue} //@TODO more graceful way of avoiding double-wrap
+            // console.log('wrap ' + k + ' getter and setter');
+            const wrappedGet = function wrappedGet () {
+                let val
+                if ( KIT.isReadOnly(k) )
+                    val = obj['_'+k] // read-only property’s value
+                else
+                    val = get()
+                // console.log('get ' + k + ' ' + val);
+                return val
+            }
+            const wrappedSet = function wrappedSet (val) {
+                if ( KIT.isReadOnly(k) )
+                    return
+                // console.log('set ' + k + ' to ' + val);
+                return set(val)
+            }
+            // console.log('wrapped '+k+' on '+obj.UUID)
+            Object.defineProperty(obj, k, {
+                configurable:true, enumerable:true
+              , get: wrappedGet
+              , set: wrappedSet
+            })
+        }
+*/
+    }
+
+    //// Classify property names, eg 'foo_bar_4', 'fooBar4' and 'FOO_BAR_4'.
+    //// Minimal names are 'a_', 'a' and 'A'. Leading digits or underscores are
+    //// not allowed.
+  , isReadOnly:  k => -1 !== k.indexOf('_') && /^[a-z][_a-z0-9]+$/.test(k)
+  , isReadWrite: k => /^[a-z][A-Za-z0-9]*$/.test(k)
+  , isConstant:  k => /^[A-Z][_A-Z0-9]*$/.test(k)
+
+}, previousKIT) }//assignKIT()
 
 
 }( 'object' === typeof global ? global : this ) // `window` in a browser
@@ -237,7 +333,7 @@ function assignKit (KIT={}) { return Object.assign({}, {
 
 
 
-//// Oom.Foo //// 1.2.9 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 !function (ROOT) { 'use strict'
 
@@ -389,7 +485,7 @@ const Class = Oom.Foo.Post = class extends Oom.Foo {
 
 //// Add properties to `Oom.Foo.Post.stat` - exposed to Vue etc.
 Oom.Foo.Post.stat = {}
-KIT.unwritables(Oom.Foo.Post.stat, META, { insts:0 })
+KIT.define(Oom.Foo.Post.stat, META, { insts:0 })
 
 
 
@@ -403,7 +499,7 @@ KIT.unwritables(Oom.Foo.Post.stat, META, { insts:0 })
 
 
 
-//// Oom.Foo //// 1.2.9 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 !function (ROOT) { 'use strict'
 
@@ -555,7 +651,7 @@ const Class = Oom.Foo.Router = class extends Oom.Foo {
 
 //// Add properties to `Oom.Foo.Router.stat` - exposed to Vue etc.
 Oom.Foo.Router.stat = {}
-KIT.unwritables(Oom.Foo.Router.stat, META, { insts:0 })
+KIT.define(Oom.Foo.Router.stat, META, { insts:0 })
 
 
 
@@ -565,4 +661,4 @@ KIT.unwritables(Oom.Foo.Router.stat, META, { insts:0 })
 
 
 
-//// Made by Oomtility Make 1.2.9 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.2.10 //\\//\\ http://oomtility.loop.coop /////////

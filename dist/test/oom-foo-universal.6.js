@@ -2,27 +2,125 @@
 
 
 
-//// Oom.Foo //// 1.2.9 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
+
+//// Node.js:    7.2.0
+//// Rhino:      @TODO get Rhino working
+//// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
+//// Windows 7:  IE 9, Safari 5.1
+//// OS X 10.6:  Firefox 6, Chrome 16 (and probably lower), Opera 12, Safari 5.1
+//// iOS:        iPad 3rd (iOS 6) Safari, iPad Air (iOS 7) Chrome
+//// Android:    Xperia Tipo (Android 4), Pixel XL (Android 7.1)
 
 !function (ROOT) { 'use strict'
 ROOT.testify = testify // make `testify()` available to all test files
-const { chai, mocha, assert, expect, describe, it, eq, ok } = ROOT.testify()
-describe(`Bases Universal`, () => {
+const { describe, it, eq, is, tryHardSet } = ROOT.testify()
+describe('Bases Universal', function () {
+
+
+//// Establish whether the oom-foo module’s definition of Oom is being used.
+let r; if (!(r=ROOT.Oom) || !(r=r.Foo) || !(r=r.stat) || !(r=r.LOADED_FIRST))
+    throw Error('Can’t test: ROOT.Oom.Foo.stat.LOADED_FIRST does not exist')
+const LOADED_FIRST = ROOT.Oom.Foo.stat.LOADED_FIRST //@TODO generalise Foo
+
+
+//// `inst_tally` will be incremented each time an instance is created. We
+//// capture its initial value here, which should be zero.
+let initInstTally = ROOT.Oom.stat.inst_tally
 
 
 
 
-describe(`+ve Oom class`, () => {
-    it(`should be a class`, () => {
-        const Class = ROOT.Oom, stat = Class.stat
-        eq('function', typeof Class, 'Oom should be a function')
-    })
+describe('+ve Oom class', function () {
+    const Class = ROOT.Oom, stat = Class.stat
+
+
+    it('should be a class', function(){try{
+        eq(typeof Class, 'function', '`typeof Oom` is a function')
+    }catch(e){console.error(e.message);throw e}})
+
+
+    it('should have correct initial static constant properties', function(){try{
+        tryHardSet(Class, 'name', 'Changed!')
+        eq(Class.name, 'Oom', 'name is Oom')
+        tryHardSet(stat, 'NAME,REMARKS,HOMEPAGE', 'Changed!')
+        eq(stat.NAME, 'Oom', 'stat.NAME is Oom')
+        eq(stat.REMARKS, 'Base class for all Oom classes'
+          , 'stat.REMARKS is \'Base class for all Oom classes\'')
+        eq(stat.HOMEPAGE, 'http://oom.loop.coop/'
+          , 'stat.HOMEPAGE is \'http://oom.loop.coop/\'')
+    }catch(e){console.error(e.message);throw e}})
+
+
+    it('should have correct initial static read-only properties', function(){try{
+        stat.inst_tally = 55
+        eq(0, initInstTally
+          , 'stat.inst_tally is initially zero')
+    }catch(e){console.error(e.message);throw e}})
+
+
+    it('It should change static read-only properties as expected', function(){try{
+        initInstTally = stat.inst_tally
+        new Class()
+        eq(stat.inst_tally, initInstTally+1
+          , 'stat.inst_tally increments after instantiation')
+    }catch(e){console.error(e.message);throw e}})
+
 })
 
 
 
 
-})//describe()
+//// Only run the following test if the Oom class was defined in this module.
+if (LOADED_FIRST)
+    describe('+ve Oom class, defined in this oom-foo module', function () {
+        const Class = ROOT.Oom, stat = Class.stat
+
+
+        it('should have the same version as this oom-foo module', function(){try{
+            tryHardSet(stat, 'VERSION', 'Changed!')
+            eq(stat.VERSION, '1.2.10', 'stat.VERSION is 1.2.9') // OOMBUMPABLE
+        }catch(e){console.error(e.message);throw e}})
+
+    })
+
+
+
+
+describe('+ve Oom instance', function () {
+    initInstTally = ROOT.Oom.stat.inst_tally
+    const Class = ROOT.Oom, instance = new Class(), attr = instance.attr
+
+
+    it('should be an instance', function(){try{
+        is(instance instanceof Class, 'Is an instance of Oom')
+        eq(Class, instance.constructor, '`constructor` is Oom')
+    }catch(e){console.error(e.message);throw e}})
+
+
+    it('should have correct initial instance properties', function(){try{
+        tryHardSet(attr, 'UUID', 'Changed!')
+        eq('string', typeof attr.UUID
+          , '`attr.UUID` is a string')
+        is(/^[0-9A-Za-z]{6}$/.test(attr.UUID)
+          , '`attr.UUID` conforms to /^[0-9A-Za-z]{6}$/')
+        tryHardSet(attr, 'INST_INDEX', 99)
+        eq(0, attr.INST_INDEX, 'attr.INST_INDEX is zero')
+        eq(initInstTally+1, Class.stat.inst_tally
+          , 'stat.inst_tally has incremented to '+initInstTally)
+        //@TODO more tests
+    }catch(e){console.error(e.message);throw e}})
+
+})
+
+
+
+
+
+
+
+
+})//describe('Bases Universal'
 }( 'object' === typeof global ? global : this ) // `window` in a browser
 
 
@@ -41,9 +139,24 @@ function testify () {
       , assert:   chai.assert
       , expect:   chai.expect
       , eq:       chai.assert.strictEqual
-      , ok:       chai.assert.isOk
+      , is:       chai.assert.isOk
       , describe: this.describe || mocha.describe // browser || Node.js
       , it:       this.it       || mocha.it       // browser || Node.js
+
+        //// Simulate an accidental attempt to modify an object’s properties.
+      // , trySoftSet: (obj, keylist, value) => {
+      //       keylist.split(',').forEach( key => {
+      //           try { obj[key] = value } catch(e) {} })
+      //   }
+
+        //// Simulate a determined attempt to modify an object’s properties.
+      , tryHardSet: (obj, keylist, value) => {
+            keylist.split(',').forEach( key => {
+                const def = { enumerable:true, value, configurable:true }
+                try { Object.defineProperty(obj, key, def) } catch(e) {}
+            })
+        }
+
     }
 }
 
@@ -100,8 +213,8 @@ if (LOADED_FIRST)
     test('+ve Oom class, defined in this module', () => {
         const Class = ROOT.Oom, stat = Class.stat
         tryHardSet(stat, 'VERSION,REMARKS', 'Changed!')
-        is( ('1.2.9' === stat.VERSION) // OOMBUMPABLE
-          , 'stat.VERSION is 1.2.9') // OOMBUMPABLE
+        is( ('1.2.10' === stat.VERSION) // OOMBUMPABLE
+          , 'stat.VERSION is 1.2.10') // OOMBUMPABLE
         is( ('Base class for all Oom classes' === stat.REMARKS)
           , 'stat.REMARKS is \'Base class for all Oom classes\'')
     })
@@ -134,8 +247,8 @@ test('+ve Oom.Foo class', () => {
       , 'name and stat.NAME are Oom.Foo')
     is( ('http://oom-foo.loop.coop/' === stat.HOMEPAGE)
       , 'stat.HOMEPAGE is \'http://oom-foo.loop.coop/\'')
-    is( ('1.2.9' === stat.VERSION) // OOMBUMPABLE
-      , 'stat.VERSION is 1.2.9') // OOMBUMPABLE
+    is( ('1.2.10' === stat.VERSION) // OOMBUMPABLE
+      , 'stat.VERSION is 1.2.10') // OOMBUMPABLE
     //@TODO more tests
 })
 
@@ -267,10 +380,10 @@ function extendKludJs () {
 
 
 
-//// Oom.Foo //// 1.2.9 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 !function (ROOT) { 'use strict'
-const { chai, mocha, assert, expect, describe, it, eq, ok } = ROOT.testify()
+const { describe, it, eq, is } = ROOT.testify()
 describe(`Oom.Foo.Post Universal`, () => {
 
 
@@ -293,10 +406,10 @@ Class.testInstanceFactory = () =>
 describe(`+ve Oom.Foo.Post class`, () => {
 
     it(`should be a class`, () => {
-        ok('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
-        ok('function' === typeof Class, 'Oom.Foo.Post is a function')
+        is('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
+        is('function' === typeof Class, 'Oom.Foo.Post is a function')
         try { Class.name = stat.NAME = 'Changed!'} catch (e) {}
-        ok( ('Oom.Foo.Post' === Class.name && 'Oom.Foo.Post' === stat.NAME)
+        is( ('Oom.Foo.Post' === Class.name && 'Oom.Foo.Post' === stat.NAME)
           , 'name and stat.NAME are Oom.Foo.Post')
     })
 
@@ -310,9 +423,9 @@ describe('+ve Oom.Foo.Post instance', () => {
     it(`should be an instance`, () => {
         const instance = Class.testInstanceFactory()
         const attr = instance.attr
-        ok(instance instanceof Class, 'Is an instance of Oom.Foo.Post')
-        ok(Class === instance.constructor, '`constructor` is Oom.Foo.Post')
-        ok('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
+        is(instance instanceof Class, 'Is an instance of Oom.Foo.Post')
+        is(Class === instance.constructor, '`constructor` is Oom.Foo.Post')
+        is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
           , '`attr.UUID` is a six-character string')
         // is('object' === typeof instance.hub, '`hub` property is an object')
     })
@@ -383,10 +496,10 @@ test('+ve Oom.Foo.Post instance', () => {
 
 
 
-//// Oom.Foo //// 1.2.9 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 !function (ROOT) { 'use strict'
-const { chai, mocha, assert, expect, describe, it, eq, ok } = ROOT.testify()
+const { describe, it, eq, is } = ROOT.testify()
 describe(`Oom.Foo.Router Universal`, () => {
 
 
@@ -409,10 +522,10 @@ Class.testInstanceFactory = () =>
 describe(`+ve Oom.Foo.Router class`, () => {
 
     it(`should be a class`, () => {
-        ok('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
-        ok('function' === typeof Class, 'Oom.Foo.Router is a function')
+        is('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
+        is('function' === typeof Class, 'Oom.Foo.Router is a function')
         try { Class.name = stat.NAME = 'Changed!'} catch (e) {}
-        ok( ('Oom.Foo.Router' === Class.name && 'Oom.Foo.Router' === stat.NAME)
+        is( ('Oom.Foo.Router' === Class.name && 'Oom.Foo.Router' === stat.NAME)
           , 'name and stat.NAME are Oom.Foo.Router')
     })
 
@@ -426,9 +539,9 @@ describe('+ve Oom.Foo.Router instance', () => {
     it(`should be an instance`, () => {
         const instance = Class.testInstanceFactory()
         const attr = instance.attr
-        ok(instance instanceof Class, 'Is an instance of Oom.Foo.Router')
-        ok(Class === instance.constructor, '`constructor` is Oom.Foo.Router')
-        ok('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
+        is(instance instanceof Class, 'Is an instance of Oom.Foo.Router')
+        is(Class === instance.constructor, '`constructor` is Oom.Foo.Router')
+        is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
           , '`attr.UUID` is a six-character string')
         // is('object' === typeof instance.hub, '`hub` property is an object')
     })
@@ -495,4 +608,4 @@ test('+ve Oom.Foo.Router instance', () => {
 
 
 
-//// Made by Oomtility Make 1.2.9 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.2.10 //\\//\\ http://oomtility.loop.coop /////////

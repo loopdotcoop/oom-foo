@@ -1,7 +1,7 @@
-//// Oom.Foo //// 1.2.9 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 !function (ROOT) { 'use strict'
-const { chai, mocha, assert, expect, describe, it, eq, ok } = ROOT.testify()
+const { describe, it, eq, is } = ROOT.testify()
 describe(`Oom.Foo.Router Universal`, () => {
 
 
@@ -24,10 +24,10 @@ Class.testInstanceFactory = () =>
 describe(`+ve Oom.Foo.Router class`, () => {
 
     it(`should be a class`, () => {
-        ok('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
-        ok('function' === typeof Class, 'Oom.Foo.Router is a function')
+        is('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
+        is('function' === typeof Class, 'Oom.Foo.Router is a function')
         try { Class.name = stat.NAME = 'Changed!'} catch (e) {}
-        ok( ('Oom.Foo.Router' === Class.name && 'Oom.Foo.Router' === stat.NAME)
+        is( ('Oom.Foo.Router' === Class.name && 'Oom.Foo.Router' === stat.NAME)
           , 'name and stat.NAME are Oom.Foo.Router')
     })
 
@@ -41,9 +41,9 @@ describe('+ve Oom.Foo.Router instance', () => {
     it(`should be an instance`, () => {
         const instance = Class.testInstanceFactory()
         const attr = instance.attr
-        ok(instance instanceof Class, 'Is an instance of Oom.Foo.Router')
-        ok(Class === instance.constructor, '`constructor` is Oom.Foo.Router')
-        ok('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
+        is(instance instanceof Class, 'Is an instance of Oom.Foo.Router')
+        is(Class === instance.constructor, '`constructor` is Oom.Foo.Router')
+        is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
           , '`attr.UUID` is a six-character string')
         // is('object' === typeof instance.hub, '`hub` property is an object')
     })

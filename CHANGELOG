@@ -35,3 +35,4 @@
 1.2.7 Using Chai and Mocha instead of klud.js
 1.2.8 All wrap/Bases-* and wrap/Class-* tests use Mocha (and no jQuery)
 1.2.9 Bases-browser.6.js tests static properties on Oom.enduserMainVue
+1.2.10 Bases-browser.6.js tests a <member-table>

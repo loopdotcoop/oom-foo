@@ -1,92 +1,107 @@
-//// Oom.Foo //// 1.2.9 //// February 2018 //// http://oom-foo.loop.coop/ //////
+//// Oom.Foo //// 1.2.10 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var $__1 = ROOT.testify(),
-      chai = $__1.chai,
-      mocha = $__1.mocha,
-      assert = $__1.assert,
-      expect = $__1.expect,
       describe = $__1.describe,
       it = $__1.it,
       eq = $__1.eq,
-      ok = $__1.ok;
+      is = $__1.is;
   describe('Bases Browser', function() {
-    beforeEach(function() {});
-    afterEach(function() {});
-    describe('+ve Oom.enduserMainVue', function() {
+    describe('+ve Oom.devMainVue', function(done) {
+      $('.container').append('<div id="test" class="row"><oom-test>Loading...</oom-test></div>');
       var Class = ROOT.Oom,
-          testsAfterUpdate = [];
-      $('body').append('<h1 id="test"><oom-test>Loading...</oom-test></h1>');
-      initVueTests(Class.enduserMainVue, testAfterMounted, testsAfterUpdate);
-      beforeEach(function() {});
-      afterEach(function() {});
-      after(function() {
-        $('#test').remove();
-      });
-      function testAfterMounted() {
-        var initialInstTally = Class.stat.instTally;
-        it('Generates a viable Vue component', function() {
-          eq(1, $('#test').length, 'div#test exists');
-          var lines = textToLines($('#test').text());
-          eq(lines[0], '${this.stat.NAME} is Oom', 'First line bakes stat.NAME into template');
-          eq(lines[1], '{{stat.NAME}} is Oom', 'Second line gets stat.NAME via Vue');
-          eq(lines[2], '{{stat.instTally}} is 0', 'Third line gets stat.instTally via Vue');
-        });
-        it('Vue updates HTML when static properties change', function(done) {
-          var that = this;
-          Vue.nextTick(function(x) {
-            testsAfterUpdate.push(updateTestFn.bind(that));
-            var instance = new Class();
+          cmp = Vue.component('oom-test', Class.devMainVue),
+          vue = new Vue({
+            el: '#test',
+            mounted: testAfterMounted
           });
-          function updateTestFn() {
-            var lines = textToLines($('#test').text());
-            eq(lines[2], '{{stat.instTally}} is 1', 'Third line shows Vue sees stat.instTally has updated');
-            done();
+      after(function() {});
+      function testAfterMounted() {
+        var initInstTally;
+        it('should generates a viable Vue component', function() {
+          try {
+            eq($('#test').length, 1, '#test exists');
+            eq($('#test .member-table').length, 1, '.member-table exists');
+          } catch (e) {
+            console.error(e.message);
+            throw e;
           }
+        });
+        it('Vue should initially show correct static properties', function(done) {
+          Vue.nextTick((function() {
+            var error;
+            try {
+              initInstTally = Class.stat.inst_tally;
+              for (var key in Class.stat) {
+                var $el = $(("#test .Oom-" + key + " .val"));
+                if ($el.find('.read-write')[0])
+                  eq($el.find('.read-write').val(), Class.stat[key] + '', ("Vue should set .Oom-" + key + " to stat." + key));
+                else
+                  eq($el.text(), Class.stat[key] + '', ("Vue should set .Oom-" + key + " to stat." + key));
+              }
+            } catch (e) {
+              error = e;
+              console.error(e.message);
+            }
+            done(error);
+          }).bind(this));
+        });
+        it('Vue should update HTML when static properties change', function(done) {
+          initInstTally = Class.stat.inst_tally;
+          Class.stat.color = '#000001';
+          Class.stat.inst_tally = 44;
+          var instance = new Class();
+          Vue.nextTick((function() {
+            var error;
+            try {
+              eq($('#test .Oom-inst_tally .val').text(), (initInstTally + 1) + '', "Vue should see stat.inst_tally has updated");
+              eq($('#test .Oom-color .val input').val(), '#000001', "Vue should see stat.color has updated");
+            } catch (e) {
+              error = e;
+              console.error(e.message);
+            }
+            done(error);
+          }).bind(this));
+        });
+        it('Vue should change read-write static properties after UI input', function(done) {
+          simulateInput($('#test .Oom-color .val input'), '#339966');
+          Vue.nextTick((function() {
+            var error;
+            try {
+              eq(Class.stat.color, '#339966', "<INPUT> change should make Vue update stat.color", 1);
+            } catch (e) {
+              error = e;
+              console.error(e.message);
+            }
+            done(error);
+          }).bind(this));
         });
       }
     });
   });
   $(mocha.run);
 }(window);
-function initVueTests(origDefinition, testAfterMounted, testsAfterUpdate) {
-  var definition = Object.assign({}, origDefinition, {updated: function() {
-      if (origDefinition.updated)
-        origDefinition.updated.call(this);
-      var utFn;
-      while (utFn = testsAfterUpdate.shift())
-        utFn();
-    }}),
-      cmp = Vue.component('oom-test', definition),
-      vue = new Vue({
-        el: '#test',
-        mounted: testAfterMounted
-      });
-}
-function textToLines(text) {
-  return text.trim().split('\n').map(function(l) {
-    return l.trim();
-  });
+function simulateInput($input, val) {
+  $input.val('#339966');
+  var e = document.createEvent('HTMLEvents');
+  e.initEvent('input', true, true);
+  $input[0].dispatchEvent(e);
 }
 !function(ROOT) {
   'use strict';
   var $__1 = ROOT.testify(),
-      chai = $__1.chai,
-      mocha = $__1.mocha,
-      assert = $__1.assert,
-      expect = $__1.expect,
       describe = $__1.describe,
       it = $__1.it,
       eq = $__1.eq,
-      ok = $__1.ok;
+      is = $__1.is;
   describe("Oom.Foo.Post Browser", function() {
     var Class = Oom.Foo.Post,
         stat = Class.stat;
     describe("+ve Oom.Foo.Post class", function() {
       it("@TODO", function() {
-        ok(true, '@TODO');
+        is(true, '@TODO');
       });
     });
   });
@@ -94,20 +109,16 @@ function textToLines(text) {
 !function(ROOT) {
   'use strict';
   var $__1 = ROOT.testify(),
-      chai = $__1.chai,
-      mocha = $__1.mocha,
-      assert = $__1.assert,
-      expect = $__1.expect,
       describe = $__1.describe,
       it = $__1.it,
       eq = $__1.eq,
-      ok = $__1.ok;
+      is = $__1.is;
   describe("Oom.Foo.Router Browser", function() {
     var Class = Oom.Foo.Router,
         stat = Class.stat;
     describe("+ve Oom.Foo.Router class", function() {
       it("@TODO", function() {
-        ok(true, '@TODO');
+        is(true, '@TODO');
       });
     });
   });
@@ -116,4 +127,4 @@ function textToLines(text) {
 
 
 
-//// Made by Oomtility Make 1.2.9 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.2.10 //\\//\\ http://oomtility.loop.coop /////////
