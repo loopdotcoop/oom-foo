@@ -1,8 +1,8 @@
-//// Oom.Foo //// 1.2.11 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.12 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 !function (ROOT) { 'use strict'
 const { describe, it, eq, is } = ROOT.testify()
-describe(`Oom.Foo.Router All`, () => {
+describe.skip(`Oom.Foo.Router All`, () => {
 
 
 

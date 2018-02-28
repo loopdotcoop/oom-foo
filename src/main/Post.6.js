@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.11 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.12 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 !function (ROOT) { 'use strict'
 
@@ -150,7 +150,7 @@ const Class = Oom.Foo.Post = class extends Oom.Foo {
 
 //// Add properties to `Oom.Foo.Post.stat` - exposed to Vue etc.
 Oom.Foo.Post.stat = {}
-KIT.define(Oom.Foo.Post.stat, META, { insts:0 })
+// KIT.define(Oom.Foo.Post.stat, META, { insts:0 })
 
 
 

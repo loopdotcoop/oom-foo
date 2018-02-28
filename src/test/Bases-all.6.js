@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.11 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.12 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -10,7 +10,10 @@
 
 !function (ROOT) { 'use strict'
 ROOT.testify = testify // make `testify()` available to all test files
-const { describe, it, eq, is, tryHardSet } = ROOT.testify()
+const { describe, it, eq, is, tryHardSet, goodVals, badVals, stringOrName }
+  = ROOT.testify()
+const { countKeyMatches, isConstant, isReadOnly, isReadWrite, isValid }
+  = Oom.KIT
 describe('Bases All', function () {
 
 
@@ -22,101 +25,222 @@ const LOADED_FIRST = ROOT.Oom.Foo.stat.LOADED_FIRST //@TODO generalise Foo
 
 //// `inst_tally` will be incremented each time an instance is created. We
 //// capture its initial value here, which should be zero.
-let initInstTally = ROOT.Oom.stat.inst_tally
+// let initInstTally = ROOT.Oom.stat.inst_tally
 
 
 
 
-describe('+ve Oom class', function () {
-    const Class = ROOT.Oom, stat = Class.stat
+describe('The Oom class', function () {
+    const Class = ROOT.Oom, stat = Class.stat, schema = Class.schema
 
 
-    it('should be a class', function(){try{
-        eq(typeof Class, 'function', '`typeof Oom` is a function')
+
+
+    //// AUTOMATIC STATIC TESTS
+
+    it('is a class', function(){try{
+        eq(typeof Class, 'function'
+          , '`typeof Oom` is a function')
     }catch(e){console.error(e.message);throw e}})
 
 
-    it('should have correct initial static constant properties', function(){try{
+    let n = countKeyMatches(schema.stat, isConstant)
+    it(`has ${n} constant static${1==n?'':'s'}`, function(){try{
         tryHardSet(Class, 'name', 'Changed!')
         eq(Class.name, 'Oom', 'name is Oom')
-        tryHardSet(stat, 'NAME,REMARKS,HOMEPAGE', 'Changed!')
-        eq(stat.NAME, 'Oom', 'stat.NAME is Oom')
-        eq(stat.REMARKS, 'Base class for all Oom classes'
-          , 'stat.REMARKS is \'Base class for all Oom classes\'')
-        eq(stat.HOMEPAGE, 'http://oom.loop.coop/'
-          , 'stat.HOMEPAGE is \'http://oom.loop.coop/\'')
+        for (let key in schema.stat) {
+            if (! isConstant(key) ) continue // only constants
+            tryHardSet(stat, key, 'Changed!')
+            const valid = schema.stat[key]
+            eq(stat[key], valid.default
+              , 'stat.'+key+' is '+valid.default.toString())
+            is( isValid(valid, stat[key])
+              , 'stat.'+key+' is a valid '+stringOrName(valid.type) )
+        }
     }catch(e){console.error(e.message);throw e}})
 
 
-    it('should have correct initial static read-only properties', function(){try{
-        stat.inst_tally = 55
-        eq(0, initInstTally
-          , 'stat.inst_tally is initially zero')
+    n = countKeyMatches(schema.stat, isReadOnly)
+    it(`has ${n} read-only static${1==n?'':'s'}`, function(){try{
+        // stat._inst_tally = 0 // reset `inst_tally` @TODO avoid this
+        for (let key in schema.stat) {
+            if (! isReadOnly(key) ) continue // only read-only properties
+            stat[key] = 123
+            const valid = schema.stat[key]
+            eq(stat[key], valid.default
+              , 'stat.'+key+' is initially '+valid.default.toString())
+            is( isValid(valid, stat[key])
+              , 'stat.'+key+' is a valid '+stringOrName(valid.type) )
+        }
     }catch(e){console.error(e.message);throw e}})
 
 
-    it('It should change static read-only properties as expected', function(){try{
-        initInstTally = stat.inst_tally
-        new Class()
-        eq(stat.inst_tally, initInstTally+1
-          , 'stat.inst_tally increments after instantiation')
+    it('sees when read-only statics change', function(){try{
+        for (let key in schema.stat) {
+            if (! isReadOnly(key) ) continue // only read-only properties
+            const good = goodVals[ stringOrName(schema.stat[key].type) ]
+            stat['_'+key] = good
+            eq(stat[key], good
+              , 'stat.'+key+' has changed to '+good)
+            //// Changing a read-only value via its underscore-prefixed ‘shadow’
+            //// does not invoke any validation or type-checking. Therefore we
+            //// don’t test that `badVals` are rejected.
+        }
     }catch(e){console.error(e.message);throw e}})
 
-})
+
+    n = countKeyMatches(schema.stat, isReadWrite)
+    it(`has ${n} read-write static${1==n?'':'s'}`, function(){try{
+        for (let key in schema.stat) {
+            if (! isReadWrite(key) ) continue // only read-write properties
+            const valid = schema.stat[key]
+            eq(stat[key], valid.default
+              , 'stat.'+key+' is initially '+valid.default.toString())
+            is( isValid(valid, stat[key])
+              , 'stat.'+key+' is a valid '+stringOrName(valid.type) )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    it('allows read-write statics to be changed', function(){try{
+        for (let key in schema.stat) {
+            if (! isReadWrite(key) ) continue // only read-write properties
+            const good = goodVals[ stringOrName(schema.stat[key].type) ]
+            const bad  = badVals[  stringOrName(schema.stat[key].type) ]
+            stat[key] = good
+            eq(stat[key], good
+              , 'stat.'+key+' has changed to '+good)
+            stat[key] = bad
+            eq(stat[key], good
+              , 'stat.'+key+' has NOT changed to '+bad)
+        }
+    }catch(e){console.error(e.message);throw e}})
 
 
 
 
-//// Only run the following test if the Oom class was defined in this module.
-if (LOADED_FIRST)
-    describe('+ve Oom class, defined in this oom-foo module', function () {
-        const Class = ROOT.Oom, stat = Class.stat
-
-
-        it('should have the same version as this oom-foo module', function(){try{
-            tryHardSet(stat, 'VERSION', 'Changed!')
-            eq(stat.VERSION, '1.2.11', 'stat.VERSION is 1.2.11') // OOMBUMPABLE
-        }catch(e){console.error(e.message);throw e}})
-
-    })
+    //// CUSTOM STATIC TESTS
+    //@TODO
 
 
 
 
-describe('+ve Oom instance', function () {
-    initInstTally = ROOT.Oom.stat.inst_tally
-    const Class = ROOT.Oom, instance = new Class(), attr = instance.attr
+})//describe('The Oom class')
 
 
-    it('should be an instance', function(){try{
+
+
+describe('An Oom instance', function () {
+    // initInstTally = ROOT.Oom.stat.inst_tally
+    const Class = ROOT.Oom, schema = Class.schema
+        , instance = new Class(), attr = instance.attr
+
+
+
+
+    //// AUTOMATIC ATTRIBUTE TESTS
+
+    it('is an instance', function(){try{
         is(instance instanceof Class, 'Is an instance of Oom')
         eq(Class, instance.constructor, '`constructor` is Oom')
     }catch(e){console.error(e.message);throw e}})
 
 
-    it('should have correct initial instance properties', function(){try{
-        tryHardSet(attr, 'UUID', 'Changed!')
-        eq('string', typeof attr.UUID
-          , '`attr.UUID` is a string')
-        is(/^[0-9A-Za-z]{6}$/.test(attr.UUID)
-          , '`attr.UUID` conforms to /^[0-9A-Za-z]{6}$/')
-        tryHardSet(attr, 'INST_INDEX', 99)
-        eq(0, attr.INST_INDEX, 'attr.INST_INDEX is zero')
-        eq(initInstTally+1, Class.stat.inst_tally
-          , 'stat.inst_tally has incremented to '+initInstTally)
-        //@TODO more tests
+    let n = countKeyMatches(schema.attr, isConstant)
+    it(`has ${n} constant attribute${1==n?'':'s'}`, function(){try{
+        for (let key in schema.attr) {
+            if (! isConstant(key) ) continue // only constants
+            tryHardSet(attr, key, 'Changed!')
+            const valid = schema.attr[key]
+            eq(attr[key], valid.default
+              , 'attr.'+key+' is '+valid.default.toString())
+            is( isValid(valid, attr[key])
+              , 'attr.'+key+' is a valid '+stringOrName(valid.type) )
+        }
     }catch(e){console.error(e.message);throw e}})
 
-})
+
+    n = countKeyMatches(schema.attr, isReadOnly)
+    it(`has ${n} read-only attribute${1==n?'':'s'}`, function(){try{
+        for (let key in schema.attr) {
+            if (! isReadOnly(key) ) continue // only read-only properties
+            attr[key] = 123
+            const valid = schema.attr[key]
+            eq(attr[key], valid.default
+              , 'attr.'+key+' is initially '+valid.default.toString())
+            is( isValid(valid, attr[key])
+              , 'attr.'+key+' is a valid '+stringOrName(valid.type) )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    it('sees when read-only attributes change', function(){try{
+        for (let key in schema.attr) {
+            if (! isReadOnly(key) ) continue // only read-only properties
+            const good = goodVals[ stringOrName(schema.attr[key].type) ]
+            attr['_'+key] = good
+            eq(attr[key], good
+              , 'attr.'+key+' has changed to '+good)
+            //// Changing a read-only value via its underscore-prefixed ‘shadow’
+            //// does not invoke any validation or type-checking. Therefore we
+            //// don’t test that `badVals` are rejected.
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    n = countKeyMatches(schema.attr, isReadWrite)
+    it(`has ${n} read-write attribute${1==n?'':'s'}`, function(){try{
+        for (let key in schema.attr) {
+            if (! isReadWrite(key) ) continue // only read-write properties
+            const valid = schema.attr[key]
+            eq(attr[key], valid.default
+              , 'attr.'+key+' is initially '+valid.default.toString())
+            is( isValid(valid, attr[key])
+              , 'attr.'+key+' is a valid '+stringOrName(valid.type) )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    it('allows read-write attributes to be changed', function(){try{
+        for (let key in schema.attr) {
+            if (! isReadWrite(key) ) continue // only read-write properties
+            const good = goodVals[ stringOrName(schema.attr[key].type) ]
+            const bad  = badVals[  stringOrName(schema.attr[key].type) ]
+            attr[key] = good
+            eq(attr[key], good
+              , 'attr.'+key+' has changed to '+good)
+            attr[key] = bad
+            eq(attr[key], good
+              , 'attr.'+key+' has NOT changed to '+bad)
+        }
+    }catch(e){console.error(e.message);throw e}})
 
 
 
 
+    //// CUSTOM ATTRIBUTE TESTS
+    //@TODO
+    //
+    // tryHardSet(attr, 'UUID', 'Changed!')
+    // eq('string', typeof attr.UUID
+    //   , '`attr.UUID` is a string')
+    // is(/^[0-9A-Za-z]{6}$/.test(attr.UUID)
+    //   , '`attr.UUID` conforms to /^[0-9A-Za-z]{6}$/')
+    // tryHardSet(attr, 'INST_INDEX', 99)
+    // eq(0, attr.INST_INDEX, 'attr.INST_INDEX is zero')
+    // eq(initInstTally+1, Class.stat.inst_tally
+    //   , 'stat.inst_tally has incremented to '+initInstTally)
+    //@TODO more tests
 
 
 
 
-})//describe('Bases All'
+})//describe('An Oom instance')
+
+
+
+
+})//describe('Bases All')
 }( 'object' === typeof global ? global : this ) // `window` in a browser
 
 
@@ -153,218 +277,19 @@ function testify () {
             })
         }
 
+        //// Dummy values which pass or fail `isValid()`.
+      , goodVals: {
+            color:  '#89abCD'
+          , Number: 12345
+          , String: 'ok!'
+        }
+      , badVals: {
+            color:  '89abCD' // missing the '#'
+          , Number: '11.22.33' // the string '11.22' would be cast to 11.22
+          , String: /nope!/ // regexp, not a string
+        }
+
+      , stringOrName: val => 'string' === typeof val ? val : val.name
+
     }
 }
-
-/*
-
-//// Node.js:    7.2.0
-//// Rhino:      @TODO get Rhino working
-//// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
-//// Windows 7:  IE 9, Safari 5.1
-//// OS X 10.6:  Firefox 6, Chrome 16 (and probably lower), Opera 12, Safari 5.1
-//// iOS:        iPad 3rd (iOS 6) Safari, iPad Air (iOS 7) Chrome
-//// Android:    Xperia Tipo (Android 4), Pixel XL (Android 7.1)
-
-!function (ROOT) { 'use strict'
-if ('function' !== typeof jQuery) throw Error('jQuery not found')
-jQuery( function($) {
-
-//// Define the `title()` and `throws()` global functions. After any `test()`
-//// call, update higher-level summary results.
-extendKludJs()
-
-
-//// Establish whether the oom-foo module’s definition of Oom is being used.
-let r; if (!(r=ROOT.Oom) || !(r=r.Foo) || !(r=r.stat) || !(r=r.LOADED_FIRST))
-    throw Error('Can’t test: ROOT.Oom.Foo.stat.LOADED_FIRST does not exist')
-const LOADED_FIRST = ROOT.Oom.Foo.stat.LOADED_FIRST
-
-
-//// Show a title for the first set of tests, with a ‘▶’ button for collapsing.
-title('Bases All')
-
-
-
-
-//// THE Oom CLASS
-
-test('+ve Oom class', () => {
-    const Class = ROOT.Oom, stat = Class.stat
-    is('function' === typeof Class, 'Oom is a function')
-    tryHardSet(Class, 'name', 'Changed!')
-    tryHardSet(stat, 'NAME,HOMEPAGE', 'Changed!')
-    is( ('Oom' === Class.name && 'Oom' === stat.NAME)
-      , 'name and stat.NAME are Oom')
-    is( ('http://oom.loop.coop/' === stat.HOMEPAGE)
-      , 'stat.HOMEPAGE is \'http://oom.loop.coop/\'')
-    // trySoftSet(stat, 'instTally', 55) //@TODO test should pass when this is uncommented
-    is(0 === stat.instTally, 'stat.instTally is zero')
-    //@TODO more tests
-})
-
-
-//// Only run the following test if the Oom class was defined in this module.
-if (LOADED_FIRST)
-    test('+ve Oom class, defined in this module', () => {
-        const Class = ROOT.Oom, stat = Class.stat
-        tryHardSet(stat, 'VERSION,REMARKS', 'Changed!')
-        is( ('1.2.11' === stat.VERSION) // OOMBUMPABLE
-          , 'stat.VERSION is 1.2.11') // OOMBUMPABLE
-        is( ('Base class for all Oom classes' === stat.REMARKS)
-          , 'stat.REMARKS is \'Base class for all Oom classes\'')
-    })
-
-
-test('+ve Oom instance', () => {
-    const Class = ROOT.Oom, instance = new Class(), attr = instance.attr
-    is(instance instanceof Class, 'Is an instance of Oom')
-    is(Class === instance.constructor, '`constructor` is Oom')
-    tryHardSet(attr, 'UUID', 'Changed!')
-    is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
-      , '`attr.UUID` is a six-character string')
-    tryHardSet(attr, 'INST_INDEX', 99)
-    is(0 === attr.INST_INDEX, 'attr.INST_INDEX is zero')
-    is(1 === Class.stat.instTally, 'stat.instTally has incremented to `1`')
-    //@TODO more tests
-})
-
-
-
-
-//// THE Oom.Foo CLASS
-
-test('+ve Oom.Foo class', () => {
-    const Class = ROOT.Oom.Foo, stat = Class.stat
-    is('function' === typeof Class, 'Oom.Foo is a function')
-    tryHardSet(Class, 'name', 'Changed!')
-    tryHardSet(stat, 'NAME,HOMEPAGE,VERSION', 'Changed!')
-    is( ('Oom.Foo' === Class.name && 'Oom.Foo' === stat.NAME)
-      , 'name and stat.NAME are Oom.Foo')
-    is( ('http://oom-foo.loop.coop/' === stat.HOMEPAGE)
-      , 'stat.HOMEPAGE is \'http://oom-foo.loop.coop/\'')
-    is( ('1.2.11' === stat.VERSION) // OOMBUMPABLE
-      , 'stat.VERSION is 1.2.11') // OOMBUMPABLE
-    //@TODO more tests
-})
-
-
-test('+ve Oom.Foo instance', () => {
-    const Class = ROOT.Oom.Foo, instance = new Class(), attr = instance.attr
-    is(instance instanceof Class, 'Is an instance of Oom.Foo')
-    is(Class === instance.constructor, '`constructor` is Oom.Foo')
-    is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
-      , '`attr.UUID` is a six-character string')
-    //@TODO more tests
-})
-
-
-
-
-//// EXTEND KLUD.JS AND REPORT.JS
-
-function extendKludJs () {
-
-    //// Show a section title, which helps break up the list of test results.
-    ROOT.title = ROOT.title || ( (text) => {
-        if ('undefined' === typeof window) // this is how report.js detects Node
-            return console.log(text)
-
-        //// Remove the special '__kludjs_init__' test.
-        if (! $('ul.kludjs')[0]) {
-            test( '__kludjs_init__', x=>is(1,''))
-            $('li.kludjs-singleton:contains("__kludjs_init__")').remove()
-        }
-
-        //// Create and initialise the title element.
-        const $title =
-            $(`<li class="kludjs-title"><span>▶</span> ${text}</li>`)
-           .appendTo( $('ul.kludjs') )
-           .click( function () {
-                let $title = $(this)
-                ROOT.collapseTitle( $title, ! $title.hasClass('collapsed') )
-            })
-        $title.data('orig-html', $title.html())
-
-        //// If a previous title which passes exists, collapse it. @TODO collapse the final title
-        const $prevTitle = $title.prevAll('.kludjs-title').first()
-        if ($prevTitle[0])
-            ROOT.collapseTitle($prevTitle, null, true)
-    })
-
-    //// Test for an expected exception.
-    ROOT.throws = ROOT.throws || ( (fn, expect, pre) => {
-        let nl = 'undefined' === typeof window      // newline, prefixed by ':',
-          ? ':\n    ' : ':<br>'+' &nbsp;'.repeat(6) // suffixed with an indent
-        let didntThrow = true
-        try {
-            fn()
-        } catch (e) {
-            didntThrow = false
-            const ok = expect === e.message
-            is(ok,`${pre} has ${ok?'':'un'}expected error${ok?'':nl+e.message}`)
-        }
-        if (didntThrow) is(0, pre + ' did not throw an error')
-    })
-
-    //// Simulate an accidental attempt to modify an object’s properties.
-    ROOT.trySoftSet = ROOT.trySoftSet || ( (obj, keylist, value) => {
-        keylist.split(',').forEach( key => {
-            try { obj[key] = value } catch(e) {} })
-    })
-
-    //// Simulate a determined attempt to modify an object’s properties.
-    ROOT.tryHardSet = ROOT.tryHardSet || ( (obj, keylist, value) => {
-        keylist.split(',').forEach( key => {
-            try { obj[key] = value } catch(e) {}
-            const def = { enumerable:true, value, configurable:true }
-            try { Object.defineProperty(obj, key, def) } catch(e) {}
-        })
-    })
-
-    //// Add a ‘Total’ heading, and make Klud.js’s `test()` title-aware.
-    if ('undefined' !== typeof window) {
-        const oldTest = ROOT.test
-        const $total = $('<h4> Total: </h4>')
-        $total.data('orig-html', $total.html())
-        $('div.kludjs').append($total)
-        ROOT.test = (text, fn) => {
-            oldTest(text, fn)
-            if ('__kludjs_init__' === text) return
-            $('ul.kludjs >li').each( (i,el) => {
-                if ( text === el.innerText.slice(0, text.length) ) {
-                    const [ x, pass, all ] = el.innerText.match(/\((\d+)\/(\d+)\)/)
-                    updateHeading($total, pass, all)
-                    updateHeading($(el).prevAll('.kludjs-title').first(), pass, all)
-                }
-            })
-        }
-    }
-
-    //// Collapse (or uncollapse) jQuery title element `$i`, and all its tests.
-    ROOT.collapseTitle = ROOT.collapseTitle || ( ( $i, doCollapse, ifPass) => {
-        if (ifPass) doCollapse = $i.data('pass') === $i.data('all')
-        $i[(doCollapse?'add':'remove')+'Class']('collapsed')
-        while ( ($i=$i.next()) && $i[0] && ! $i.hasClass('kludjs-title') )
-            $i[ doCollapse ? 'hide' : 'show' ]()
-    } )
-
-    function updateHeading ($el, pass, all) {
-        $el
-           .data('pass', ($el.data('pass')||0)+(+pass))
-           .data('all' , ($el.data('all' )||0)+(+all))
-           .removeClass('kludjs-pass', 'kludjs-fail')
-           .addClass( 'kludjs-'
-              + ($el.data('pass') === $el.data('all') ? 'pass' : 'fail') )
-           .html(`${$el.data('orig-html')}
-                (${$el.data('pass')}/${$el.data('all')})`)
-    }
-
-}
-
-
-
-
-})//jQuery()
-}( 'object' === typeof global ? global : this ) // `window` in a browser
-*/

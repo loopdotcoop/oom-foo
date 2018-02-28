@@ -9,17 +9,26 @@
       it = $__2.it,
       eq = $__2.eq,
       is = $__2.is,
-      tryHardSet = $__2.tryHardSet;
+      tryHardSet = $__2.tryHardSet,
+      goodVals = $__2.goodVals,
+      badVals = $__2.badVals,
+      stringOrName = $__2.stringOrName;
+  var $__3 = Oom.KIT,
+      countKeyMatches = $__3.countKeyMatches,
+      isConstant = $__3.isConstant,
+      isReadOnly = $__3.isReadOnly,
+      isReadWrite = $__3.isReadWrite,
+      isValid = $__3.isValid;
   describe('Bases All', function() {
     var r;
     if (!(r = ROOT.Oom) || !(r = r.Foo) || !(r = r.stat) || !(r = r.LOADED_FIRST))
       throw Error('Can’t test: ROOT.Oom.Foo.stat.LOADED_FIRST does not exist');
     var LOADED_FIRST = ROOT.Oom.Foo.stat.LOADED_FIRST;
-    var initInstTally = ROOT.Oom.stat.inst_tally;
-    describe('+ve Oom class', function() {
+    describe('The Oom class', function() {
       var Class = ROOT.Oom,
-          stat = Class.stat;
-      it('should be a class', function() {
+          stat = Class.stat,
+          schema = Class.schema;
+      it('is a class', function() {
         try {
           eq((typeof Class === 'undefined' ? 'undefined' : $traceurRuntime.typeof(Class)), 'function', '`typeof Oom` is a function');
         } catch (e) {
@@ -27,59 +36,93 @@
           throw e;
         }
       });
-      it('should have correct initial static constant properties', function() {
+      var n = countKeyMatches(schema.stat, isConstant);
+      it(("has " + n + " constant static" + (1 == n ? '' : 's')), function() {
         try {
           tryHardSet(Class, 'name', 'Changed!');
           eq(Class.name, 'Oom', 'name is Oom');
-          tryHardSet(stat, 'NAME,REMARKS,HOMEPAGE', 'Changed!');
-          eq(stat.NAME, 'Oom', 'stat.NAME is Oom');
-          eq(stat.REMARKS, 'Base class for all Oom classes', 'stat.REMARKS is \'Base class for all Oom classes\'');
-          eq(stat.HOMEPAGE, 'http://oom.loop.coop/', 'stat.HOMEPAGE is \'http://oom.loop.coop/\'');
+          for (var key in schema.stat) {
+            if (!isConstant(key))
+              continue;
+            tryHardSet(stat, key, 'Changed!');
+            var valid = schema.stat[key];
+            eq(stat[key], valid.default, 'stat.' + key + ' is ' + valid.default.toString());
+            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + stringOrName(valid.type));
+          }
         } catch (e) {
           console.error(e.message);
           throw e;
         }
       });
-      it('should have correct initial static read-only properties', function() {
+      n = countKeyMatches(schema.stat, isReadOnly);
+      it(("has " + n + " read-only static" + (1 == n ? '' : 's')), function() {
         try {
-          stat.inst_tally = 55;
-          eq(0, initInstTally, 'stat.inst_tally is initially zero');
+          for (var key in schema.stat) {
+            if (!isReadOnly(key))
+              continue;
+            stat[key] = 123;
+            var valid = schema.stat[key];
+            eq(stat[key], valid.default, 'stat.' + key + ' is initially ' + valid.default.toString());
+            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + stringOrName(valid.type));
+          }
         } catch (e) {
           console.error(e.message);
           throw e;
         }
       });
-      it('It should change static read-only properties as expected', function() {
+      it('sees when read-only statics change', function() {
         try {
-          initInstTally = stat.inst_tally;
-          new Class();
-          eq(stat.inst_tally, initInstTally + 1, 'stat.inst_tally increments after instantiation');
+          for (var key in schema.stat) {
+            if (!isReadOnly(key))
+              continue;
+            var good = goodVals[stringOrName(schema.stat[key].type)];
+            stat['_' + key] = good;
+            eq(stat[key], good, 'stat.' + key + ' has changed to ' + good);
+          }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      n = countKeyMatches(schema.stat, isReadWrite);
+      it(("has " + n + " read-write static" + (1 == n ? '' : 's')), function() {
+        try {
+          for (var key in schema.stat) {
+            if (!isReadWrite(key))
+              continue;
+            var valid = schema.stat[key];
+            eq(stat[key], valid.default, 'stat.' + key + ' is initially ' + valid.default.toString());
+            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + stringOrName(valid.type));
+          }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      it('allows read-write statics to be changed', function() {
+        try {
+          for (var key in schema.stat) {
+            if (!isReadWrite(key))
+              continue;
+            var good = goodVals[stringOrName(schema.stat[key].type)];
+            var bad = badVals[stringOrName(schema.stat[key].type)];
+            stat[key] = good;
+            eq(stat[key], good, 'stat.' + key + ' has changed to ' + good);
+            stat[key] = bad;
+            eq(stat[key], good, 'stat.' + key + ' has NOT changed to ' + bad);
+          }
         } catch (e) {
           console.error(e.message);
           throw e;
         }
       });
     });
-    if (LOADED_FIRST)
-      describe('+ve Oom class, defined in this oom-foo module', function() {
-        var Class = ROOT.Oom,
-            stat = Class.stat;
-        it('should have the same version as this oom-foo module', function() {
-          try {
-            tryHardSet(stat, 'VERSION', 'Changed!');
-            eq(stat.VERSION, '1.2.11', 'stat.VERSION is 1.2.11');
-          } catch (e) {
-            console.error(e.message);
-            throw e;
-          }
-        });
-      });
-    describe('+ve Oom instance', function() {
-      initInstTally = ROOT.Oom.stat.inst_tally;
+    describe('An Oom instance', function() {
       var Class = ROOT.Oom,
+          schema = Class.schema,
           instance = new Class(),
           attr = instance.attr;
-      it('should be an instance', function() {
+      it('is an instance', function() {
         try {
           is(instance instanceof Class, 'Is an instance of Oom');
           eq(Class, instance.constructor, '`constructor` is Oom');
@@ -88,14 +131,79 @@
           throw e;
         }
       });
-      it('should have correct initial instance properties', function() {
+      var n = countKeyMatches(schema.attr, isConstant);
+      it(("has " + n + " constant attribute" + (1 == n ? '' : 's')), function() {
         try {
-          tryHardSet(attr, 'UUID', 'Changed!');
-          eq('string', $traceurRuntime.typeof(attr.UUID), '`attr.UUID` is a string');
-          is(/^[0-9A-Za-z]{6}$/.test(attr.UUID), '`attr.UUID` conforms to /^[0-9A-Za-z]{6}$/');
-          tryHardSet(attr, 'INST_INDEX', 99);
-          eq(0, attr.INST_INDEX, 'attr.INST_INDEX is zero');
-          eq(initInstTally + 1, Class.stat.inst_tally, 'stat.inst_tally has incremented to ' + initInstTally);
+          for (var key in schema.attr) {
+            if (!isConstant(key))
+              continue;
+            tryHardSet(attr, key, 'Changed!');
+            var valid = schema.attr[key];
+            eq(attr[key], valid.default, 'attr.' + key + ' is ' + valid.default.toString());
+            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + stringOrName(valid.type));
+          }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      n = countKeyMatches(schema.attr, isReadOnly);
+      it(("has " + n + " read-only attribute" + (1 == n ? '' : 's')), function() {
+        try {
+          for (var key in schema.attr) {
+            if (!isReadOnly(key))
+              continue;
+            attr[key] = 123;
+            var valid = schema.attr[key];
+            eq(attr[key], valid.default, 'attr.' + key + ' is initially ' + valid.default.toString());
+            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + stringOrName(valid.type));
+          }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      it('sees when read-only attributes change', function() {
+        try {
+          for (var key in schema.attr) {
+            if (!isReadOnly(key))
+              continue;
+            var good = goodVals[stringOrName(schema.attr[key].type)];
+            attr['_' + key] = good;
+            eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
+          }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      n = countKeyMatches(schema.attr, isReadWrite);
+      it(("has " + n + " read-write attribute" + (1 == n ? '' : 's')), function() {
+        try {
+          for (var key in schema.attr) {
+            if (!isReadWrite(key))
+              continue;
+            var valid = schema.attr[key];
+            eq(attr[key], valid.default, 'attr.' + key + ' is initially ' + valid.default.toString());
+            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + stringOrName(valid.type));
+          }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      it('allows read-write attributes to be changed', function() {
+        try {
+          for (var key in schema.attr) {
+            if (!isReadWrite(key))
+              continue;
+            var good = goodVals[stringOrName(schema.attr[key].type)];
+            var bad = badVals[stringOrName(schema.attr[key].type)];
+            attr[key] = good;
+            eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
+            attr[key] = bad;
+            eq(attr[key], good, 'attr.' + key + ' has NOT changed to ' + bad);
+          }
         } catch (e) {
           console.error(e.message);
           throw e;
@@ -127,6 +235,19 @@ function testify() {
           Object.defineProperty(obj, key, def);
         } catch (e) {}
       });
+    },
+    goodVals: {
+      color: '#89abCD',
+      Number: 12345,
+      String: 'ok!'
+    },
+    badVals: {
+      color: '89abCD',
+      Number: '11.22.33',
+      String: /nope!/
+    },
+    stringOrName: function(val) {
+      return 'string' === typeof val ? val : val.name;
     }
   };
 }
@@ -137,7 +258,7 @@ function testify() {
       it = $__2.it,
       eq = $__2.eq,
       is = $__2.is;
-  describe("Oom.Foo.Post All", function() {
+  describe.skip("Oom.Foo.Post All", function() {
     var Class = Oom.Foo.Post,
         stat = Class.stat;
     Class.testInstanceFactory = function() {
@@ -174,7 +295,7 @@ function testify() {
       it = $__2.it,
       eq = $__2.eq,
       is = $__2.is;
-  describe("Oom.Foo.Router All", function() {
+  describe.skip("Oom.Foo.Router All", function() {
     var Class = Oom.Foo.Router,
         stat = Class.stat;
     Class.testInstanceFactory = function() {

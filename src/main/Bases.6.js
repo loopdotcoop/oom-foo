@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.11 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.12 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 !function (ROOT) { 'use strict'
 
 //// Metadata for Oom.Foo
 const META = {
     NAME:     'Oom.Foo'
-  , VERSION:  '1.2.11' // OOMBUMPABLE
+  , VERSION:  '1.2.12' // OOMBUMPABLE
   , HOMEPAGE: 'http://oom-foo.loop.coop/'
   , REMARKS:  'Initial test of the oom-hub architecture'
   , LOADED_FIRST: ! ROOT.Oom // true if the Oom class is defined by this module
@@ -32,6 +32,7 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
 
     constructor (config={}) {
 
+/*
         //// Define `attr`, a container for public instance-attributes. It’s a
         //// plain object, which Vue prefers.
         const attr = this.attr = {}
@@ -43,35 +44,91 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
         //// Also increment this class’s (static) tally of instantiations.
         if (Oom === this.constructor) { // not being called by a child-class
             KIT.define( attr, { INST_INDEX: Oom.stat.inst_tally })
-            Oom.stat._inst_tally++ // underlying value of a read-only property
+            Oom.stat._inst_tally++ // underlying value of a read-only static
         }
+*/
     }
+
+
+    //// Defines this class’s static and instance properties.
+    //// May be modified by ‘Plus’ classes. @TODO create and use the Plus class
+    static get schema () { return Oom._norm_schema = Oom._norm_schema ||
+        KIT.normaliseSchema({
+
+            //// Public static properties (known as ‘statics’ in Oom).
+            stat: {
+
+                //// Public constant statics.
+                NAME:     'Oom'
+              , VERSION:  META.VERSION
+              , HOMEPAGE: 'http://oom.loop.coop/'
+              , REMARKS:  'Base class for all Oom classes'
+
+                //// Public read-only statics.
+                //// Paired with underying underscore-prefixed statics.
+              // , inst_tally: { // a schema descriptor-object
+              //       remarks: 'Counts instantiations'
+              //     , default: 0
+              //   }
+
+              , bar_baz: {
+                    remarks: 'Test read-only static'
+                  , default: 'initial value'
+                }
+
+                //// Public read-write statics.
+              , hilite: {
+                    remarks: 'General purpose, useful as a dev label or status'
+                  , default: '#112233'
+                  , type:    'color'
+                }
+
+            //// Public instance properties (known as ‘attributes’ in Oom).
+            }, attr: {
+
+                //// Public constant attributes.
+                // UUID: KIT.generateUUID
+                FOO_BAR: 8080
+
+                //// Public read-only attributes.
+                //// Paired with underying underscore-prefixed attributes.
+              , foo_bar: 10000
+
+                //// Public read-write attributes.
+              , hilite: {
+                    remarks: 'General purpose, useful as a dev label or status'
+                  , default: '#445566'
+                  , type:    'color'
+                }
+              , fooBar: { default:1000, type:'number' }
+
+            }
+        })//KIT.normaliseSchema()
+     }//schema
 
 } : ROOT.Oom
 KIT.name(Oom, 'Oom') // prevents `name` from being changed
 
 
-//// Add properties to `Oom.stat` - these will be exposed to Vue etc.
 if (META.LOADED_FIRST) {
+
+    //// Add public statics to `Oom.stat` (exposed to Vue etc).
     Oom.stat = {}
-    KIT.define( Oom.stat,
-    { // static constant properties
-        NAME:     'Oom'
-      , VERSION:  META.VERSION
-      , HOMEPAGE: 'http://oom.loop.coop/'
-      , REMARKS:  'Base class for all Oom classes'
-    }, { // public read-only properties (these have underscore-prefixed shadows)
-        inst_tally: 0 // counts instantiations
-    }, { // public readable writable properties
-        color: '#112233'
-    })
+    KIT.define(Oom.stat, Oom.schema.stat)
+
+    //// Add public attributes to `myOomInstance.attr` (exposed to Vue etc).
+    Oom.prototype.attr = {}
+    KIT.define(Oom.prototype.attr, Oom.schema.attr)
 }
 
-//// <member-table> shows a table of class and instance members.
+
+
+
+//// <member-table> shows a table of class or instance members.
 Object.defineProperty(Oom, 'memberTableVueTemplate', {
-get: function (config={}, innerHTML) { return innerHTML = `
-<div class="col-12 member-table">
-  <table v-bind:class="{ hid:doHide }">
+get: function (innerHTML) { return innerHTML = `
+<div :class="'member-table '+objname">
+  <table :class="{ hid:doHide }">
     <caption v-html="caption"></caption>
     <tr v-for="val, key in obj" v-bind:class="'Oom-'+key">
       <td class="key">{{key}}</td>
@@ -89,9 +146,13 @@ get: function (config={}, innerHTML) { return innerHTML = `
 
 ////
 Object.defineProperty(Oom, 'devMainVueTemplate', {
-get: function (config={}, innerHTML) { return innerHTML = `
-<member-table :obj="stat" :do-hide="ui.hideData"
-  :caption="stat.NAME+' static members:'"></member-table>
+get: function (innerHTML) { return innerHTML = `
+<div class="dev-main col-12">
+  <member-table :obj="stat" objname="stat" :do-hide="ui.hideData"
+    :caption="stat.NAME+' static properties:'"></member-table>
+  <member-table :obj="attr" objname="attr" :do-hide="ui.hideData"
+    :caption="stat.NAME+' attribute properties:'"></member-table>
+</div>
 `} })
 
 
@@ -100,6 +161,7 @@ Oom.devMainVue = {
 
   , data: function () { return {
         stat: Oom.stat
+      , attr: (new Oom()).attr
       , ui: { hideData:false, hideInners:false }
     } }
 
@@ -131,6 +193,7 @@ Oom.devMainVue = {
                 doHide: Boolean
               , caption: String
               , obj: Object
+              , objname: String
             }
           , methods: { isReadWrite, isReadOnly, isConstant }
         })
@@ -162,7 +225,8 @@ Oom.Foo = class extends Oom {
 
 //// Add properties to `Oom.Foo.stat` - these will be exposed to Vue etc.
 Oom.Foo.stat = {}
-KIT.define(Oom.Foo.stat, META, { instTally:0 })
+KIT.define(Oom.Foo.stat, KIT.normaliseSchema({a:META}).a /*, { instTally:0 }*/)
+KIT.define(Oom.Foo.stat, KIT.normaliseSchema({a:META}).a /*, { instTally:0 }*/)
 
 
 
@@ -194,6 +258,7 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
         return true // `true` here signifies default was successfully applied
     }
 
+    //// Validates a value against a given type.
   , validateType: (valid, value) => {
         const ME = 'KIT.validateType: ', C = 'constructor'
         if (null === valid.type)
@@ -215,6 +280,39 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
             return `is greater than the maximum ${valid.max}`
         if (null != valid.step && ((value/valid.step) % 1))
             return `${value} ÷ ${valid.step} leaves ${(value/valid.step) % 1}`
+    }
+
+    //// Validates a value against a given type.
+  , isValid: (valid, value) => { // `valid` is a schema descriptor-object
+        const PFX = 'KIT.isValid: '+valid.name+'’s '
+        if ('string' === typeof valid.type)
+            switch (valid.type) {
+                case 'undefined': // not a Vue or A-Frame type
+                    return valid.type === typeof value
+                // case 'array': // Vue: `Array`  A-Frame: 'array'
+                //     return Array.isArray(value)
+                case 'color': // A-Frame: 'color'
+                    return /^#[0-9a-fA-F]{6}$/.test(value)
+                case 'int': // A-Frame: 'int'
+                    return Number.isInteger(value)
+                case 'null': // not a Vue or A-Frame type
+                    return null === value
+                //@TODO add more of these, following:
+                //aframe.io/docs/master/core/component.html#property-types
+                default:
+                    throw new TypeError(PFX+`valid.type is '${valid.type}'`)
+            }
+        if (Number === valid.type)
+            return 'number' === typeof value && ! Number.isNaN(value)
+        if (null === valid.type)
+            return null === value
+        if ('undefined' === typeof valid.type)
+            return 'undefined' === typeof value
+        if (! valid.type.name )
+            throw new TypeError(PFX+`valid.type has no name`)
+        if (! value.constructor || ! value.constructor.name )
+            throw new TypeError(PFX+`value has no constructor.name`)
+        return valid.type.name === value.constructor.name
     }
 
 
@@ -239,22 +337,37 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
         srcs.forEach( src => {
             const ME = 'KIT.define: ', def = {}
             for (let k in src) {
+                if ('undefined' === typeof src[k].default)
+                    throw Error(ME+k+' is not a valid schema object')
+                const value = src[k].default
                 if ( KIT.isReadOnly(k) ) { // eg 'foo_bar'
                     def['_'+k] = { // private property, still visible to Vue
-                        writable:true, value:src[k]
+                        writable:true, value
                       , configurable:true, enumerable:true }
                     def[k] = { // public read-only property (not a constant)
                         get: function ()  { return obj['_'+k] }
                       , set: function (v) { } // read-only
                       , configurable:true, enumerable:true }
                 } else if ( KIT.isReadWrite(k) ) { // eg 'fooBar'
-                    // obj[k] = src[k]
-                    def[k] = { // public property
-                        writable:true, value:src[k]
+                    def['_'+k] = { // private property, still visible to Vue
+                        writable:true, value
+                      , configurable:true, enumerable:true }
+                    def[k] = { // public read-write property
+                        get: function ()  { return obj['_'+k] }
+                      , set: function (v) {
+                            if ( KIT.isValid(src[k], v) )
+                                return obj['_'+k] = v
+                            let vCast
+                            if ('function' === typeof src[k].type) {
+                                vCast = src[k].type(v)
+                                if ( KIT.isValid(src[k], vCast) )
+                                    return obj['_'+k] = vCast
+                            }
+                        }
                       , configurable:true, enumerable:true }
                 } else if ( KIT.isConstant(k) ) { // eg 'FOO_BAR'
                     def[k] = { // public constant
-                        writable:false, value:src[k]
+                        writable:false, value
                       , configurable:false, enumerable:true }
                 } else {
                     throw Error(ME+k+' is an invalid property name')
@@ -271,7 +384,7 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
 
     //// Wraps Vue’s reactive getter and setter for each read-only property.
     //// The wrapper prevents the property being set directly, and gets from the
-    //// ‘shadow’ property (same name, but underscore prefixed). `wrapReadOnly()
+    //// ‘shadow’ property (same name, but underscore-prefixed). `wrapReadOnly()
     //// should be called after Vue creates a component.
   , wrapReadOnly: obj => {
 /* @TODO reinstate or remove
@@ -310,12 +423,57 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
 */
     }
 
+  , countKeyMatches: (obj, matchFn, tally=0) => {
+        for (let key in obj) if ( matchFn(key) ) tally++; return tally }
+
     //// Classify property names, eg 'foo_bar_4', 'fooBar4' and 'FOO_BAR_4'.
     //// Minimal names are 'a_', 'a' and 'A'. Leading digits or underscores are
     //// not allowed.
+  , isConstant:  k => /^[A-Z][_A-Z0-9]*$/.test(k)
   , isReadOnly:  k => -1 !== k.indexOf('_') && /^[a-z][_a-z0-9]+$/.test(k)
   , isReadWrite: k => /^[a-z][A-Za-z0-9]*$/.test(k)
-  , isConstant:  k => /^[A-Z][_A-Z0-9]*$/.test(k)
+
+    //// Validates a schema object, and then fills in any gaps.
+  , normaliseSchema: schema => {
+        const out = {}
+        for (let zone in schema) {
+            out[zone] = {} // eg `out.stat = {}` or `out.attr = {}`
+            for (let propName in schema[zone]) {
+                const PFX = 'KIT.normaliseSchema: '+propName+'’s '
+                const inDesc = schema[zone][propName]
+                const outDesc = out[zone][propName] = {}
+                outDesc.name = propName // for better `isValid()` error messages
+                outDesc.default = ('object' === typeof inDesc)
+                  ? inDesc.default // full: `{ stat:{ OK:{ default:'Yep' } } }`
+                  : inDesc // ...or allow shorthand: `{ stat:{ OK:'Yep' } }`
+                const strToObj = {
+                    array   : Array
+                  , boolean : Boolean
+                  , function: Function
+                  , number  : Number
+                  , object  : Object
+                  , string  : String
+                  , symbol  : Symbol
+                }
+                const validStr = {
+                    undefined: 1 //@TODO add more of these, following:
+                  , color    : 1 //aframe.io/docs/master/core/component.html#property-types
+                  , int      : 1
+                  , null     : 1
+                }
+                if (! inDesc.hasOwnProperty('type') )
+                    outDesc.type = outDesc.default.constructor // 123 -> Number
+                else if (strToObj[inDesc.type])
+                    outDesc.type = strToObj[inDesc.type] // 'number' -> Number
+                else if (validStr[inDesc.type])
+                    outDesc.type = inDesc.type // 'int' -> 'int'
+                else
+                    throw new TypeError(PFX+`valid.type is '${valid.type}'`)
+                if (inDesc.remarks) outDesc.remarks = inDesc.remarks
+            }
+        }
+        return out
+    }
 
 }, previousKIT) }//assignKIT()
 

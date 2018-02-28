@@ -37,3 +37,4 @@
 1.2.9 Bases-browser.6.js tests static properties on Oom.enduserMainVue
 1.2.10 Bases-browser.6.js tests a <member-table>
 1.2.11 *-nonbrowser.6.js and *-universal.6.js become *-node.6.js and *-all.6.js
+1.2.12 Bases-all.6.js and Bases-browser.6.js test instance attributes

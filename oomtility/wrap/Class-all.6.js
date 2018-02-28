@@ -2,7 +2,7 @@ ${{topline}}
 
 !function (ROOT) { 'use strict'
 const { describe, it, eq, is } = ROOT.testify()
-describe(`${{classname}} All`, () => {
+describe.skip(`${{classname}} All`, () => {
 
 
 
