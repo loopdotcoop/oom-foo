@@ -1,119 +1,225 @@
 ${{topline}}
 
 !function (ROOT) { 'use strict'
-const { describe, it, eq, is } = ROOT.testify()
-describe.skip(`${{classname}} All`, () => {
+ROOT.testify = testify // make `testify()` available to all test files
+const { describe, it, eq, is, tryHardSet, goodVals, badVals, stringOrName }
+  = ROOT.testify()
+const { countKeyMatches, isConstant, isReadOnly, isReadWrite, isValid }
+  = Oom.KIT
+describe('${{classname}} All', function () {
 
 
 
-
-const Class = ${{classname}}, stat = Class.stat
 
 //// Instantiates a typical ${{classname}} instance for unit testing its methods.
-Class.testInstanceFactory = () =>
-    new Class({
-        firstProp: 100
-      , secondProp: new Date
-    },{
-        /* @TODO hub API */
-    })
+// Class.testInstanceFactory = () =>
+//     new Class({
+//         firstProp: 100
+//       , secondProp: new Date
+//     },{
+//         /* @TODO hub API */
+//     })
 
 
 
 
-describe(`+ve ${{classname}} class`, () => {
-
-    it(`should be a class`, () => {
-        is('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
-        is('function' === typeof Class, '${{classname}} is a function')
-        try { Class.name = stat.NAME = 'Changed!'} catch (e) {}
-        is( ('${{classname}}' === Class.name && '${{classname}}' === stat.NAME)
-          , 'name and stat.NAME are ${{classname}}')
-    })
-
-})
+describe('The ${{classname}} class', () => {
+    const Class = ROOT.${{classname}}
+        , schema = Class.schema, stat = Class.stat
 
 
 
 
-describe('+ve ${{classname}} instance', () => {
+    //// AUTOMATIC STATIC TESTS
 
-    it(`should be an instance`, () => {
-        const instance = Class.testInstanceFactory()
-        const attr = instance.attr
+    it('is a class', function(){try{
+        eq(typeof Class, 'function'
+          , '`typeof Oom` is a function')
+    }catch(e){console.error(e.message);throw e}})
+
+
+    let n = countKeyMatches(schema.stat, isConstant)
+    it(`has ${n} constant static${1==n?'':'s'}`, function(){try{
+        tryHardSet(Class, 'name', 'Changed!')
+        eq(Class.name, '${{classname}}', 'name is ${{classname}}')
+        for (let key in schema.stat) {
+            if (! isConstant(key) ) continue // only constants
+            tryHardSet(stat, key, 'Changed!')
+            const valid = schema.stat[key]
+            eq(stat[key], valid.default
+              , 'stat.'+key+' is '+valid.default.toString())
+            is( isValid(valid, stat[key])
+              , 'stat.'+key+' is a valid '+stringOrName(valid.type) )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    n = countKeyMatches(schema.stat, isReadOnly)
+    it(`has ${n} read-only static${1==n?'':'s'}`, function(){try{
+        for (let key in schema.stat) {
+            if (! isReadOnly(key) ) continue // only read-only properties
+            stat[key] = goodVals[ stringOrName(schema.stat[key].type) ]
+            const valid = schema.stat[key]
+            eq(stat[key], valid.default
+              , 'stat.'+key+' is initially '+valid.default.toString())
+            is( isValid(valid, stat[key])
+              , 'stat.'+key+' is a valid '+stringOrName(valid.type) )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    it('sees when read-only statics change', function(){try{
+        for (let key in schema.stat) {
+            if (! isReadOnly(key) ) continue // only read-only properties
+            const good = goodVals[ stringOrName(schema.stat[key].type) ]
+            stat['_'+key] = good
+            eq(stat[key], good
+              , 'stat.'+key+' has changed to '+good)
+            //// Changing a read-only value via its underscore-prefixed ‘shadow’
+            //// does not invoke any validation or type-checking. Therefore we
+            //// don’t test that `badVals` are rejected.
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    n = countKeyMatches(schema.stat, isReadWrite)
+    it(`has ${n} read-write static${1==n?'':'s'}`, function(){try{
+        for (let key in schema.stat) {
+            if (! isReadWrite(key) ) continue // only read-write properties
+            const valid = schema.stat[key]
+            eq(stat[key], valid.default
+              , 'stat.'+key+' is initially '+valid.default.toString())
+            is( isValid(valid, stat[key])
+              , 'stat.'+key+' is a valid '+stringOrName(valid.type) )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    it('allows read-write statics to be changed', function(){try{
+        for (let key in schema.stat) {
+            if (! isReadWrite(key) ) continue // only read-write properties
+            const good = goodVals[ stringOrName(schema.stat[key].type) ]
+            const bad  = badVals[  stringOrName(schema.stat[key].type) ]
+            stat[key] = good
+            eq(stat[key], good
+              , 'stat.'+key+' has changed to '+good)
+            stat[key] = bad
+            eq(stat[key], good
+              , 'stat.'+key+' has NOT changed to '+bad)
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+
+
+    //// CUSTOM STATIC TESTS
+    //@TODO
+
+
+
+
+})//describe('The ${{classname}} class')
+
+
+
+
+describe('An ${{classname}} instance', function () {
+    const Class = ROOT.${{classname}}
+        , schema = Class.schema, instance = new Class(), attr = instance.attr
+
+
+
+
+    //// AUTOMATIC ATTRIBUTE TESTS
+
+    it('is an instance', function(){try{
         is(instance instanceof Class, 'Is an instance of ${{classname}}')
-        is(Class === instance.constructor, '`constructor` is ${{classname}}')
-        is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
-          , '`attr.UUID` is a six-character string')
-        // is('object' === typeof instance.hub, '`hub` property is an object')
-    })
-
-})
+        eq(Class, instance.constructor, '`constructor` is ${{classname}}')
+    }catch(e){console.error(e.message);throw e}})
 
 
+    let n = countKeyMatches(schema.attr, isConstant)
+    it(`has ${n} constant attribute${1==n?'':'s'}`, function(){try{
+        for (let key in schema.attr) {
+            if (! isConstant(key) ) continue // only constants
+            tryHardSet(attr, key, 'Changed!')
+            const valid = schema.attr[key]
+            eq(attr[key], valid.default
+              , 'attr.'+key+' is '+valid.default.toString())
+            is( isValid(valid, attr[key])
+              , 'attr.'+key+' is a valid '+stringOrName(valid.type) )
+        }
+    }catch(e){console.error(e.message);throw e}})
 
 
-})//describe()
+    n = countKeyMatches(schema.attr, isReadOnly)
+    it(`has ${n} read-only attribute${1==n?'':'s'}`, function(){try{
+        for (let key in schema.attr) {
+            if (! isReadOnly(key) ) continue // only read-only properties
+            attr[key] = goodVals[ stringOrName(schema.attr[key].type) ]
+            const valid = schema.attr[key]
+            eq(attr[key], valid.default
+              , 'attr.'+key+' is initially '+valid.default.toString())
+            is( isValid(valid, attr[key])
+              , 'attr.'+key+' is a valid '+stringOrName(valid.type) )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    it('sees when read-only attributes change', function(){try{
+        for (let key in schema.attr) {
+            if (! isReadOnly(key) ) continue // only read-only properties
+            const good = goodVals[ stringOrName(schema.attr[key].type) ]
+            attr['_'+key] = good
+            eq(attr[key], good
+              , 'attr.'+key+' has changed to '+good)
+            //// Changing a read-only value via its underscore-prefixed ‘shadow’
+            //// does not invoke any validation or type-checking. Therefore we
+            //// don’t test that `badVals` are rejected.
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    n = countKeyMatches(schema.attr, isReadWrite)
+    it(`has ${n} read-write attribute${1==n?'':'s'}`, function(){try{
+        for (let key in schema.attr) {
+            if (! isReadWrite(key) ) continue // only read-write properties
+            const valid = schema.attr[key]
+            eq(attr[key], valid.default
+              , 'attr.'+key+' is initially '+valid.default.toString())
+            is( isValid(valid, attr[key])
+              , 'attr.'+key+' is a valid '+stringOrName(valid.type) )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    it('allows read-write attributes to be changed', function(){try{
+        for (let key in schema.attr) {
+            if (! isReadWrite(key) ) continue // only read-write properties
+            const good = goodVals[ stringOrName(schema.attr[key].type) ]
+            const bad  = badVals[  stringOrName(schema.attr[key].type) ]
+            attr[key] = good
+            eq(attr[key], good
+              , 'attr.'+key+' has changed to '+good)
+            attr[key] = bad
+            eq(attr[key], good
+              , 'attr.'+key+' has NOT changed to '+bad)
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+
+
+    //// CUSTOM ATTRIBUTE TESTS
+    //@TODO
+
+
+
+
+})//describe('An ${{classname}} instance')
+
+
+
+
+})//describe('${{classname}} All')
 }( 'object' === typeof global ? global : this ) // `window` in a browser
-
-/*
-${{{
-isApp ? `
-//// Node.js:    7.2.0
-//// Rhino:      @TODO get Rhino working
-//// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
-//// Windows 7:  IE 9, Safari 5.1
-//// OS X 10.6:  Firefox 6, Chrome 16 (and probably lower), Opera 12, Safari 5.1
-//// iOS:        iPad 3rd (iOS 6) Safari, iPad Air (iOS 7) Chrome
-//// Android:    Xperia Tipo (Android 4), Pixel XL (Android 7.1)
-`:''
-}}}
-!function (ROOT) { 'use strict'
-return //@TODO convert to Mocha
-if ('function' !== typeof jQuery) throw Error('jQuery not found')
-jQuery( function($) {
-title('${{classname}} All')
-const Class = ${{classname}}, stat = Class.stat
-
-
-
-
-//// Instantiates a typical ${{classname}} instance for unit testing its methods.
-Class.testInstanceFactory = () =>
-    new Class({
-        firstProp: 100
-      , secondProp: new Date
-    },{
-        // @TODO hub API
-    })
-
-
-
-
-test('+ve ${{classname}} class', () => {
-    is('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
-    is('function' === typeof Class, '${{classname}} is a function')
-    try { Class.name = stat.NAME = 'Changed!'} catch (e) {}
-    is( ('${{classname}}' === Class.name && '${{classname}}' === stat.NAME)
-      , 'name and stat.NAME are ${{classname}}')
-})
-
-
-
-
-test('+ve ${{classname}} instance', () => {
-    const instance = Class.testInstanceFactory()
-    const attr = instance.attr
-    is(instance instanceof Class, 'Is an instance of ${{classname}}')
-    is(Class === instance.constructor, '`constructor` is ${{classname}}')
-    is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
-      , '`attr.UUID` is a six-character string')
-    // is('object' === typeof instance.hub, '`hub` property is an object')
-})
-
-
-
-
-})//jQuery()
-}( 'object' === typeof global ? global : this ) // `window` in a browser
-*/

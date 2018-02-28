@@ -2,20 +2,6 @@ ${{topline}}
 
 !function (ROOT) { 'use strict'
 
-const META = {
-    NAME:    '${{classname}}'
-  , REMARKS: '${{remarks}}'
-}
-
-const PROPS = {
-    propA: Number // or set to `null` to accept any type
-  , propB: [ String, Number ] // multiple possible types
-  , propC: { type:String, required:true } // a required string
-  , propD: { type:Number, default:100 } // a number with default value
-  , propE: { type:Object, default:function(){return[1]} } // must use factory fn
-  , propF: { validator:function(v){return v>10} } // custom validator
-}
-
 
 //// Shortcuts to Oom’s global namespace and toolkit.
 const Oom = ROOT.Oom
@@ -27,10 +13,10 @@ const Class = ${{classname}} = class extends ${{extendname}} {
 
     constructor (config={}) {
         super(config)
-
+/*
         //// Validate the configuration object.
         this._validateConstructor(config)
-/*
+
         //// Record config’s values to the `attr` object.
         this.validConstructor.forEach( valid => {
             const value = config[valid.name]
@@ -51,8 +37,45 @@ isTop ? `
     }
 
 
+    //// Defines this class’s static and instance properties.
+    //// May be modified by ‘Plus’ classes. @TODO create and use the Plus class
+    static get schema () {
+        return KIT.normaliseSchema({
+
+            //// Public static properties (known as ‘statics’ in Oom).
+            stat: {
+
+                //// Public constant statics.
+                NAME:    '${{classname}}'
+              , REMARKS: '${{remarks}}'
+
+              // , propA: Number // or set to `null` to accept any type
+              // , propB: [ String, Number ] // multiple possible types
+              // , propC: { type:String, required:true } // a required string
+              , prop_d: { type:'number', default:100 } // a number with default value
+              // , propE: { type:Object, default:function(){return[1]} } // must use factory fn
+              // , propF: { validator:function(v){return v>10} } // custom validator
+              , propG: 44.4
+
+            //// Public instance properties (known as ‘attributes’ in Oom).
+            }, attr: {
+
+                OK: 123
+
+              // , propA: Number // or set to `null` to accept any type
+              // , propB: [ String, Number ] // multiple possible types
+              // , propC: { type:String, required:true } // a required string
+              , prop_d: { type:Number, default:5.5 } // a number with default value
+              // , propE: { type:Object, default:function(){return[1]} } // must use factory fn
+              // , propF: { validator:function(v){return v>10} } // custom validator
+              , propG: 44.4
+
+            }
+        })//KIT.normaliseSchema()
+     }//schema
 
 
+/*
 ${{{
 isTop ? `
     //// Returns a Promise which is recorded as the \`ready\` property, after
@@ -170,8 +193,17 @@ isApp ? `
         ////
 
     }
+*/
 
 }; KIT.name(Class, '${{classname}}')
+
+//// Add public statics to `${{classname}}.stat` (exposed to Vue etc).
+${{classname}}.stat = {}
+KIT.define(${{classname}}.stat, ${{classname}}.schema.stat)
+
+//// Add public attributes to `my${{classname.replace(/\./g,'')}}.attr` (exposed to Vue etc).
+${{classname}}.prototype.attr = {}
+KIT.define(${{classname}}.prototype.attr, ${{classname}}.schema.attr)
 
 
 
@@ -181,16 +213,6 @@ isApp ? `
 
 //// Place any private functions here.
 // function noop () {}
-
-
-
-
-//// FINISHING UP
-
-
-//// Add properties to `${{classname}}.stat` - exposed to Vue etc.
-${{classname}}.stat = {}
-// KIT.define(${{classname}}.stat, META, { insts:0 })
 
 
 

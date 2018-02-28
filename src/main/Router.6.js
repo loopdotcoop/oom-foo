@@ -1,20 +1,6 @@
-//// Oom.Foo //// 1.2.12 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.13 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 !function (ROOT) { 'use strict'
-
-const META = {
-    NAME:    'Oom.Foo.Router'
-  , REMARKS: '@TODO'
-}
-
-const PROPS = {
-    propA: Number // or set to `null` to accept any type
-  , propB: [ String, Number ] // multiple possible types
-  , propC: { type:String, required:true } // a required string
-  , propD: { type:Number, default:100 } // a number with default value
-  , propE: { type:Object, default:function(){return[1]} } // must use factory fn
-  , propF: { validator:function(v){return v>10} } // custom validator
-}
 
 
 //// Shortcuts to Oom’s global namespace and toolkit.
@@ -27,10 +13,10 @@ const Class = Oom.Foo.Router = class extends Oom.Foo {
 
     constructor (config={}) {
         super(config)
-
+/*
         //// Validate the configuration object.
         this._validateConstructor(config)
-/*
+
         //// Record config’s values to the `attr` object.
         this.validConstructor.forEach( valid => {
             const value = config[valid.name]
@@ -48,8 +34,45 @@ const Class = Oom.Foo.Router = class extends Oom.Foo {
     }
 
 
+    //// Defines this class’s static and instance properties.
+    //// May be modified by ‘Plus’ classes. @TODO create and use the Plus class
+    static get schema () {
+        return KIT.normaliseSchema({
+
+            //// Public static properties (known as ‘statics’ in Oom).
+            stat: {
+
+                //// Public constant statics.
+                NAME:    'Oom.Foo.Router'
+              , REMARKS: '@TODO'
+
+              // , propA: Number // or set to `null` to accept any type
+              // , propB: [ String, Number ] // multiple possible types
+              // , propC: { type:String, required:true } // a required string
+              , prop_d: { type:'number', default:100 } // a number with default value
+              // , propE: { type:Object, default:function(){return[1]} } // must use factory fn
+              // , propF: { validator:function(v){return v>10} } // custom validator
+              , propG: 44.4
+
+            //// Public instance properties (known as ‘attributes’ in Oom).
+            }, attr: {
+
+                OK: 123
+
+              // , propA: Number // or set to `null` to accept any type
+              // , propB: [ String, Number ] // multiple possible types
+              // , propC: { type:String, required:true } // a required string
+              , prop_d: { type:Number, default:5.5 } // a number with default value
+              // , propE: { type:Object, default:function(){return[1]} } // must use factory fn
+              // , propF: { validator:function(v){return v>10} } // custom validator
+              , propG: 44.4
+
+            }
+        })//KIT.normaliseSchema()
+     }//schema
 
 
+/*
     //// Returns a Promise which is recorded as the `ready` property, after
     //// the constructor() has validated `config` and recorded the config
     //// properties. Sub-classes can override _getReady() if they need to do
@@ -130,8 +153,17 @@ const Class = Oom.Foo.Router = class extends Oom.Foo {
         ////
 
     }
+*/
 
 }; KIT.name(Class, 'Oom.Foo.Router')
+
+//// Add public statics to `Oom.Foo.Router.stat` (exposed to Vue etc).
+Oom.Foo.Router.stat = {}
+KIT.define(Oom.Foo.Router.stat, Oom.Foo.Router.schema.stat)
+
+//// Add public attributes to `myOomFooRouter.attr` (exposed to Vue etc).
+Oom.Foo.Router.prototype.attr = {}
+KIT.define(Oom.Foo.Router.prototype.attr, Oom.Foo.Router.schema.attr)
 
 
 
@@ -141,16 +173,6 @@ const Class = Oom.Foo.Router = class extends Oom.Foo {
 
 //// Place any private functions here.
 // function noop () {}
-
-
-
-
-//// FINISHING UP
-
-
-//// Add properties to `Oom.Foo.Router.stat` - exposed to Vue etc.
-Oom.Foo.Router.stat = {}
-// KIT.define(Oom.Foo.Router.stat, META, { insts:0 })
 
 
 

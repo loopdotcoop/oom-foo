@@ -2,7 +2,7 @@
 
 
 
-//// Oom.Foo //// 1.2.11 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.13 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -35,7 +35,8 @@ const LOADED_FIRST = ROOT.Oom.Foo.stat.LOADED_FIRST //@TODO generalise Foo
 
 
 describe('The Oom class', function () {
-    const Class = ROOT.Oom, stat = Class.stat, schema = Class.schema
+    const Class = ROOT.Oom
+        , schema = Class.schema, stat = Class.stat
 
 
 
@@ -69,7 +70,7 @@ describe('The Oom class', function () {
         // stat._inst_tally = 0 // reset `inst_tally` @TODO avoid this
         for (let key in schema.stat) {
             if (! isReadOnly(key) ) continue // only read-only properties
-            stat[key] = 123
+            stat[key] = goodVals[ stringOrName(schema.stat[key].type) ]
             const valid = schema.stat[key]
             eq(stat[key], valid.default
               , 'stat.'+key+' is initially '+valid.default.toString())
@@ -136,8 +137,8 @@ describe('The Oom class', function () {
 
 describe('An Oom instance', function () {
     // initInstTally = ROOT.Oom.stat.inst_tally
-    const Class = ROOT.Oom, schema = Class.schema
-        , instance = new Class(), attr = instance.attr
+    const Class = ROOT.Oom
+        , schema = Class.schema, instance = new Class(), attr = instance.attr
 
 
 
@@ -168,7 +169,7 @@ describe('An Oom instance', function () {
     it(`has ${n} read-only attribute${1==n?'':'s'}`, function(){try{
         for (let key in schema.attr) {
             if (! isReadOnly(key) ) continue // only read-only properties
-            attr[key] = 123
+            attr[key] = goodVals[ stringOrName(schema.attr[key].type) ]
             const valid = schema.attr[key]
             eq(attr[key], valid.default
               , 'attr.'+key+' is initially '+valid.default.toString())
@@ -305,114 +306,231 @@ function testify () {
 
 
 
-//// Oom.Foo //// 1.2.11 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.13 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 !function (ROOT) { 'use strict'
-const { describe, it, eq, is } = ROOT.testify()
-describe.skip(`Oom.Foo.Post All`, () => {
+ROOT.testify = testify // make `testify()` available to all test files
+const { describe, it, eq, is, tryHardSet, goodVals, badVals, stringOrName }
+  = ROOT.testify()
+const { countKeyMatches, isConstant, isReadOnly, isReadWrite, isValid }
+  = Oom.KIT
+describe('Oom.Foo.Post All', function () {
 
 
 
-
-const Class = Oom.Foo.Post, stat = Class.stat
 
 //// Instantiates a typical Oom.Foo.Post instance for unit testing its methods.
-Class.testInstanceFactory = () =>
-    new Class({
-        firstProp: 100
-      , secondProp: new Date
-    },{
-        /* @TODO hub API */
-    })
+// Class.testInstanceFactory = () =>
+//     new Class({
+//         firstProp: 100
+//       , secondProp: new Date
+//     },{
+//         /* @TODO hub API */
+//     })
 
 
 
 
-describe(`+ve Oom.Foo.Post class`, () => {
-
-    it(`should be a class`, () => {
-        is('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
-        is('function' === typeof Class, 'Oom.Foo.Post is a function')
-        try { Class.name = stat.NAME = 'Changed!'} catch (e) {}
-        is( ('Oom.Foo.Post' === Class.name && 'Oom.Foo.Post' === stat.NAME)
-          , 'name and stat.NAME are Oom.Foo.Post')
-    })
-
-})
+describe('The Oom.Foo.Post class', () => {
+    const Class = ROOT.Oom.Foo.Post
+        , schema = Class.schema, stat = Class.stat
 
 
 
 
-describe('+ve Oom.Foo.Post instance', () => {
+    //// AUTOMATIC STATIC TESTS
 
-    it(`should be an instance`, () => {
-        const instance = Class.testInstanceFactory()
-        const attr = instance.attr
+    it('is a class', function(){try{
+        eq(typeof Class, 'function'
+          , '`typeof Oom` is a function')
+    }catch(e){console.error(e.message);throw e}})
+
+
+    let n = countKeyMatches(schema.stat, isConstant)
+    it(`has ${n} constant static${1==n?'':'s'}`, function(){try{
+        tryHardSet(Class, 'name', 'Changed!')
+        eq(Class.name, 'Oom.Foo.Post', 'name is Oom.Foo.Post')
+        for (let key in schema.stat) {
+            if (! isConstant(key) ) continue // only constants
+            tryHardSet(stat, key, 'Changed!')
+            const valid = schema.stat[key]
+            eq(stat[key], valid.default
+              , 'stat.'+key+' is '+valid.default.toString())
+            is( isValid(valid, stat[key])
+              , 'stat.'+key+' is a valid '+stringOrName(valid.type) )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    n = countKeyMatches(schema.stat, isReadOnly)
+    it(`has ${n} read-only static${1==n?'':'s'}`, function(){try{
+        for (let key in schema.stat) {
+            if (! isReadOnly(key) ) continue // only read-only properties
+            stat[key] = goodVals[ stringOrName(schema.stat[key].type) ]
+            const valid = schema.stat[key]
+            eq(stat[key], valid.default
+              , 'stat.'+key+' is initially '+valid.default.toString())
+            is( isValid(valid, stat[key])
+              , 'stat.'+key+' is a valid '+stringOrName(valid.type) )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    it('sees when read-only statics change', function(){try{
+        for (let key in schema.stat) {
+            if (! isReadOnly(key) ) continue // only read-only properties
+            const good = goodVals[ stringOrName(schema.stat[key].type) ]
+            stat['_'+key] = good
+            eq(stat[key], good
+              , 'stat.'+key+' has changed to '+good)
+            //// Changing a read-only value via its underscore-prefixed ‘shadow’
+            //// does not invoke any validation or type-checking. Therefore we
+            //// don’t test that `badVals` are rejected.
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    n = countKeyMatches(schema.stat, isReadWrite)
+    it(`has ${n} read-write static${1==n?'':'s'}`, function(){try{
+        for (let key in schema.stat) {
+            if (! isReadWrite(key) ) continue // only read-write properties
+            const valid = schema.stat[key]
+            eq(stat[key], valid.default
+              , 'stat.'+key+' is initially '+valid.default.toString())
+            is( isValid(valid, stat[key])
+              , 'stat.'+key+' is a valid '+stringOrName(valid.type) )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    it('allows read-write statics to be changed', function(){try{
+        for (let key in schema.stat) {
+            if (! isReadWrite(key) ) continue // only read-write properties
+            const good = goodVals[ stringOrName(schema.stat[key].type) ]
+            const bad  = badVals[  stringOrName(schema.stat[key].type) ]
+            stat[key] = good
+            eq(stat[key], good
+              , 'stat.'+key+' has changed to '+good)
+            stat[key] = bad
+            eq(stat[key], good
+              , 'stat.'+key+' has NOT changed to '+bad)
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+
+
+    //// CUSTOM STATIC TESTS
+    //@TODO
+
+
+
+
+})//describe('The Oom.Foo.Post class')
+
+
+
+
+describe('An Oom.Foo.Post instance', function () {
+    const Class = ROOT.Oom.Foo.Post
+        , schema = Class.schema, instance = new Class(), attr = instance.attr
+
+
+
+
+    //// AUTOMATIC ATTRIBUTE TESTS
+
+    it('is an instance', function(){try{
         is(instance instanceof Class, 'Is an instance of Oom.Foo.Post')
-        is(Class === instance.constructor, '`constructor` is Oom.Foo.Post')
-        is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
-          , '`attr.UUID` is a six-character string')
-        // is('object' === typeof instance.hub, '`hub` property is an object')
-    })
-
-})
+        eq(Class, instance.constructor, '`constructor` is Oom.Foo.Post')
+    }catch(e){console.error(e.message);throw e}})
 
 
+    let n = countKeyMatches(schema.attr, isConstant)
+    it(`has ${n} constant attribute${1==n?'':'s'}`, function(){try{
+        for (let key in schema.attr) {
+            if (! isConstant(key) ) continue // only constants
+            tryHardSet(attr, key, 'Changed!')
+            const valid = schema.attr[key]
+            eq(attr[key], valid.default
+              , 'attr.'+key+' is '+valid.default.toString())
+            is( isValid(valid, attr[key])
+              , 'attr.'+key+' is a valid '+stringOrName(valid.type) )
+        }
+    }catch(e){console.error(e.message);throw e}})
 
 
-})//describe()
+    n = countKeyMatches(schema.attr, isReadOnly)
+    it(`has ${n} read-only attribute${1==n?'':'s'}`, function(){try{
+        for (let key in schema.attr) {
+            if (! isReadOnly(key) ) continue // only read-only properties
+            attr[key] = goodVals[ stringOrName(schema.attr[key].type) ]
+            const valid = schema.attr[key]
+            eq(attr[key], valid.default
+              , 'attr.'+key+' is initially '+valid.default.toString())
+            is( isValid(valid, attr[key])
+              , 'attr.'+key+' is a valid '+stringOrName(valid.type) )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    it('sees when read-only attributes change', function(){try{
+        for (let key in schema.attr) {
+            if (! isReadOnly(key) ) continue // only read-only properties
+            const good = goodVals[ stringOrName(schema.attr[key].type) ]
+            attr['_'+key] = good
+            eq(attr[key], good
+              , 'attr.'+key+' has changed to '+good)
+            //// Changing a read-only value via its underscore-prefixed ‘shadow’
+            //// does not invoke any validation or type-checking. Therefore we
+            //// don’t test that `badVals` are rejected.
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    n = countKeyMatches(schema.attr, isReadWrite)
+    it(`has ${n} read-write attribute${1==n?'':'s'}`, function(){try{
+        for (let key in schema.attr) {
+            if (! isReadWrite(key) ) continue // only read-write properties
+            const valid = schema.attr[key]
+            eq(attr[key], valid.default
+              , 'attr.'+key+' is initially '+valid.default.toString())
+            is( isValid(valid, attr[key])
+              , 'attr.'+key+' is a valid '+stringOrName(valid.type) )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    it('allows read-write attributes to be changed', function(){try{
+        for (let key in schema.attr) {
+            if (! isReadWrite(key) ) continue // only read-write properties
+            const good = goodVals[ stringOrName(schema.attr[key].type) ]
+            const bad  = badVals[  stringOrName(schema.attr[key].type) ]
+            attr[key] = good
+            eq(attr[key], good
+              , 'attr.'+key+' has changed to '+good)
+            attr[key] = bad
+            eq(attr[key], good
+              , 'attr.'+key+' has NOT changed to '+bad)
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+
+
+    //// CUSTOM ATTRIBUTE TESTS
+    //@TODO
+
+
+
+
+})//describe('An Oom.Foo.Post instance')
+
+
+
+
+})//describe('Oom.Foo.Post All')
 }( 'object' === typeof global ? global : this ) // `window` in a browser
-
-/*
-!function (ROOT) { 'use strict'
-return //@TODO convert to Mocha
-if ('function' !== typeof jQuery) throw Error('jQuery not found')
-jQuery( function($) {
-title('Oom.Foo.Post All')
-const Class = Oom.Foo.Post, stat = Class.stat
-
-
-
-
-//// Instantiates a typical Oom.Foo.Post instance for unit testing its methods.
-Class.testInstanceFactory = () =>
-    new Class({
-        firstProp: 100
-      , secondProp: new Date
-    },{
-        // @TODO hub API
-    })
-
-
-
-
-test('+ve Oom.Foo.Post class', () => {
-    is('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
-    is('function' === typeof Class, 'Oom.Foo.Post is a function')
-    try { Class.name = stat.NAME = 'Changed!'} catch (e) {}
-    is( ('Oom.Foo.Post' === Class.name && 'Oom.Foo.Post' === stat.NAME)
-      , 'name and stat.NAME are Oom.Foo.Post')
-})
-
-
-
-
-test('+ve Oom.Foo.Post instance', () => {
-    const instance = Class.testInstanceFactory()
-    const attr = instance.attr
-    is(instance instanceof Class, 'Is an instance of Oom.Foo.Post')
-    is(Class === instance.constructor, '`constructor` is Oom.Foo.Post')
-    is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
-      , '`attr.UUID` is a six-character string')
-    // is('object' === typeof instance.hub, '`hub` property is an object')
-})
-
-
-
-
-})//jQuery()
-}( 'object' === typeof global ? global : this ) // `window` in a browser
-*/
 
 
 
@@ -421,116 +539,233 @@ test('+ve Oom.Foo.Post instance', () => {
 
 
 
-//// Oom.Foo //// 1.2.11 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.13 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 !function (ROOT) { 'use strict'
-const { describe, it, eq, is } = ROOT.testify()
-describe.skip(`Oom.Foo.Router All`, () => {
+ROOT.testify = testify // make `testify()` available to all test files
+const { describe, it, eq, is, tryHardSet, goodVals, badVals, stringOrName }
+  = ROOT.testify()
+const { countKeyMatches, isConstant, isReadOnly, isReadWrite, isValid }
+  = Oom.KIT
+describe('Oom.Foo.Router All', function () {
 
 
 
-
-const Class = Oom.Foo.Router, stat = Class.stat
 
 //// Instantiates a typical Oom.Foo.Router instance for unit testing its methods.
-Class.testInstanceFactory = () =>
-    new Class({
-        firstProp: 100
-      , secondProp: new Date
-    },{
-        /* @TODO hub API */
-    })
+// Class.testInstanceFactory = () =>
+//     new Class({
+//         firstProp: 100
+//       , secondProp: new Date
+//     },{
+//         /* @TODO hub API */
+//     })
 
 
 
 
-describe(`+ve Oom.Foo.Router class`, () => {
-
-    it(`should be a class`, () => {
-        is('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
-        is('function' === typeof Class, 'Oom.Foo.Router is a function')
-        try { Class.name = stat.NAME = 'Changed!'} catch (e) {}
-        is( ('Oom.Foo.Router' === Class.name && 'Oom.Foo.Router' === stat.NAME)
-          , 'name and stat.NAME are Oom.Foo.Router')
-    })
-
-})
+describe('The Oom.Foo.Router class', () => {
+    const Class = ROOT.Oom.Foo.Router
+        , schema = Class.schema, stat = Class.stat
 
 
 
 
-describe('+ve Oom.Foo.Router instance', () => {
+    //// AUTOMATIC STATIC TESTS
 
-    it(`should be an instance`, () => {
-        const instance = Class.testInstanceFactory()
-        const attr = instance.attr
+    it('is a class', function(){try{
+        eq(typeof Class, 'function'
+          , '`typeof Oom` is a function')
+    }catch(e){console.error(e.message);throw e}})
+
+
+    let n = countKeyMatches(schema.stat, isConstant)
+    it(`has ${n} constant static${1==n?'':'s'}`, function(){try{
+        tryHardSet(Class, 'name', 'Changed!')
+        eq(Class.name, 'Oom.Foo.Router', 'name is Oom.Foo.Router')
+        for (let key in schema.stat) {
+            if (! isConstant(key) ) continue // only constants
+            tryHardSet(stat, key, 'Changed!')
+            const valid = schema.stat[key]
+            eq(stat[key], valid.default
+              , 'stat.'+key+' is '+valid.default.toString())
+            is( isValid(valid, stat[key])
+              , 'stat.'+key+' is a valid '+stringOrName(valid.type) )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    n = countKeyMatches(schema.stat, isReadOnly)
+    it(`has ${n} read-only static${1==n?'':'s'}`, function(){try{
+        for (let key in schema.stat) {
+            if (! isReadOnly(key) ) continue // only read-only properties
+            stat[key] = goodVals[ stringOrName(schema.stat[key].type) ]
+            const valid = schema.stat[key]
+            eq(stat[key], valid.default
+              , 'stat.'+key+' is initially '+valid.default.toString())
+            is( isValid(valid, stat[key])
+              , 'stat.'+key+' is a valid '+stringOrName(valid.type) )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    it('sees when read-only statics change', function(){try{
+        for (let key in schema.stat) {
+            if (! isReadOnly(key) ) continue // only read-only properties
+            const good = goodVals[ stringOrName(schema.stat[key].type) ]
+            stat['_'+key] = good
+            eq(stat[key], good
+              , 'stat.'+key+' has changed to '+good)
+            //// Changing a read-only value via its underscore-prefixed ‘shadow’
+            //// does not invoke any validation or type-checking. Therefore we
+            //// don’t test that `badVals` are rejected.
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    n = countKeyMatches(schema.stat, isReadWrite)
+    it(`has ${n} read-write static${1==n?'':'s'}`, function(){try{
+        for (let key in schema.stat) {
+            if (! isReadWrite(key) ) continue // only read-write properties
+            const valid = schema.stat[key]
+            eq(stat[key], valid.default
+              , 'stat.'+key+' is initially '+valid.default.toString())
+            is( isValid(valid, stat[key])
+              , 'stat.'+key+' is a valid '+stringOrName(valid.type) )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    it('allows read-write statics to be changed', function(){try{
+        for (let key in schema.stat) {
+            if (! isReadWrite(key) ) continue // only read-write properties
+            const good = goodVals[ stringOrName(schema.stat[key].type) ]
+            const bad  = badVals[  stringOrName(schema.stat[key].type) ]
+            stat[key] = good
+            eq(stat[key], good
+              , 'stat.'+key+' has changed to '+good)
+            stat[key] = bad
+            eq(stat[key], good
+              , 'stat.'+key+' has NOT changed to '+bad)
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+
+
+    //// CUSTOM STATIC TESTS
+    //@TODO
+
+
+
+
+})//describe('The Oom.Foo.Router class')
+
+
+
+
+describe('An Oom.Foo.Router instance', function () {
+    const Class = ROOT.Oom.Foo.Router
+        , schema = Class.schema, instance = new Class(), attr = instance.attr
+
+
+
+
+    //// AUTOMATIC ATTRIBUTE TESTS
+
+    it('is an instance', function(){try{
         is(instance instanceof Class, 'Is an instance of Oom.Foo.Router')
-        is(Class === instance.constructor, '`constructor` is Oom.Foo.Router')
-        is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
-          , '`attr.UUID` is a six-character string')
-        // is('object' === typeof instance.hub, '`hub` property is an object')
-    })
-
-})
+        eq(Class, instance.constructor, '`constructor` is Oom.Foo.Router')
+    }catch(e){console.error(e.message);throw e}})
 
 
+    let n = countKeyMatches(schema.attr, isConstant)
+    it(`has ${n} constant attribute${1==n?'':'s'}`, function(){try{
+        for (let key in schema.attr) {
+            if (! isConstant(key) ) continue // only constants
+            tryHardSet(attr, key, 'Changed!')
+            const valid = schema.attr[key]
+            eq(attr[key], valid.default
+              , 'attr.'+key+' is '+valid.default.toString())
+            is( isValid(valid, attr[key])
+              , 'attr.'+key+' is a valid '+stringOrName(valid.type) )
+        }
+    }catch(e){console.error(e.message);throw e}})
 
 
-})//describe()
+    n = countKeyMatches(schema.attr, isReadOnly)
+    it(`has ${n} read-only attribute${1==n?'':'s'}`, function(){try{
+        for (let key in schema.attr) {
+            if (! isReadOnly(key) ) continue // only read-only properties
+            attr[key] = goodVals[ stringOrName(schema.attr[key].type) ]
+            const valid = schema.attr[key]
+            eq(attr[key], valid.default
+              , 'attr.'+key+' is initially '+valid.default.toString())
+            is( isValid(valid, attr[key])
+              , 'attr.'+key+' is a valid '+stringOrName(valid.type) )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    it('sees when read-only attributes change', function(){try{
+        for (let key in schema.attr) {
+            if (! isReadOnly(key) ) continue // only read-only properties
+            const good = goodVals[ stringOrName(schema.attr[key].type) ]
+            attr['_'+key] = good
+            eq(attr[key], good
+              , 'attr.'+key+' has changed to '+good)
+            //// Changing a read-only value via its underscore-prefixed ‘shadow’
+            //// does not invoke any validation or type-checking. Therefore we
+            //// don’t test that `badVals` are rejected.
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    n = countKeyMatches(schema.attr, isReadWrite)
+    it(`has ${n} read-write attribute${1==n?'':'s'}`, function(){try{
+        for (let key in schema.attr) {
+            if (! isReadWrite(key) ) continue // only read-write properties
+            const valid = schema.attr[key]
+            eq(attr[key], valid.default
+              , 'attr.'+key+' is initially '+valid.default.toString())
+            is( isValid(valid, attr[key])
+              , 'attr.'+key+' is a valid '+stringOrName(valid.type) )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    it('allows read-write attributes to be changed', function(){try{
+        for (let key in schema.attr) {
+            if (! isReadWrite(key) ) continue // only read-write properties
+            const good = goodVals[ stringOrName(schema.attr[key].type) ]
+            const bad  = badVals[  stringOrName(schema.attr[key].type) ]
+            attr[key] = good
+            eq(attr[key], good
+              , 'attr.'+key+' has changed to '+good)
+            attr[key] = bad
+            eq(attr[key], good
+              , 'attr.'+key+' has NOT changed to '+bad)
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+
+
+    //// CUSTOM ATTRIBUTE TESTS
+    //@TODO
+
+
+
+
+})//describe('An Oom.Foo.Router instance')
+
+
+
+
+})//describe('Oom.Foo.Router All')
 }( 'object' === typeof global ? global : this ) // `window` in a browser
 
-/*
-!function (ROOT) { 'use strict'
-return //@TODO convert to Mocha
-if ('function' !== typeof jQuery) throw Error('jQuery not found')
-jQuery( function($) {
-title('Oom.Foo.Router All')
-const Class = Oom.Foo.Router, stat = Class.stat
 
 
 
-
-//// Instantiates a typical Oom.Foo.Router instance for unit testing its methods.
-Class.testInstanceFactory = () =>
-    new Class({
-        firstProp: 100
-      , secondProp: new Date
-    },{
-        // @TODO hub API
-    })
-
-
-
-
-test('+ve Oom.Foo.Router class', () => {
-    is('function' === typeof ROOT.Oom, 'The Oom namespace class exists')
-    is('function' === typeof Class, 'Oom.Foo.Router is a function')
-    try { Class.name = stat.NAME = 'Changed!'} catch (e) {}
-    is( ('Oom.Foo.Router' === Class.name && 'Oom.Foo.Router' === stat.NAME)
-      , 'name and stat.NAME are Oom.Foo.Router')
-})
-
-
-
-
-test('+ve Oom.Foo.Router instance', () => {
-    const instance = Class.testInstanceFactory()
-    const attr = instance.attr
-    is(instance instanceof Class, 'Is an instance of Oom.Foo.Router')
-    is(Class === instance.constructor, '`constructor` is Oom.Foo.Router')
-    is('string' === typeof attr.UUID && /^[0-9A-Za-z]{6}$/.test(attr.UUID)
-      , '`attr.UUID` is a six-character string')
-    // is('object' === typeof instance.hub, '`hub` property is an object')
-})
-
-
-
-
-})//jQuery()
-}( 'object' === typeof global ? global : this ) // `window` in a browser
-*/
-
-
-
-
-//// Made by Oomtility Make 1.2.11 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.13 //\\//\\ http://oomtility.loop.coop /////////

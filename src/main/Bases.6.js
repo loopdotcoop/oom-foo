@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.12 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.13 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 !function (ROOT) { 'use strict'
 
 //// Metadata for Oom.Foo
 const META = {
     NAME:     'Oom.Foo'
-  , VERSION:  '1.2.12' // OOMBUMPABLE
+  , VERSION:  '1.2.13' // OOMBUMPABLE
   , HOMEPAGE: 'http://oom-foo.loop.coop/'
   , REMARKS:  'Initial test of the oom-hub architecture'
   , LOADED_FIRST: ! ROOT.Oom // true if the Oom class is defined by this module
@@ -100,7 +100,7 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
                   , default: '#445566'
                   , type:    'color'
                 }
-              , fooBar: { default:1000, type:'number' }
+              , fooBar: { default:1000, type:Number }
 
             }
         })//KIT.normaliseSchema()
@@ -433,7 +433,7 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
   , isReadOnly:  k => -1 !== k.indexOf('_') && /^[a-z][_a-z0-9]+$/.test(k)
   , isReadWrite: k => /^[a-z][A-Za-z0-9]*$/.test(k)
 
-    //// Validates a schema object, and then fills in any gaps.
+    //// Validates a schema object and fills in any gaps.
   , normaliseSchema: schema => {
         const out = {}
         for (let zone in schema) {
@@ -467,8 +467,13 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
                     outDesc.type = strToObj[inDesc.type] // 'number' -> Number
                 else if (validStr[inDesc.type])
                     outDesc.type = inDesc.type // 'int' -> 'int'
-                else
-                    throw new TypeError(PFX+`valid.type is '${valid.type}'`)
+                else {
+                    if ('function' !== typeof inDesc.type)
+                        throw new TypeError(PFX+`inDesc.type is not a string or a function`)
+                    if (! inDesc.type.name )
+                        throw new TypeError(PFX+`inDesc.type has no name`)
+                    outDesc.type = inDesc.type
+                }
                 if (inDesc.remarks) outDesc.remarks = inDesc.remarks
             }
         }

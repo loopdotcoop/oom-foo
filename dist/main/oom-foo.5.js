@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.11 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.13 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
     NAME: 'Oom.Foo',
-    VERSION: '1.2.11',
+    VERSION: '1.2.13',
     HOMEPAGE: 'http://oom-foo.loop.coop/',
     REMARKS: 'Initial test of the oom-hub architecture',
     LOADED_FIRST: !ROOT.Oom
@@ -42,7 +42,7 @@
             },
             fooBar: {
               default: 1000,
-              type: 'number'
+              type: Number
             }
           }
         });
@@ -74,10 +74,10 @@
       };
     },
     beforeCreate: function() {
-      var $__6 = KIT,
-          isReadWrite = $__6.isReadWrite,
-          isReadOnly = $__6.isReadOnly,
-          isConstant = $__6.isConstant;
+      var $__5 = KIT,
+          isReadWrite = $__5.isReadWrite,
+          isReadOnly = $__5.isReadOnly,
+          isConstant = $__5.isConstant;
       Vue.component('member-table', {
         template: Oom.memberTableVueTemplate,
         props: {
@@ -189,12 +189,12 @@
       },
       define: function(obj) {
         for (var srcs = [],
-            $__5 = 1; $__5 < arguments.length; $__5++)
-          srcs[$__5 - 1] = arguments[$__5];
+            $__4 = 1; $__4 < arguments.length; $__4++)
+          srcs[$__4 - 1] = arguments[$__4];
         return srcs.forEach(function(src) {
           var ME = 'KIT.define: ',
               def = {};
-          var $__8 = function(k) {
+          var $__6 = function(k) {
             if ('undefined' === typeof src[k].default)
               throw Error(ME + k + ' is not a valid schema object');
             var value = src[k].default;
@@ -249,7 +249,7 @@
             }
           };
           for (var k in src) {
-            $__8(k);
+            $__6(k);
           }
           Object.defineProperties(obj, def);
         });
@@ -308,8 +308,13 @@
               outDesc.type = strToObj[inDesc.type];
             else if (validStr[inDesc.type])
               outDesc.type = inDesc.type;
-            else
-              throw new TypeError(PFX + ("valid.type is '" + valid.type + "'"));
+            else {
+              if ('function' !== typeof inDesc.type)
+                throw new TypeError(PFX + "inDesc.type is not a string or a function");
+              if (!inDesc.type.name)
+                throw new TypeError(PFX + "inDesc.type has no name");
+              outDesc.type = inDesc.type;
+            }
             if (inDesc.remarks)
               outDesc.remarks = inDesc.remarks;
           }
@@ -321,190 +326,80 @@
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
 !function(ROOT) {
   'use strict';
-  var META = {
-    NAME: 'Oom.Foo.Post',
-    REMARKS: '@TODO'
-  };
-  var PROPS = {
-    propA: Number,
-    propB: [String, Number],
-    propC: {
-      type: String,
-      required: true
-    },
-    propD: {
-      type: Number,
-      default: 100
-    },
-    propE: {
-      type: Object,
-      default: function() {
-        return [1];
-      }
-    },
-    propF: {validator: function(v) {
-        return v > 10;
-      }}
-  };
   var Oom = ROOT.Oom;
   var KIT = Oom.KIT;
   var Class = Oom.Foo.Post = function($__super) {
     function $__0() {
       var config = arguments[0] !== (void 0) ? arguments[0] : {};
       $traceurRuntime.superConstructor($__0).call(this, config);
-      this._validateConstructor(config);
     }
-    return ($traceurRuntime.createClass)($__0, {
-      _getReady: function() {
-        var $__4 = this;
-        if (this.setupStart)
-          throw new Error("Oom.Foo.Post._getReady(): Can only run once");
-        Object.defineProperty(this, 'setupStart', {value: KIT.getNow()});
-        return new Promise(function(resolve, reject) {
-          setTimeout(function() {
-            Object.defineProperty($__4, 'setupEnd', {value: KIT.getNow()});
-            resolve({setupDelay: $__4.setupEnd - $__4.setupStart});
-          }, 0);
+    return ($traceurRuntime.createClass)($__0, {}, {get schema() {
+        return KIT.normaliseSchema({
+          stat: {
+            NAME: 'Oom.Foo.Post',
+            REMARKS: '@TODO',
+            prop_d: {
+              type: 'number',
+              default: 100
+            },
+            propG: 44.4
+          },
+          attr: {
+            OK: 123,
+            prop_d: {
+              type: Number,
+              default: 5.5
+            },
+            propG: 44.4
+          }
         });
-      },
-      _validateConstructor: function(config) {
-        var err,
-            value,
-            ME = "Oom.Foo.Post._validateConstructor(): ";
-        if ('object' !== (typeof config === 'undefined' ? 'undefined' : $traceurRuntime.typeof(config)))
-          throw new Error(ME + ("config is type " + (typeof config === 'undefined' ? 'undefined' : $traceurRuntime.typeof(config)) + " not object"));
-        this.validConstructor.forEach(function(valid) {
-          if (!KIT.applyDefault(valid, config))
-            throw new TypeError(ME + ("config." + valid.name + " is mandatory"));
-          value = config[valid.name];
-          if (err = KIT.validateType(valid, value))
-            throw new TypeError(ME + ("config." + valid.name + " " + err));
-          if (err = KIT.validateRange(valid, value))
-            throw new RangeError(ME + ("config." + valid.name + " " + err));
-        });
-      },
-      get validConstructor() {
-        return [{
-          title: 'Third Prop',
-          name: 'thirdProp',
-          alias: 'tp',
-          tooltip: 'An example object property, intended as a placeholder',
-          devtip: 'You should replace this placeholder with a real property',
-          form: 'text',
-          type: String,
-          default: 'Some default text'
-        }];
-      },
-      xxx: function(config) {
-        var $__6 = this,
-            hub = $__6.hub,
-            a = $__6.a,
-            b = $__6.b,
-            c = $__6.c;
-        var $__7 = config,
-            xx = $__7.xx,
-            yy = $__7.yy,
-            zz = $__7.zz;
-      }
-    }, {}, $__super);
+      }}, $__super);
   }(Oom.Foo);
   KIT.name(Class, 'Oom.Foo.Post');
   Oom.Foo.Post.stat = {};
+  KIT.define(Oom.Foo.Post.stat, Oom.Foo.Post.schema.stat);
+  Oom.Foo.Post.prototype.attr = {};
+  KIT.define(Oom.Foo.Post.prototype.attr, Oom.Foo.Post.schema.attr);
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
 !function(ROOT) {
   'use strict';
-  var META = {
-    NAME: 'Oom.Foo.Router',
-    REMARKS: '@TODO'
-  };
-  var PROPS = {
-    propA: Number,
-    propB: [String, Number],
-    propC: {
-      type: String,
-      required: true
-    },
-    propD: {
-      type: Number,
-      default: 100
-    },
-    propE: {
-      type: Object,
-      default: function() {
-        return [1];
-      }
-    },
-    propF: {validator: function(v) {
-        return v > 10;
-      }}
-  };
   var Oom = ROOT.Oom;
   var KIT = Oom.KIT;
   var Class = Oom.Foo.Router = function($__super) {
     function $__0() {
       var config = arguments[0] !== (void 0) ? arguments[0] : {};
       $traceurRuntime.superConstructor($__0).call(this, config);
-      this._validateConstructor(config);
     }
-    return ($traceurRuntime.createClass)($__0, {
-      _getReady: function() {
-        var $__4 = this;
-        if (this.setupStart)
-          throw new Error("Oom.Foo.Router._getReady(): Can only run once");
-        Object.defineProperty(this, 'setupStart', {value: KIT.getNow()});
-        return new Promise(function(resolve, reject) {
-          setTimeout(function() {
-            Object.defineProperty($__4, 'setupEnd', {value: KIT.getNow()});
-            resolve({setupDelay: $__4.setupEnd - $__4.setupStart});
-          }, 0);
+    return ($traceurRuntime.createClass)($__0, {}, {get schema() {
+        return KIT.normaliseSchema({
+          stat: {
+            NAME: 'Oom.Foo.Router',
+            REMARKS: '@TODO',
+            prop_d: {
+              type: 'number',
+              default: 100
+            },
+            propG: 44.4
+          },
+          attr: {
+            OK: 123,
+            prop_d: {
+              type: Number,
+              default: 5.5
+            },
+            propG: 44.4
+          }
         });
-      },
-      _validateConstructor: function(config) {
-        var err,
-            value,
-            ME = "Oom.Foo.Router._validateConstructor(): ";
-        if ('object' !== (typeof config === 'undefined' ? 'undefined' : $traceurRuntime.typeof(config)))
-          throw new Error(ME + ("config is type " + (typeof config === 'undefined' ? 'undefined' : $traceurRuntime.typeof(config)) + " not object"));
-        this.validConstructor.forEach(function(valid) {
-          if (!KIT.applyDefault(valid, config))
-            throw new TypeError(ME + ("config." + valid.name + " is mandatory"));
-          value = config[valid.name];
-          if (err = KIT.validateType(valid, value))
-            throw new TypeError(ME + ("config." + valid.name + " " + err));
-          if (err = KIT.validateRange(valid, value))
-            throw new RangeError(ME + ("config." + valid.name + " " + err));
-        });
-      },
-      get validConstructor() {
-        return [{
-          title: 'Third Prop',
-          name: 'thirdProp',
-          alias: 'tp',
-          tooltip: 'An example object property, intended as a placeholder',
-          devtip: 'You should replace this placeholder with a real property',
-          form: 'text',
-          type: String,
-          default: 'Some default text'
-        }];
-      },
-      xxx: function(config) {
-        var $__6 = this,
-            hub = $__6.hub,
-            a = $__6.a,
-            b = $__6.b,
-            c = $__6.c;
-        var $__7 = config,
-            xx = $__7.xx,
-            yy = $__7.yy,
-            zz = $__7.zz;
-      }
-    }, {}, $__super);
+      }}, $__super);
   }(Oom.Foo);
   KIT.name(Class, 'Oom.Foo.Router');
   Oom.Foo.Router.stat = {};
+  KIT.define(Oom.Foo.Router.stat, Oom.Foo.Router.schema.stat);
+  Oom.Foo.Router.prototype.attr = {};
+  KIT.define(Oom.Foo.Router.prototype.attr, Oom.Foo.Router.schema.attr);
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
 
 
 
 
-//// Made by Oomtility Make 1.2.11 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.13 //\\//\\ http://oomtility.loop.coop /////////

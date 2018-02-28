@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.12 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.13 //// February 2018 //// http://oom-foo.loop.coop/ /////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -31,7 +31,8 @@ const LOADED_FIRST = ROOT.Oom.Foo.stat.LOADED_FIRST //@TODO generalise Foo
 
 
 describe('The Oom class', function () {
-    const Class = ROOT.Oom, stat = Class.stat, schema = Class.schema
+    const Class = ROOT.Oom
+        , schema = Class.schema, stat = Class.stat
 
 
 
@@ -65,7 +66,7 @@ describe('The Oom class', function () {
         // stat._inst_tally = 0 // reset `inst_tally` @TODO avoid this
         for (let key in schema.stat) {
             if (! isReadOnly(key) ) continue // only read-only properties
-            stat[key] = 123
+            stat[key] = goodVals[ stringOrName(schema.stat[key].type) ]
             const valid = schema.stat[key]
             eq(stat[key], valid.default
               , 'stat.'+key+' is initially '+valid.default.toString())
@@ -132,8 +133,8 @@ describe('The Oom class', function () {
 
 describe('An Oom instance', function () {
     // initInstTally = ROOT.Oom.stat.inst_tally
-    const Class = ROOT.Oom, schema = Class.schema
-        , instance = new Class(), attr = instance.attr
+    const Class = ROOT.Oom
+        , schema = Class.schema, instance = new Class(), attr = instance.attr
 
 
 
@@ -164,7 +165,7 @@ describe('An Oom instance', function () {
     it(`has ${n} read-only attribute${1==n?'':'s'}`, function(){try{
         for (let key in schema.attr) {
             if (! isReadOnly(key) ) continue // only read-only properties
-            attr[key] = 123
+            attr[key] = goodVals[ stringOrName(schema.attr[key].type) ]
             const valid = schema.attr[key]
             eq(attr[key], valid.default
               , 'attr.'+key+' is initially '+valid.default.toString())
