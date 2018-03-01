@@ -7,9 +7,11 @@ ${{topline}}
 //// Android:    Xperia Tipo (Android 4), Pixel XL (Android 7.1)
 
 !function (ROOT) { 'use strict'
-const { describe, it, eq, is, goodVals, badVals, stringOrName } = ROOT.testify()
+const { describe, it, eq, is, goodVals, badVals } = ROOT.testify()
 const { isConstant, isReadOnly, isReadWrite } = Oom.KIT
 describe('Bases Browser', () => {
+    const hid = true // change to `false` to keep the Vue component visible
+
 
 
 
@@ -22,13 +24,9 @@ describe('The Oom.devMainVue() component', function (done) {
       , instance = new Class()
       , attr = instance.attr
       , cmp = Vue.component( testID, Class.devMainVue(Class) )
-      , $container = $('.container').append('<div id="' + testID
-          + '" class="row"><' + testID + '>Loading...</' + testID + '></div>')
+      , $container = $('.container').append(`<div class="row ${hid?'hid':''}" `
+          + `id="${testID}"><${testID}>Loading...</${testID}></div>`)
       , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })
-
-    after(function () {
-        $('#'+testID).remove()
-    })
 
 function testAfterMounted () {
 
@@ -70,7 +68,7 @@ function testAfterMounted () {
         const cache = { good:{} }
         for (let key in stat) {
             if (! isReadOnly(key) ) continue // only read-only properties
-            cache.good[key] = goodVals[ stringOrName(schema.stat[key].type) ]
+            cache.good[key] = goodVals[ schema.stat[key].typeStr ]
             stat['_'+key] = cache.good[key]
         }
         Vue.nextTick((function(){let error;try{
@@ -91,7 +89,7 @@ function testAfterMounted () {
         const cache = { good:{} }
         for (let key in stat) {
             if (! isReadWrite(key) ) continue // only read-write properties
-            cache.good[key] = goodVals[ stringOrName(schema.stat[key].type) ]
+            cache.good[key] = goodVals[ schema.stat[key].typeStr ]
             stat[key] = cache.good[key]
         }
         Vue.nextTick((function(){let error;try{
@@ -110,7 +108,7 @@ function testAfterMounted () {
         for (let key in stat) {
             if (! isReadWrite(key) ) continue
             cache.$el[key] = $(`#${testID} .stat .Oom-${key} .val .read-write`)
-            cache.good[key] = goodVals[ stringOrName(schema.stat[key].type) ]
+            cache.good[key] = goodVals[ schema.stat[key].typeStr ]
             simulateInput( cache.$el[key], cache.good[key] )
         }
         Vue.nextTick((function(){let error;try{
@@ -131,7 +129,7 @@ function testAfterMounted () {
             cache.orig[key] = cache.$el[key].val()
             simulateInput(
                 cache.$el[key]
-              , badVals[ stringOrName(schema.stat[key].type) ]
+              , badVals[ schema.stat[key].typeStr ]
             )
         }
         Vue.nextTick((function(){let error;try{
@@ -174,7 +172,7 @@ function testAfterMounted () {
         const cache = { good:{} }
         for (let key in attr) {
             if (! isReadOnly(key) ) continue // only read-only properties
-            cache.good[key] = goodVals[ stringOrName(schema.attr[key].type) ]
+            cache.good[key] = goodVals[ schema.attr[key].typeStr ]
             attr['_'+key] = cache.good[key]
         }
         Vue.nextTick((function(){let error;try{
@@ -195,7 +193,7 @@ function testAfterMounted () {
         const cache = { good:{} }
         for (let key in attr) {
             if (! isReadWrite(key) ) continue // only read-write properties
-            cache.good[key] = goodVals[ stringOrName(schema.attr[key].type) ]
+            cache.good[key] = goodVals[ schema.attr[key].typeStr ]
             attr[key] = cache.good[key]
         }
         Vue.nextTick((function(){let error;try{
@@ -214,7 +212,7 @@ function testAfterMounted () {
         for (let key in attr) {
             if (! isReadWrite(key) ) continue
             cache.$el[key] = $(`#${testID} .attr .Oom-${key} .val .read-write`)
-            cache.good[key] = goodVals[ stringOrName(schema.attr[key].type) ]
+            cache.good[key] = goodVals[ schema.attr[key].typeStr ]
             simulateInput( cache.$el[key], cache.good[key] )
         }
         Vue.nextTick((function(){let error;try{
@@ -235,7 +233,7 @@ function testAfterMounted () {
             cache.orig[key] = cache.$el[key].val()
             simulateInput(
                 cache.$el[key]
-              , badVals[ stringOrName(schema.attr[key].type) ]
+              , badVals[ schema.attr[key].typeStr ]
             )
         }
         Vue.nextTick((function(){let error;try{

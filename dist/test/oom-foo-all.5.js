@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.14 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.15 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
@@ -11,8 +11,7 @@
       is = $__2.is,
       tryHardSet = $__2.tryHardSet,
       goodVals = $__2.goodVals,
-      badVals = $__2.badVals,
-      stringOrName = $__2.stringOrName;
+      badVals = $__2.badVals;
   var $__3 = Oom.KIT,
       countKeyMatches = $__3.countKeyMatches,
       isConstant = $__3.isConstant,
@@ -47,7 +46,7 @@
             tryHardSet(stat, key, 'Changed!');
             var valid = schema.stat[key];
             eq(stat[key], valid.default, 'stat.' + key + ' is ' + valid.default.toString());
-            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + stringOrName(valid.type));
+            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + valid.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -60,10 +59,10 @@
           for (var key in schema.stat) {
             if (!isReadOnly(key))
               continue;
-            stat[key] = goodVals[stringOrName(schema.stat[key].type)];
+            stat[key] = goodVals[schema.stat[key].typeStr];
             var valid = schema.stat[key];
             eq(stat[key], valid.default, 'stat.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + stringOrName(valid.type));
+            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + valid.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -75,7 +74,7 @@
           for (var key in schema.stat) {
             if (!isReadOnly(key))
               continue;
-            var good = goodVals[stringOrName(schema.stat[key].type)];
+            var good = goodVals[schema.stat[key].typeStr];
             stat['_' + key] = good;
             eq(stat[key], good, 'stat.' + key + ' has changed to ' + good);
           }
@@ -92,7 +91,7 @@
               continue;
             var valid = schema.stat[key];
             eq(stat[key], valid.default, 'stat.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + stringOrName(valid.type));
+            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + valid.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -104,8 +103,8 @@
           for (var key in schema.stat) {
             if (!isReadWrite(key))
               continue;
-            var good = goodVals[stringOrName(schema.stat[key].type)];
-            var bad = badVals[stringOrName(schema.stat[key].type)];
+            var good = goodVals[schema.stat[key].typeStr];
+            var bad = badVals[schema.stat[key].typeStr];
             stat[key] = good;
             eq(stat[key], good, 'stat.' + key + ' has changed to ' + good);
             stat[key] = bad;
@@ -140,7 +139,7 @@
             tryHardSet(attr, key, 'Changed!');
             var valid = schema.attr[key];
             eq(attr[key], valid.default, 'attr.' + key + ' is ' + valid.default.toString());
-            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + stringOrName(valid.type));
+            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + valid.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -153,10 +152,10 @@
           for (var key in schema.attr) {
             if (!isReadOnly(key))
               continue;
-            attr[key] = goodVals[stringOrName(schema.attr[key].type)];
+            attr[key] = goodVals[schema.attr[key].typeStr];
             var valid = schema.attr[key];
             eq(attr[key], valid.default, 'attr.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + stringOrName(valid.type));
+            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + valid.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -168,7 +167,7 @@
           for (var key in schema.attr) {
             if (!isReadOnly(key))
               continue;
-            var good = goodVals[stringOrName(schema.attr[key].type)];
+            var good = goodVals[schema.attr[key].typeStr];
             attr['_' + key] = good;
             eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
           }
@@ -185,7 +184,7 @@
               continue;
             var valid = schema.attr[key];
             eq(attr[key], valid.default, 'attr.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + stringOrName(valid.type));
+            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + valid.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -197,8 +196,8 @@
           for (var key in schema.attr) {
             if (!isReadWrite(key))
               continue;
-            var good = goodVals[stringOrName(schema.attr[key].type)];
-            var bad = badVals[stringOrName(schema.attr[key].type)];
+            var good = goodVals[schema.attr[key].typeStr];
+            var bad = badVals[schema.attr[key].typeStr];
             attr[key] = good;
             eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
             attr[key] = bad;
@@ -245,9 +244,6 @@ function testify() {
       color: '89abCD',
       Number: '11.22.33',
       String: /nope!/
-    },
-    stringOrName: function(val) {
-      return 'string' === typeof val ? val : val.name;
     }
   };
 }
@@ -261,8 +257,7 @@ function testify() {
       is = $__2.is,
       tryHardSet = $__2.tryHardSet,
       goodVals = $__2.goodVals,
-      badVals = $__2.badVals,
-      stringOrName = $__2.stringOrName;
+      badVals = $__2.badVals;
   var $__3 = Oom.KIT,
       countKeyMatches = $__3.countKeyMatches,
       isConstant = $__3.isConstant,
@@ -293,7 +288,7 @@ function testify() {
             tryHardSet(stat, key, 'Changed!');
             var valid = schema.stat[key];
             eq(stat[key], valid.default, 'stat.' + key + ' is ' + valid.default.toString());
-            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + stringOrName(valid.type));
+            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + valid.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -306,10 +301,10 @@ function testify() {
           for (var key in schema.stat) {
             if (!isReadOnly(key))
               continue;
-            stat[key] = goodVals[stringOrName(schema.stat[key].type)];
+            stat[key] = goodVals[schema.stat[key].typeStr];
             var valid = schema.stat[key];
             eq(stat[key], valid.default, 'stat.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + stringOrName(valid.type));
+            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + valid.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -321,7 +316,7 @@ function testify() {
           for (var key in schema.stat) {
             if (!isReadOnly(key))
               continue;
-            var good = goodVals[stringOrName(schema.stat[key].type)];
+            var good = goodVals[schema.stat[key].typeStr];
             stat['_' + key] = good;
             eq(stat[key], good, 'stat.' + key + ' has changed to ' + good);
           }
@@ -338,7 +333,7 @@ function testify() {
               continue;
             var valid = schema.stat[key];
             eq(stat[key], valid.default, 'stat.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + stringOrName(valid.type));
+            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + valid.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -350,8 +345,8 @@ function testify() {
           for (var key in schema.stat) {
             if (!isReadWrite(key))
               continue;
-            var good = goodVals[stringOrName(schema.stat[key].type)];
-            var bad = badVals[stringOrName(schema.stat[key].type)];
+            var good = goodVals[schema.stat[key].typeStr];
+            var bad = badVals[schema.stat[key].typeStr];
             stat[key] = good;
             eq(stat[key], good, 'stat.' + key + ' has changed to ' + good);
             stat[key] = bad;
@@ -386,7 +381,7 @@ function testify() {
             tryHardSet(attr, key, 'Changed!');
             var valid = schema.attr[key];
             eq(attr[key], valid.default, 'attr.' + key + ' is ' + valid.default.toString());
-            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + stringOrName(valid.type));
+            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + valid.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -399,10 +394,10 @@ function testify() {
           for (var key in schema.attr) {
             if (!isReadOnly(key))
               continue;
-            attr[key] = goodVals[stringOrName(schema.attr[key].type)];
+            attr[key] = goodVals[schema.attr[key].typeStr];
             var valid = schema.attr[key];
             eq(attr[key], valid.default, 'attr.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + stringOrName(valid.type));
+            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + valid.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -414,7 +409,7 @@ function testify() {
           for (var key in schema.attr) {
             if (!isReadOnly(key))
               continue;
-            var good = goodVals[stringOrName(schema.attr[key].type)];
+            var good = goodVals[schema.attr[key].typeStr];
             attr['_' + key] = good;
             eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
           }
@@ -431,7 +426,7 @@ function testify() {
               continue;
             var valid = schema.attr[key];
             eq(attr[key], valid.default, 'attr.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + stringOrName(valid.type));
+            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + valid.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -443,8 +438,8 @@ function testify() {
           for (var key in schema.attr) {
             if (!isReadWrite(key))
               continue;
-            var good = goodVals[stringOrName(schema.attr[key].type)];
-            var bad = badVals[stringOrName(schema.attr[key].type)];
+            var good = goodVals[schema.attr[key].typeStr];
+            var bad = badVals[schema.attr[key].typeStr];
             attr[key] = good;
             eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
             attr[key] = bad;
@@ -468,8 +463,7 @@ function testify() {
       is = $__2.is,
       tryHardSet = $__2.tryHardSet,
       goodVals = $__2.goodVals,
-      badVals = $__2.badVals,
-      stringOrName = $__2.stringOrName;
+      badVals = $__2.badVals;
   var $__3 = Oom.KIT,
       countKeyMatches = $__3.countKeyMatches,
       isConstant = $__3.isConstant,
@@ -500,7 +494,7 @@ function testify() {
             tryHardSet(stat, key, 'Changed!');
             var valid = schema.stat[key];
             eq(stat[key], valid.default, 'stat.' + key + ' is ' + valid.default.toString());
-            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + stringOrName(valid.type));
+            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + valid.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -513,10 +507,10 @@ function testify() {
           for (var key in schema.stat) {
             if (!isReadOnly(key))
               continue;
-            stat[key] = goodVals[stringOrName(schema.stat[key].type)];
+            stat[key] = goodVals[schema.stat[key].typeStr];
             var valid = schema.stat[key];
             eq(stat[key], valid.default, 'stat.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + stringOrName(valid.type));
+            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + valid.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -528,7 +522,7 @@ function testify() {
           for (var key in schema.stat) {
             if (!isReadOnly(key))
               continue;
-            var good = goodVals[stringOrName(schema.stat[key].type)];
+            var good = goodVals[schema.stat[key].typeStr];
             stat['_' + key] = good;
             eq(stat[key], good, 'stat.' + key + ' has changed to ' + good);
           }
@@ -545,7 +539,7 @@ function testify() {
               continue;
             var valid = schema.stat[key];
             eq(stat[key], valid.default, 'stat.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + stringOrName(valid.type));
+            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + valid.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -557,8 +551,8 @@ function testify() {
           for (var key in schema.stat) {
             if (!isReadWrite(key))
               continue;
-            var good = goodVals[stringOrName(schema.stat[key].type)];
-            var bad = badVals[stringOrName(schema.stat[key].type)];
+            var good = goodVals[schema.stat[key].typeStr];
+            var bad = badVals[schema.stat[key].typeStr];
             stat[key] = good;
             eq(stat[key], good, 'stat.' + key + ' has changed to ' + good);
             stat[key] = bad;
@@ -593,7 +587,7 @@ function testify() {
             tryHardSet(attr, key, 'Changed!');
             var valid = schema.attr[key];
             eq(attr[key], valid.default, 'attr.' + key + ' is ' + valid.default.toString());
-            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + stringOrName(valid.type));
+            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + valid.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -606,10 +600,10 @@ function testify() {
           for (var key in schema.attr) {
             if (!isReadOnly(key))
               continue;
-            attr[key] = goodVals[stringOrName(schema.attr[key].type)];
+            attr[key] = goodVals[schema.attr[key].typeStr];
             var valid = schema.attr[key];
             eq(attr[key], valid.default, 'attr.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + stringOrName(valid.type));
+            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + valid.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -621,7 +615,7 @@ function testify() {
           for (var key in schema.attr) {
             if (!isReadOnly(key))
               continue;
-            var good = goodVals[stringOrName(schema.attr[key].type)];
+            var good = goodVals[schema.attr[key].typeStr];
             attr['_' + key] = good;
             eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
           }
@@ -638,7 +632,7 @@ function testify() {
               continue;
             var valid = schema.attr[key];
             eq(attr[key], valid.default, 'attr.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + stringOrName(valid.type));
+            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + valid.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -650,8 +644,8 @@ function testify() {
           for (var key in schema.attr) {
             if (!isReadWrite(key))
               continue;
-            var good = goodVals[stringOrName(schema.attr[key].type)];
-            var bad = badVals[stringOrName(schema.attr[key].type)];
+            var good = goodVals[schema.attr[key].typeStr];
+            var bad = badVals[schema.attr[key].typeStr];
             attr[key] = good;
             eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
             attr[key] = bad;
@@ -669,4 +663,4 @@ function testify() {
 
 
 
-//// Made by Oomtility Make 1.2.14 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.15 //\\//\\ http://oomtility.loop.coop /////////

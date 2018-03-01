@@ -40,7 +40,7 @@ isTop ? `
     //// Defines this class’s static and instance properties.
     //// May be modified by ‘Plus’ classes. @TODO create and use the Plus class
     static get schema () {
-        return KIT.normaliseSchema({
+        return KIT.normaliseSchema(${{classname}}, ${{extendname}}, {
 
             //// Public static properties (known as ‘statics’ in Oom).
             stat: {

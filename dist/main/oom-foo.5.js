@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.14 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.15 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
     NAME: 'Oom.Foo',
-    VERSION: '1.2.14',
+    VERSION: '1.2.15',
     HOMEPAGE: 'http://oom-foo.loop.coop/',
     REMARKS: 'Initial test of the oom-hub architecture',
     LOADED_FIRST: !ROOT.Oom
@@ -16,7 +16,7 @@
       var config = arguments[0] !== (void 0) ? arguments[0] : {};
     }
     return ($traceurRuntime.createClass)(Oom, {}, {get schema() {
-        return KIT.normaliseSchema({
+        return KIT.normaliseSchema(Oom, null, {
           stat: {
             NAME: 'Oom',
             VERSION: META.VERSION,
@@ -56,16 +56,17 @@
     KIT.define(Oom.prototype.attr, Oom.schema.attr);
   }
   Object.defineProperty(Oom, 'memberTableVueTemplate', {get: function(innerHTML) {
-      return innerHTML = "\n<div :class=\"'member-table '+objname\">\n  <table :class=\"{ hid:doHide }\">\n    <caption v-html=\"caption\"></caption>\n    <tr v-for=\"val, key in obj\" v-bind:class=\"'Oom-'+key\">\n      <td class=\"key\">{{key}}</td>\n      <td class=\"val\">\n        <input v-if=\"isReadWrite(key)\"    class=\"read-write\" v-model=\"obj[key]\">\n        <span v-else-if=\"isReadOnly(key)\" class=\"read-only\">{{val}}</span>\n        <span v-else-if=\"isConstant(key)\" class=\"constant\">{{val}}</span>\n        <span v-else                      class=\"private\">{{val}}</span>\n      </td>\n    </tr>\n  </table>\n</div>\n";
+      return innerHTML = "\n<div :class=\"'member-table '+objname\">\n  <table :class=\"{ hid:doHide }\">\n    <caption v-html=\"caption\"></caption>\n    <tr>\n      <th>Name</th>\n      <th>Value</th>\n      <th>Type</th>\n      <th>Defined In</th>\n    </tr>\n    <tr v-for=\"val, key in obj\" v-bind:class=\"'Oom-'+key\">\n      <td class=\"key\">{{key}}</td>\n      <td class=\"val\">\n        <input v-if=\"isReadWrite(key)\"    class=\"read-write\" v-model=\"obj[key]\">\n        <span v-else-if=\"isReadOnly(key)\" class=\"read-only\">{{val}}</span>\n        <span v-else-if=\"isConstant(key)\" class=\"constant\">{{val}}</span>\n        <span v-else                      class=\"private\">{{val}}</span>\n      </td>\n      <td class=\"type\">{{schema[key] ? schema[key].typeStr : '-'}}</td>\n      <td class=\"defined-in\">{{schema[key] ? schema[key].definedInStr : '-'}}</td>\n    </tr>\n  </table>\n</div>\n";
     }});
   Object.defineProperty(Oom, 'devMainVueTemplate', {get: function(innerHTML) {
-      return innerHTML = "\n<div class=\"dev-main col-12\">\n  <member-table :obj=\"stat\" objname=\"stat\" :do-hide=\"ui.hideData\"\n    :caption=\"stat.NAME+' static properties:'\"></member-table>\n  <member-table :obj=\"attr\" objname=\"attr\" :do-hide=\"ui.hideData\"\n    :caption=\"stat.NAME+' attribute properties:'\"></member-table>\n</div>\n";
+      return innerHTML = "\n<div class=\"dev-main col-12\">\n  <member-table :schema=\"schema.stat\" :obj=\"stat\" objname=\"stat\" :do-hide=\"ui.hideData\"\n    :caption=\"stat.NAME+' static properties:'\"></member-table>\n  <member-table :schema=\"schema.attr\" :obj=\"attr\" objname=\"attr\" :do-hide=\"ui.hideData\"\n    :caption=\"stat.NAME+' attribute properties:'\"></member-table>\n</div>\n";
     }});
   Oom.devMainVue = function(Class) {
     return {
       template: Oom.devMainVueTemplate,
       data: function() {
         return {
+          schema: Class.schema,
           stat: Class.stat,
           attr: (new Class()).attr,
           ui: {
@@ -74,23 +75,27 @@
           }
         };
       },
+      methods: {},
       beforeCreate: function() {
         var $__5 = KIT,
             isReadWrite = $__5.isReadWrite,
             isReadOnly = $__5.isReadOnly,
-            isConstant = $__5.isConstant;
+            isConstant = $__5.isConstant,
+            stringOrName = $__5.stringOrName;
         Vue.component('member-table', {
           template: Oom.memberTableVueTemplate,
           props: {
             doHide: Boolean,
             caption: String,
+            schema: Object,
             obj: Object,
             objname: String
           },
           methods: {
             isReadWrite: isReadWrite,
             isReadOnly: isReadOnly,
-            isConstant: isConstant
+            isConstant: isConstant,
+            stringOrName: stringOrName
           }
         });
       },
@@ -104,12 +109,18 @@
     function $__1() {
       $traceurRuntime.superConstructor($__1).apply(this, arguments);
     }
-    return ($traceurRuntime.createClass)($__1, {}, {}, $__super);
+    return ($traceurRuntime.createClass)($__1, {}, {get schema() {
+        return KIT.normaliseSchema(Oom.Foo, Oom, {
+          stat: META,
+          attr: {}
+        });
+      }}, $__super);
   }(Oom);
   KIT.name(Oom.Foo, 'Oom.Foo');
   Oom.Foo.stat = {};
-  KIT.define(Oom.Foo.stat, KIT.normaliseSchema({a: META}).a);
-  KIT.define(Oom.Foo.stat, KIT.normaliseSchema({a: META}).a);
+  KIT.define(Oom.Foo.stat, Oom.Foo.schema.stat);
+  Oom.Foo.prototype.attr = {};
+  KIT.define(Oom.Foo.prototype.attr, Oom.Foo.schema.attr);
   function assignKIT() {
     var previousKIT = arguments[0] !== (void 0) ? arguments[0] : {};
     return Object.assign({}, {
@@ -139,9 +150,9 @@
         if ('undefined' === typeof valid.type)
           return ('undefined' === typeof value) ? null : "is not undefined";
         if (!valid.type.name)
-          throw new TypeError(ME + valid.name + "’s valid.type has no name");
+          throw TypeError(ME + valid.name + "’s valid.type has no name");
         if (!value[C] || !value[C].name)
-          throw new TypeError(ME + valid.name + ("’s value has no " + C + ".name"));
+          throw TypeError(ME + valid.name + ("’s value has no " + C + ".name"));
         return (valid.type.name === value[C].name) ? null : ("has " + C + ".name " + value[C].name + " not " + valid.type.name);
       },
       validateRange: function(valid, value) {
@@ -165,7 +176,7 @@
             case 'null':
               return null === value;
             default:
-              throw new TypeError(PFX + ("valid.type is '" + valid.type + "'"));
+              throw TypeError(PFX + ("valid.type is '" + valid.type + "'"));
           }
         if (Number === valid.type)
           return 'number' === typeof value && !Number.isNaN(value);
@@ -174,9 +185,9 @@
         if ('undefined' === typeof valid.type)
           return 'undefined' === typeof value;
         if (!valid.type.name)
-          throw new TypeError(PFX + "valid.type has no name");
+          throw TypeError(PFX + "valid.type has no name");
         if (!value.constructor || !value.constructor.name)
-          throw new TypeError(PFX + "value has no constructor.name");
+          throw TypeError(PFX + "value has no constructor.name");
         return valid.type.name === value.constructor.name;
       },
       getNow: function() {
@@ -279,7 +290,10 @@
       isReadWrite: function(k) {
         return /^[a-z][A-Za-z0-9]*$/.test(k);
       },
-      normaliseSchema: function(schema) {
+      stringOrName: function(val) {
+        return 'string' === typeof val ? val : val.name;
+      },
+      normaliseSchema: function(Class, ParentClass, schema) {
         var out = {};
         for (var zone in schema) {
           out[zone] = {};
@@ -287,6 +301,12 @@
             var PFX = 'KIT.normaliseSchema: ' + propName + '’s ';
             var inDesc = schema[zone][propName];
             var outDesc = out[zone][propName] = {};
+            if (null != inDesc.typeStr)
+              throw TypeError(PFX + "inDesc.typeStr has already been set");
+            if (null != inDesc.definedIn)
+              throw TypeError(PFX + "inDesc.definedIn has already been set");
+            if (null != inDesc.definedInStr)
+              throw TypeError(PFX + "inDesc.definedInStr has already been set");
             outDesc.name = propName;
             outDesc.default = ('object' === (typeof inDesc === 'undefined' ? 'undefined' : $traceurRuntime.typeof(inDesc))) ? inDesc.default : inDesc;
             var strToObj = {
@@ -312,14 +332,21 @@
               outDesc.type = inDesc.type;
             else {
               if ('function' !== typeof inDesc.type)
-                throw new TypeError(PFX + "inDesc.type is not a string or a function");
+                throw TypeError(PFX + "inDesc.type is not a string or a function");
               if (!inDesc.type.name)
-                throw new TypeError(PFX + "inDesc.type has no name");
+                throw TypeError(PFX + "inDesc.type has no name");
               outDesc.type = inDesc.type;
             }
+            outDesc.typeStr = KIT.stringOrName(outDesc.type);
+            outDesc.definedIn = Class;
+            outDesc.definedInStr = Class.name;
             if (inDesc.remarks)
               outDesc.remarks = inDesc.remarks;
           }
+        }
+        if (ParentClass) {
+          out.stat = Object.assign({}, ParentClass.schema.stat, out.stat);
+          out.attr = Object.assign({}, ParentClass.schema.attr, out.attr);
         }
         return out;
       }
@@ -336,7 +363,7 @@
       $traceurRuntime.superConstructor($__0).call(this, config);
     }
     return ($traceurRuntime.createClass)($__0, {}, {get schema() {
-        return KIT.normaliseSchema({
+        return KIT.normaliseSchema(Oom.Foo.Post, Oom.Foo, {
           stat: {
             NAME: 'Oom.Foo.Post',
             REMARKS: '@TODO',
@@ -373,7 +400,7 @@
       $traceurRuntime.superConstructor($__0).call(this, config);
     }
     return ($traceurRuntime.createClass)($__0, {}, {get schema() {
-        return KIT.normaliseSchema({
+        return KIT.normaliseSchema(Oom.Foo.Router, Oom.Foo, {
           stat: {
             NAME: 'Oom.Foo.Router',
             REMARKS: '@TODO',
@@ -404,4 +431,4 @@
 
 
 
-//// Made by Oomtility Make 1.2.14 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.15 //\\//\\ http://oomtility.loop.coop /////////

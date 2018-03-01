@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.14 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.15 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
@@ -37,7 +37,7 @@ const Class = Oom.Foo.Post = class extends Oom.Foo {
     //// Defines this class’s static and instance properties.
     //// May be modified by ‘Plus’ classes. @TODO create and use the Plus class
     static get schema () {
-        return KIT.normaliseSchema({
+        return KIT.normaliseSchema(Oom.Foo.Post, Oom.Foo, {
 
             //// Public static properties (known as ‘statics’ in Oom).
             stat: {

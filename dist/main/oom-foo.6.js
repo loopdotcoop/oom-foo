@@ -2,14 +2,14 @@
 
 
 
-//// Oom.Foo //// 1.2.14 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.15 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
 //// Metadata for Oom.Foo
 const META = {
     NAME:     'Oom.Foo'
-  , VERSION:  '1.2.14' // OOMBUMPABLE
+  , VERSION:  '1.2.15' // OOMBUMPABLE
   , HOMEPAGE: 'http://oom-foo.loop.coop/'
   , REMARKS:  'Initial test of the oom-hub architecture'
   , LOADED_FIRST: ! ROOT.Oom // true if the Oom class is defined by this module
@@ -18,7 +18,7 @@ const META = {
 
 
 
-//// KIT
+//// INITIALISE KIT
 
 
 //// Oom’s toolkit (created if not present). @TODO test with several modules
@@ -27,7 +27,7 @@ const KIT = assignKIT(META.LOADED_FIRST || ! ROOT.Oom.KIT ? {} :  ROOT.Oom.KIT)
 
 
 
-//// Oom CLASS AND NAMESPACE
+//// THE Oom CLASS AND NAMESPACE
 
 
 //// If not already present, define `Oom`, the base class for all Oom classes,
@@ -57,7 +57,7 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
     //// Defines this class’s static and instance properties.
     //// May be modified by ‘Plus’ classes. @TODO create and use the Plus class
     static get schema () {
-        return KIT.normaliseSchema({
+        return KIT.normaliseSchema(Oom, null, { // `null`: Oom is the base class
 
             //// Public static properties (known as ‘statics’ in Oom).
             stat: {
@@ -134,6 +134,12 @@ get: function (innerHTML) { return innerHTML = `
 <div :class="'member-table '+objname">
   <table :class="{ hid:doHide }">
     <caption v-html="caption"></caption>
+    <tr>
+      <th>Name</th>
+      <th>Value</th>
+      <th>Type</th>
+      <th>Defined In</th>
+    </tr>
     <tr v-for="val, key in obj" v-bind:class="'Oom-'+key">
       <td class="key">{{key}}</td>
       <td class="val">
@@ -142,6 +148,8 @@ get: function (innerHTML) { return innerHTML = `
         <span v-else-if="isConstant(key)" class="constant">{{val}}</span>
         <span v-else                      class="private">{{val}}</span>
       </td>
+      <td class="type">{{schema[key] ? schema[key].typeStr : '-'}}</td>
+      <td class="defined-in">{{schema[key] ? schema[key].definedInStr : '-'}}</td>
     </tr>
   </table>
 </div>
@@ -152,9 +160,9 @@ get: function (innerHTML) { return innerHTML = `
 Object.defineProperty(Oom, 'devMainVueTemplate', {
 get: function (innerHTML) { return innerHTML = `
 <div class="dev-main col-12">
-  <member-table :obj="stat" objname="stat" :do-hide="ui.hideData"
+  <member-table :schema="schema.stat" :obj="stat" objname="stat" :do-hide="ui.hideData"
     :caption="stat.NAME+' static properties:'"></member-table>
-  <member-table :obj="attr" objname="attr" :do-hide="ui.hideData"
+  <member-table :schema="schema.attr" :obj="attr" objname="attr" :do-hide="ui.hideData"
     :caption="stat.NAME+' attribute properties:'"></member-table>
 </div>
 `} })
@@ -164,7 +172,8 @@ Oom.devMainVue = function (Class) { return {
     template: Oom.devMainVueTemplate
 
   , data: function () { return {
-        stat: Class.stat
+        schema: Class.schema
+      , stat: Class.stat
       , attr: (new Class()).attr
       , ui: { hideData:false, hideInners:false }
     } }
@@ -174,26 +183,26 @@ Oom.devMainVue = function (Class) { return {
         firstProp: Number
       , UUID: String
     }
-
-  , methods: {
-        // toggleHideData
-    }
 */
+  , methods: {
+    }
+
     //// Register any component dependencies not already registered.
   , beforeCreate: function () {
 
         //@TODO if not already registered
         //// <member-table> shows a table of class and instance members.
-        const { isReadWrite, isReadOnly, isConstant } = KIT
+        const { isReadWrite, isReadOnly, isConstant, stringOrName } = KIT
         Vue.component('member-table', {
             template: Oom.memberTableVueTemplate
           , props: {
                 doHide: Boolean
               , caption: String
+              , schema: Object
               , obj: Object
               , objname: String
             }
-          , methods: { isReadWrite, isReadOnly, isConstant }
+          , methods: { isReadWrite, isReadOnly, isConstant, stringOrName }
         })
 
     }
@@ -218,13 +227,30 @@ Oom.KIT = KIT
 
 //// Define `Oom.Foo`, this module’s specialism of `Oom`.
 Oom.Foo = class extends Oom {
+
+    //// Defines this class’s static and instance properties.
+    //// May be modified by ‘Plus’ classes. @TODO create and use the Plus class
+    static get schema () {
+        return KIT.normaliseSchema(Oom.Foo, Oom, {
+
+            //// Public static properties (known as ‘statics’ in Oom).
+            stat: META // defined at the top of this file
+
+            //// Public instance properties (known as ‘attributes’ in Oom).
+          , attr: {}
+        })//KIT.normaliseSchema()
+    }
+
 }; KIT.name(Oom.Foo, 'Oom.Foo')
 
 
-//// Add properties to `Oom.Foo.stat` - these will be exposed to Vue etc.
+//// Add public statics to `Oom.Foo.stat` (exposed to Vue etc).
 Oom.Foo.stat = {}
-KIT.define(Oom.Foo.stat, KIT.normaliseSchema({a:META}).a /*, { instTally:0 }*/)
-KIT.define(Oom.Foo.stat, KIT.normaliseSchema({a:META}).a /*, { instTally:0 }*/)
+KIT.define(Oom.Foo.stat, Oom.Foo.schema.stat)
+
+//// Add public attributes to `myOomFoo.attr` (exposed to Vue etc).
+Oom.Foo.prototype.attr = {}
+KIT.define(Oom.Foo.prototype.attr, Oom.Foo.schema.attr)
 
 
 
@@ -264,9 +290,9 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
         if ('undefined' === typeof valid.type)
             return ('undefined' === typeof value) ? null : `is not undefined`
         if (! valid.type.name )
-            throw new TypeError(ME+valid.name+`’s valid.type has no name`)
+            throw TypeError(ME+valid.name+`’s valid.type has no name`)
         if (! value[C] || ! value[C].name )
-            throw new TypeError(ME+valid.name+`’s value has no ${C}.name`)
+            throw TypeError(ME+valid.name+`’s value has no ${C}.name`)
         return (valid.type.name === value[C].name)
           ? null : `has ${C}.name ${value[C].name} not ${valid.type.name}`
     }
@@ -298,7 +324,7 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
                 //@TODO add more of these, following:
                 //aframe.io/docs/master/core/component.html#property-types
                 default:
-                    throw new TypeError(PFX+`valid.type is '${valid.type}'`)
+                    throw TypeError(PFX+`valid.type is '${valid.type}'`)
             }
         if (Number === valid.type)
             return 'number' === typeof value && ! Number.isNaN(value)
@@ -307,9 +333,9 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
         if ('undefined' === typeof valid.type)
             return 'undefined' === typeof value
         if (! valid.type.name )
-            throw new TypeError(PFX+`valid.type has no name`)
+            throw TypeError(PFX+`valid.type has no name`)
         if (! value.constructor || ! value.constructor.name )
-            throw new TypeError(PFX+`value has no constructor.name`)
+            throw TypeError(PFX+`value has no constructor.name`)
         return valid.type.name === value.constructor.name
     }
 
@@ -430,9 +456,10 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
   , isConstant:  k => /^[A-Z][_A-Z0-9]*$/.test(k)
   , isReadOnly:  k => -1 !== k.indexOf('_') && /^[a-z][_a-z0-9]+$/.test(k)
   , isReadWrite: k => /^[a-z][A-Za-z0-9]*$/.test(k)
+  , stringOrName: val => 'string' === typeof val ? val : val.name
 
     //// Validates a schema object and fills in any gaps.
-  , normaliseSchema: schema => {
+  , normaliseSchema: (Class, ParentClass, schema) => {
         const out = {}
         for (let zone in schema) {
             out[zone] = {} // eg `out.stat = {}` or `out.attr = {}`
@@ -440,6 +467,12 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
                 const PFX = 'KIT.normaliseSchema: '+propName+'’s '
                 const inDesc = schema[zone][propName]
                 const outDesc = out[zone][propName] = {}
+                if (null != inDesc.typeStr)
+                    throw TypeError(PFX+`inDesc.typeStr has already been set`)
+                if (null != inDesc.definedIn)
+                    throw TypeError(PFX+`inDesc.definedIn has already been set`)
+                if (null != inDesc.definedInStr)
+                    throw TypeError(PFX+`inDesc.definedInStr has already been set`)
                 outDesc.name = propName // for better `isValid()` error messages
                 outDesc.default = ('object' === typeof inDesc)
                   ? inDesc.default // full: `{ stat:{ OK:{ default:'Yep' } } }`
@@ -467,13 +500,22 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
                     outDesc.type = inDesc.type // 'int' -> 'int'
                 else {
                     if ('function' !== typeof inDesc.type)
-                        throw new TypeError(PFX+`inDesc.type is not a string or a function`)
+                        throw TypeError(PFX+`inDesc.type is not a string or a function`)
                     if (! inDesc.type.name )
-                        throw new TypeError(PFX+`inDesc.type has no name`)
+                        throw TypeError(PFX+`inDesc.type has no name`)
                     outDesc.type = inDesc.type
                 }
+                outDesc.typeStr = KIT.stringOrName(outDesc.type) // can be passed to a Vue component, unlike functions
+                outDesc.definedIn = Class
+                outDesc.definedInStr = Class.name
                 if (inDesc.remarks) outDesc.remarks = inDesc.remarks
             }
+        }
+
+        //// Simulate a class-extend of a parent schema. @TODO simulate efficiency, without breaking Vue
+        if (ParentClass) {
+            out.stat = Object.assign({}, ParentClass.schema.stat, out.stat)
+            out.attr = Object.assign({}, ParentClass.schema.attr, out.attr)
         }
         return out
     }
@@ -490,7 +532,7 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
 
 
 
-//// Oom.Foo //// 1.2.14 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.15 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
@@ -529,7 +571,7 @@ const Class = Oom.Foo.Post = class extends Oom.Foo {
     //// Defines this class’s static and instance properties.
     //// May be modified by ‘Plus’ classes. @TODO create and use the Plus class
     static get schema () {
-        return KIT.normaliseSchema({
+        return KIT.normaliseSchema(Oom.Foo.Post, Oom.Foo, {
 
             //// Public static properties (known as ‘statics’ in Oom).
             stat: {
@@ -678,7 +720,7 @@ KIT.define(Oom.Foo.Post.prototype.attr, Oom.Foo.Post.schema.attr)
 
 
 
-//// Oom.Foo //// 1.2.14 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.15 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
@@ -717,7 +759,7 @@ const Class = Oom.Foo.Router = class extends Oom.Foo {
     //// Defines this class’s static and instance properties.
     //// May be modified by ‘Plus’ classes. @TODO create and use the Plus class
     static get schema () {
-        return KIT.normaliseSchema({
+        return KIT.normaliseSchema(Oom.Foo.Router, Oom.Foo, {
 
             //// Public static properties (known as ‘statics’ in Oom).
             stat: {
@@ -862,4 +904,4 @@ KIT.define(Oom.Foo.Router.prototype.attr, Oom.Foo.Router.schema.attr)
 
 
 
-//// Made by Oomtility Make 1.2.14 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.15 //\\//\\ http://oomtility.loop.coop /////////

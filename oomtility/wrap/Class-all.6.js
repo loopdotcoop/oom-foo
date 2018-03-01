@@ -2,10 +2,8 @@ ${{topline}}
 
 !function (ROOT) { 'use strict'
 ROOT.testify = testify // make `testify()` available to all test files
-const { describe, it, eq, is, tryHardSet, goodVals, badVals, stringOrName }
-  = ROOT.testify()
-const { countKeyMatches, isConstant, isReadOnly, isReadWrite, isValid }
-  = Oom.KIT
+const { describe, it, eq, is, tryHardSet, goodVals, badVals } = ROOT.testify()
+const { countKeyMatches, isConstant, isReadOnly, isReadWrite, isValid } = Oom.KIT
 describe('${{classname}} All', function () {
 
 
@@ -49,7 +47,7 @@ describe('The ${{classname}} class', () => {
             eq(stat[key], valid.default
               , 'stat.'+key+' is '+valid.default.toString())
             is( isValid(valid, stat[key])
-              , 'stat.'+key+' is a valid '+stringOrName(valid.type) )
+              , 'stat.'+key+' is a valid '+valid.typeStr )
         }
     }catch(e){console.error(e.message);throw e}})
 
@@ -58,12 +56,12 @@ describe('The ${{classname}} class', () => {
     it(`has ${n} read-only static${1==n?'':'s'}`, function(){try{
         for (let key in schema.stat) {
             if (! isReadOnly(key) ) continue // only read-only properties
-            stat[key] = goodVals[ stringOrName(schema.stat[key].type) ]
+            stat[key] = goodVals[ schema.stat[key].typeStr ]
             const valid = schema.stat[key]
             eq(stat[key], valid.default
               , 'stat.'+key+' is initially '+valid.default.toString())
             is( isValid(valid, stat[key])
-              , 'stat.'+key+' is a valid '+stringOrName(valid.type) )
+              , 'stat.'+key+' is a valid '+valid.typeStr )
         }
     }catch(e){console.error(e.message);throw e}})
 
@@ -71,7 +69,7 @@ describe('The ${{classname}} class', () => {
     it('sees when read-only statics change', function(){try{
         for (let key in schema.stat) {
             if (! isReadOnly(key) ) continue // only read-only properties
-            const good = goodVals[ stringOrName(schema.stat[key].type) ]
+            const good = goodVals[ schema.stat[key].typeStr ]
             stat['_'+key] = good
             eq(stat[key], good
               , 'stat.'+key+' has changed to '+good)
@@ -90,7 +88,7 @@ describe('The ${{classname}} class', () => {
             eq(stat[key], valid.default
               , 'stat.'+key+' is initially '+valid.default.toString())
             is( isValid(valid, stat[key])
-              , 'stat.'+key+' is a valid '+stringOrName(valid.type) )
+              , 'stat.'+key+' is a valid '+valid.typeStr )
         }
     }catch(e){console.error(e.message);throw e}})
 
@@ -98,8 +96,8 @@ describe('The ${{classname}} class', () => {
     it('allows read-write statics to be changed', function(){try{
         for (let key in schema.stat) {
             if (! isReadWrite(key) ) continue // only read-write properties
-            const good = goodVals[ stringOrName(schema.stat[key].type) ]
-            const bad  = badVals[  stringOrName(schema.stat[key].type) ]
+            const good = goodVals[ schema.stat[key].typeStr ]
+            const bad  = badVals[  schema.stat[key].typeStr ]
             stat[key] = good
             eq(stat[key], good
               , 'stat.'+key+' has changed to '+good)
@@ -147,7 +145,7 @@ describe('An ${{classname}} instance', function () {
             eq(attr[key], valid.default
               , 'attr.'+key+' is '+valid.default.toString())
             is( isValid(valid, attr[key])
-              , 'attr.'+key+' is a valid '+stringOrName(valid.type) )
+              , 'attr.'+key+' is a valid '+valid.typeStr )
         }
     }catch(e){console.error(e.message);throw e}})
 
@@ -156,12 +154,12 @@ describe('An ${{classname}} instance', function () {
     it(`has ${n} read-only attribute${1==n?'':'s'}`, function(){try{
         for (let key in schema.attr) {
             if (! isReadOnly(key) ) continue // only read-only properties
-            attr[key] = goodVals[ stringOrName(schema.attr[key].type) ]
+            attr[key] = goodVals[ schema.attr[key].typeStr ]
             const valid = schema.attr[key]
             eq(attr[key], valid.default
               , 'attr.'+key+' is initially '+valid.default.toString())
             is( isValid(valid, attr[key])
-              , 'attr.'+key+' is a valid '+stringOrName(valid.type) )
+              , 'attr.'+key+' is a valid '+valid.typeStr )
         }
     }catch(e){console.error(e.message);throw e}})
 
@@ -169,7 +167,7 @@ describe('An ${{classname}} instance', function () {
     it('sees when read-only attributes change', function(){try{
         for (let key in schema.attr) {
             if (! isReadOnly(key) ) continue // only read-only properties
-            const good = goodVals[ stringOrName(schema.attr[key].type) ]
+            const good = goodVals[ schema.attr[key].typeStr ]
             attr['_'+key] = good
             eq(attr[key], good
               , 'attr.'+key+' has changed to '+good)
@@ -188,7 +186,7 @@ describe('An ${{classname}} instance', function () {
             eq(attr[key], valid.default
               , 'attr.'+key+' is initially '+valid.default.toString())
             is( isValid(valid, attr[key])
-              , 'attr.'+key+' is a valid '+stringOrName(valid.type) )
+              , 'attr.'+key+' is a valid '+valid.typeStr )
         }
     }catch(e){console.error(e.message);throw e}})
 
@@ -196,8 +194,8 @@ describe('An ${{classname}} instance', function () {
     it('allows read-write attributes to be changed', function(){try{
         for (let key in schema.attr) {
             if (! isReadWrite(key) ) continue // only read-write properties
-            const good = goodVals[ stringOrName(schema.attr[key].type) ]
-            const bad  = badVals[  stringOrName(schema.attr[key].type) ]
+            const good = goodVals[ schema.attr[key].typeStr ]
+            const bad  = badVals[  schema.attr[key].typeStr ]
             attr[key] = good
             eq(attr[key], good
               , 'attr.'+key+' has changed to '+good)

@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.14 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.15 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
@@ -9,13 +9,13 @@
       eq = $__2.eq,
       is = $__2.is,
       goodVals = $__2.goodVals,
-      badVals = $__2.badVals,
-      stringOrName = $__2.stringOrName;
+      badVals = $__2.badVals;
   var $__3 = Oom.KIT,
       isConstant = $__3.isConstant,
       isReadOnly = $__3.isReadOnly,
       isReadWrite = $__3.isReadWrite;
   describe('Bases Browser', function() {
+    var hid = true;
     describe('The Oom.devMainVue() component', function(done) {
       var Class = ROOT.Oom,
           testID = 'test-oom-devmainvue',
@@ -24,14 +24,11 @@
           instance = new Class(),
           attr = instance.attr,
           cmp = Vue.component(testID, Class.devMainVue(Class)),
-          $container = $('.container').append('<div id="' + testID + '" class="row"><' + testID + '>Loading...</' + testID + '></div>'),
+          $container = $('.container').append(("<div class=\"row " + (hid ? 'hid' : '') + "\" ") + ("id=\"" + testID + "\"><" + testID + ">Loading...</" + testID + "></div>")),
           vue = new Vue({
             el: '#' + testID,
             mounted: testAfterMounted
           });
-      after(function() {
-        $('#' + testID).remove();
-      });
       function testAfterMounted() {
         it('is a viable Vue component', function() {
           try {
@@ -64,7 +61,7 @@
           for (var key in stat) {
             if (!isReadOnly(key))
               continue;
-            cache.good[key] = goodVals[stringOrName(schema.stat[key].type)];
+            cache.good[key] = goodVals[schema.stat[key].typeStr];
             stat['_' + key] = cache.good[key];
           }
           Vue.nextTick((function() {
@@ -88,7 +85,7 @@
           for (var key in stat) {
             if (!isReadWrite(key))
               continue;
-            cache.good[key] = goodVals[stringOrName(schema.stat[key].type)];
+            cache.good[key] = goodVals[schema.stat[key].typeStr];
             stat[key] = cache.good[key];
           }
           Vue.nextTick((function() {
@@ -116,7 +113,7 @@
             if (!isReadWrite(key))
               continue;
             cache.$el[key] = $(("#" + testID + " .stat .Oom-" + key + " .val .read-write"));
-            cache.good[key] = goodVals[stringOrName(schema.stat[key].type)];
+            cache.good[key] = goodVals[schema.stat[key].typeStr];
             simulateInput(cache.$el[key], cache.good[key]);
           }
           Vue.nextTick((function() {
@@ -144,7 +141,7 @@
               continue;
             cache.$el[key] = $(("#" + testID + " .stat .Oom-" + key + " .val .read-write"));
             cache.orig[key] = cache.$el[key].val();
-            simulateInput(cache.$el[key], badVals[stringOrName(schema.stat[key].type)]);
+            simulateInput(cache.$el[key], badVals[schema.stat[key].typeStr]);
           }
           Vue.nextTick((function() {
             var error;
@@ -182,7 +179,7 @@
           for (var key in attr) {
             if (!isReadOnly(key))
               continue;
-            cache.good[key] = goodVals[stringOrName(schema.attr[key].type)];
+            cache.good[key] = goodVals[schema.attr[key].typeStr];
             attr['_' + key] = cache.good[key];
           }
           Vue.nextTick((function() {
@@ -206,7 +203,7 @@
           for (var key in attr) {
             if (!isReadWrite(key))
               continue;
-            cache.good[key] = goodVals[stringOrName(schema.attr[key].type)];
+            cache.good[key] = goodVals[schema.attr[key].typeStr];
             attr[key] = cache.good[key];
           }
           Vue.nextTick((function() {
@@ -234,7 +231,7 @@
             if (!isReadWrite(key))
               continue;
             cache.$el[key] = $(("#" + testID + " .attr .Oom-" + key + " .val .read-write"));
-            cache.good[key] = goodVals[stringOrName(schema.attr[key].type)];
+            cache.good[key] = goodVals[schema.attr[key].typeStr];
             simulateInput(cache.$el[key], cache.good[key]);
           }
           Vue.nextTick((function() {
@@ -262,7 +259,7 @@
               continue;
             cache.$el[key] = $(("#" + testID + " .attr .Oom-" + key + " .val .read-write"));
             cache.orig[key] = cache.$el[key].val();
-            simulateInput(cache.$el[key], badVals[stringOrName(schema.attr[key].type)]);
+            simulateInput(cache.$el[key], badVals[schema.attr[key].typeStr]);
           }
           Vue.nextTick((function() {
             var error;
@@ -298,13 +295,13 @@ function simulateInput($input, val) {
       eq = $__2.eq,
       is = $__2.is,
       goodVals = $__2.goodVals,
-      badVals = $__2.badVals,
-      stringOrName = $__2.stringOrName;
+      badVals = $__2.badVals;
   var $__3 = Oom.KIT,
       isConstant = $__3.isConstant,
       isReadOnly = $__3.isReadOnly,
       isReadWrite = $__3.isReadWrite;
   describe('Oom.Foo.Post Browser', function() {
+    var hid = 0;
     describe('The Oom.Foo.Post.devMainVue component', function(done) {
       var Class = ROOT.Oom.Foo.Post,
           testID = 'test-oom-foo-post-devmainvue',
@@ -313,14 +310,11 @@ function simulateInput($input, val) {
           instance = new Class(),
           attr = instance.attr,
           cmp = Vue.component(testID, Class.devMainVue(Class)),
-          $container = $('.container').append('<div id="' + testID + '" class="row"><' + testID + '>Loading...</' + testID + '></div>'),
+          $container = $('.container').append(("<div class=\"row " + (hid ? 'hid' : '') + "\" ") + ("id=\"" + testID + "\"><" + testID + ">Loading...</" + testID + "></div>")),
           vue = new Vue({
             el: '#' + testID,
             mounted: testAfterMounted
           });
-      after(function() {
-        $('#' + testID).remove();
-      });
       function testAfterMounted() {
         it('is a viable Vue component', function() {
           try {
@@ -353,7 +347,7 @@ function simulateInput($input, val) {
           for (var key in stat) {
             if (!isReadOnly(key))
               continue;
-            cache.good[key] = goodVals[stringOrName(schema.stat[key].type)];
+            cache.good[key] = goodVals[schema.stat[key].typeStr];
             stat['_' + key] = cache.good[key];
           }
           Vue.nextTick((function() {
@@ -377,7 +371,7 @@ function simulateInput($input, val) {
           for (var key in stat) {
             if (!isReadWrite(key))
               continue;
-            cache.good[key] = goodVals[stringOrName(schema.stat[key].type)];
+            cache.good[key] = goodVals[schema.stat[key].typeStr];
             stat[key] = cache.good[key];
           }
           Vue.nextTick((function() {
@@ -405,7 +399,7 @@ function simulateInput($input, val) {
             if (!isReadWrite(key))
               continue;
             cache.$el[key] = $(("#" + testID + " .stat .Oom-" + key + " .val .read-write"));
-            cache.good[key] = goodVals[stringOrName(schema.stat[key].type)];
+            cache.good[key] = goodVals[schema.stat[key].typeStr];
             simulateInput(cache.$el[key], cache.good[key]);
           }
           Vue.nextTick((function() {
@@ -433,7 +427,7 @@ function simulateInput($input, val) {
               continue;
             cache.$el[key] = $(("#" + testID + " .stat .Oom-" + key + " .val .read-write"));
             cache.orig[key] = cache.$el[key].val();
-            simulateInput(cache.$el[key], badVals[stringOrName(schema.stat[key].type)]);
+            simulateInput(cache.$el[key], badVals[schema.stat[key].typeStr]);
           }
           Vue.nextTick((function() {
             var error;
@@ -471,7 +465,7 @@ function simulateInput($input, val) {
           for (var key in attr) {
             if (!isReadOnly(key))
               continue;
-            cache.good[key] = goodVals[stringOrName(schema.attr[key].type)];
+            cache.good[key] = goodVals[schema.attr[key].typeStr];
             attr['_' + key] = cache.good[key];
           }
           Vue.nextTick((function() {
@@ -495,7 +489,7 @@ function simulateInput($input, val) {
           for (var key in attr) {
             if (!isReadWrite(key))
               continue;
-            cache.good[key] = goodVals[stringOrName(schema.attr[key].type)];
+            cache.good[key] = goodVals[schema.attr[key].typeStr];
             attr[key] = cache.good[key];
           }
           Vue.nextTick((function() {
@@ -523,7 +517,7 @@ function simulateInput($input, val) {
             if (!isReadWrite(key))
               continue;
             cache.$el[key] = $(("#" + testID + " .attr .Oom-" + key + " .val .read-write"));
-            cache.good[key] = goodVals[stringOrName(schema.attr[key].type)];
+            cache.good[key] = goodVals[schema.attr[key].typeStr];
             simulateInput(cache.$el[key], cache.good[key]);
           }
           Vue.nextTick((function() {
@@ -551,7 +545,7 @@ function simulateInput($input, val) {
               continue;
             cache.$el[key] = $(("#" + testID + " .attr .Oom-" + key + " .val .read-write"));
             cache.orig[key] = cache.$el[key].val();
-            simulateInput(cache.$el[key], badVals[stringOrName(schema.attr[key].type)]);
+            simulateInput(cache.$el[key], badVals[schema.attr[key].typeStr]);
           }
           Vue.nextTick((function() {
             var error;
@@ -580,13 +574,13 @@ function simulateInput($input, val) {
       eq = $__2.eq,
       is = $__2.is,
       goodVals = $__2.goodVals,
-      badVals = $__2.badVals,
-      stringOrName = $__2.stringOrName;
+      badVals = $__2.badVals;
   var $__3 = Oom.KIT,
       isConstant = $__3.isConstant,
       isReadOnly = $__3.isReadOnly,
       isReadWrite = $__3.isReadWrite;
   describe('Oom.Foo.Router Browser', function() {
+    var hid = true;
     describe('The Oom.Foo.Router.devMainVue component', function(done) {
       var Class = ROOT.Oom.Foo.Router,
           testID = 'test-oom-foo-router-devmainvue',
@@ -595,14 +589,11 @@ function simulateInput($input, val) {
           instance = new Class(),
           attr = instance.attr,
           cmp = Vue.component(testID, Class.devMainVue(Class)),
-          $container = $('.container').append('<div id="' + testID + '" class="row"><' + testID + '>Loading...</' + testID + '></div>'),
+          $container = $('.container').append(("<div class=\"row " + (hid ? 'hid' : '') + "\" ") + ("id=\"" + testID + "\"><" + testID + ">Loading...</" + testID + "></div>")),
           vue = new Vue({
             el: '#' + testID,
             mounted: testAfterMounted
           });
-      after(function() {
-        $('#' + testID).remove();
-      });
       function testAfterMounted() {
         it('is a viable Vue component', function() {
           try {
@@ -635,7 +626,7 @@ function simulateInput($input, val) {
           for (var key in stat) {
             if (!isReadOnly(key))
               continue;
-            cache.good[key] = goodVals[stringOrName(schema.stat[key].type)];
+            cache.good[key] = goodVals[schema.stat[key].typeStr];
             stat['_' + key] = cache.good[key];
           }
           Vue.nextTick((function() {
@@ -659,7 +650,7 @@ function simulateInput($input, val) {
           for (var key in stat) {
             if (!isReadWrite(key))
               continue;
-            cache.good[key] = goodVals[stringOrName(schema.stat[key].type)];
+            cache.good[key] = goodVals[schema.stat[key].typeStr];
             stat[key] = cache.good[key];
           }
           Vue.nextTick((function() {
@@ -687,7 +678,7 @@ function simulateInput($input, val) {
             if (!isReadWrite(key))
               continue;
             cache.$el[key] = $(("#" + testID + " .stat .Oom-" + key + " .val .read-write"));
-            cache.good[key] = goodVals[stringOrName(schema.stat[key].type)];
+            cache.good[key] = goodVals[schema.stat[key].typeStr];
             simulateInput(cache.$el[key], cache.good[key]);
           }
           Vue.nextTick((function() {
@@ -715,7 +706,7 @@ function simulateInput($input, val) {
               continue;
             cache.$el[key] = $(("#" + testID + " .stat .Oom-" + key + " .val .read-write"));
             cache.orig[key] = cache.$el[key].val();
-            simulateInput(cache.$el[key], badVals[stringOrName(schema.stat[key].type)]);
+            simulateInput(cache.$el[key], badVals[schema.stat[key].typeStr]);
           }
           Vue.nextTick((function() {
             var error;
@@ -753,7 +744,7 @@ function simulateInput($input, val) {
           for (var key in attr) {
             if (!isReadOnly(key))
               continue;
-            cache.good[key] = goodVals[stringOrName(schema.attr[key].type)];
+            cache.good[key] = goodVals[schema.attr[key].typeStr];
             attr['_' + key] = cache.good[key];
           }
           Vue.nextTick((function() {
@@ -777,7 +768,7 @@ function simulateInput($input, val) {
           for (var key in attr) {
             if (!isReadWrite(key))
               continue;
-            cache.good[key] = goodVals[stringOrName(schema.attr[key].type)];
+            cache.good[key] = goodVals[schema.attr[key].typeStr];
             attr[key] = cache.good[key];
           }
           Vue.nextTick((function() {
@@ -805,7 +796,7 @@ function simulateInput($input, val) {
             if (!isReadWrite(key))
               continue;
             cache.$el[key] = $(("#" + testID + " .attr .Oom-" + key + " .val .read-write"));
-            cache.good[key] = goodVals[stringOrName(schema.attr[key].type)];
+            cache.good[key] = goodVals[schema.attr[key].typeStr];
             simulateInput(cache.$el[key], cache.good[key]);
           }
           Vue.nextTick((function() {
@@ -833,7 +824,7 @@ function simulateInput($input, val) {
               continue;
             cache.$el[key] = $(("#" + testID + " .attr .Oom-" + key + " .val .read-write"));
             cache.orig[key] = cache.$el[key].val();
-            simulateInput(cache.$el[key], badVals[stringOrName(schema.attr[key].type)]);
+            simulateInput(cache.$el[key], badVals[schema.attr[key].typeStr]);
           }
           Vue.nextTick((function() {
             var error;
@@ -858,4 +849,4 @@ function simulateInput($input, val) {
 
 
 
-//// Made by Oomtility Make 1.2.14 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.15 //\\//\\ http://oomtility.loop.coop /////////
