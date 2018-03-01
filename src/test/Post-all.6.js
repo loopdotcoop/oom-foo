@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.13 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.14 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 ROOT.testify = testify // make `testify()` available to all test files

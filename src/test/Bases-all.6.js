@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.13 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.14 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working

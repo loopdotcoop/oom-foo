@@ -52,8 +52,8 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
 
     //// Defines this class’s static and instance properties.
     //// May be modified by ‘Plus’ classes. @TODO create and use the Plus class
-    static get schema () { return Oom._norm_schema = Oom._norm_schema ||
-        KIT.normaliseSchema({
+    static get schema () {
+        return KIT.normaliseSchema({
 
             //// Public static properties (known as ‘statics’ in Oom).
             stat: {
@@ -156,22 +156,16 @@ get: function (innerHTML) { return innerHTML = `
 `} })
 
 
-Oom.devMainVue = {
+Oom.devMainVue = function (Class) { return {
     template: Oom.devMainVueTemplate
 
   , data: function () { return {
-        stat: Oom.stat
-      , attr: (new Oom()).attr
+        stat: Class.stat
+      , attr: (new Class()).attr
       , ui: { hideData:false, hideInners:false }
     } }
 
 /*
-  , data: function () { return {
-        instance: inners[inners.length-1].api
-      , static: ROOT.Oom.Foo.Post.api
-      , ui: { hideData:false }
-    } }
-
   , props: {
         firstProp: Number
       , UUID: String
@@ -206,7 +200,7 @@ Oom.devMainVue = {
         KIT.wrapReadOnly(ROOT.Oom.stat)
     }
 
-}
+} }//Oom.devMainVue()
 
 
 //// Expose `KIT` globally.

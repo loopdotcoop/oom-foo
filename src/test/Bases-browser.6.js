@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.13 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.14 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
 //// Windows 7:  IE 9, Safari 5.1
@@ -13,20 +13,21 @@ describe('Bases Browser', () => {
 
 
 
-describe('The Oom.devMainVue component', function (done) {
-    $('.container').append(
-        '<div id="test" class="row"><oom-test>Loading...</oom-test></div>')
+describe('The Oom.devMainVue() component', function (done) {
     const
         Class = ROOT.Oom
+      , testID = 'test-oom-devmainvue' // also used for component tag
       , stat = Class.stat
       , schema = Class.schema
       , instance = new Class()
       , attr = instance.attr
-      , cmp = Vue.component('oom-test', Class.devMainVue)
-      , vue = new Vue({ el:'#test', mounted:testAfterMounted })
+      , cmp = Vue.component( testID, Class.devMainVue(Class) )
+      , $container = $('.container').append('<div id="' + testID
+          + '" class="row"><' + testID + '>Loading...</' + testID + '></div>')
+      , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })
 
     after(function () {
-        // $('#test').remove()
+        $('#'+testID).remove()
     })
 
 function testAfterMounted () {
@@ -41,10 +42,10 @@ function testAfterMounted () {
     // let initInstTally
 
     it('is a viable Vue component', function(){try{
-        eq( $('#test').length, 1, '#test exists' )
-        eq( $('#test .dev-main').length, 1
+        eq( $('#'+testID).length, 1, '#'+testID+' exists' )
+        eq( $('#'+testID+' .dev-main').length, 1
           , 'dev-main exists' )
-        eq( $('#test .dev-main .member-table').length, 2
+        eq( $('#'+testID+' .dev-main .member-table').length, 2
           , 'Two member-tables exist' )
     }catch(e){console.error(e.message);throw e}})
 
@@ -54,7 +55,7 @@ function testAfterMounted () {
         Vue.nextTick((function(){let error;try{
             // initInstTally = stat.inst_tally
             for (let key in stat) {
-                const $el = $(`#test .stat .Oom-${key} .val`)
+                const $el = $(`#${testID} .stat .Oom-${key} .val`)
                 const val = ( $el.find('.read-write')[0] )
                     ? $el.find('.read-write').val() // from an <INPUT>
                     : $el.text() // constant or read-only
@@ -76,8 +77,8 @@ function testAfterMounted () {
             for (let key in stat) {
                 if (! isReadOnly(key) ) continue // only read-only properties
                 const good = cache.good[key]+''
-                eq($(`#test .stat .Oom-${key} .val`).text(), good
-                  , '`#test .stat .Oom-'+key+' .val` has changed to '+good)
+                eq($(`#${testID} .stat .Oom-${key} .val`).text(), good
+                  , '`#'+testID+' .stat .Oom-'+key+' .val` changed to '+good)
                 //// Changing a read-only value via its underscore-prefixed
                 //// ‘shadow’ does not invoke any validation or type-checking.
                 //// Therefore we don’t test that `badVals` are rejected.
@@ -97,8 +98,8 @@ function testAfterMounted () {
             for (let key in stat) {
                 if (! isReadWrite(key) ) continue
                 const good = cache.good[key]+''
-                eq($(`#test .stat .Oom-${key} .val .read-write`).val(), good
-                  , '`#test .stat .Oom-'+key+' .val` has changed to '+good)
+                eq($(`#${testID} .stat .Oom-${key} .val .read-write`).val(),good
+                  , '`#'+testID+' .stat .Oom-'+key+' .val` changed to '+good)
             }
         }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
     })
@@ -108,14 +109,14 @@ function testAfterMounted () {
         const cache = { $el:{}, good:{} }
         for (let key in stat) {
             if (! isReadWrite(key) ) continue
-            cache.$el[key] = $(`#test .stat .Oom-${key} .val .read-write`)
+            cache.$el[key] = $(`#${testID} .stat .Oom-${key} .val .read-write`)
             cache.good[key] = goodVals[ stringOrName(schema.stat[key].type) ]
             simulateInput( cache.$el[key], cache.good[key] )
         }
         Vue.nextTick((function(){let error;try{
             for (let key in stat) {
                 if (! isReadWrite(key) ) continue
-                eq( cache.$el[key].val(), cache.good[key]
+                eq( cache.$el[key].val(), cache.good[key]+''
                   , `<INPUT> change should make Vue update stat.`+key)
             }
         }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
@@ -126,7 +127,7 @@ function testAfterMounted () {
         const cache = { $el:{}, orig:{} }
         for (let key in stat) {
             if (! isReadWrite(key) ) continue
-            cache.$el[key] = $(`#test .stat .Oom-${key} .val .read-write`)
+            cache.$el[key] = $(`#${testID} .stat .Oom-${key} .val .read-write`)
             cache.orig[key] = cache.$el[key].val()
             simulateInput(
                 cache.$el[key]
@@ -158,7 +159,7 @@ function testAfterMounted () {
     it('shows correct initial attributes', function (done) {
         Vue.nextTick((function(){let error;try{
             for (let key in attr) {
-                const $el = $(`#test .attr .Oom-${key} .val`)
+                const $el = $(`#${testID} .attr .Oom-${key} .val`)
                 const val = ( $el.find('.read-write')[0] )
                     ? $el.find('.read-write').val() // from an <INPUT>
                     : $el.text() // constant or read-only
@@ -180,8 +181,8 @@ function testAfterMounted () {
             for (let key in attr) {
                 if (! isReadOnly(key) ) continue // only read-only properties
                 const good = cache.good[key]+''
-                eq($(`#test .attr .Oom-${key} .val`).text(), good
-                  , '`#test .attr .Oom-'+key+' .val` has changed to '+good)
+                eq($(`#${testID} .attr .Oom-${key} .val`).text(), good
+                  , '`#'+testID+' .attr .Oom-'+key+' .val` changed to '+good)
                 //// Changing a read-only value via its underscore-prefixed
                 //// ‘shadow’ does not invoke any validation or type-checking.
                 //// Therefore we don’t test that `badVals` are rejected.
@@ -201,8 +202,8 @@ function testAfterMounted () {
             for (let key in attr) {
                 if (! isReadWrite(key) ) continue
                 const good = cache.good[key]+''
-                eq($(`#test .attr .Oom-${key} .val .read-write`).val(), good
-                  , '`#test .attr .Oom-'+key+' .val` has changed to '+good)
+                eq($(`#${testID} .attr .Oom-${key} .val .read-write`).val(),good
+                  , '`#'+testID+' .attr .Oom-'+key+' .val` changed to '+good)
             }
         }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
     })
@@ -212,7 +213,7 @@ function testAfterMounted () {
         const cache = { $el:{}, good:{} }
         for (let key in attr) {
             if (! isReadWrite(key) ) continue
-            cache.$el[key] = $(`#test .attr .Oom-${key} .val .read-write`)
+            cache.$el[key] = $(`#${testID} .attr .Oom-${key} .val .read-write`)
             cache.good[key] = goodVals[ stringOrName(schema.attr[key].type) ]
             simulateInput( cache.$el[key], cache.good[key] )
         }
@@ -230,7 +231,7 @@ function testAfterMounted () {
         const cache = { $el:{}, orig:{} }
         for (let key in attr) {
             if (! isReadWrite(key) ) continue
-            cache.$el[key] = $(`#test .attr .Oom-${key} .val .read-write`)
+            cache.$el[key] = $(`#${testID} .attr .Oom-${key} .val .read-write`)
             cache.orig[key] = cache.$el[key].val()
             simulateInput(
                 cache.$el[key]
@@ -258,7 +259,7 @@ function testAfterMounted () {
 
 
 }//testAfterMounted()
-})//describe('The Oom.devMainVue component')
+})//describe('The Oom.devMainVue() component')
 
 
 

@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.13 //// February 2018 //// http://oom-foo.loop.coop/ /////
+//// Oom.Foo //// 1.2.14 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
     NAME: 'Oom.Foo',
-    VERSION: '1.2.13',
+    VERSION: '1.2.14',
     HOMEPAGE: 'http://oom-foo.loop.coop/',
     REMARKS: 'Initial test of the oom-hub architecture',
     LOADED_FIRST: !ROOT.Oom
@@ -16,7 +16,7 @@
       var config = arguments[0] !== (void 0) ? arguments[0] : {};
     }
     return ($traceurRuntime.createClass)(Oom, {}, {get schema() {
-        return Oom._norm_schema = Oom._norm_schema || KIT.normaliseSchema({
+        return KIT.normaliseSchema({
           stat: {
             NAME: 'Oom',
             VERSION: META.VERSION,
@@ -61,41 +61,43 @@
   Object.defineProperty(Oom, 'devMainVueTemplate', {get: function(innerHTML) {
       return innerHTML = "\n<div class=\"dev-main col-12\">\n  <member-table :obj=\"stat\" objname=\"stat\" :do-hide=\"ui.hideData\"\n    :caption=\"stat.NAME+' static properties:'\"></member-table>\n  <member-table :obj=\"attr\" objname=\"attr\" :do-hide=\"ui.hideData\"\n    :caption=\"stat.NAME+' attribute properties:'\"></member-table>\n</div>\n";
     }});
-  Oom.devMainVue = {
-    template: Oom.devMainVueTemplate,
-    data: function() {
-      return {
-        stat: Oom.stat,
-        attr: (new Oom()).attr,
-        ui: {
-          hideData: false,
-          hideInners: false
-        }
-      };
-    },
-    beforeCreate: function() {
-      var $__5 = KIT,
-          isReadWrite = $__5.isReadWrite,
-          isReadOnly = $__5.isReadOnly,
-          isConstant = $__5.isConstant;
-      Vue.component('member-table', {
-        template: Oom.memberTableVueTemplate,
-        props: {
-          doHide: Boolean,
-          caption: String,
-          obj: Object,
-          objname: String
-        },
-        methods: {
-          isReadWrite: isReadWrite,
-          isReadOnly: isReadOnly,
-          isConstant: isConstant
-        }
-      });
-    },
-    created: function() {
-      KIT.wrapReadOnly(ROOT.Oom.stat);
-    }
+  Oom.devMainVue = function(Class) {
+    return {
+      template: Oom.devMainVueTemplate,
+      data: function() {
+        return {
+          stat: Class.stat,
+          attr: (new Class()).attr,
+          ui: {
+            hideData: false,
+            hideInners: false
+          }
+        };
+      },
+      beforeCreate: function() {
+        var $__5 = KIT,
+            isReadWrite = $__5.isReadWrite,
+            isReadOnly = $__5.isReadOnly,
+            isConstant = $__5.isConstant;
+        Vue.component('member-table', {
+          template: Oom.memberTableVueTemplate,
+          props: {
+            doHide: Boolean,
+            caption: String,
+            obj: Object,
+            objname: String
+          },
+          methods: {
+            isReadWrite: isReadWrite,
+            isReadOnly: isReadOnly,
+            isConstant: isConstant
+          }
+        });
+      },
+      created: function() {
+        KIT.wrapReadOnly(ROOT.Oom.stat);
+      }
+    };
   };
   Oom.KIT = KIT;
   Oom.Foo = function($__super) {
@@ -402,4 +404,4 @@
 
 
 
-//// Made by Oomtility Make 1.2.13 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.14 //\\//\\ http://oomtility.loop.coop /////////
