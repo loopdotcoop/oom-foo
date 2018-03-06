@@ -2,12 +2,13 @@
 
 
 
-//// Oom.Foo //// 1.2.15 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.16 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 
 !function (ROOT) { 'use strict'
+if (false) return // change to `true` to ‘hard skip’ this test
 const { describe, it, eq, is } = ROOT.testify()
-describe(`Oom.Foo.Post Node`, () => {
+describe('Oom.Foo.Post (node)', () => {
 
 
 
@@ -24,7 +25,7 @@ describe(`+ve Oom.Foo.Post class`, () => {
 
 
 
-})//describe()
+})//describe('Oom.Foo.Post (node)')
 }( 'object' === typeof global ? global : this ) // `window` in a browser
 
 
@@ -34,12 +35,13 @@ describe(`+ve Oom.Foo.Post class`, () => {
 
 
 
-//// Oom.Foo //// 1.2.15 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.16 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 
 !function (ROOT) { 'use strict'
+if (false) return // change to `true` to ‘hard skip’ this test
 const { describe, it, eq, is } = ROOT.testify()
-describe(`Oom.Foo.Router Node`, () => {
+describe('Oom.Foo.Router (node)', () => {
 
 
 
@@ -56,10 +58,10 @@ describe(`+ve Oom.Foo.Router class`, () => {
 
 
 
-})//describe()
+})//describe('Oom.Foo.Router (node)')
 }( 'object' === typeof global ? global : this ) // `window` in a browser
 
 
 
 
-//// Made by Oomtility Make 1.2.15 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.16 //\\//\\ http://oomtility.loop.coop /////////

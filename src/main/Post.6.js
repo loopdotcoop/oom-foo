@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.15 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.16 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
@@ -157,13 +157,15 @@ const Class = Oom.Foo.Post = class extends Oom.Foo {
 
 }; KIT.name(Class, 'Oom.Foo.Post')
 
-//// Add public statics to `Oom.Foo.Post.stat` (exposed to Vue etc).
+//// Create the plain `Class.stat` object (which Vue watches) and add public
+//// statics to it. Arg 2 of `KIT.define()` is `true` for statics.
 Oom.Foo.Post.stat = {}
-KIT.define(Oom.Foo.Post.stat, Oom.Foo.Post.schema.stat)
+KIT.define(Oom.Foo.Post.stat, true, Oom.Foo.Post.schema.stat)
 
-//// Add public attributes to `myOomFooPost.attr` (exposed to Vue etc).
+//// Create the plain `inst.attr` object (which Vue watches) and add public
+//// attributes to it. Arg 2 of `KIT.define()` is `false` for attributes.
 Oom.Foo.Post.prototype.attr = {}
-KIT.define(Oom.Foo.Post.prototype.attr, Oom.Foo.Post.schema.attr)
+KIT.define(Oom.Foo.Post.prototype.attr, false, Oom.Foo.Post.schema.attr)
 
 
 

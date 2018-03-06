@@ -41,3 +41,4 @@
 1.2.13 oomtility/wrap/Class-all.6.js follows Bases-all.6.js
 1.2.14 oomtility/wrap/Class-browser.6.js follows Bases-browser.6.js
 1.2.15 <member-table> shows ‘Type’ and ‘Defined In’ (typeStr and DefinedInStr)
+1.2.16 stat and attr Oom.reset(); inherited statics share a ‘shadow’

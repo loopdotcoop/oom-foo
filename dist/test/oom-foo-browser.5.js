@@ -1,8 +1,10 @@
-//// Oom.Foo //// 1.2.15 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.16 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
   'use strict';
+  if (false)
+    return $(mocha.run);
   var $__2 = ROOT.testify(),
       describe = $__2.describe,
       it = $__2.it,
@@ -14,7 +16,7 @@
       isConstant = $__3.isConstant,
       isReadOnly = $__3.isReadOnly,
       isReadWrite = $__3.isReadWrite;
-  describe('Bases Browser', function() {
+  describe('Bases (browser)', function() {
     var hid = true;
     describe('The Oom.devMainVue() component', function(done) {
       var Class = ROOT.Oom,
@@ -34,7 +36,7 @@
           try {
             eq($('#' + testID).length, 1, '#' + testID + ' exists');
             eq($('#' + testID + ' .dev-main').length, 1, 'dev-main exists');
-            eq($('#' + testID + ' .dev-main .member-table').length, 2, 'Two member-tables exist');
+            eq($('#' + testID + ' .dev-main .member-table').length, 2, 'Two member-tables exist (one for stat, one for attr)');
           } catch (e) {
             console.error(e.message);
             throw e;
@@ -62,7 +64,7 @@
             if (!isReadOnly(key))
               continue;
             cache.good[key] = goodVals[schema.stat[key].typeStr];
-            stat['_' + key] = cache.good[key];
+            schema.stat[key].definedIn.stat['_' + key] = cache.good[key];
           }
           Vue.nextTick((function() {
             var error;
@@ -73,6 +75,7 @@
                 var good = cache.good[key] + '';
                 eq($(("#" + testID + " .stat .Oom-" + key + " .val")).text(), good, '`#' + testID + ' .stat .Oom-' + key + ' .val` changed to ' + good);
               }
+              Class.reset();
             } catch (e) {
               error = e;
               console.error(e.message);
@@ -97,6 +100,7 @@
                 var good = cache.good[key] + '';
                 eq($(("#" + testID + " .stat .Oom-" + key + " .val .read-write")).val(), good, '`#' + testID + ' .stat .Oom-' + key + ' .val` changed to ' + good);
               }
+              Class.reset();
             } catch (e) {
               error = e;
               console.error(e.message);
@@ -124,6 +128,7 @@
                   continue;
                 eq(cache.$el[key].val(), cache.good[key] + '', "<INPUT> change should make Vue update stat." + key);
               }
+              Class.reset();
             } catch (e) {
               error = e;
               console.error(e.message);
@@ -191,6 +196,7 @@
                 var good = cache.good[key] + '';
                 eq($(("#" + testID + " .attr .Oom-" + key + " .val")).text(), good, '`#' + testID + ' .attr .Oom-' + key + ' .val` changed to ' + good);
               }
+              instance.reset();
             } catch (e) {
               error = e;
               console.error(e.message);
@@ -215,6 +221,7 @@
                 var good = cache.good[key] + '';
                 eq($(("#" + testID + " .attr .Oom-" + key + " .val .read-write")).val(), good, '`#' + testID + ' .attr .Oom-' + key + ' .val` changed to ' + good);
               }
+              instance.reset();
             } catch (e) {
               error = e;
               console.error(e.message);
@@ -242,6 +249,7 @@
                   continue;
                 eq(cache.$el[key].val(), cache.good[key] + '', "<INPUT> change should make Vue update attr." + key);
               }
+              instance.reset();
             } catch (e) {
               error = e;
               console.error(e.message);
@@ -289,6 +297,8 @@ function simulateInput($input, val) {
 }
 !function(ROOT) {
   'use strict';
+  if (false)
+    return;
   var $__2 = ROOT.testify(),
       describe = $__2.describe,
       it = $__2.it,
@@ -300,8 +310,8 @@ function simulateInput($input, val) {
       isConstant = $__3.isConstant,
       isReadOnly = $__3.isReadOnly,
       isReadWrite = $__3.isReadWrite;
-  describe('Oom.Foo.Post Browser', function() {
-    var hid = 0;
+  describe('Oom.Foo.Post (browser)', function() {
+    var hid = true;
     describe('The Oom.Foo.Post.devMainVue component', function(done) {
       var Class = ROOT.Oom.Foo.Post,
           testID = 'test-oom-foo-post-devmainvue',
@@ -320,7 +330,7 @@ function simulateInput($input, val) {
           try {
             eq($('#' + testID).length, 1, '#' + testID + ' exists');
             eq($('#' + testID + ' .dev-main').length, 1, 'dev-main exists');
-            eq($('#' + testID + ' .dev-main .member-table').length, 2, 'Two member-tables exist');
+            eq($('#' + testID + ' .dev-main .member-table').length, 2, 'Two member-tables exist (one for stat, one for attr)');
           } catch (e) {
             console.error(e.message);
             throw e;
@@ -348,7 +358,7 @@ function simulateInput($input, val) {
             if (!isReadOnly(key))
               continue;
             cache.good[key] = goodVals[schema.stat[key].typeStr];
-            stat['_' + key] = cache.good[key];
+            schema.stat[key].definedIn.stat['_' + key] = cache.good[key];
           }
           Vue.nextTick((function() {
             var error;
@@ -359,6 +369,7 @@ function simulateInput($input, val) {
                 var good = cache.good[key] + '';
                 eq($(("#" + testID + " .stat .Oom-" + key + " .val")).text(), good, '`#' + testID + ' .stat .Oom-' + key + ' .val` changed to ' + good);
               }
+              Class.reset();
             } catch (e) {
               error = e;
               console.error(e.message);
@@ -383,6 +394,7 @@ function simulateInput($input, val) {
                 var good = cache.good[key] + '';
                 eq($(("#" + testID + " .stat .Oom-" + key + " .val .read-write")).val(), good, '`#' + testID + ' .stat .Oom-' + key + ' .val` changed to ' + good);
               }
+              Class.reset();
             } catch (e) {
               error = e;
               console.error(e.message);
@@ -410,6 +422,7 @@ function simulateInput($input, val) {
                   continue;
                 eq(cache.$el[key].val(), cache.good[key] + '', "<INPUT> change should make Vue update stat." + key);
               }
+              Class.reset();
             } catch (e) {
               error = e;
               console.error(e.message);
@@ -477,6 +490,7 @@ function simulateInput($input, val) {
                 var good = cache.good[key] + '';
                 eq($(("#" + testID + " .attr .Oom-" + key + " .val")).text(), good, '`#' + testID + ' .attr .Oom-' + key + ' .val` changed to ' + good);
               }
+              instance.reset();
             } catch (e) {
               error = e;
               console.error(e.message);
@@ -501,6 +515,7 @@ function simulateInput($input, val) {
                 var good = cache.good[key] + '';
                 eq($(("#" + testID + " .attr .Oom-" + key + " .val .read-write")).val(), good, '`#' + testID + ' .attr .Oom-' + key + ' .val` changed to ' + good);
               }
+              instance.reset();
             } catch (e) {
               error = e;
               console.error(e.message);
@@ -528,6 +543,7 @@ function simulateInput($input, val) {
                   continue;
                 eq(cache.$el[key].val(), cache.good[key] + '', "<INPUT> change should make Vue update attr." + key);
               }
+              instance.reset();
             } catch (e) {
               error = e;
               console.error(e.message);
@@ -568,6 +584,8 @@ function simulateInput($input, val) {
 }(window);
 !function(ROOT) {
   'use strict';
+  if (false)
+    return;
   var $__2 = ROOT.testify(),
       describe = $__2.describe,
       it = $__2.it,
@@ -579,7 +597,7 @@ function simulateInput($input, val) {
       isConstant = $__3.isConstant,
       isReadOnly = $__3.isReadOnly,
       isReadWrite = $__3.isReadWrite;
-  describe('Oom.Foo.Router Browser', function() {
+  describe('Oom.Foo.Router (browser)', function() {
     var hid = true;
     describe('The Oom.Foo.Router.devMainVue component', function(done) {
       var Class = ROOT.Oom.Foo.Router,
@@ -599,7 +617,7 @@ function simulateInput($input, val) {
           try {
             eq($('#' + testID).length, 1, '#' + testID + ' exists');
             eq($('#' + testID + ' .dev-main').length, 1, 'dev-main exists');
-            eq($('#' + testID + ' .dev-main .member-table').length, 2, 'Two member-tables exist');
+            eq($('#' + testID + ' .dev-main .member-table').length, 2, 'Two member-tables exist (one for stat, one for attr)');
           } catch (e) {
             console.error(e.message);
             throw e;
@@ -627,7 +645,7 @@ function simulateInput($input, val) {
             if (!isReadOnly(key))
               continue;
             cache.good[key] = goodVals[schema.stat[key].typeStr];
-            stat['_' + key] = cache.good[key];
+            schema.stat[key].definedIn.stat['_' + key] = cache.good[key];
           }
           Vue.nextTick((function() {
             var error;
@@ -638,6 +656,7 @@ function simulateInput($input, val) {
                 var good = cache.good[key] + '';
                 eq($(("#" + testID + " .stat .Oom-" + key + " .val")).text(), good, '`#' + testID + ' .stat .Oom-' + key + ' .val` changed to ' + good);
               }
+              Class.reset();
             } catch (e) {
               error = e;
               console.error(e.message);
@@ -662,6 +681,7 @@ function simulateInput($input, val) {
                 var good = cache.good[key] + '';
                 eq($(("#" + testID + " .stat .Oom-" + key + " .val .read-write")).val(), good, '`#' + testID + ' .stat .Oom-' + key + ' .val` changed to ' + good);
               }
+              Class.reset();
             } catch (e) {
               error = e;
               console.error(e.message);
@@ -689,6 +709,7 @@ function simulateInput($input, val) {
                   continue;
                 eq(cache.$el[key].val(), cache.good[key] + '', "<INPUT> change should make Vue update stat." + key);
               }
+              Class.reset();
             } catch (e) {
               error = e;
               console.error(e.message);
@@ -756,6 +777,7 @@ function simulateInput($input, val) {
                 var good = cache.good[key] + '';
                 eq($(("#" + testID + " .attr .Oom-" + key + " .val")).text(), good, '`#' + testID + ' .attr .Oom-' + key + ' .val` changed to ' + good);
               }
+              instance.reset();
             } catch (e) {
               error = e;
               console.error(e.message);
@@ -780,6 +802,7 @@ function simulateInput($input, val) {
                 var good = cache.good[key] + '';
                 eq($(("#" + testID + " .attr .Oom-" + key + " .val .read-write")).val(), good, '`#' + testID + ' .attr .Oom-' + key + ' .val` changed to ' + good);
               }
+              instance.reset();
             } catch (e) {
               error = e;
               console.error(e.message);
@@ -807,6 +830,7 @@ function simulateInput($input, val) {
                   continue;
                 eq(cache.$el[key].val(), cache.good[key] + '', "<INPUT> change should make Vue update attr." + key);
               }
+              instance.reset();
             } catch (e) {
               error = e;
               console.error(e.message);
@@ -849,4 +873,4 @@ function simulateInput($input, val) {
 
 
 
-//// Made by Oomtility Make 1.2.15 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.16 //\\//\\ http://oomtility.loop.coop /////////

@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.15 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.16 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
     NAME: 'Oom.Foo',
-    VERSION: '1.2.15',
+    VERSION: '1.2.16',
     HOMEPAGE: 'http://oom-foo.loop.coop/',
     REMARKS: 'Initial test of the oom-hub architecture',
     LOADED_FIRST: !ROOT.Oom
@@ -15,7 +15,29 @@
     function Oom() {
       var config = arguments[0] !== (void 0) ? arguments[0] : {};
     }
-    return ($traceurRuntime.createClass)(Oom, {}, {get schema() {
+    return ($traceurRuntime.createClass)(Oom, {reset: function() {
+        var attrSchema = this.constructor.schema.attr;
+        for (var key in attrSchema) {
+          if (KIT.isConstant(key))
+            continue;
+          if (KIT.isReadOnly(key))
+            this.attr['_' + key] = attrSchema[key].default;
+          else
+            this.attr[key] = attrSchema[key].default;
+        }
+      }}, {
+      reset: function() {
+        var statSchema = this.schema.stat;
+        for (var key in statSchema) {
+          if (KIT.isConstant(key))
+            continue;
+          if (KIT.isReadOnly(key))
+            statSchema[key].definedIn.stat['_' + key] = statSchema[key].default;
+          else
+            this.stat[key] = statSchema[key].default;
+        }
+      },
+      get schema() {
         return KIT.normaliseSchema(Oom, null, {
           stat: {
             NAME: 'Oom',
@@ -46,17 +68,18 @@
             }
           }
         });
-      }});
+      }
+    });
   }() : ROOT.Oom;
   KIT.name(Oom, 'Oom');
   if (META.LOADED_FIRST) {
     Oom.stat = {};
-    KIT.define(Oom.stat, Oom.schema.stat);
+    KIT.define(Oom.stat, true, Oom.schema.stat);
     Oom.prototype.attr = {};
-    KIT.define(Oom.prototype.attr, Oom.schema.attr);
+    KIT.define(Oom.prototype.attr, false, Oom.schema.attr);
   }
   Object.defineProperty(Oom, 'memberTableVueTemplate', {get: function(innerHTML) {
-      return innerHTML = "\n<div :class=\"'member-table '+objname\">\n  <table :class=\"{ hid:doHide }\">\n    <caption v-html=\"caption\"></caption>\n    <tr>\n      <th>Name</th>\n      <th>Value</th>\n      <th>Type</th>\n      <th>Defined In</th>\n    </tr>\n    <tr v-for=\"val, key in obj\" v-bind:class=\"'Oom-'+key\">\n      <td class=\"key\">{{key}}</td>\n      <td class=\"val\">\n        <input v-if=\"isReadWrite(key)\"    class=\"read-write\" v-model=\"obj[key]\">\n        <span v-else-if=\"isReadOnly(key)\" class=\"read-only\">{{val}}</span>\n        <span v-else-if=\"isConstant(key)\" class=\"constant\">{{val}}</span>\n        <span v-else                      class=\"private\">{{val}}</span>\n      </td>\n      <td class=\"type\">{{schema[key] ? schema[key].typeStr : '-'}}</td>\n      <td class=\"defined-in\">{{schema[key] ? schema[key].definedInStr : '-'}}</td>\n    </tr>\n  </table>\n</div>\n";
+      return innerHTML = "\n<div :class=\"'member-table '+objname\">\n  <table :class=\"{ hid:doHide }\">\n    <caption v-html=\"caption\"></caption>\n    <tr>\n      <th>Name</th>\n      <th>Value</th>\n      <th>Default</th>\n      <th>Type</th>\n      <th>Defined In</th>\n    </tr>\n    <tr v-for=\"val, key in obj\" v-bind:class=\"'Oom-'+key\">\n      <td class=\"key\">{{key}}</td>\n      <td class=\"val\">\n        <input v-if=\"isReadWrite(key)\"    class=\"read-write\" v-model=\"obj[key]\">\n        <span v-else-if=\"isReadOnly(key)\" class=\"read-only\">{{val}}</span>\n        <span v-else-if=\"isConstant(key)\" class=\"constant\">{{val}}</span>\n        <span v-else                      class=\"private\">{{val}}</span>\n      </td>\n      <td class=\"is-default\">{{schema[key] ? schema[key].default === val ? '√' : 'x' : '-'}}</td>\n      <td class=\"type\">{{schema[key] ? schema[key].typeStr : '-'}}</td>\n      <td class=\"defined-in\">{{schema[key] ? schema[key].definedInStr : '-'}}</td>\n    </tr>\n  </table>\n</div>\n";
     }});
   Object.defineProperty(Oom, 'devMainVueTemplate', {get: function(innerHTML) {
       return innerHTML = "\n<div class=\"dev-main col-12\">\n  <member-table :schema=\"schema.stat\" :obj=\"stat\" objname=\"stat\" :do-hide=\"ui.hideData\"\n    :caption=\"stat.NAME+' static properties:'\"></member-table>\n  <member-table :schema=\"schema.attr\" :obj=\"attr\" objname=\"attr\" :do-hide=\"ui.hideData\"\n    :caption=\"stat.NAME+' attribute properties:'\"></member-table>\n</div>\n";
@@ -118,9 +141,9 @@
   }(Oom);
   KIT.name(Oom.Foo, 'Oom.Foo');
   Oom.Foo.stat = {};
-  KIT.define(Oom.Foo.stat, Oom.Foo.schema.stat);
+  KIT.define(Oom.Foo.stat, true, Oom.Foo.schema.stat);
   Oom.Foo.prototype.attr = {};
-  KIT.define(Oom.Foo.prototype.attr, Oom.Foo.schema.attr);
+  KIT.define(Oom.Foo.prototype.attr, false, Oom.Foo.schema.attr);
   function assignKIT() {
     var previousKIT = arguments[0] !== (void 0) ? arguments[0] : {};
     return Object.assign({}, {
@@ -200,10 +223,10 @@
         }
         return now;
       },
-      define: function(obj) {
+      define: function(obj, isStatic) {
         for (var srcs = [],
-            $__4 = 1; $__4 < arguments.length; $__4++)
-          srcs[$__4 - 1] = arguments[$__4];
+            $__4 = 2; $__4 < arguments.length; $__4++)
+          srcs[$__4 - 2] = arguments[$__4];
         return srcs.forEach(function(src) {
           var ME = 'KIT.define: ',
               def = {};
@@ -212,44 +235,91 @@
               throw Error(ME + k + ' is not a valid schema object');
             var value = src[k].default;
             if (KIT.isReadOnly(k)) {
-              def['_' + k] = {
-                writable: true,
-                value: value,
-                configurable: true,
-                enumerable: true
-              };
-              def[k] = {
-                get: function() {
-                  return obj['_' + k];
-                },
-                set: function(v) {},
-                configurable: true,
-                enumerable: true
-              };
+              if (isStatic) {
+                if (!src[k].definedIn.stat['_' + k])
+                  Object.defineProperty(src[k].definedIn.stat, '_' + k, {
+                    writable: true,
+                    value: value,
+                    configurable: true,
+                    enumerable: true
+                  });
+                def[k] = {
+                  get: function() {
+                    return src[k].definedIn.stat['_' + k];
+                  },
+                  set: function(v) {},
+                  configurable: true,
+                  enumerable: true
+                };
+              } else {
+                def['_' + k] = {
+                  writable: true,
+                  value: value,
+                  configurable: true,
+                  enumerable: true
+                };
+                def[k] = {
+                  get: function() {
+                    return obj['_' + k];
+                  },
+                  set: function(v) {},
+                  configurable: true,
+                  enumerable: true
+                };
+              }
             } else if (KIT.isReadWrite(k)) {
-              def['_' + k] = {
-                writable: true,
-                value: value,
-                configurable: true,
-                enumerable: true
-              };
-              def[k] = {
-                get: function() {
-                  return obj['_' + k];
-                },
-                set: function(v) {
-                  if (KIT.isValid(src[k], v))
-                    return obj['_' + k] = v;
-                  var vCast;
-                  if ('function' === typeof src[k].type) {
-                    vCast = src[k].type(v);
-                    if (KIT.isValid(src[k], vCast))
-                      return obj['_' + k] = vCast;
-                  }
-                },
-                configurable: true,
-                enumerable: true
-              };
+              if (isStatic) {
+                if (src[k].definedIn.stat['_' + k])
+                  console.log(src[k].definedInStr, 'already has', '_' + k);
+                else
+                  Object.defineProperty(src[k].definedIn.stat, '_' + k, {
+                    writable: true,
+                    value: value,
+                    configurable: true,
+                    enumerable: true
+                  });
+                def[k] = {
+                  get: function() {
+                    return src[k].definedIn.stat['_' + k];
+                  },
+                  set: function(v) {
+                    if (KIT.isValid(src[k], v))
+                      return src[k].definedIn.stat['_' + k] = v;
+                    var vCast;
+                    if ('function' === typeof src[k].type) {
+                      vCast = src[k].type(v);
+                      if (KIT.isValid(src[k], vCast))
+                        return src[k].definedIn.stat['_' + k] = vCast;
+                    }
+                  },
+                  configurable: true,
+                  enumerable: true
+                };
+              } else {
+                def['_' + k] = {
+                  writable: true,
+                  value: value,
+                  configurable: true,
+                  enumerable: true
+                };
+                def[k] = {
+                  get: function() {
+                    return obj['_' + k];
+                  },
+                  set: function(v) {
+                    if (KIT.isValid(src[k], v))
+                      return obj['_' + k] = v;
+                    var vCast;
+                    if ('function' === typeof src[k].type) {
+                      vCast = src[k].type(v);
+                      if (KIT.isValid(src[k], vCast))
+                        return obj['_' + k] = vCast;
+                    }
+                  },
+                  configurable: true,
+                  enumerable: true
+                };
+              }
             } else if (KIT.isConstant(k)) {
               def[k] = {
                 writable: false,
@@ -386,9 +456,9 @@
   }(Oom.Foo);
   KIT.name(Class, 'Oom.Foo.Post');
   Oom.Foo.Post.stat = {};
-  KIT.define(Oom.Foo.Post.stat, Oom.Foo.Post.schema.stat);
+  KIT.define(Oom.Foo.Post.stat, true, Oom.Foo.Post.schema.stat);
   Oom.Foo.Post.prototype.attr = {};
-  KIT.define(Oom.Foo.Post.prototype.attr, Oom.Foo.Post.schema.attr);
+  KIT.define(Oom.Foo.Post.prototype.attr, false, Oom.Foo.Post.schema.attr);
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
 !function(ROOT) {
   'use strict';
@@ -423,12 +493,12 @@
   }(Oom.Foo);
   KIT.name(Class, 'Oom.Foo.Router');
   Oom.Foo.Router.stat = {};
-  KIT.define(Oom.Foo.Router.stat, Oom.Foo.Router.schema.stat);
+  KIT.define(Oom.Foo.Router.stat, true, Oom.Foo.Router.schema.stat);
   Oom.Foo.Router.prototype.attr = {};
-  KIT.define(Oom.Foo.Router.prototype.attr, Oom.Foo.Router.schema.attr);
+  KIT.define(Oom.Foo.Router.prototype.attr, false, Oom.Foo.Router.schema.attr);
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
 
 
 
 
-//// Made by Oomtility Make 1.2.15 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.16 //\\//\\ http://oomtility.loop.coop /////////

@@ -1,9 +1,10 @@
-//// Oom.Foo //// 1.2.15 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.16 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 
 !function (ROOT) { 'use strict'
+if (false) return // change to `true` to ‘hard skip’ this test
 const { describe, it, eq, is } = ROOT.testify()
-describe(`Oom.Foo.Router Node`, () => {
+describe('Oom.Foo.Router (node)', () => {
 
 
 
@@ -20,5 +21,5 @@ describe(`+ve Oom.Foo.Router class`, () => {
 
 
 
-})//describe()
+})//describe('Oom.Foo.Router (node)')
 }( 'object' === typeof global ? global : this ) // `window` in a browser

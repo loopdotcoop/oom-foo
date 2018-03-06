@@ -197,13 +197,15 @@ isApp ? `
 
 }; KIT.name(Class, '${{classname}}')
 
-//// Add public statics to `${{classname}}.stat` (exposed to Vue etc).
+//// Create the plain `Class.stat` object (which Vue watches) and add public
+//// statics to it. Arg 2 of `KIT.define()` is `true` for statics.
 ${{classname}}.stat = {}
-KIT.define(${{classname}}.stat, ${{classname}}.schema.stat)
+KIT.define(${{classname}}.stat, true, ${{classname}}.schema.stat)
 
-//// Add public attributes to `my${{classname.replace(/\./g,'')}}.attr` (exposed to Vue etc).
+//// Create the plain `inst.attr` object (which Vue watches) and add public
+//// attributes to it. Arg 2 of `KIT.define()` is `false` for attributes.
 ${{classname}}.prototype.attr = {}
-KIT.define(${{classname}}.prototype.attr, ${{classname}}.schema.attr)
+KIT.define(${{classname}}.prototype.attr, false, ${{classname}}.schema.attr)
 
 
 

@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.15 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.16 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
@@ -157,13 +157,15 @@ const Class = Oom.Foo.Router = class extends Oom.Foo {
 
 }; KIT.name(Class, 'Oom.Foo.Router')
 
-//// Add public statics to `Oom.Foo.Router.stat` (exposed to Vue etc).
+//// Create the plain `Class.stat` object (which Vue watches) and add public
+//// statics to it. Arg 2 of `KIT.define()` is `true` for statics.
 Oom.Foo.Router.stat = {}
-KIT.define(Oom.Foo.Router.stat, Oom.Foo.Router.schema.stat)
+KIT.define(Oom.Foo.Router.stat, true, Oom.Foo.Router.schema.stat)
 
-//// Add public attributes to `myOomFooRouter.attr` (exposed to Vue etc).
+//// Create the plain `inst.attr` object (which Vue watches) and add public
+//// attributes to it. Arg 2 of `KIT.define()` is `false` for attributes.
 Oom.Foo.Router.prototype.attr = {}
-KIT.define(Oom.Foo.Router.prototype.attr, Oom.Foo.Router.schema.attr)
+KIT.define(Oom.Foo.Router.prototype.attr, false, Oom.Foo.Router.schema.attr)
 
 
 

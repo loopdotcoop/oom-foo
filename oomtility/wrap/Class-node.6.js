@@ -2,8 +2,9 @@ ${{topline}}
 
 
 !function (ROOT) { 'use strict'
+if (false) return // change to `true` to ‘hard skip’ this test
 const { describe, it, eq, is } = ROOT.testify()
-describe(`${{classname}} Node`, () => {
+describe('${{classname}} (node)', () => {
 
 
 
@@ -20,5 +21,5 @@ describe(`+ve ${{classname}} class`, () => {
 
 
 
-})//describe()
+})//describe('${{classname}} (node)')
 }( 'object' === typeof global ? global : this ) // `window` in a browser

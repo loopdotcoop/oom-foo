@@ -1,9 +1,11 @@
-//// Oom.Foo //// 1.2.15 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.16 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   ROOT.testify = testify;
+  if (false)
+    return;
   var $__2 = ROOT.testify(),
       describe = $__2.describe,
       it = $__2.it,
@@ -18,7 +20,7 @@
       isReadOnly = $__3.isReadOnly,
       isReadWrite = $__3.isReadWrite,
       isValid = $__3.isValid;
-  describe('Bases All', function() {
+  describe('Bases (all)', function() {
     var r;
     if (!(r = ROOT.Oom) || !(r = r.Foo) || !(r = r.stat) || !(r = r.LOADED_FIRST))
       throw Error('Can’t test: ROOT.Oom.Foo.stat.LOADED_FIRST does not exist');
@@ -27,9 +29,10 @@
       var Class = ROOT.Oom,
           schema = Class.schema,
           stat = Class.stat;
-      it('is a class', function() {
+      it('is a class with base methods', function() {
         try {
           eq((typeof Class === 'undefined' ? 'undefined' : $traceurRuntime.typeof(Class)), 'function', '`typeof Oom` is a function');
+          eq($traceurRuntime.typeof(Class.reset), 'function', 'Oom.reset() is a static method');
         } catch (e) {
           console.error(e.message);
           throw e;
@@ -75,8 +78,10 @@
             if (!isReadOnly(key))
               continue;
             var good = goodVals[schema.stat[key].typeStr];
-            stat['_' + key] = good;
+            schema.stat[key].definedIn.stat['_' + key] = good;
             eq(stat[key], good, 'stat.' + key + ' has changed to ' + good);
+            Class.reset();
+            eq(stat[key], schema.stat[key].default, 'stat.' + key + ' has been reset to ' + schema.stat[key].default);
           }
         } catch (e) {
           console.error(e.message);
@@ -109,6 +114,8 @@
             eq(stat[key], good, 'stat.' + key + ' has changed to ' + good);
             stat[key] = bad;
             eq(stat[key], good, 'stat.' + key + ' has NOT changed to ' + bad);
+            Class.reset();
+            eq(stat[key], schema.stat[key].default, 'stat.' + key + ' has been reset to ' + schema.stat[key].default);
           }
         } catch (e) {
           console.error(e.message);
@@ -121,10 +128,11 @@
           schema = Class.schema,
           instance = new Class(),
           attr = instance.attr;
-      it('is an instance', function() {
+      it('is an instance with base methods', function() {
         try {
-          is(instance instanceof Class, 'Is an instance of Oom');
+          is(instance instanceof Class, 'is an instance of Oom');
           eq(Class, instance.constructor, '`constructor` is Oom');
+          eq($traceurRuntime.typeof(instance.reset), 'function', 'myOom.reset() is an instance method');
         } catch (e) {
           console.error(e.message);
           throw e;
@@ -170,6 +178,8 @@
             var good = goodVals[schema.attr[key].typeStr];
             attr['_' + key] = good;
             eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
+            instance.reset();
+            eq(attr[key], schema.attr[key].default, 'attr.' + key + ' has been reset to ' + schema.attr[key].default);
           }
         } catch (e) {
           console.error(e.message);
@@ -202,6 +212,8 @@
             eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
             attr[key] = bad;
             eq(attr[key], good, 'attr.' + key + ' has NOT changed to ' + bad);
+            instance.reset();
+            eq(attr[key], schema.attr[key].default, 'attr.' + key + ' has been reset to ' + schema.attr[key].default);
           }
         } catch (e) {
           console.error(e.message);
@@ -236,20 +248,21 @@ function testify() {
       });
     },
     goodVals: {
-      color: '#89abCD',
+      color: '#C84CED',
       Number: 12345,
-      String: 'ok!'
+      String: 'A new valid str'
     },
     badVals: {
-      color: '89abCD',
+      color: 'C84CED',
       Number: '11.22.33',
-      String: /nope!/
+      String: /Not a valid str/
     }
   };
 }
 !function(ROOT) {
   'use strict';
-  ROOT.testify = testify;
+  if (false)
+    return;
   var $__2 = ROOT.testify(),
       describe = $__2.describe,
       it = $__2.it,
@@ -264,14 +277,15 @@ function testify() {
       isReadOnly = $__3.isReadOnly,
       isReadWrite = $__3.isReadWrite,
       isValid = $__3.isValid;
-  describe('Oom.Foo.Post All', function() {
+  describe('Oom.Foo.Post (all)', function() {
     describe('The Oom.Foo.Post class', function() {
       var Class = ROOT.Oom.Foo.Post,
           schema = Class.schema,
           stat = Class.stat;
-      it('is a class', function() {
+      it('is a class with base methods', function() {
         try {
-          eq((typeof Class === 'undefined' ? 'undefined' : $traceurRuntime.typeof(Class)), 'function', '`typeof Oom` is a function');
+          eq((typeof Class === 'undefined' ? 'undefined' : $traceurRuntime.typeof(Class)), 'function', '`typeof Oom.Foo.Post` is a function');
+          eq($traceurRuntime.typeof(Class.reset), 'function', 'Oom.Foo.Post.reset() is a static method');
         } catch (e) {
           console.error(e.message);
           throw e;
@@ -317,8 +331,10 @@ function testify() {
             if (!isReadOnly(key))
               continue;
             var good = goodVals[schema.stat[key].typeStr];
-            stat['_' + key] = good;
+            schema.stat[key].definedIn.stat['_' + key] = good;
             eq(stat[key], good, 'stat.' + key + ' has changed to ' + good);
+            Class.reset();
+            eq(stat[key], schema.stat[key].default, 'stat.' + key + ' has been reset to ' + schema.stat[key].default);
           }
         } catch (e) {
           console.error(e.message);
@@ -351,6 +367,8 @@ function testify() {
             eq(stat[key], good, 'stat.' + key + ' has changed to ' + good);
             stat[key] = bad;
             eq(stat[key], good, 'stat.' + key + ' has NOT changed to ' + bad);
+            Class.reset();
+            eq(stat[key], schema.stat[key].default, 'stat.' + key + ' has been reset to ' + schema.stat[key].default);
           }
         } catch (e) {
           console.error(e.message);
@@ -363,10 +381,11 @@ function testify() {
           schema = Class.schema,
           instance = new Class(),
           attr = instance.attr;
-      it('is an instance', function() {
+      it('is an instance with base methods', function() {
         try {
-          is(instance instanceof Class, 'Is an instance of Oom.Foo.Post');
+          is(instance instanceof Class, 'is an instance of Oom.Foo.Post');
           eq(Class, instance.constructor, '`constructor` is Oom.Foo.Post');
+          eq($traceurRuntime.typeof(instance.reset), 'function', 'myOomFooPost.reset() is an instance method');
         } catch (e) {
           console.error(e.message);
           throw e;
@@ -412,6 +431,8 @@ function testify() {
             var good = goodVals[schema.attr[key].typeStr];
             attr['_' + key] = good;
             eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
+            instance.reset();
+            eq(attr[key], schema.attr[key].default, 'attr.' + key + ' has been reset to ' + schema.attr[key].default);
           }
         } catch (e) {
           console.error(e.message);
@@ -444,6 +465,8 @@ function testify() {
             eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
             attr[key] = bad;
             eq(attr[key], good, 'attr.' + key + ' has NOT changed to ' + bad);
+            instance.reset();
+            eq(attr[key], schema.attr[key].default, 'attr.' + key + ' has been reset to ' + schema.attr[key].default);
           }
         } catch (e) {
           console.error(e.message);
@@ -455,7 +478,8 @@ function testify() {
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
 !function(ROOT) {
   'use strict';
-  ROOT.testify = testify;
+  if (false)
+    return;
   var $__2 = ROOT.testify(),
       describe = $__2.describe,
       it = $__2.it,
@@ -470,14 +494,15 @@ function testify() {
       isReadOnly = $__3.isReadOnly,
       isReadWrite = $__3.isReadWrite,
       isValid = $__3.isValid;
-  describe('Oom.Foo.Router All', function() {
+  describe('Oom.Foo.Router (all)', function() {
     describe('The Oom.Foo.Router class', function() {
       var Class = ROOT.Oom.Foo.Router,
           schema = Class.schema,
           stat = Class.stat;
-      it('is a class', function() {
+      it('is a class with base methods', function() {
         try {
-          eq((typeof Class === 'undefined' ? 'undefined' : $traceurRuntime.typeof(Class)), 'function', '`typeof Oom` is a function');
+          eq((typeof Class === 'undefined' ? 'undefined' : $traceurRuntime.typeof(Class)), 'function', '`typeof Oom.Foo.Router` is a function');
+          eq($traceurRuntime.typeof(Class.reset), 'function', 'Oom.Foo.Router.reset() is a static method');
         } catch (e) {
           console.error(e.message);
           throw e;
@@ -523,8 +548,10 @@ function testify() {
             if (!isReadOnly(key))
               continue;
             var good = goodVals[schema.stat[key].typeStr];
-            stat['_' + key] = good;
+            schema.stat[key].definedIn.stat['_' + key] = good;
             eq(stat[key], good, 'stat.' + key + ' has changed to ' + good);
+            Class.reset();
+            eq(stat[key], schema.stat[key].default, 'stat.' + key + ' has been reset to ' + schema.stat[key].default);
           }
         } catch (e) {
           console.error(e.message);
@@ -557,6 +584,8 @@ function testify() {
             eq(stat[key], good, 'stat.' + key + ' has changed to ' + good);
             stat[key] = bad;
             eq(stat[key], good, 'stat.' + key + ' has NOT changed to ' + bad);
+            Class.reset();
+            eq(stat[key], schema.stat[key].default, 'stat.' + key + ' has been reset to ' + schema.stat[key].default);
           }
         } catch (e) {
           console.error(e.message);
@@ -569,10 +598,11 @@ function testify() {
           schema = Class.schema,
           instance = new Class(),
           attr = instance.attr;
-      it('is an instance', function() {
+      it('is an instance with base methods', function() {
         try {
-          is(instance instanceof Class, 'Is an instance of Oom.Foo.Router');
+          is(instance instanceof Class, 'is an instance of Oom.Foo.Router');
           eq(Class, instance.constructor, '`constructor` is Oom.Foo.Router');
+          eq($traceurRuntime.typeof(instance.reset), 'function', 'myOomFooRouter.reset() is an instance method');
         } catch (e) {
           console.error(e.message);
           throw e;
@@ -618,6 +648,8 @@ function testify() {
             var good = goodVals[schema.attr[key].typeStr];
             attr['_' + key] = good;
             eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
+            instance.reset();
+            eq(attr[key], schema.attr[key].default, 'attr.' + key + ' has been reset to ' + schema.attr[key].default);
           }
         } catch (e) {
           console.error(e.message);
@@ -650,6 +682,8 @@ function testify() {
             eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
             attr[key] = bad;
             eq(attr[key], good, 'attr.' + key + ' has NOT changed to ' + bad);
+            instance.reset();
+            eq(attr[key], schema.attr[key].default, 'attr.' + key + ' has been reset to ' + schema.attr[key].default);
           }
         } catch (e) {
           console.error(e.message);
@@ -663,4 +697,4 @@ function testify() {
 
 
 
-//// Made by Oomtility Make 1.2.15 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.16 //\\//\\ http://oomtility.loop.coop /////////

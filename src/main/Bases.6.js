@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.15 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.16 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
 //// Metadata for Oom.Foo
 const META = {
     NAME:     'Oom.Foo'
-  , VERSION:  '1.2.15' // OOMBUMPABLE
+  , VERSION:  '1.2.16' // OOMBUMPABLE
   , HOMEPAGE: 'http://oom-foo.loop.coop/'
   , REMARKS:  'Initial test of the oom-hub architecture'
   , LOADED_FIRST: ! ROOT.Oom // true if the Oom class is defined by this module
@@ -47,6 +47,32 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
             Oom.stat._inst_tally++ // underlying value of a read-only static
         }
 */
+    }
+
+
+    //// Resets all statics to their initial default values.
+    static reset () { //@TODO smarter reset, remove local shadow
+        const statSchema = this.schema.stat // `this` is the current class
+        for (let key in statSchema) {
+            if ( KIT.isConstant(key) ) continue // no need to reset constants
+            if ( KIT.isReadOnly(key) ) // reset a read-only static’s ‘shadow’
+                statSchema[key].definedIn.stat['_'+key] = statSchema[key].default
+            else // a read-write static
+                this.stat[key] = statSchema[key].default
+        }
+    }
+
+
+    //// Resets all attributes to their initial default values.
+    reset () { //@TODO smarter reset, remove local shadow
+        const attrSchema = this.constructor.schema.attr // the current class
+        for (let key in attrSchema) {
+            if ( KIT.isConstant(key) ) continue // no need to reset constants
+            if ( KIT.isReadOnly(key) ) // reset a read-only attribute’s ‘shadow’
+                this.attr['_'+key] = attrSchema[key].default
+            else // a read-write attribute
+                this.attr[key] = attrSchema[key].default
+        }
     }
 
 
@@ -112,13 +138,15 @@ KIT.name(Oom, 'Oom') // prevents `name` from being changed
 
 if (META.LOADED_FIRST) {
 
-    //// Add public statics to `Oom.stat` (exposed to Vue etc).
+    //// Create the plain `Class.stat` object (which Vue watches) and add public
+    //// statics to it. Arg 2 of `KIT.define()` is `true` for statics.
     Oom.stat = {}
-    KIT.define(Oom.stat, Oom.schema.stat)
+    KIT.define(Oom.stat, true, Oom.schema.stat)
 
-    //// Add public attributes to `myOomInstance.attr` (exposed to Vue etc).
+    //// Create the plain `inst.attr` object (which Vue watches) and add public
+    //// attributes to it. Arg 2 of `KIT.define()` is `false` for attributes.
     Oom.prototype.attr = {}
-    KIT.define(Oom.prototype.attr, Oom.schema.attr)
+    KIT.define(Oom.prototype.attr, false, Oom.schema.attr)
 }
 
 
@@ -133,6 +161,7 @@ get: function (innerHTML) { return innerHTML = `
     <tr>
       <th>Name</th>
       <th>Value</th>
+      <th>Default</th>
       <th>Type</th>
       <th>Defined In</th>
     </tr>
@@ -144,6 +173,7 @@ get: function (innerHTML) { return innerHTML = `
         <span v-else-if="isConstant(key)" class="constant">{{val}}</span>
         <span v-else                      class="private">{{val}}</span>
       </td>
+      <td class="is-default">{{schema[key] ? schema[key].default === val ? '√' : 'x' : '-'}}</td>
       <td class="type">{{schema[key] ? schema[key].typeStr : '-'}}</td>
       <td class="defined-in">{{schema[key] ? schema[key].definedInStr : '-'}}</td>
     </tr>
@@ -242,11 +272,11 @@ Oom.Foo = class extends Oom {
 
 //// Add public statics to `Oom.Foo.stat` (exposed to Vue etc).
 Oom.Foo.stat = {}
-KIT.define(Oom.Foo.stat, Oom.Foo.schema.stat)
+KIT.define(Oom.Foo.stat, true, Oom.Foo.schema.stat)
 
 //// Add public attributes to `myOomFoo.attr` (exposed to Vue etc).
 Oom.Foo.prototype.attr = {}
-KIT.define(Oom.Foo.prototype.attr, Oom.Foo.schema.attr)
+KIT.define(Oom.Foo.prototype.attr, false, Oom.Foo.schema.attr)
 
 
 
@@ -351,9 +381,9 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
     }
 
 
-    //// Adds one or more property to `obj`.
+    //// Adds one or more property to `obj`. @TODO refactor - too messy
     //// Can also be used to change the value of existing properties. @TODO does Vue croak when that happens?
-  , define: (obj, ...srcs) =>
+  , define: (obj, isStatic, ...srcs) =>
         srcs.forEach( src => {
             const ME = 'KIT.define: ', def = {}
             for (let k in src) {
@@ -361,30 +391,63 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
                     throw Error(ME+k+' is not a valid schema object')
                 const value = src[k].default
                 if ( KIT.isReadOnly(k) ) { // eg 'foo_bar'
-                    def['_'+k] = { // private property, still visible to Vue
-                        writable:true, value
-                      , configurable:true, enumerable:true }
-                    def[k] = { // public read-only property (not a constant)
-                        get: function ()  { return obj['_'+k] }
-                      , set: function (v) { } // read-only
-                      , configurable:true, enumerable:true }
+                    if (isStatic) {
+                        if (! src[k].definedIn.stat['_'+k])
+                            Object.defineProperty(src[k].definedIn.stat, '_'+k, {
+                                writable:true, value
+                              , configurable:true, enumerable:true })
+                        def[k] = { // public read-only property
+                            get: function ()  { return src[k].definedIn.stat['_'+k] }
+                          , set: function (v) { } // read-only
+                          , configurable:true, enumerable:true }
+                    } else { // attribute
+                        def['_'+k] = { // private property, still visible to Vue
+                            writable:true, value
+                          , configurable:true, enumerable:true }
+                        def[k] = { // public read-only property (not a constant)
+                            get: function ()  { return obj['_'+k] }
+                          , set: function (v) { } // read-only
+                          , configurable:true, enumerable:true }
+                    }
                 } else if ( KIT.isReadWrite(k) ) { // eg 'fooBar'
-                    def['_'+k] = { // private property, still visible to Vue
-                        writable:true, value
-                      , configurable:true, enumerable:true }
-                    def[k] = { // public read-write property
-                        get: function ()  { return obj['_'+k] }
-                      , set: function (v) {
-                            if ( KIT.isValid(src[k], v) )
-                                return obj['_'+k] = v
-                            let vCast
-                            if ('function' === typeof src[k].type) {
-                                vCast = src[k].type(v)
-                                if ( KIT.isValid(src[k], vCast) )
-                                    return obj['_'+k] = vCast
+                    if (isStatic) {
+                        if (src[k].definedIn.stat['_'+k])
+                            console.log(src[k].definedInStr, 'already has', '_'+k);
+                        else
+                            Object.defineProperty(src[k].definedIn.stat, '_'+k, {
+                                writable:true, value
+                              , configurable:true, enumerable:true })
+                        def[k] = { // public read-write property
+                            get: function ()  { return src[k].definedIn.stat['_'+k] }
+                          , set: function (v) {
+                                if ( KIT.isValid(src[k], v) )
+                                    return src[k].definedIn.stat['_'+k] = v
+                                let vCast
+                                if ('function' === typeof src[k].type) {
+                                    vCast = src[k].type(v)
+                                    if ( KIT.isValid(src[k], vCast) )
+                                        return src[k].definedIn.stat['_'+k] = vCast
+                                }
                             }
-                        }
-                      , configurable:true, enumerable:true }
+                          , configurable:true, enumerable:true }
+                    } else { // attribute
+                        def['_'+k] = { // private property, still visible to Vue
+                            writable:true, value
+                          , configurable:true, enumerable:true }
+                        def[k] = { // public read-write property
+                            get: function ()  { return obj['_'+k] }
+                          , set: function (v) {
+                                if ( KIT.isValid(src[k], v) )
+                                    return obj['_'+k] = v
+                                let vCast
+                                if ('function' === typeof src[k].type) {
+                                    vCast = src[k].type(v)
+                                    if ( KIT.isValid(src[k], vCast) )
+                                        return obj['_'+k] = vCast
+                                }
+                            }
+                          , configurable:true, enumerable:true }
+                    }
                 } else if ( KIT.isConstant(k) ) { // eg 'FOO_BAR'
                     def[k] = { // public constant
                         writable:false, value
