@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.17 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.18 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
 //// Metadata for Oom.Foo
 const META = {
     NAME:     'Oom.Foo'
-  , VERSION:  '1.2.17' // OOMBUMPABLE
+  , VERSION:  '1.2.18' // OOMBUMPABLE
   , HOMEPAGE: 'http://oom-foo.loop.coop/'
   , REMARKS:  'Initial test of the oom-hub architecture'
   , LOADED_FIRST: ! ROOT.Oom // true if the Oom class is defined by this module
@@ -77,62 +77,29 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
     }
 
 
-    //// Defines this class’s static and instance properties.
-    //// May be modified by ‘Plus’ classes. @TODO create and use the Plus class
-    static get schema () {
-        return KIT.normaliseSchema(Oom, null, { // `null`: Oom is the base class
+    //// Merge a new schema into the current class’s existing schema.
+    static mixin (shorthandSchema) {
 
-            //// Public static properties (known as ‘statics’ in Oom).
-            stat: {
+        //// Merge a normalised version of the new schema into the existing one.
+        const existing = this.schema
+        const normalised = KIT.normaliseSchema(this, shorthandSchema)
+        this.schema = {} // reset this class’s schema
+        this.schema.stat = Object.assign({}, existing.stat, normalised.stat)
+        this.schema.attr = Object.assign({}, existing.attr, normalised.attr)
 
-                //// Public constant statics.
-                NAME:     'Oom'
-              , VERSION:  META.VERSION
-              , HOMEPAGE: 'http://oom.loop.coop/'
-              , REMARKS:  'Base class for all Oom classes'
+        //// Create or replace the plain `Class.stat` object (which Vue watches)
+        //// and add public statics to it.
+        //// Arg 2 of `KIT.define()` is `isStatic` - `true` for statics.
+        this.stat = {}
+        KIT.define(this.stat, true, this.schema.stat)
 
-                //// Public read-only statics.
-                //// Paired with underying underscore-prefixed statics.
-              // , inst_tally: { // a schema descriptor-object
-              //       remarks: 'Counts instantiations'
-              //     , default: 0
-              //   }
+        //// Create or replace the plain `inst.attr` object (which Vue watches)
+        //// and add public attributes to it.
+        //// Arg 2 of `KIT.define()` is `isStatic` - `false` for attributes.
+        this.prototype.attr = {}
+        KIT.define(this.prototype.attr, false, this.schema.attr)
 
-              , inst_tally: {
-                    remarks: 'The number of Oom instantiations made so far'
-                  , default: 0
-                }
-
-                //// Public read-write statics.
-              , hilite: {
-                    remarks: 'General purpose, useful as a dev label or status'
-                  , default: '#112233'
-                  , type:    'color'
-                }
-
-            //// Public instance properties (known as ‘attributes’ in Oom).
-            }, attr: {
-
-                //// Public constant attributes.
-                UUID: 44
-                // UUID: KIT.generateUUID
-                // INST_INDEX: () => Oom.stat.inst_tally
-
-                //// Public read-only attributes.
-                //// Paired with underying underscore-prefixed attributes.
-              , inst_index: 0 // set to `Oom.stat.inst_tally` by `constructor()`
-
-                //// Public read-write attributes.
-              , hilite: {
-                    remarks: 'General purpose, useful as a dev label or status'
-                  , default: '#445566'
-                  , type:    'color'
-                }
-              , fooBar: { default:1000, type:Number }
-
-            }
-        })//KIT.normaliseSchema()
-     }//schema
+    }
 
 } : ROOT.Oom
 KIT.name(Oom, 'Oom') // prevents `name` from being changed
@@ -142,17 +109,80 @@ KIT.name(Oom, 'Oom') // prevents `name` from being changed
 Oom.KIT = KIT
 
 
+
+
 if (META.LOADED_FIRST) {
 
-    //// Create the plain `Class.stat` object (which Vue watches) and add public
-    //// statics to it. Arg 2 of `KIT.define()` is `true` for statics.
-    Oom.stat = {}
-    KIT.define(Oom.stat, true, Oom.schema.stat)
+    ////@TODO comment
+    //// Oom is the base class, so its schema is not xxxxx @TODO describe
+    Oom.schema = {}
 
-    //// Create the plain `inst.attr` object (which Vue watches) and add public
-    //// attributes to it. Arg 2 of `KIT.define()` is `false` for attributes.
-    Oom.prototype.attr = {}
-    KIT.define(Oom.prototype.attr, false, Oom.schema.attr)
+    //// Define Oom’s static and instance properties.
+    Oom.mixin({
+        location: 'src/main/Bases.6.js:122'
+      , title: 'The Base Schema'
+      , remarks: 'The foundational schema, defined by the base Oom class'
+
+      , config: {} //@TODO
+
+        //// Public static properties (known as ‘statics’ in Oom).
+      , stat: {
+
+            //// Public constant statics.
+            NAME:     'Oom'
+          , VERSION:  META.VERSION
+          , HOMEPAGE: 'http://oom.loop.coop/'
+          , REMARKS:  'Base class for all Oom classes'
+
+            //// Public read-only statics.
+            //// Paired with underying underscore-prefixed ‘shadow’ statics.
+          , inst_tally: {
+                remarks: 'The number of Oom instantiations made so far'
+              , default: 0
+            }
+
+            //// Public read-write statics.
+            //// Paired with underying underscore-prefixed ‘shadow’ statics.
+          , hilite: {
+                remarks: 'General purpose, useful as a dev label or status'
+              , default: '#112233'
+              , type:    'color'
+            }
+
+        //// Public instance properties (known as ‘attributes’ in Oom).
+        }, attr: {
+
+            //// Public constant attributes.
+            UUID: 44
+            // UUID: KIT.generateUUID
+            // INST_INDEX: () => Oom.stat.inst_tally
+
+            //// Public read-only attributes.
+            //// Paired with underying underscore-prefixed ‘shadow’ attributes.
+          , inst_index: 0 // set to `Oom.stat.inst_tally` by `constructor()`
+
+            //// Public read-write attributes.
+            //// Paired with underying underscore-prefixed ‘shadow’ attributes.
+          , hilite: {
+                remarks: 'General purpose, useful as a dev label or status'
+              , default: '#445566'
+              , type:    'color'
+            }
+          , fooBar: { default:1000, type:Number }
+
+        }
+
+    })//Oom.mixin()
+    //
+    // //// Create the plain `Class.stat` object (which Vue watches) and add public
+    // //// statics to it. Arg 2 of `KIT.define()` is `true` for statics.
+    // Oom.stat = {}
+    // KIT.define(Oom.stat, true, Oom.schema.stat)
+    //
+    // //// Create the plain `inst.attr` object (which Vue watches) and add public
+    // //// attributes to it. Arg 2 of `KIT.define()` is `false` for attributes.
+    // Oom.prototype.attr = {}
+    // KIT.define(Oom.prototype.attr, false, Oom.schema.attr)
 }
 
 
@@ -261,29 +291,33 @@ Oom.devMainAFrame = function (Class) { return {
 //// Define `Oom.Foo`, this module’s specialism of `Oom`.
 Oom.Foo = class extends Oom {
 
-    //// Defines this class’s static and instance properties.
-    //// May be modified by ‘Plus’ classes. @TODO create and use the Plus class
-    static get schema () {
-        return KIT.normaliseSchema(Oom.Foo, Oom, {
-
-            //// Public static properties (known as ‘statics’ in Oom).
-            stat: META // defined at the top of this file
-
-            //// Public instance properties (known as ‘attributes’ in Oom).
-          , attr: {}
-        })//KIT.normaliseSchema()
-    }
-
 }; KIT.name(Oom.Foo, 'Oom.Foo')
 
 
-//// Add public statics to `Oom.Foo.stat` (exposed to Vue etc).
-Oom.Foo.stat = {}
-KIT.define(Oom.Foo.stat, true, Oom.Foo.schema.stat)
+//// Define this class’s static and instance properties.
+Oom.Foo.mixin({
+    location: 'src/main/Bases.6.js:299'
+  , title: 'The Oom.Foo Schema'
+  , remarks: 'Defines metadata for this module'
 
-//// Add public attributes to `myOomFoo.attr` (exposed to Vue etc).
-Oom.Foo.prototype.attr = {}
-KIT.define(Oom.Foo.prototype.attr, false, Oom.Foo.schema.attr)
+  , config: {} //@TODO
+
+    //// Public static properties (known as ‘statics’ in Oom).
+  , stat: META
+
+    //// Public instance properties (known as ‘attributes’ in Oom).
+  , attr: {}
+
+})//Oom.Foo.mixin()
+
+
+// //// Add public statics to `Oom.Foo.stat` (exposed to Vue etc).
+// Oom.Foo.stat = {}
+// KIT.define(Oom.Foo.stat, true, Oom.Foo.schema.stat)
+//
+// //// Add public attributes to `myOomFoo.attr` (exposed to Vue etc).
+// Oom.Foo.prototype.attr = {}
+// KIT.define(Oom.Foo.prototype.attr, false, Oom.Foo.schema.attr)
 
 
 
@@ -516,16 +550,18 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
   , countKeyMatches: (obj, matchFn, tally=0) => {
         for (let key in obj) if ( matchFn(key) ) tally++; return tally }
 
-    //// Classify property names, eg 'foo_bar_4', 'fooBar4' and 'FOO_BAR_4'.
-    //// Minimal names are 'a_', 'a' and 'A'. Leading digits or underscores are
-    //// not allowed.
+    ////
+  , stringOrName: val => 'string' === typeof val ? val : val.name
+
+    //// Three helpers which classify property names, eg 'foo_bar_4', 'fooBar4'
+    //// and 'FOO_BAR_4'. Minimal names are 'a_', 'a' and 'A'. Leading digits or
+    //// underscores are not allowed.
   , isConstant:  k => /^[A-Z][_A-Z0-9]*$/.test(k)
   , isReadOnly:  k => -1 !== k.indexOf('_') && /^[a-z][_a-z0-9]+$/.test(k)
   , isReadWrite: k => /^[a-z][A-Za-z0-9]*$/.test(k)
-  , stringOrName: val => 'string' === typeof val ? val : val.name
 
     //// Validates a schema object and fills in any gaps.
-  , normaliseSchema: (Class, ParentClass, schema) => {
+  , normaliseSchema: (Class, schema) => {
         const out = {}
         for (let zone in schema) {
             out[zone] = {} // eg `out.stat = {}` or `out.attr = {}`
@@ -533,12 +569,12 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
                 const PFX = 'KIT.normaliseSchema: '+propName+'’s '
                 const inDesc = schema[zone][propName]
                 const outDesc = out[zone][propName] = {}
-                if (null != inDesc.typeStr)
-                    throw TypeError(PFX+`inDesc.typeStr has already been set`)
-                if (null != inDesc.definedIn)
-                    throw TypeError(PFX+`inDesc.definedIn has already been set`)
-                if (null != inDesc.definedInStr)
-                    throw TypeError(PFX+`inDesc.definedInStr has already been set`)
+                // if (null != inDesc.typeStr)
+                //     throw TypeError(PFX+`inDesc.typeStr has already been set`)
+                // if (null != inDesc.definedIn)
+                //     throw TypeError(PFX+`inDesc.definedIn has already been set`)
+                // if (null != inDesc.definedInStr)
+                //     throw TypeError(PFX+`inDesc.definedInStr has already been set`)
                 outDesc.name = propName // for better `isValid()` error messages
                 outDesc.default = ('object' === typeof inDesc)
                   ? inDesc.default // full: `{ stat:{ OK:{ default:'Yep' } } }`
@@ -577,14 +613,8 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
                 if (inDesc.remarks) outDesc.remarks = inDesc.remarks
             }
         }
-
-        //// Simulate a class-extend of a parent schema. @TODO simulate efficiency, without breaking Vue
-        if (ParentClass) {
-            out.stat = Object.assign({}, ParentClass.schema.stat, out.stat)
-            out.attr = Object.assign({}, ParentClass.schema.attr, out.attr)
-        }
         return out
-    }
+    }//normaliseSchema()
 
 }, previousKIT) }//assignKIT()
 

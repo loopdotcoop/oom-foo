@@ -2,7 +2,8 @@
 
 //// YOU MAY NEED TO ADD MORE CONST NAMES IN HERE:
 const CONSTS = {
-    isApp:       0//@TODO remove from all oomtility
+    __LOCATION__:0 // special case, must be exactly `${{__LOCATION__}}`
+  , isApp:       0//@TODO remove from all oomtility
   , isTop:       0
   , title:       0
   , projectTC:   0
@@ -25,7 +26,7 @@ const CONSTS = {
 }
 
 const NAME     = 'Oomtility Wrap'
-    , VERSION  = '1.2.17'
+    , VERSION  = '1.2.18'
     , HOMEPAGE = 'https://oomtility.loop.coop'
     , HELP =
 `
@@ -232,7 +233,9 @@ function doWrap (path) {
         if (80 >= line.length) {
             line = line.replace(/•/g, '\\u') // correct our edge-case avoider
             line = line.replace(/([°-¹])/g, (m,p1) =>
-                `'+(${doubleTemplateLut[p1]})+'` ) // reinstate double-templates
+                '__LOCATION__' === doubleTemplateLut[p1]
+              ? `'+path+':${num+1}` //@TODO fix num after conditional `${{{`s
+              : `'+(${doubleTemplateLut[p1]})+'`) // reinstate double-templates
             if ( "'+(" === line.slice(0,3) ) // remove useless code
                 line = `  + ${line.slice(2)}\\n'`
             else
@@ -252,7 +255,9 @@ function doWrap (path) {
             sub = line.substr(pos, len)
             sub = sub.replace(/•/g, '\\u') // correct our edge-case avoider
             sub = sub.replace(/([°-¹])/g, (m,p1) =>
-                `'+(${doubleTemplateLut[p1]})+'` ) // reinstate double-templates
+                '__LOCATION__' === doubleTemplateLut[p1]
+              ? `'+path+':${num+1}` //@TODO fix num after conditional `${{{`s
+              : `'+(${doubleTemplateLut[p1]})+'`) // reinstate double-templates
             wrapped.push(`  + '${sub}'`)
             pos += len
             len = 80
@@ -277,11 +282,15 @@ function doWrap (path) {
         if (0 < expectedConsts[c])
             consts.push(c)
     if (0 < consts.length) {
+        let hasLocation = false
         consts.forEach(c => {
+            // if ('__LOCATION__' === c) return hasLocation = true // dealt with as a special case
             configToConst.push((docomma ? '  , ' : '    ') + c)
             docomma = true
         })
         out = out.concat('const {', configToConst, '} = config')
+        // if (hasLocation)
+        //     out = out.concat('const {', configToConst, '} = config')
     }
 
     //// Define options for `fs.writeFileSync()`.

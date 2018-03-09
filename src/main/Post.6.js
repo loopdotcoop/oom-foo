@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.17 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.18 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
@@ -36,40 +36,40 @@ const Class = Oom.Foo.Post = class extends Oom.Foo {
 
     //// Defines this class’s static and instance properties.
     //// May be modified by ‘Plus’ classes. @TODO create and use the Plus class
-    static get schema () {
-        return KIT.normaliseSchema(Oom.Foo.Post, Oom.Foo, {
-
-            //// Public static properties (known as ‘statics’ in Oom).
-            stat: {
-
-                //// Public constant statics.
-                NAME:    'Oom.Foo.Post'
-              , REMARKS: '@TODO'
-
-              // , propA: Number // or set to `null` to accept any type
-              // , propB: [ String, Number ] // multiple possible types
-              // , propC: { type:String, required:true } // a required string
-              , prop_d: { type:'number', default:100 } // a number with default value
-              // , propE: { type:Object, default:function(){return[1]} } // must use factory fn
-              // , propF: { validator:function(v){return v>10} } // custom validator
-              , propG: 44.4
-
-            //// Public instance properties (known as ‘attributes’ in Oom).
-            }, attr: {
-
-                OK: 123
-
-              // , propA: Number // or set to `null` to accept any type
-              // , propB: [ String, Number ] // multiple possible types
-              // , propC: { type:String, required:true } // a required string
-              , prop_d: { type:Number, default:5.5 } // a number with default value
-              // , propE: { type:Object, default:function(){return[1]} } // must use factory fn
-              // , propF: { validator:function(v){return v>10} } // custom validator
-              , propG: 44.4
-
-            }
-        })//KIT.normaliseSchema()
-     }//schema
+    // static get schema () {
+    //     return KIT.normaliseSchema(Oom.Foo.Post, Oom.Foo, {
+    //
+     //        //// Public static properties (known as ‘statics’ in Oom).
+     //        stat: {
+     //
+     //            //// Public constant statics.
+     //            NAME:    'Oom.Foo.Post'
+     //          , REMARKS: '@TODO'
+     //
+     //          // , propA: Number // or set to `null` to accept any type
+     //          // , propB: [ String, Number ] // multiple possible types
+     //          // , propC: { type:String, required:true } // a required string
+     //          , prop_d: { type:'number', default:100 } // a number with default value
+     //          // , propE: { type:Object, default:function(){return[1]} } // must use factory fn
+     //          // , propF: { validator:function(v){return v>10} } // custom validator
+     //          , propG: 44.4
+     //
+     //        //// Public instance properties (known as ‘attributes’ in Oom).
+     //        }, attr: {
+     //
+     //            OK: 123
+     //
+     //          // , propA: Number // or set to `null` to accept any type
+     //          // , propB: [ String, Number ] // multiple possible types
+     //          // , propC: { type:String, required:true } // a required string
+     //          , prop_d: { type:Number, default:5.5 } // a number with default value
+     //          // , propE: { type:Object, default:function(){return[1]} } // must use factory fn
+     //          // , propF: { validator:function(v){return v>10} } // custom validator
+     //          , propG: 44.4
+     //
+     //        }
+     //    })//KIT.normaliseSchema()
+     // }//schema
 
 
 /*
@@ -157,16 +157,57 @@ const Class = Oom.Foo.Post = class extends Oom.Foo {
 
 }; KIT.name(Class, 'Oom.Foo.Post')
 
-//// Create the plain `Class.stat` object (which Vue watches) and add public
-//// statics to it. Arg 2 of `KIT.define()` is `true` for statics.
-Oom.Foo.Post.stat = {}
-KIT.define(Oom.Foo.Post.stat, true, Oom.Foo.Post.schema.stat)
 
-//// Create the plain `inst.attr` object (which Vue watches) and add public
-//// attributes to it. Arg 2 of `KIT.define()` is `false` for attributes.
-Oom.Foo.Post.prototype.attr = {}
-KIT.define(Oom.Foo.Post.prototype.attr, false, Oom.Foo.Post.schema.attr)
+//// Define this class’s static and instance properties.
+Oom.Foo.Post.mixin({
+    location: 'src/main/Post.6.js:203'
+  , title: 'The Oom.Foo.Post Schema'
+  , remarks: 'Defines metadata for this module'
 
+  , config: {} //@TODO
+
+    //// Public static properties (known as ‘statics’ in Oom).
+  , stat: {
+
+        //// Public constant statics.
+        NAME:    'Oom.Foo.Post'
+      , REMARKS: '@TODO'
+
+      // , propA: Number // or set to `null` to accept any type
+      // , propB: [ String, Number ] // multiple possible types
+      // , propC: { type:String, required:true } // a required string
+      , prop_d: { type:'number', default:100 } // a number with default value
+      // , propE: { type:Object, default:function(){return[1]} } // must use factory fn
+      // , propF: { validator:function(v){return v>10} } // custom validator
+      , propG: 44.4
+
+    //// Public instance properties (known as ‘attributes’ in Oom).
+    }, attr: {
+
+        OK: 123
+
+      // , propA: Number // or set to `null` to accept any type
+      // , propB: [ String, Number ] // multiple possible types
+      // , propC: { type:String, required:true } // a required string
+      , prop_d: { type:Number, default:5.5 } // a number with default value
+      // , propE: { type:Object, default:function(){return[1]} } // must use factory fn
+      // , propF: { validator:function(v){return v>10} } // custom validator
+      , propG: 44.4
+
+    }
+
+})//Oom.Foo.mixin()
+
+// //// Create the plain `Class.stat` object (which Vue watches) and add public
+// //// statics to it. Arg 2 of `KIT.define()` is `true` for statics.
+// Oom.Foo.Post.stat = {}
+// KIT.define(Oom.Foo.Post.stat, true, Oom.Foo.Post.schema.stat)
+//
+// //// Create the plain `inst.attr` object (which Vue watches) and add public
+// //// attributes to it. Arg 2 of `KIT.define()` is `false` for attributes.
+// Oom.Foo.Post.prototype.attr = {}
+// KIT.define(Oom.Foo.Post.prototype.attr, false, Oom.Foo.Post.schema.attr)
+//
 
 
 

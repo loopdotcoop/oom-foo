@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.17 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.18 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
     NAME: 'Oom.Foo',
-    VERSION: '1.2.17',
+    VERSION: '1.2.18',
     HOMEPAGE: 'http://oom-foo.loop.coop/',
     REMARKS: 'Initial test of the oom-hub architecture',
     LOADED_FIRST: !ROOT.Oom
@@ -41,47 +41,57 @@
             this.stat[key] = statSchema[key].default;
         }
       },
-      get schema() {
-        return KIT.normaliseSchema(Oom, null, {
-          stat: {
-            NAME: 'Oom',
-            VERSION: META.VERSION,
-            HOMEPAGE: 'http://oom.loop.coop/',
-            REMARKS: 'Base class for all Oom classes',
-            inst_tally: {
-              remarks: 'The number of Oom instantiations made so far',
-              default: 0
-            },
-            hilite: {
-              remarks: 'General purpose, useful as a dev label or status',
-              default: '#112233',
-              type: 'color'
-            }
-          },
-          attr: {
-            UUID: 44,
-            inst_index: 0,
-            hilite: {
-              remarks: 'General purpose, useful as a dev label or status',
-              default: '#445566',
-              type: 'color'
-            },
-            fooBar: {
-              default: 1000,
-              type: Number
-            }
-          }
-        });
+      mixin: function(shorthandSchema) {
+        var existing = this.schema;
+        var normalised = KIT.normaliseSchema(this, shorthandSchema);
+        this.schema = {};
+        this.schema.stat = Object.assign({}, existing.stat, normalised.stat);
+        this.schema.attr = Object.assign({}, existing.attr, normalised.attr);
+        this.stat = {};
+        KIT.define(this.stat, true, this.schema.stat);
+        this.prototype.attr = {};
+        KIT.define(this.prototype.attr, false, this.schema.attr);
       }
     });
   }() : ROOT.Oom;
   KIT.name(Oom, 'Oom');
   Oom.KIT = KIT;
   if (META.LOADED_FIRST) {
-    Oom.stat = {};
-    KIT.define(Oom.stat, true, Oom.schema.stat);
-    Oom.prototype.attr = {};
-    KIT.define(Oom.prototype.attr, false, Oom.schema.attr);
+    Oom.schema = {};
+    Oom.mixin({
+      location: 'src/main/Bases.6.js:122',
+      title: 'The Base Schema',
+      remarks: 'The foundational schema, defined by the base Oom class',
+      config: {},
+      stat: {
+        NAME: 'Oom',
+        VERSION: META.VERSION,
+        HOMEPAGE: 'http://oom.loop.coop/',
+        REMARKS: 'Base class for all Oom classes',
+        inst_tally: {
+          remarks: 'The number of Oom instantiations made so far',
+          default: 0
+        },
+        hilite: {
+          remarks: 'General purpose, useful as a dev label or status',
+          default: '#112233',
+          type: 'color'
+        }
+      },
+      attr: {
+        UUID: 44,
+        inst_index: 0,
+        hilite: {
+          remarks: 'General purpose, useful as a dev label or status',
+          default: '#445566',
+          type: 'color'
+        },
+        fooBar: {
+          default: 1000,
+          type: Number
+        }
+      }
+    });
   }
   Object.defineProperty(Oom, 'memberTableVueTemplate', {get: function(innerHTML) {
       return innerHTML = "\n<div :class=\"'member-table '+objname\">\n  <table :class=\"{ hid:doHide }\">\n    <caption v-html=\"caption\"></caption>\n    <tr>\n      <th>Name</th>\n      <th>Value</th>\n      <th>Default</th>\n      <th>Type</th>\n      <th>Defined In</th>\n    </tr>\n    <tr v-for=\"val, key in obj\" v-bind:class=\"'Oom-'+key\">\n      <td class=\"key\">{{key}}</td>\n      <td class=\"val\">\n        <input v-if=\"isReadWrite(key)\"    class=\"read-write\" v-model=\"obj[key]\">\n        <span v-else-if=\"isReadOnly(key)\" class=\"read-only\">{{val}}</span>\n        <span v-else-if=\"isConstant(key)\" class=\"constant\">{{val}}</span>\n        <span v-else                      class=\"private\">{{val}}</span>\n      </td>\n      <td class=\"is-default\">{{schema[key] ? schema[key].default === val ? '√' : 'x' : '-'}}</td>\n      <td class=\"type\">{{schema[key] ? schema[key].typeStr : '-'}}</td>\n      <td class=\"defined-in\">{{schema[key] ? schema[key].definedInStr : '-'}}</td>\n    </tr>\n  </table>\n</div>\n";
@@ -105,11 +115,11 @@
       },
       methods: {},
       beforeCreate: function() {
-        var $__5 = KIT,
-            isReadWrite = $__5.isReadWrite,
-            isReadOnly = $__5.isReadOnly,
-            isConstant = $__5.isConstant,
-            stringOrName = $__5.stringOrName;
+        var $__3 = KIT,
+            isReadWrite = $__3.isReadWrite,
+            isReadOnly = $__3.isReadOnly,
+            isConstant = $__3.isConstant,
+            stringOrName = $__3.stringOrName;
         Vue.component('member-table', {
           template: Oom.memberTableVueTemplate,
           props: {
@@ -139,18 +149,17 @@
     function $__1() {
       $traceurRuntime.superConstructor($__1).apply(this, arguments);
     }
-    return ($traceurRuntime.createClass)($__1, {}, {get schema() {
-        return KIT.normaliseSchema(Oom.Foo, Oom, {
-          stat: META,
-          attr: {}
-        });
-      }}, $__super);
+    return ($traceurRuntime.createClass)($__1, {}, {}, $__super);
   }(Oom);
   KIT.name(Oom.Foo, 'Oom.Foo');
-  Oom.Foo.stat = {};
-  KIT.define(Oom.Foo.stat, true, Oom.Foo.schema.stat);
-  Oom.Foo.prototype.attr = {};
-  KIT.define(Oom.Foo.prototype.attr, false, Oom.Foo.schema.attr);
+  Oom.Foo.mixin({
+    location: 'src/main/Bases.6.js:299',
+    title: 'The Oom.Foo Schema',
+    remarks: 'Defines metadata for this module',
+    config: {},
+    stat: META,
+    attr: {}
+  });
   function assignKIT() {
     var previousKIT = arguments[0] !== (void 0) ? arguments[0] : {};
     return Object.assign({}, {
@@ -232,12 +241,12 @@
       },
       define: function(obj, isStatic) {
         for (var srcs = [],
-            $__4 = 2; $__4 < arguments.length; $__4++)
-          srcs[$__4 - 2] = arguments[$__4];
+            $__2 = 2; $__2 < arguments.length; $__2++)
+          srcs[$__2 - 2] = arguments[$__2];
         return srcs.forEach(function(src) {
           var ME = 'KIT.define: ',
               def = {};
-          var $__6 = function(k) {
+          var $__4 = function(k) {
             if ('undefined' === typeof src[k].default)
               throw Error(ME + k + ' is not a valid schema object');
             var value = src[k].default;
@@ -339,7 +348,7 @@
             }
           };
           for (var k in src) {
-            $__6(k);
+            $__4(k);
           }
           Object.defineProperties(obj, def);
         });
@@ -358,6 +367,9 @@
             tally++;
         return tally;
       },
+      stringOrName: function(val) {
+        return 'string' === typeof val ? val : val.name;
+      },
       isConstant: function(k) {
         return /^[A-Z][_A-Z0-9]*$/.test(k);
       },
@@ -367,10 +379,7 @@
       isReadWrite: function(k) {
         return /^[a-z][A-Za-z0-9]*$/.test(k);
       },
-      stringOrName: function(val) {
-        return 'string' === typeof val ? val : val.name;
-      },
-      normaliseSchema: function(Class, ParentClass, schema) {
+      normaliseSchema: function(Class, schema) {
         var out = {};
         for (var zone in schema) {
           out[zone] = {};
@@ -378,12 +387,6 @@
             var PFX = 'KIT.normaliseSchema: ' + propName + '’s ';
             var inDesc = schema[zone][propName];
             var outDesc = out[zone][propName] = {};
-            if (null != inDesc.typeStr)
-              throw TypeError(PFX + "inDesc.typeStr has already been set");
-            if (null != inDesc.definedIn)
-              throw TypeError(PFX + "inDesc.definedIn has already been set");
-            if (null != inDesc.definedInStr)
-              throw TypeError(PFX + "inDesc.definedInStr has already been set");
             outDesc.name = propName;
             outDesc.default = ('object' === (typeof inDesc === 'undefined' ? 'undefined' : $traceurRuntime.typeof(inDesc))) ? inDesc.default : inDesc;
             var strToObj = {
@@ -421,10 +424,6 @@
               outDesc.remarks = inDesc.remarks;
           }
         }
-        if (ParentClass) {
-          out.stat = Object.assign({}, ParentClass.schema.stat, out.stat);
-          out.attr = Object.assign({}, ParentClass.schema.attr, out.attr);
-        }
         return out;
       }
     }, previousKIT);
@@ -439,33 +438,32 @@
       var config = arguments[0] !== (void 0) ? arguments[0] : {};
       $traceurRuntime.superConstructor($__0).call(this, config);
     }
-    return ($traceurRuntime.createClass)($__0, {}, {get schema() {
-        return KIT.normaliseSchema(Oom.Foo.Post, Oom.Foo, {
-          stat: {
-            NAME: 'Oom.Foo.Post',
-            REMARKS: '@TODO',
-            prop_d: {
-              type: 'number',
-              default: 100
-            },
-            propG: 44.4
-          },
-          attr: {
-            OK: 123,
-            prop_d: {
-              type: Number,
-              default: 5.5
-            },
-            propG: 44.4
-          }
-        });
-      }}, $__super);
+    return ($traceurRuntime.createClass)($__0, {}, {}, $__super);
   }(Oom.Foo);
   KIT.name(Class, 'Oom.Foo.Post');
-  Oom.Foo.Post.stat = {};
-  KIT.define(Oom.Foo.Post.stat, true, Oom.Foo.Post.schema.stat);
-  Oom.Foo.Post.prototype.attr = {};
-  KIT.define(Oom.Foo.Post.prototype.attr, false, Oom.Foo.Post.schema.attr);
+  Oom.Foo.Post.mixin({
+    location: 'src/main/Post.6.js:203',
+    title: 'The Oom.Foo.Post Schema',
+    remarks: 'Defines metadata for this module',
+    config: {},
+    stat: {
+      NAME: 'Oom.Foo.Post',
+      REMARKS: '@TODO',
+      prop_d: {
+        type: 'number',
+        default: 100
+      },
+      propG: 44.4
+    },
+    attr: {
+      OK: 123,
+      prop_d: {
+        type: Number,
+        default: 5.5
+      },
+      propG: 44.4
+    }
+  });
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
 !function(ROOT) {
   'use strict';
@@ -476,36 +474,35 @@
       var config = arguments[0] !== (void 0) ? arguments[0] : {};
       $traceurRuntime.superConstructor($__0).call(this, config);
     }
-    return ($traceurRuntime.createClass)($__0, {}, {get schema() {
-        return KIT.normaliseSchema(Oom.Foo.Router, Oom.Foo, {
-          stat: {
-            NAME: 'Oom.Foo.Router',
-            REMARKS: '@TODO',
-            prop_d: {
-              type: 'number',
-              default: 100
-            },
-            propG: 44.4
-          },
-          attr: {
-            OK: 123,
-            prop_d: {
-              type: Number,
-              default: 5.5
-            },
-            propG: 44.4
-          }
-        });
-      }}, $__super);
+    return ($traceurRuntime.createClass)($__0, {}, {}, $__super);
   }(Oom.Foo);
   KIT.name(Class, 'Oom.Foo.Router');
-  Oom.Foo.Router.stat = {};
-  KIT.define(Oom.Foo.Router.stat, true, Oom.Foo.Router.schema.stat);
-  Oom.Foo.Router.prototype.attr = {};
-  KIT.define(Oom.Foo.Router.prototype.attr, false, Oom.Foo.Router.schema.attr);
+  Oom.Foo.Router.mixin({
+    location: 'src/main/Router.6.js:203',
+    title: 'The Oom.Foo.Router Schema',
+    remarks: 'Defines metadata for this module',
+    config: {},
+    stat: {
+      NAME: 'Oom.Foo.Router',
+      REMARKS: '@TODO',
+      prop_d: {
+        type: 'number',
+        default: 100
+      },
+      propG: 44.4
+    },
+    attr: {
+      OK: 123,
+      prop_d: {
+        type: Number,
+        default: 5.5
+      },
+      propG: 44.4
+    }
+  });
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
 
 
 
 
-//// Made by Oomtility Make 1.2.17 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.18 //\\//\\ http://oomtility.loop.coop /////////

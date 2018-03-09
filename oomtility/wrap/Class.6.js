@@ -39,40 +39,40 @@ isTop ? `
 
     //// Defines this class’s static and instance properties.
     //// May be modified by ‘Plus’ classes. @TODO create and use the Plus class
-    static get schema () {
-        return KIT.normaliseSchema(${{classname}}, ${{extendname}}, {
-
-            //// Public static properties (known as ‘statics’ in Oom).
-            stat: {
-
-                //// Public constant statics.
-                NAME:    '${{classname}}'
-              , REMARKS: '${{remarks}}'
-
-              // , propA: Number // or set to `null` to accept any type
-              // , propB: [ String, Number ] // multiple possible types
-              // , propC: { type:String, required:true } // a required string
-              , prop_d: { type:'number', default:100 } // a number with default value
-              // , propE: { type:Object, default:function(){return[1]} } // must use factory fn
-              // , propF: { validator:function(v){return v>10} } // custom validator
-              , propG: 44.4
-
-            //// Public instance properties (known as ‘attributes’ in Oom).
-            }, attr: {
-
-                OK: 123
-
-              // , propA: Number // or set to `null` to accept any type
-              // , propB: [ String, Number ] // multiple possible types
-              // , propC: { type:String, required:true } // a required string
-              , prop_d: { type:Number, default:5.5 } // a number with default value
-              // , propE: { type:Object, default:function(){return[1]} } // must use factory fn
-              // , propF: { validator:function(v){return v>10} } // custom validator
-              , propG: 44.4
-
-            }
-        })//KIT.normaliseSchema()
-     }//schema
+    // static get schema () {
+    //     return KIT.normaliseSchema(${{classname}}, ${{extendname}}, {
+    //
+     //        //// Public static properties (known as ‘statics’ in Oom).
+     //        stat: {
+     //
+     //            //// Public constant statics.
+     //            NAME:    '${{classname}}'
+     //          , REMARKS: '${{remarks}}'
+     //
+     //          // , propA: Number // or set to `null` to accept any type
+     //          // , propB: [ String, Number ] // multiple possible types
+     //          // , propC: { type:String, required:true } // a required string
+     //          , prop_d: { type:'number', default:100 } // a number with default value
+     //          // , propE: { type:Object, default:function(){return[1]} } // must use factory fn
+     //          // , propF: { validator:function(v){return v>10} } // custom validator
+     //          , propG: 44.4
+     //
+     //        //// Public instance properties (known as ‘attributes’ in Oom).
+     //        }, attr: {
+     //
+     //            OK: 123
+     //
+     //          // , propA: Number // or set to `null` to accept any type
+     //          // , propB: [ String, Number ] // multiple possible types
+     //          // , propC: { type:String, required:true } // a required string
+     //          , prop_d: { type:Number, default:5.5 } // a number with default value
+     //          // , propE: { type:Object, default:function(){return[1]} } // must use factory fn
+     //          // , propF: { validator:function(v){return v>10} } // custom validator
+     //          , propG: 44.4
+     //
+     //        }
+     //    })//KIT.normaliseSchema()
+     // }//schema
 
 
 /*
@@ -197,16 +197,57 @@ isApp ? `
 
 }; KIT.name(Class, '${{classname}}')
 
-//// Create the plain `Class.stat` object (which Vue watches) and add public
-//// statics to it. Arg 2 of `KIT.define()` is `true` for statics.
-${{classname}}.stat = {}
-KIT.define(${{classname}}.stat, true, ${{classname}}.schema.stat)
 
-//// Create the plain `inst.attr` object (which Vue watches) and add public
-//// attributes to it. Arg 2 of `KIT.define()` is `false` for attributes.
-${{classname}}.prototype.attr = {}
-KIT.define(${{classname}}.prototype.attr, false, ${{classname}}.schema.attr)
+//// Define this class’s static and instance properties.
+${{classname}}.mixin({
+    location: '${{__LOCATION__}}'
+  , title: 'The ${{classname}} Schema'
+  , remarks: 'Defines metadata for this module'
 
+  , config: {} //@TODO
+
+    //// Public static properties (known as ‘statics’ in Oom).
+  , stat: {
+
+        //// Public constant statics.
+        NAME:    '${{classname}}'
+      , REMARKS: '${{remarks}}'
+
+      // , propA: Number // or set to `null` to accept any type
+      // , propB: [ String, Number ] // multiple possible types
+      // , propC: { type:String, required:true } // a required string
+      , prop_d: { type:'number', default:100 } // a number with default value
+      // , propE: { type:Object, default:function(){return[1]} } // must use factory fn
+      // , propF: { validator:function(v){return v>10} } // custom validator
+      , propG: 44.4
+
+    //// Public instance properties (known as ‘attributes’ in Oom).
+    }, attr: {
+
+        OK: 123
+
+      // , propA: Number // or set to `null` to accept any type
+      // , propB: [ String, Number ] // multiple possible types
+      // , propC: { type:String, required:true } // a required string
+      , prop_d: { type:Number, default:5.5 } // a number with default value
+      // , propE: { type:Object, default:function(){return[1]} } // must use factory fn
+      // , propF: { validator:function(v){return v>10} } // custom validator
+      , propG: 44.4
+
+    }
+
+})//Oom.Foo.mixin()
+
+// //// Create the plain `Class.stat` object (which Vue watches) and add public
+// //// statics to it. Arg 2 of `KIT.define()` is `true` for statics.
+// ${{classname}}.stat = {}
+// KIT.define(${{classname}}.stat, true, ${{classname}}.schema.stat)
+//
+// //// Create the plain `inst.attr` object (which Vue watches) and add public
+// //// attributes to it. Arg 2 of `KIT.define()` is `false` for attributes.
+// ${{classname}}.prototype.attr = {}
+// KIT.define(${{classname}}.prototype.attr, false, ${{classname}}.schema.attr)
+//
 
 
 

@@ -2,7 +2,7 @@
 
 
 
-//// Oom.Foo //// 1.2.17 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.18 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
 //// Windows 7:  IE 9, Safari 5.1
@@ -354,7 +354,7 @@ function simulateInput ($input, val) {
 
 
 
-//// Oom.Foo //// 1.2.17 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.18 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
@@ -637,7 +637,7 @@ function testAfterMounted () {
 
 
 
-//// Oom.Foo //// 1.2.17 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.18 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
@@ -916,4 +916,4 @@ function testAfterMounted () {
 
 
 
-//// Made by Oomtility Make 1.2.17 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.18 //\\//\\ http://oomtility.loop.coop /////////
