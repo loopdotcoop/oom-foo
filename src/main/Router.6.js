@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.18 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.19 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
@@ -160,9 +160,9 @@ const Class = Oom.Foo.Router = class extends Oom.Foo {
 
 //// Define this class’s static and instance properties.
 Oom.Foo.Router.mixin({
-    location: 'src/main/Router.6.js:203'
-  , title: 'The Oom.Foo.Router Schema'
+    title: 'The Oom.Foo.Router Schema'
   , remarks: 'Defines metadata for this module'
+  , location: 'src/main/Router.6.js'
 
   , config: {} //@TODO
 

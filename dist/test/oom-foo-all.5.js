@@ -47,9 +47,9 @@
             if (!isConstant(key))
               continue;
             tryHardSet(stat, key, 'Changed!');
-            var valid = schema.stat[key];
-            eq(stat[key], valid.default, 'stat.' + key + ' is ' + valid.default.toString());
-            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + valid.typeStr);
+            var def = schema.stat[key];
+            eq(stat[key], def.default, 'stat.' + key + ' is ' + def.default.toString());
+            is(isValid(def, stat[key]), 'stat.' + key + ' is a valid ' + def.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -63,10 +63,10 @@
           for (var key in schema.stat) {
             if (!isReadOnly(key))
               continue;
-            stat[key] = goodVals[schema.stat[key].typeStr];
-            var valid = schema.stat[key];
-            eq(stat[key], valid.default, 'stat.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + valid.typeStr);
+            var def = schema.stat[key];
+            stat[key] = goodVals[def.typeStr];
+            eq(stat[key], def.default, 'stat.' + key + ' is initially ' + def.default.toString());
+            is(isValid(def, stat[key]), 'stat.' + key + ' is a valid ' + def.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -78,11 +78,13 @@
           for (var key in schema.stat) {
             if (!isReadOnly(key))
               continue;
-            var good = goodVals[schema.stat[key].typeStr];
-            schema.stat[key].definedIn.stat['_' + key] = good;
+            var def = schema.stat[key];
+            var good = goodVals[def.typeStr];
+            var shadowObj = def.perClass ? stat : def.definedIn.stat;
+            shadowObj['_' + key] = good;
             eq(stat[key], good, 'stat.' + key + ' has changed to ' + good);
             Class.reset();
-            eq(stat[key], schema.stat[key].default, 'stat.' + key + ' has been reset to ' + schema.stat[key].default);
+            eq(stat[key], def.default, 'stat.' + key + ' has been reset to ' + def.default);
           }
         } catch (e) {
           console.error(e.message);
@@ -95,9 +97,9 @@
           for (var key in schema.stat) {
             if (!isReadWrite(key))
               continue;
-            var valid = schema.stat[key];
-            eq(stat[key], valid.default, 'stat.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + valid.typeStr);
+            var def = schema.stat[key];
+            eq(stat[key], def.default, 'stat.' + key + ' is initially ' + def.default.toString());
+            is(isValid(def, stat[key]), 'stat.' + key + ' is a valid ' + def.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -126,9 +128,9 @@
       it('has read-only static `inst_tally`', function() {
         try {
           Class.reset();
-          eq(0, stat.inst_tally, 'stat.inst_tally is zero after a ‘hard reset’');
+          eq(stat.inst_tally, 0, 'stat.inst_tally is zero after a ‘hard reset’');
           var instance = new Class();
-          eq(1, stat.inst_tally, 'stat.inst_tally is 1 after an instantiation');
+          eq(stat.inst_tally, 1, 'stat.inst_tally is 1 after an instantiation');
           Class.reset();
         } catch (e) {
           console.error(e.message);
@@ -158,9 +160,9 @@
             if (!isConstant(key))
               continue;
             tryHardSet(attr, key, 'Changed!');
-            var valid = schema.attr[key];
-            eq(attr[key], valid.default, 'attr.' + key + ' is ' + valid.default.toString());
-            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + valid.typeStr);
+            var def = schema.attr[key];
+            eq(attr[key], def.default, 'attr.' + key + ' is ' + def.default.toString());
+            is(isValid(def, attr[key]), 'attr.' + key + ' is a valid ' + def.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -173,10 +175,10 @@
           for (var key in schema.attr) {
             if (!isReadOnly(key))
               continue;
-            attr[key] = goodVals[schema.attr[key].typeStr];
-            var valid = schema.attr[key];
-            eq(attr[key], valid.default, 'attr.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + valid.typeStr);
+            var def = schema.attr[key];
+            attr[key] = goodVals[def.typeStr];
+            eq(attr[key], def.default, 'attr.' + key + ' is initially ' + def.default.toString());
+            is(isValid(def, attr[key]), 'attr.' + key + ' is a valid ' + def.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -205,9 +207,9 @@
           for (var key in schema.attr) {
             if (!isReadWrite(key))
               continue;
-            var valid = schema.attr[key];
-            eq(attr[key], valid.default, 'attr.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + valid.typeStr);
+            var def = schema.attr[key];
+            eq(attr[key], def.default, 'attr.' + key + ' is initially ' + def.default.toString());
+            is(isValid(def, attr[key]), 'attr.' + key + ' is a valid ' + def.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -237,9 +239,233 @@
         try {
           Class.reset();
           var instance0 = new Class();
-          eq(0, instance0.attr.inst_index, 'First instance after a hard reset has attr.inst_index 0');
+          eq(instance0.attr.inst_index, 0, 'First instance after a hard reset has attr.inst_index 0');
           var instance1 = new Class();
-          eq(1, instance1.attr.inst_index, 'Second instance after a hard reset has attr.inst_index 1');
+          eq(instance1.attr.inst_index, 1, 'Second instance after a hard reset has attr.inst_index 1');
+          Class.reset();
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+    });
+    describe('The Oom.Foo class', function() {
+      var Class = ROOT.Oom.Foo,
+          schema = Class.schema,
+          stat = Class.stat;
+      it('is a class with base methods', function() {
+        try {
+          eq((typeof Class === 'undefined' ? 'undefined' : $traceurRuntime.typeof(Class)), 'function', '`typeof Oom.Foo` is a function');
+          eq($traceurRuntime.typeof(Class.reset), 'function', 'Oom.Foo.reset() is a static method');
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      var n = countKeyMatches(schema.stat, isConstant);
+      it(("has " + n + " constant static" + (1 == n ? '' : 's')), function() {
+        try {
+          tryHardSet(Class, 'name', 'Changed!');
+          eq(Class.name, 'Oom.Foo', 'name is Oom.Foo');
+          for (var key in schema.stat) {
+            if (!isConstant(key))
+              continue;
+            tryHardSet(stat, key, 'Changed!');
+            var def = schema.stat[key];
+            eq(stat[key], def.default, 'stat.' + key + ' is ' + def.default.toString());
+            is(isValid(def, stat[key]), 'stat.' + key + ' is a valid ' + def.typeStr);
+          }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      n = countKeyMatches(schema.stat, isReadOnly);
+      it(("has " + n + " read-only static" + (1 == n ? '' : 's')), function() {
+        try {
+          Class.reset();
+          for (var key in schema.stat) {
+            if (!isReadOnly(key))
+              continue;
+            var def = schema.stat[key];
+            stat[key] = goodVals[def.typeStr];
+            eq(stat[key], def.default, 'stat.' + key + ' is initially ' + def.default.toString());
+            is(isValid(def, stat[key]), 'stat.' + key + ' is a valid ' + def.typeStr);
+          }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      it('sees when read-only statics change', function() {
+        try {
+          for (var key in schema.stat) {
+            if (!isReadOnly(key))
+              continue;
+            var def = schema.stat[key];
+            var good = goodVals[def.typeStr];
+            var shadowObj = def.perClass ? stat : def.definedIn.stat;
+            shadowObj['_' + key] = good;
+            eq(stat[key], good, 'stat.' + key + ' has changed to ' + good);
+            Class.reset();
+            eq(stat[key], def.default, 'stat.' + key + ' has been reset to ' + def.default);
+          }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      n = countKeyMatches(schema.stat, isReadWrite);
+      it(("has " + n + " read-write static" + (1 == n ? '' : 's')), function() {
+        try {
+          for (var key in schema.stat) {
+            if (!isReadWrite(key))
+              continue;
+            var def = schema.stat[key];
+            eq(stat[key], def.default, 'stat.' + key + ' is initially ' + def.default.toString());
+            is(isValid(def, stat[key]), 'stat.' + key + ' is a valid ' + def.typeStr);
+          }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      it('allows read-write statics to be changed', function() {
+        try {
+          for (var key in schema.stat) {
+            if (!isReadWrite(key))
+              continue;
+            var good = goodVals[schema.stat[key].typeStr];
+            var bad = badVals[schema.stat[key].typeStr];
+            stat[key] = good;
+            eq(stat[key], good, 'stat.' + key + ' has changed to ' + good);
+            stat[key] = bad;
+            eq(stat[key], good, 'stat.' + key + ' has NOT changed to ' + bad);
+            Class.reset();
+            eq(stat[key], schema.stat[key].default, 'stat.' + key + ' has been reset to ' + schema.stat[key].default);
+          }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      it('has read-only static `inst_tally`', function() {
+        try {
+          Class.reset();
+          eq(stat.inst_tally, 0, 'stat.inst_tally is zero after a ‘hard reset’');
+          var instance = new Class();
+          eq(stat.inst_tally, 1, 'stat.inst_tally is 1 after an instantiation');
+          Class.reset();
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+    });
+    describe('An Oom.Foo instance', function() {
+      var Class = ROOT.Oom.Foo,
+          schema = Class.schema,
+          instance = new Class(),
+          attr = instance.attr;
+      it('is an instance with base methods', function() {
+        try {
+          is(instance instanceof Class, 'is an instance of Oom.Foo');
+          eq(Class, instance.constructor, '`constructor` is Oom.Foo');
+          eq($traceurRuntime.typeof(instance.reset), 'function', 'myOom.Foo.reset() is an instance method');
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      var n = countKeyMatches(schema.attr, isConstant);
+      it(("has " + n + " constant attribute" + (1 == n ? '' : 's')), function() {
+        try {
+          for (var key in schema.attr) {
+            if (!isConstant(key))
+              continue;
+            tryHardSet(attr, key, 'Changed!');
+            var def = schema.attr[key];
+            eq(attr[key], def.default, 'attr.' + key + ' is ' + def.default.toString());
+            is(isValid(def, attr[key]), 'attr.' + key + ' is a valid ' + def.typeStr);
+          }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      n = countKeyMatches(schema.attr, isReadOnly);
+      it(("has " + n + " read-only attribute" + (1 == n ? '' : 's')), function() {
+        try {
+          for (var key in schema.attr) {
+            if (!isReadOnly(key))
+              continue;
+            var def = schema.attr[key];
+            attr[key] = goodVals[def.typeStr];
+            eq(attr[key], def.default, 'attr.' + key + ' is initially ' + def.default.toString());
+            is(isValid(def, attr[key]), 'attr.' + key + ' is a valid ' + def.typeStr);
+          }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      it('sees when read-only attributes change', function() {
+        try {
+          for (var key in schema.attr) {
+            if (!isReadOnly(key))
+              continue;
+            var good = goodVals[schema.attr[key].typeStr];
+            attr['_' + key] = good;
+            eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
+            instance.reset();
+            eq(attr[key], schema.attr[key].default, 'attr.' + key + ' has been reset to ' + schema.attr[key].default);
+          }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      n = countKeyMatches(schema.attr, isReadWrite);
+      it(("has " + n + " read-write attribute" + (1 == n ? '' : 's')), function() {
+        try {
+          for (var key in schema.attr) {
+            if (!isReadWrite(key))
+              continue;
+            var def = schema.attr[key];
+            eq(attr[key], def.default, 'attr.' + key + ' is initially ' + def.default.toString());
+            is(isValid(def, attr[key]), 'attr.' + key + ' is a valid ' + def.typeStr);
+          }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      it('allows read-write attributes to be changed', function() {
+        try {
+          for (var key in schema.attr) {
+            if (!isReadWrite(key))
+              continue;
+            var good = goodVals[schema.attr[key].typeStr];
+            var bad = badVals[schema.attr[key].typeStr];
+            attr[key] = good;
+            eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
+            attr[key] = bad;
+            eq(attr[key], good, 'attr.' + key + ' has NOT changed to ' + bad);
+            instance.reset();
+            eq(attr[key], schema.attr[key].default, 'attr.' + key + ' has been reset to ' + schema.attr[key].default);
+          }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      it('has read-only static `inst_index`', function() {
+        try {
+          Class.reset();
+          var instance0 = new Class();
+          eq(instance0.attr.inst_index, 0, 'First instance after a hard reset has attr.inst_index 0');
+          var instance1 = new Class();
+          eq(instance1.attr.inst_index, 1, 'Second instance after a hard reset has attr.inst_index 1');
           Class.reset();
         } catch (e) {
           console.error(e.message);
@@ -326,9 +552,9 @@ function testify() {
             if (!isConstant(key))
               continue;
             tryHardSet(stat, key, 'Changed!');
-            var valid = schema.stat[key];
-            eq(stat[key], valid.default, 'stat.' + key + ' is ' + valid.default.toString());
-            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + valid.typeStr);
+            var def = schema.stat[key];
+            eq(stat[key], def.default, 'stat.' + key + ' is ' + def.default.toString());
+            is(isValid(def, stat[key]), 'stat.' + key + ' is a valid ' + def.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -338,13 +564,14 @@ function testify() {
       n = countKeyMatches(schema.stat, isReadOnly);
       it(("has " + n + " read-only static" + (1 == n ? '' : 's')), function() {
         try {
+          Class.reset();
           for (var key in schema.stat) {
             if (!isReadOnly(key))
               continue;
-            stat[key] = goodVals[schema.stat[key].typeStr];
-            var valid = schema.stat[key];
-            eq(stat[key], valid.default, 'stat.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + valid.typeStr);
+            var def = schema.stat[key];
+            stat[key] = goodVals[def.typeStr];
+            eq(stat[key], def.default, 'stat.' + key + ' is initially ' + def.default.toString());
+            is(isValid(def, stat[key]), 'stat.' + key + ' is a valid ' + def.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -356,11 +583,13 @@ function testify() {
           for (var key in schema.stat) {
             if (!isReadOnly(key))
               continue;
-            var good = goodVals[schema.stat[key].typeStr];
-            schema.stat[key].definedIn.stat['_' + key] = good;
+            var def = schema.stat[key];
+            var good = goodVals[def.typeStr];
+            var shadowObj = def.perClass ? stat : def.definedIn.stat;
+            shadowObj['_' + key] = good;
             eq(stat[key], good, 'stat.' + key + ' has changed to ' + good);
             Class.reset();
-            eq(stat[key], schema.stat[key].default, 'stat.' + key + ' has been reset to ' + schema.stat[key].default);
+            eq(stat[key], def.default, 'stat.' + key + ' has been reset to ' + def.default);
           }
         } catch (e) {
           console.error(e.message);
@@ -373,9 +602,9 @@ function testify() {
           for (var key in schema.stat) {
             if (!isReadWrite(key))
               continue;
-            var valid = schema.stat[key];
-            eq(stat[key], valid.default, 'stat.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + valid.typeStr);
+            var def = schema.stat[key];
+            eq(stat[key], def.default, 'stat.' + key + ' is initially ' + def.default.toString());
+            is(isValid(def, stat[key]), 'stat.' + key + ' is a valid ' + def.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -424,9 +653,9 @@ function testify() {
             if (!isConstant(key))
               continue;
             tryHardSet(attr, key, 'Changed!');
-            var valid = schema.attr[key];
-            eq(attr[key], valid.default, 'attr.' + key + ' is ' + valid.default.toString());
-            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + valid.typeStr);
+            var def = schema.attr[key];
+            eq(attr[key], def.default, 'attr.' + key + ' is ' + def.default.toString());
+            is(isValid(def, attr[key]), 'attr.' + key + ' is a valid ' + def.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -436,13 +665,14 @@ function testify() {
       n = countKeyMatches(schema.attr, isReadOnly);
       it(("has " + n + " read-only attribute" + (1 == n ? '' : 's')), function() {
         try {
+          instance.reset();
           for (var key in schema.attr) {
             if (!isReadOnly(key))
               continue;
-            attr[key] = goodVals[schema.attr[key].typeStr];
-            var valid = schema.attr[key];
-            eq(attr[key], valid.default, 'attr.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + valid.typeStr);
+            var def = schema.attr[key];
+            attr[key] = goodVals[def.typeStr];
+            eq(attr[key], def.default, 'attr.' + key + ' is initially ' + def.default.toString());
+            is(isValid(def, attr[key]), 'attr.' + key + ' is a valid ' + def.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -471,9 +701,9 @@ function testify() {
           for (var key in schema.attr) {
             if (!isReadWrite(key))
               continue;
-            var valid = schema.attr[key];
-            eq(attr[key], valid.default, 'attr.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + valid.typeStr);
+            var def = schema.attr[key];
+            eq(attr[key], def.default, 'attr.' + key + ' is initially ' + def.default.toString());
+            is(isValid(def, attr[key]), 'attr.' + key + ' is a valid ' + def.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -543,9 +773,9 @@ function testify() {
             if (!isConstant(key))
               continue;
             tryHardSet(stat, key, 'Changed!');
-            var valid = schema.stat[key];
-            eq(stat[key], valid.default, 'stat.' + key + ' is ' + valid.default.toString());
-            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + valid.typeStr);
+            var def = schema.stat[key];
+            eq(stat[key], def.default, 'stat.' + key + ' is ' + def.default.toString());
+            is(isValid(def, stat[key]), 'stat.' + key + ' is a valid ' + def.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -555,13 +785,14 @@ function testify() {
       n = countKeyMatches(schema.stat, isReadOnly);
       it(("has " + n + " read-only static" + (1 == n ? '' : 's')), function() {
         try {
+          Class.reset();
           for (var key in schema.stat) {
             if (!isReadOnly(key))
               continue;
-            stat[key] = goodVals[schema.stat[key].typeStr];
-            var valid = schema.stat[key];
-            eq(stat[key], valid.default, 'stat.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + valid.typeStr);
+            var def = schema.stat[key];
+            stat[key] = goodVals[def.typeStr];
+            eq(stat[key], def.default, 'stat.' + key + ' is initially ' + def.default.toString());
+            is(isValid(def, stat[key]), 'stat.' + key + ' is a valid ' + def.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -573,11 +804,13 @@ function testify() {
           for (var key in schema.stat) {
             if (!isReadOnly(key))
               continue;
-            var good = goodVals[schema.stat[key].typeStr];
-            schema.stat[key].definedIn.stat['_' + key] = good;
+            var def = schema.stat[key];
+            var good = goodVals[def.typeStr];
+            var shadowObj = def.perClass ? stat : def.definedIn.stat;
+            shadowObj['_' + key] = good;
             eq(stat[key], good, 'stat.' + key + ' has changed to ' + good);
             Class.reset();
-            eq(stat[key], schema.stat[key].default, 'stat.' + key + ' has been reset to ' + schema.stat[key].default);
+            eq(stat[key], def.default, 'stat.' + key + ' has been reset to ' + def.default);
           }
         } catch (e) {
           console.error(e.message);
@@ -590,9 +823,9 @@ function testify() {
           for (var key in schema.stat) {
             if (!isReadWrite(key))
               continue;
-            var valid = schema.stat[key];
-            eq(stat[key], valid.default, 'stat.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, stat[key]), 'stat.' + key + ' is a valid ' + valid.typeStr);
+            var def = schema.stat[key];
+            eq(stat[key], def.default, 'stat.' + key + ' is initially ' + def.default.toString());
+            is(isValid(def, stat[key]), 'stat.' + key + ' is a valid ' + def.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -641,9 +874,9 @@ function testify() {
             if (!isConstant(key))
               continue;
             tryHardSet(attr, key, 'Changed!');
-            var valid = schema.attr[key];
-            eq(attr[key], valid.default, 'attr.' + key + ' is ' + valid.default.toString());
-            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + valid.typeStr);
+            var def = schema.attr[key];
+            eq(attr[key], def.default, 'attr.' + key + ' is ' + def.default.toString());
+            is(isValid(def, attr[key]), 'attr.' + key + ' is a valid ' + def.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -653,13 +886,14 @@ function testify() {
       n = countKeyMatches(schema.attr, isReadOnly);
       it(("has " + n + " read-only attribute" + (1 == n ? '' : 's')), function() {
         try {
+          instance.reset();
           for (var key in schema.attr) {
             if (!isReadOnly(key))
               continue;
-            attr[key] = goodVals[schema.attr[key].typeStr];
-            var valid = schema.attr[key];
-            eq(attr[key], valid.default, 'attr.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + valid.typeStr);
+            var def = schema.attr[key];
+            attr[key] = goodVals[def.typeStr];
+            eq(attr[key], def.default, 'attr.' + key + ' is initially ' + def.default.toString());
+            is(isValid(def, attr[key]), 'attr.' + key + ' is a valid ' + def.typeStr);
           }
         } catch (e) {
           console.error(e.message);
@@ -688,9 +922,9 @@ function testify() {
           for (var key in schema.attr) {
             if (!isReadWrite(key))
               continue;
-            var valid = schema.attr[key];
-            eq(attr[key], valid.default, 'attr.' + key + ' is initially ' + valid.default.toString());
-            is(isValid(valid, attr[key]), 'attr.' + key + ' is a valid ' + valid.typeStr);
+            var def = schema.attr[key];
+            eq(attr[key], def.default, 'attr.' + key + ' is initially ' + def.default.toString());
+            is(isValid(def, attr[key]), 'attr.' + key + ' is a valid ' + def.typeStr);
           }
         } catch (e) {
           console.error(e.message);

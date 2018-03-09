@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.18 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.19 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -43,7 +43,7 @@ describe('The Oom class', function () {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Automatic constant statics.
+    //// Oom class: Automatic constant statics.
     let n = countKeyMatches(schema.stat, isConstant)
     it(`has ${n} constant static${1==n?'':'s'}`, function(){try{
         tryHardSet(Class, 'name', 'Changed!')
@@ -51,64 +51,66 @@ describe('The Oom class', function () {
         for (let key in schema.stat) {
             if (! isConstant(key) ) continue // only constants
             tryHardSet(stat, key, 'Changed!')
-            const valid = schema.stat[key]
-            eq(stat[key], valid.default
-              , 'stat.'+key+' is '+valid.default.toString())
-            is( isValid(valid, stat[key])
-              , 'stat.'+key+' is a valid '+valid.typeStr )
+            const def = schema.stat[key]
+            eq(stat[key], def.default
+              , 'stat.'+key+' is '+def.default.toString())
+            is( isValid(def, stat[key])
+              , 'stat.'+key+' is a valid '+def.typeStr )
         }
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Automatic read-only statics - initial values.
+    //// Oom class: Automatic read-only statics - initial values.
     n = countKeyMatches(schema.stat, isReadOnly)
     it(`has ${n} read-only static${1==n?'':'s'}`, function(){try{
         Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
         for (let key in schema.stat) {
             if (! isReadOnly(key) ) continue // only read-only properties
-            stat[key] = goodVals[ schema.stat[key].typeStr ]
-            const valid = schema.stat[key]
-            eq(stat[key], valid.default
-              , 'stat.'+key+' is initially '+valid.default.toString())
-            is( isValid(valid, stat[key])
-              , 'stat.'+key+' is a valid '+valid.typeStr )
+            const def = schema.stat[key]
+            stat[key] = goodVals[ def.typeStr ]
+            eq(stat[key], def.default
+              , 'stat.'+key+' is initially '+def.default.toString())
+            is( isValid(def, stat[key])
+              , 'stat.'+key+' is a valid '+def.typeStr )
         }
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Automatic read-only statics - may change.
+    //// Oom class: Automatic read-only statics - may change.
     it('sees when read-only statics change', function(){try{
         for (let key in schema.stat) {
             if (! isReadOnly(key) ) continue // only read-only properties
-            const good = goodVals[ schema.stat[key].typeStr ]
-            schema.stat[key].definedIn.stat['_'+key] = good // note this line!
+            const def = schema.stat[key]
+            const good = goodVals[ def.typeStr ]
+            const shadowObj = def.perClass ? stat : def.definedIn.stat
+            shadowObj['_'+key] = good // `perClass` controls where a static’s ‘shadow’ value is stored
             eq(stat[key], good
               , 'stat.'+key+' has changed to '+good)
             //// Changing a read-only value via its underscore-prefixed ‘shadow’
             //// does not invoke any validation or type-checking. Therefore we
             //// don’t test that `badVals` are rejected.
             Class.reset()
-            eq(stat[key], schema.stat[key].default
-              , 'stat.'+key+' has been reset to '+schema.stat[key].default)
+            eq(stat[key], def.default
+              , 'stat.'+key+' has been reset to '+def.default)
         }
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Automatic read-write statics - initial values.
+    //// Oom class: Automatic read-write statics - initial values.
     n = countKeyMatches(schema.stat, isReadWrite)
     it(`has ${n} read-write static${1==n?'':'s'}`, function(){try{
         for (let key in schema.stat) {
             if (! isReadWrite(key) ) continue // only read-write properties
-            const valid = schema.stat[key]
-            eq(stat[key], valid.default
-              , 'stat.'+key+' is initially '+valid.default.toString())
-            is( isValid(valid, stat[key])
-              , 'stat.'+key+' is a valid '+valid.typeStr )
+            const def = schema.stat[key]
+            eq(stat[key], def.default
+              , 'stat.'+key+' is initially '+def.default.toString())
+            is( isValid(def, stat[key])
+              , 'stat.'+key+' is a valid '+def.typeStr )
         }
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Automatic read-write statics - can be changed.
+    //// Oom class: Automatic read-write statics - can be changed.
     it('allows read-write statics to be changed', function(){try{
         for (let key in schema.stat) {
             if (! isReadWrite(key) ) continue // only read-write properties
@@ -132,13 +134,13 @@ describe('The Oom class', function () {
     //// CUSTOM STATIC TESTS
 
 
-    //// Custom read-only statics - initial values.
+    //// Oom class: Custom read-only statics - initial values.
     it('has read-only static `inst_tally`', function(){try{
         Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
-        eq( 0, stat.inst_tally
+        eq( stat.inst_tally, 0
           , 'stat.inst_tally is zero after a ‘hard reset’' )
         const instance = new Class()
-        eq( 1, stat.inst_tally
+        eq( stat.inst_tally, 1
           , 'stat.inst_tally is 1 after an instantiation' )
         Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
     }catch(e){console.error(e.message);throw e}})
@@ -172,37 +174,37 @@ describe('An Oom instance', function () {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Automatic constant attributes.
+    //// Oom instance: Automatic constant attributes.
     let n = countKeyMatches(schema.attr, isConstant)
     it(`has ${n} constant attribute${1==n?'':'s'}`, function(){try{
         for (let key in schema.attr) {
             if (! isConstant(key) ) continue // only constants
             tryHardSet(attr, key, 'Changed!')
-            const valid = schema.attr[key]
-            eq(attr[key], valid.default
-              , 'attr.'+key+' is '+valid.default.toString())
-            is( isValid(valid, attr[key])
-              , 'attr.'+key+' is a valid '+valid.typeStr )
+            const def = schema.attr[key]
+            eq(attr[key], def.default
+              , 'attr.'+key+' is '+def.default.toString())
+            is( isValid(def, attr[key])
+              , 'attr.'+key+' is a valid '+def.typeStr )
         }
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Automatic read-only attributes - initial values.
+    //// Oom instance: Automatic read-only attributes - initial values.
     n = countKeyMatches(schema.attr, isReadOnly)
     it(`has ${n} read-only attribute${1==n?'':'s'}`, function(){try{
         for (let key in schema.attr) {
             if (! isReadOnly(key) ) continue // only read-only properties
-            attr[key] = goodVals[ schema.attr[key].typeStr ]
-            const valid = schema.attr[key]
-            eq(attr[key], valid.default
-              , 'attr.'+key+' is initially '+valid.default.toString())
-            is( isValid(valid, attr[key])
-              , 'attr.'+key+' is a valid '+valid.typeStr )
+            const def = schema.attr[key]
+            attr[key] = goodVals[ def.typeStr ]
+            eq(attr[key], def.default
+              , 'attr.'+key+' is initially '+def.default.toString())
+            is( isValid(def, attr[key])
+              , 'attr.'+key+' is a valid '+def.typeStr )
         }
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Automatic read-only attributes - may change.
+    //// Oom instance: Automatic read-only attributes - may change.
     it('sees when read-only attributes change', function(){try{
         for (let key in schema.attr) {
             if (! isReadOnly(key) ) continue // only read-only properties
@@ -220,21 +222,21 @@ describe('An Oom instance', function () {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Automatic read-write attributes - initial values.
+    //// Oom instance: Automatic read-write attributes - initial values.
     n = countKeyMatches(schema.attr, isReadWrite)
     it(`has ${n} read-write attribute${1==n?'':'s'}`, function(){try{
         for (let key in schema.attr) {
             if (! isReadWrite(key) ) continue // only read-write properties
-            const valid = schema.attr[key]
-            eq(attr[key], valid.default
-              , 'attr.'+key+' is initially '+valid.default.toString())
-            is( isValid(valid, attr[key])
-              , 'attr.'+key+' is a valid '+valid.typeStr )
+            const def = schema.attr[key]
+            eq(attr[key], def.default
+              , 'attr.'+key+' is initially '+def.default.toString())
+            is( isValid(def, attr[key])
+              , 'attr.'+key+' is a valid '+def.typeStr )
         }
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Automatic read-write attributes - may change.
+    //// Oom instance: Automatic read-write attributes - may change.
     it('allows read-write attributes to be changed', function(){try{
         for (let key in schema.attr) {
             if (! isReadWrite(key) ) continue // only read-write properties
@@ -258,14 +260,14 @@ describe('An Oom instance', function () {
     //// CUSTOM ATTRIBUTE TESTS
 
 
-    //// Custom read-only statics - initial values.
+    //// Oom instance: Custom read-only statics - initial values.
     it('has read-only static `inst_index`', function(){try{
         Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
         const instance0 = new Class()
-        eq( 0, instance0.attr.inst_index
+        eq( instance0.attr.inst_index, 0
           , 'First instance after a hard reset has attr.inst_index 0' )
         const instance1 = new Class()
-        eq( 1, instance1.attr.inst_index
+        eq( instance1.attr.inst_index, 1
           , 'Second instance after a hard reset has attr.inst_index 1' )
         Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
     }catch(e){console.error(e.message);throw e}})
@@ -283,6 +285,271 @@ describe('An Oom instance', function () {
 
 
 })//describe('An Oom instance')
+
+
+
+
+describe('The Oom.Foo class', function () {
+    const Class = ROOT.Oom.Foo
+        , schema = Class.schema, stat = Class.stat
+
+
+
+
+    //// AUTOMATIC STATIC TESTS
+    //// Test whether a class conforms to its `stat` schema. You don’t need to
+    //// modify these tests unless you’ve given your class special behaviour.
+
+    it('is a class with base methods', function(){try{
+        eq(typeof Class, 'function'
+          , '`typeof Oom.Foo` is a function')
+        eq(typeof Class.reset, 'function'
+          , 'Oom.Foo.reset() is a static method')
+    }catch(e){console.error(e.message);throw e}})
+
+
+    //// Oom.Foo class: Automatic constant statics.
+    let n = countKeyMatches(schema.stat, isConstant)
+    it(`has ${n} constant static${1==n?'':'s'}`, function(){try{
+        tryHardSet(Class, 'name', 'Changed!')
+        eq(Class.name, 'Oom.Foo', 'name is Oom.Foo')
+        for (let key in schema.stat) {
+            if (! isConstant(key) ) continue // only constants
+            tryHardSet(stat, key, 'Changed!')
+            const def = schema.stat[key]
+            eq(stat[key], def.default
+              , 'stat.'+key+' is '+def.default.toString())
+            is( isValid(def, stat[key])
+              , 'stat.'+key+' is a valid '+def.typeStr )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    //// Oom.Foo class: Automatic read-only statics - initial values.
+    n = countKeyMatches(schema.stat, isReadOnly)
+    it(`has ${n} read-only static${1==n?'':'s'}`, function(){try{
+        Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
+        for (let key in schema.stat) {
+            if (! isReadOnly(key) ) continue // only read-only properties
+            const def = schema.stat[key]
+            stat[key] = goodVals[ def.typeStr ]
+            eq(stat[key], def.default
+              , 'stat.'+key+' is initially '+def.default.toString())
+            is( isValid(def, stat[key])
+              , 'stat.'+key+' is a valid '+def.typeStr )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    //// Oom.Foo class: Automatic read-only statics - may change.
+    it('sees when read-only statics change', function(){try{
+        for (let key in schema.stat) {
+            if (! isReadOnly(key) ) continue // only read-only properties
+            const def = schema.stat[key]
+            const good = goodVals[ def.typeStr ]
+            const shadowObj = def.perClass ? stat : def.definedIn.stat
+            shadowObj['_'+key] = good // `perClass` controls where a static’s ‘shadow’ value is stored
+            eq(stat[key], good
+              , 'stat.'+key+' has changed to '+good)
+            //// Changing a read-only value via its underscore-prefixed ‘shadow’
+            //// does not invoke any validation or type-checking. Therefore we
+            //// don’t test that `badVals` are rejected.
+            Class.reset()
+            eq(stat[key], def.default
+              , 'stat.'+key+' has been reset to '+def.default)
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    //// Oom.Foo class: Automatic read-write statics - initial values.
+    n = countKeyMatches(schema.stat, isReadWrite)
+    it(`has ${n} read-write static${1==n?'':'s'}`, function(){try{
+        for (let key in schema.stat) {
+            if (! isReadWrite(key) ) continue // only read-write properties
+            const def = schema.stat[key]
+            eq(stat[key], def.default
+              , 'stat.'+key+' is initially '+def.default.toString())
+            is( isValid(def, stat[key])
+              , 'stat.'+key+' is a valid '+def.typeStr )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    //// Oom.Foo class: Automatic read-write statics - can be changed.
+    it('allows read-write statics to be changed', function(){try{
+        for (let key in schema.stat) {
+            if (! isReadWrite(key) ) continue // only read-write properties
+            const good = goodVals[ schema.stat[key].typeStr ]
+            const bad  = badVals[  schema.stat[key].typeStr ]
+            stat[key] = good
+            eq(stat[key], good
+              , 'stat.'+key+' has changed to '+good)
+            stat[key] = bad
+            eq(stat[key], good
+              , 'stat.'+key+' has NOT changed to '+bad)
+            Class.reset()
+            eq(stat[key], schema.stat[key].default
+              , 'stat.'+key+' has been reset to '+schema.stat[key].default)
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+
+
+    //// CUSTOM STATIC TESTS
+
+
+    //// Oom.Foo class: Custom read-only statics - initial values.
+    it('has read-only static `inst_tally`', function(){try{
+        Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
+        eq( stat.inst_tally, 0
+          , 'stat.inst_tally is zero after a ‘hard reset’' )
+        const instance = new Class()
+        eq( stat.inst_tally, 1
+          , 'stat.inst_tally is 1 after an instantiation' )
+        Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
+    }catch(e){console.error(e.message);throw e}})
+
+
+
+
+})//describe('The Oom.Foo class')
+
+
+
+
+describe('An Oom.Foo instance', function () {
+    const Class = ROOT.Oom.Foo
+        , schema = Class.schema, instance = new Class(), attr = instance.attr
+
+
+
+
+    //// AUTOMATIC ATTRIBUTE TESTS
+    //// Test whether an instance conforms to its `attr` schema. You don’t need
+    //// to modify these tests unless you’ve given your class special behaviour.
+
+    it('is an instance with base methods', function(){try{
+        is(instance instanceof Class
+          , 'is an instance of Oom.Foo')
+        eq(Class, instance.constructor
+          , '`constructor` is Oom.Foo')
+        eq(typeof instance.reset, 'function'
+          , 'myOom.Foo.reset() is an instance method')
+    }catch(e){console.error(e.message);throw e}})
+
+
+    //// Oom.Foo instance: Automatic constant attributes.
+    let n = countKeyMatches(schema.attr, isConstant)
+    it(`has ${n} constant attribute${1==n?'':'s'}`, function(){try{
+        for (let key in schema.attr) {
+            if (! isConstant(key) ) continue // only constants
+            tryHardSet(attr, key, 'Changed!')
+            const def = schema.attr[key]
+            eq(attr[key], def.default
+              , 'attr.'+key+' is '+def.default.toString())
+            is( isValid(def, attr[key])
+              , 'attr.'+key+' is a valid '+def.typeStr )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    //// Oom.Foo instance: Automatic read-only attributes - initial values.
+    n = countKeyMatches(schema.attr, isReadOnly)
+    it(`has ${n} read-only attribute${1==n?'':'s'}`, function(){try{
+        for (let key in schema.attr) {
+            if (! isReadOnly(key) ) continue // only read-only properties
+            const def = schema.attr[key]
+            attr[key] = goodVals[ def.typeStr ]
+            eq(attr[key], def.default
+              , 'attr.'+key+' is initially '+def.default.toString())
+            is( isValid(def, attr[key])
+              , 'attr.'+key+' is a valid '+def.typeStr )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    //// Oom.Foo instance: Automatic read-only attributes - may change.
+    it('sees when read-only attributes change', function(){try{
+        for (let key in schema.attr) {
+            if (! isReadOnly(key) ) continue // only read-only properties
+            const good = goodVals[ schema.attr[key].typeStr ]
+            attr['_'+key] = good
+            eq(attr[key], good
+              , 'attr.'+key+' has changed to '+good)
+            //// Changing a read-only value via its underscore-prefixed ‘shadow’
+            //// does not invoke any validation or type-checking. Therefore we
+            //// don’t test that `badVals` are rejected.
+            instance.reset()
+            eq(attr[key], schema.attr[key].default
+              , 'attr.'+key+' has been reset to '+schema.attr[key].default)
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    //// Oom.Foo instance: Automatic read-write attributes - initial values.
+    n = countKeyMatches(schema.attr, isReadWrite)
+    it(`has ${n} read-write attribute${1==n?'':'s'}`, function(){try{
+        for (let key in schema.attr) {
+            if (! isReadWrite(key) ) continue // only read-write properties
+            const def = schema.attr[key]
+            eq(attr[key], def.default
+              , 'attr.'+key+' is initially '+def.default.toString())
+            is( isValid(def, attr[key])
+              , 'attr.'+key+' is a valid '+def.typeStr )
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    //// Oom.Foo instance: Automatic read-write attributes - may change.
+    it('allows read-write attributes to be changed', function(){try{
+        for (let key in schema.attr) {
+            if (! isReadWrite(key) ) continue // only read-write properties
+            const good = goodVals[ schema.attr[key].typeStr ]
+            const bad  = badVals[  schema.attr[key].typeStr ]
+            attr[key] = good
+            eq(attr[key], good
+              , 'attr.'+key+' has changed to '+good)
+            attr[key] = bad
+            eq(attr[key], good
+              , 'attr.'+key+' has NOT changed to '+bad)
+            instance.reset()
+            eq(attr[key], schema.attr[key].default
+              , 'attr.'+key+' has been reset to '+schema.attr[key].default)
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+
+
+    //// CUSTOM ATTRIBUTE TESTS
+
+
+    //// Oom.Foo instance: Custom read-only statics - initial values.
+    it('has read-only static `inst_index`', function(){try{
+        Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
+        const instance0 = new Class()
+        eq( instance0.attr.inst_index, 0
+          , 'First instance after a hard reset has attr.inst_index 0' )
+        const instance1 = new Class()
+        eq( instance1.attr.inst_index, 1
+          , 'Second instance after a hard reset has attr.inst_index 1' )
+        Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
+    }catch(e){console.error(e.message);throw e}})
+
+    //@TODO
+    //
+    // tryHardSet(attr, 'UUID', 'Changed!')
+    // eq('string', typeof attr.UUID
+    //   , '`attr.UUID` is a string')
+    // is(/^[0-9A-Za-z]{6}$/.test(attr.UUID)
+    //   , '`attr.UUID` conforms to /^[0-9A-Za-z]{6}$/')
+    //@TODO more tests
+
+
+
+
+})//describe('An Oom.Foo instance')
 
 
 

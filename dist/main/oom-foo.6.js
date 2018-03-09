@@ -36,15 +36,17 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
 
     constructor (config={}) {
 
-        //// Update `attr.inst_index` - the first Oom instance is 0, the second
-        //// is 1, etc.  Also increment `stat.inst_tally`, this class’s static
-        //// tally of instantiations.
-        if (Oom === this.constructor) { // not being called by a child-class
-            this.attr._inst_index = Oom.stat.inst_tally // the '_' prefix is...
-            Oom.stat._inst_tally++ // ...the ‘shadow’ of a read-only static
-        }
+        //// Update `attr.inst_index` - the first instance is 0, the second is 1
+        //// etc.  Also increment `stat.inst_tally`, this class’s static tally
+        //// of instantiations.
+        this.attr._inst_index = this.constructor.stat.inst_tally // the '_' prefix is...
+        this.constructor.stat._inst_tally++ // ...the ‘shadow’ of a read-only static
 
 /*
+        if (Oom === this.constructor) { // not being called by a child-class
+          // ...
+        }
+
         //// Define `attr`, a container for public instance-attributes. It’s a
         //// plain object, which Vue prefers.
         const attr = this.attr = {}
@@ -60,10 +62,12 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
         const statSchema = this.schema.stat // `this` is the current class
         for (let key in statSchema) {
             if ( KIT.isConstant(key) ) continue // no need to reset constants
+            const def = statSchema[key]
+            const shadowObj = def.perClass ? this.stat : def.definedIn.stat
             if ( KIT.isReadOnly(key) ) // reset a read-only static’s ‘shadow’
-                statSchema[key].definedIn.stat['_'+key] = statSchema[key].default
+                shadowObj['_'+key] = def.default
             else // a read-write static
-                this.stat[key] = statSchema[key].default
+                shadowObj[key] = def.default
         }
     }
 
@@ -73,16 +77,18 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
         const attrSchema = this.constructor.schema.attr // the current class
         for (let key in attrSchema) {
             if ( KIT.isConstant(key) ) continue // no need to reset constants
+            const def = attrSchema[key]
             if ( KIT.isReadOnly(key) ) // reset a read-only attribute’s ‘shadow’
-                this.attr['_'+key] = attrSchema[key].default
+                this.attr['_'+key] = def.default
             else // a read-write attribute
-                this.attr[key] = attrSchema[key].default
+                this.attr[key] = def.default
         }
     }
 
 
     //// Merge a new schema into the current class’s existing schema.
     static mixin (shorthandSchema) {
+        const ME = 'Oom.mixin(): '
 
         //// Merge a normalised version of the new schema into the existing one.
         const existing = this.schema
@@ -91,17 +97,35 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
         this.schema.stat = Object.assign({}, existing.stat, normalised.stat)
         this.schema.attr = Object.assign({}, existing.attr, normalised.attr)
 
-        //// Create or replace the plain `Class.stat` object (which Vue watches)
-        //// and add public statics to it.
-        //// Arg 2 of `KIT.define()` is `isStatic` - `true` for statics.
+        //// Create or replace the plain `Class.stat` object (which Vue will
+        //// reactively watch) and add public statics to it.
         this.stat = {}
-        KIT.define(this.stat, true, this.schema.stat)
+        for (let key in this.schema.stat) {
+            const def = this.schema.stat[key] // a single stat schema-definition
+            if ( KIT.isConstant(key) )
+                KIT.define.constant.stat(this.stat, def)
+            else if ( KIT.isReadOnly(key) )
+                KIT.define.readOnly.stat(this.stat, def)
+            else if ( KIT.isReadWrite(key) )
+                KIT.define.readWrite.stat(this.stat, def)
+            else
+                throw Error(ME+key+' is an invalid static name')
+        }
 
-        //// Create or replace the plain `inst.attr` object (which Vue watches)
-        //// and add public attributes to it.
-        //// Arg 2 of `KIT.define()` is `isStatic` - `false` for attributes.
+        //// Create or replace the plain `inst.attr` object (which Vue will
+        //// reactively watch) and add public attributes to it.
         this.prototype.attr = {}
-        KIT.define(this.prototype.attr, false, this.schema.attr)
+        for (let key in this.schema.attr) {
+            const def = this.schema.attr[key] // a single attr schema-definition
+            if ( KIT.isConstant(key) )
+                KIT.define.constant.attr(this.prototype.attr, def)
+            else if ( KIT.isReadOnly(key) )
+                KIT.define.readOnly.attr(this.prototype.attr, def)
+            else if ( KIT.isReadWrite(key) )
+                KIT.define.readWrite.attr(this.prototype.attr, def)
+            else
+                throw Error(ME+key+' is an invalid attribute name')
+        }
 
     }
 
@@ -123,9 +147,9 @@ if (META.LOADED_FIRST) {
 
     //// Define Oom’s static and instance properties.
     Oom.mixin({
-        location: 'src/main/Bases.6.js:122'
-      , title: 'The Base Schema'
+        title: 'The Base Schema'
       , remarks: 'The foundational schema, defined by the base Oom class'
+      , location: 'src/main/Bases.6.js'
 
       , config: {} //@TODO
 
@@ -294,15 +318,18 @@ Oom.devMainAFrame = function (Class) { return {
 
 //// Define `Oom.Foo`, this module’s specialism of `Oom`.
 Oom.Foo = class extends Oom {
+    constructor (config={}) {
+        super(config)
+    }
 
 }; KIT.name(Oom.Foo, 'Oom.Foo')
 
 
 //// Define this class’s static and instance properties.
 Oom.Foo.mixin({
-    location: 'src/main/Bases.6.js:299'
-  , title: 'The Oom.Foo Schema'
+    title: 'The Oom.Foo Schema'
   , remarks: 'Defines metadata for this module'
+  , location: 'src/main/Bases.6.js'
 
   , config: {} //@TODO
 
@@ -425,6 +452,71 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
         return now
     }
 
+    //// Functions in the `define` set are used to initialise the statics and
+    //// attributes defined in a class’s schema. They are primarily used by
+    //// `Oom.mixin()`. `def` should be a single property-definition from a
+    //// normalised schema object.
+  , define: {
+
+        //// Initialise a constant, eg `FOO_BAR`.
+        constant: {
+            stat: (stat, def) => KIT.define.constant.any(stat, def)
+          , attr: (attr, def) => KIT.define.constant.any(attr, def)
+          , any:  (obj, def)  =>
+                Object.defineProperty(obj, def.name, { value:def.default
+                  , configurable:false, enumerable:true, writable:false })
+        }
+
+        //// Initialise a read-only property, eg `foo_bar`.
+      , readOnly: {
+            stat: (stat, def) => {
+                const shadowObj = def.perClass ? stat : def.definedIn.stat
+                KIT.define.shadow(shadowObj, def)
+                KIT.define.readOnly.any(stat, def, shadowObj)
+            }
+          , attr: (attr, def) => {
+                KIT.define.shadow(attr, def)
+                KIT.define.readOnly.any(attr, def, attr)
+            }
+          , any:  (obj, def, shadowObj) =>
+                Object.defineProperty(obj, def.name, {
+                    get: function ()  { return shadowObj['_'+def.name] }
+                  , set: function (value) { } // do nothing - it’s read-only
+                  , configurable:true, enumerable:true })
+        }
+
+        //// Initialise a read-write property, eg `fooBar`.
+      , readWrite: {
+            stat: (stat, def) => {
+                const shadowObj = def.perClass ? stat : def.definedIn.stat
+                KIT.define.shadow(shadowObj, def)
+                KIT.define.readWrite.any(stat, def, shadowObj)
+            }
+          , attr: (attr, def) => {
+                KIT.define.shadow(attr, def)
+                KIT.define.readWrite.any(attr, def, attr)
+            }
+          , any:  (obj, def, shadowObj) =>
+                Object.defineProperty(obj, def.name, {
+                    get: function ()  { return shadowObj['_'+def.name] }
+                  , set: function (value) {
+                        if ( KIT.isValid(def, value) )
+                            return shadowObj['_'+def.name] = value
+                        if ('function' !== typeof def.type) return // give up
+                        let castValue = def.type(value) // eg `Number("123")`
+                        if ( KIT.isValid(def, castValue) )
+                            return shadowObj['_'+def.name] = castValue
+                    }
+                  , configurable:true, enumerable:true })
+        }
+
+        //// Used by `readOnly.*t**()` and `readWrite.*t**()` to initialise a
+        //// ‘shadow’ property, eg `_foo_bar` or `_fooBar`.
+      , shadow: (shadowObj, def) =>
+            Object.defineProperty(shadowObj, '_'+def.name, { value:def.default
+              , configurable:true, enumerable:true, writable:true })
+    }
+/*
 
     //// Adds one or more property to `obj`. @TODO refactor - too messy
     //// Can also be used to change the value of existing properties. @TODO does Vue croak when that happens?
@@ -503,7 +595,7 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
             }
             Object.defineProperties(obj, def)
         })
-
+*/
 
     //// Set the unwritable, unconfigurable, non-enumerable `name` property of
     //// `obj`. Usage: `name(myFn, 'myFn')`.
@@ -614,6 +706,7 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
                 outDesc.typeStr = KIT.stringOrName(outDesc.type) // can be passed to a Vue component, unlike functions
                 outDesc.definedIn = Class
                 outDesc.definedInStr = Class.name
+                outDesc.perClass = null == inDesc.perClass ? true : inDesc.perClass
                 if (inDesc.remarks) outDesc.remarks = inDesc.remarks
             }
         }
@@ -794,9 +887,9 @@ const Class = Oom.Foo.Post = class extends Oom.Foo {
 
 //// Define this class’s static and instance properties.
 Oom.Foo.Post.mixin({
-    location: 'src/main/Post.6.js:203'
-  , title: 'The Oom.Foo.Post Schema'
+    title: 'The Oom.Foo.Post Schema'
   , remarks: 'Defines metadata for this module'
+  , location: 'src/main/Post.6.js'
 
   , config: {} //@TODO
 
@@ -1025,9 +1118,9 @@ const Class = Oom.Foo.Router = class extends Oom.Foo {
 
 //// Define this class’s static and instance properties.
 Oom.Foo.Router.mixin({
-    location: 'src/main/Router.6.js:203'
-  , title: 'The Oom.Foo.Router Schema'
+    title: 'The Oom.Foo.Router Schema'
   , remarks: 'Defines metadata for this module'
+  , location: 'src/main/Router.6.js'
 
   , config: {} //@TODO
 

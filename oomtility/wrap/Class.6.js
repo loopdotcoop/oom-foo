@@ -200,9 +200,9 @@ isApp ? `
 
 //// Define this class’s static and instance properties.
 ${{classname}}.mixin({
-    location: '${{__LOCATION__}}'
-  , title: 'The ${{classname}} Schema'
+    title: 'The ${{classname}} Schema'
   , remarks: 'Defines metadata for this module'
+  , location: '${{__LOCATION__}}'
 
   , config: {} //@TODO
 

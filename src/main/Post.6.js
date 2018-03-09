@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.18 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.19 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
@@ -160,9 +160,9 @@ const Class = Oom.Foo.Post = class extends Oom.Foo {
 
 //// Define this class’s static and instance properties.
 Oom.Foo.Post.mixin({
-    location: 'src/main/Post.6.js:203'
-  , title: 'The Oom.Foo.Post Schema'
+    title: 'The Oom.Foo.Post Schema'
   , remarks: 'Defines metadata for this module'
+  , location: 'src/main/Post.6.js'
 
   , config: {} //@TODO
 

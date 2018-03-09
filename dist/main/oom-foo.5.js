@@ -14,20 +14,19 @@
   var Oom = ROOT.Oom = META.LOADED_FIRST ? function() {
     function Oom() {
       var config = arguments[0] !== (void 0) ? arguments[0] : {};
-      if (Oom === this.constructor) {
-        this.attr._inst_index = Oom.stat.inst_tally;
-        Oom.stat._inst_tally++;
-      }
+      this.attr._inst_index = this.constructor.stat.inst_tally;
+      this.constructor.stat._inst_tally++;
     }
     return ($traceurRuntime.createClass)(Oom, {reset: function() {
         var attrSchema = this.constructor.schema.attr;
         for (var key in attrSchema) {
           if (KIT.isConstant(key))
             continue;
+          var def = attrSchema[key];
           if (KIT.isReadOnly(key))
-            this.attr['_' + key] = attrSchema[key].default;
+            this.attr['_' + key] = def.default;
           else
-            this.attr[key] = attrSchema[key].default;
+            this.attr[key] = def.default;
         }
       }}, {
       reset: function() {
@@ -35,22 +34,45 @@
         for (var key in statSchema) {
           if (KIT.isConstant(key))
             continue;
+          var def = statSchema[key];
+          var shadowObj = def.perClass ? this.stat : def.definedIn.stat;
           if (KIT.isReadOnly(key))
-            statSchema[key].definedIn.stat['_' + key] = statSchema[key].default;
+            shadowObj['_' + key] = def.default;
           else
-            this.stat[key] = statSchema[key].default;
+            shadowObj[key] = def.default;
         }
       },
       mixin: function(shorthandSchema) {
+        var ME = 'Oom.mixin(): ';
         var existing = this.schema;
         var normalised = KIT.normaliseSchema(this, shorthandSchema);
         this.schema = {};
         this.schema.stat = Object.assign({}, existing.stat, normalised.stat);
         this.schema.attr = Object.assign({}, existing.attr, normalised.attr);
         this.stat = {};
-        KIT.define(this.stat, true, this.schema.stat);
+        for (var key in this.schema.stat) {
+          var def = this.schema.stat[key];
+          if (KIT.isConstant(key))
+            KIT.define.constant.stat(this.stat, def);
+          else if (KIT.isReadOnly(key))
+            KIT.define.readOnly.stat(this.stat, def);
+          else if (KIT.isReadWrite(key))
+            KIT.define.readWrite.stat(this.stat, def);
+          else
+            throw Error(ME + key + ' is an invalid static name');
+        }
         this.prototype.attr = {};
-        KIT.define(this.prototype.attr, false, this.schema.attr);
+        for (var key$__3 in this.schema.attr) {
+          var def$__4 = this.schema.attr[key$__3];
+          if (KIT.isConstant(key$__3))
+            KIT.define.constant.attr(this.prototype.attr, def$__4);
+          else if (KIT.isReadOnly(key$__3))
+            KIT.define.readOnly.attr(this.prototype.attr, def$__4);
+          else if (KIT.isReadWrite(key$__3))
+            KIT.define.readWrite.attr(this.prototype.attr, def$__4);
+          else
+            throw Error(ME + key$__3 + ' is an invalid attribute name');
+        }
       }
     });
   }() : ROOT.Oom;
@@ -59,9 +81,9 @@
   if (META.LOADED_FIRST) {
     Oom.schema = {};
     Oom.mixin({
-      location: 'src/main/Bases.6.js:122',
       title: 'The Base Schema',
       remarks: 'The foundational schema, defined by the base Oom class',
+      location: 'src/main/Bases.6.js',
       config: {},
       stat: {
         NAME: 'Oom',
@@ -115,11 +137,11 @@
       },
       methods: {},
       beforeCreate: function() {
-        var $__3 = KIT,
-            isReadWrite = $__3.isReadWrite,
-            isReadOnly = $__3.isReadOnly,
-            isConstant = $__3.isConstant,
-            stringOrName = $__3.stringOrName;
+        var $__2 = KIT,
+            isReadWrite = $__2.isReadWrite,
+            isReadOnly = $__2.isReadOnly,
+            isConstant = $__2.isConstant,
+            stringOrName = $__2.stringOrName;
         Vue.component('member-table', {
           template: Oom.memberTableVueTemplate,
           props: {
@@ -147,15 +169,16 @@
   };
   Oom.Foo = function($__super) {
     function $__1() {
-      $traceurRuntime.superConstructor($__1).apply(this, arguments);
+      var config = arguments[0] !== (void 0) ? arguments[0] : {};
+      $traceurRuntime.superConstructor($__1).call(this, config);
     }
     return ($traceurRuntime.createClass)($__1, {}, {}, $__super);
   }(Oom);
   KIT.name(Oom.Foo, 'Oom.Foo');
   Oom.Foo.mixin({
-    location: 'src/main/Bases.6.js:299',
     title: 'The Oom.Foo Schema',
     remarks: 'Defines metadata for this module',
+    location: 'src/main/Bases.6.js',
     config: {},
     stat: META,
     attr: {}
@@ -239,119 +262,81 @@
         }
         return now;
       },
-      define: function(obj, isStatic) {
-        for (var srcs = [],
-            $__2 = 2; $__2 < arguments.length; $__2++)
-          srcs[$__2 - 2] = arguments[$__2];
-        return srcs.forEach(function(src) {
-          var ME = 'KIT.define: ',
-              def = {};
-          var $__4 = function(k) {
-            if ('undefined' === typeof src[k].default)
-              throw Error(ME + k + ' is not a valid schema object');
-            var value = src[k].default;
-            if (KIT.isReadOnly(k)) {
-              if (isStatic) {
-                if (!src[k].definedIn.stat['_' + k])
-                  Object.defineProperty(src[k].definedIn.stat, '_' + k, {
-                    writable: true,
-                    value: value,
-                    configurable: true,
-                    enumerable: true
-                  });
-                def[k] = {
-                  get: function() {
-                    return src[k].definedIn.stat['_' + k];
-                  },
-                  set: function(v) {},
-                  configurable: true,
-                  enumerable: true
-                };
-              } else {
-                def['_' + k] = {
-                  writable: true,
-                  value: value,
-                  configurable: true,
-                  enumerable: true
-                };
-                def[k] = {
-                  get: function() {
-                    return obj['_' + k];
-                  },
-                  set: function(v) {},
-                  configurable: true,
-                  enumerable: true
-                };
-              }
-            } else if (KIT.isReadWrite(k)) {
-              if (isStatic) {
-                if (src[k].definedIn.stat['_' + k])
-                  console.log(src[k].definedInStr, 'already has', '_' + k);
-                else
-                  Object.defineProperty(src[k].definedIn.stat, '_' + k, {
-                    writable: true,
-                    value: value,
-                    configurable: true,
-                    enumerable: true
-                  });
-                def[k] = {
-                  get: function() {
-                    return src[k].definedIn.stat['_' + k];
-                  },
-                  set: function(v) {
-                    if (KIT.isValid(src[k], v))
-                      return src[k].definedIn.stat['_' + k] = v;
-                    var vCast;
-                    if ('function' === typeof src[k].type) {
-                      vCast = src[k].type(v);
-                      if (KIT.isValid(src[k], vCast))
-                        return src[k].definedIn.stat['_' + k] = vCast;
-                    }
-                  },
-                  configurable: true,
-                  enumerable: true
-                };
-              } else {
-                def['_' + k] = {
-                  writable: true,
-                  value: value,
-                  configurable: true,
-                  enumerable: true
-                };
-                def[k] = {
-                  get: function() {
-                    return obj['_' + k];
-                  },
-                  set: function(v) {
-                    if (KIT.isValid(src[k], v))
-                      return obj['_' + k] = v;
-                    var vCast;
-                    if ('function' === typeof src[k].type) {
-                      vCast = src[k].type(v);
-                      if (KIT.isValid(src[k], vCast))
-                        return obj['_' + k] = vCast;
-                    }
-                  },
-                  configurable: true,
-                  enumerable: true
-                };
-              }
-            } else if (KIT.isConstant(k)) {
-              def[k] = {
-                writable: false,
-                value: value,
-                configurable: false,
-                enumerable: true
-              };
-            } else {
-              throw Error(ME + k + ' is an invalid property name');
-            }
-          };
-          for (var k in src) {
-            $__4(k);
+      define: {
+        constant: {
+          stat: function(stat, def) {
+            return KIT.define.constant.any(stat, def);
+          },
+          attr: function(attr, def) {
+            return KIT.define.constant.any(attr, def);
+          },
+          any: function(obj, def) {
+            return Object.defineProperty(obj, def.name, {
+              value: def.default,
+              configurable: false,
+              enumerable: true,
+              writable: false
+            });
           }
-          Object.defineProperties(obj, def);
-        });
+        },
+        readOnly: {
+          stat: function(stat, def) {
+            var shadowObj = def.perClass ? stat : def.definedIn.stat;
+            KIT.define.shadow(shadowObj, def);
+            KIT.define.readOnly.any(stat, def, shadowObj);
+          },
+          attr: function(attr, def) {
+            KIT.define.shadow(attr, def);
+            KIT.define.readOnly.any(attr, def, attr);
+          },
+          any: function(obj, def, shadowObj) {
+            return Object.defineProperty(obj, def.name, {
+              get: function() {
+                return shadowObj['_' + def.name];
+              },
+              set: function(value) {},
+              configurable: true,
+              enumerable: true
+            });
+          }
+        },
+        readWrite: {
+          stat: function(stat, def) {
+            var shadowObj = def.perClass ? stat : def.definedIn.stat;
+            KIT.define.shadow(shadowObj, def);
+            KIT.define.readWrite.any(stat, def, shadowObj);
+          },
+          attr: function(attr, def) {
+            KIT.define.shadow(attr, def);
+            KIT.define.readWrite.any(attr, def, attr);
+          },
+          any: function(obj, def, shadowObj) {
+            return Object.defineProperty(obj, def.name, {
+              get: function() {
+                return shadowObj['_' + def.name];
+              },
+              set: function(value) {
+                if (KIT.isValid(def, value))
+                  return shadowObj['_' + def.name] = value;
+                if ('function' !== typeof def.type)
+                  return;
+                var castValue = def.type(value);
+                if (KIT.isValid(def, castValue))
+                  return shadowObj['_' + def.name] = castValue;
+              },
+              configurable: true,
+              enumerable: true
+            });
+          }
+        },
+        shadow: function(shadowObj, def) {
+          return Object.defineProperty(shadowObj, '_' + def.name, {
+            value: def.default,
+            configurable: true,
+            enumerable: true,
+            writable: true
+          });
+        }
       },
       name: function(obj, value) {
         return Object.defineProperty(obj, 'name', {
@@ -420,6 +405,7 @@
             outDesc.typeStr = KIT.stringOrName(outDesc.type);
             outDesc.definedIn = Class;
             outDesc.definedInStr = Class.name;
+            outDesc.perClass = null == inDesc.perClass ? true : inDesc.perClass;
             if (inDesc.remarks)
               outDesc.remarks = inDesc.remarks;
           }
@@ -442,9 +428,9 @@
   }(Oom.Foo);
   KIT.name(Class, 'Oom.Foo.Post');
   Oom.Foo.Post.mixin({
-    location: 'src/main/Post.6.js:203',
     title: 'The Oom.Foo.Post Schema',
     remarks: 'Defines metadata for this module',
+    location: 'src/main/Post.6.js',
     config: {},
     stat: {
       NAME: 'Oom.Foo.Post',
@@ -478,9 +464,9 @@
   }(Oom.Foo);
   KIT.name(Class, 'Oom.Foo.Router');
   Oom.Foo.Router.mixin({
-    location: 'src/main/Router.6.js:203',
     title: 'The Oom.Foo.Router Schema',
     remarks: 'Defines metadata for this module',
+    location: 'src/main/Router.6.js',
     config: {},
     stat: {
       NAME: 'Oom.Foo.Router',

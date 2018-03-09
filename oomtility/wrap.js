@@ -26,7 +26,7 @@ const CONSTS = {
 }
 
 const NAME     = 'Oomtility Wrap'
-    , VERSION  = '1.2.18'
+    , VERSION  = '1.2.19'
     , HOMEPAGE = 'https://oomtility.loop.coop'
     , HELP =
 `
@@ -234,7 +234,7 @@ function doWrap (path) {
             line = line.replace(/•/g, '\\u') // correct our edge-case avoider
             line = line.replace(/([°-¹])/g, (m,p1) =>
                 '__LOCATION__' === doubleTemplateLut[p1]
-              ? `'+path+':${num+1}` //@TODO fix num after conditional `${{{`s
+              ? `'+path+'`
               : `'+(${doubleTemplateLut[p1]})+'`) // reinstate double-templates
             if ( "'+(" === line.slice(0,3) ) // remove useless code
                 line = `  + ${line.slice(2)}\\n'`
@@ -256,7 +256,7 @@ function doWrap (path) {
             sub = sub.replace(/•/g, '\\u') // correct our edge-case avoider
             sub = sub.replace(/([°-¹])/g, (m,p1) =>
                 '__LOCATION__' === doubleTemplateLut[p1]
-              ? `'+path+':${num+1}` //@TODO fix num after conditional `${{{`s
+              ? `'+path+'`
               : `'+(${doubleTemplateLut[p1]})+'`) // reinstate double-templates
             wrapped.push(`  + '${sub}'`)
             pos += len
@@ -284,13 +284,10 @@ function doWrap (path) {
     if (0 < consts.length) {
         let hasLocation = false
         consts.forEach(c => {
-            // if ('__LOCATION__' === c) return hasLocation = true // dealt with as a special case
             configToConst.push((docomma ? '  , ' : '    ') + c)
             docomma = true
         })
         out = out.concat('const {', configToConst, '} = config')
-        // if (hasLocation)
-        //     out = out.concat('const {', configToConst, '} = config')
     }
 
     //// Define options for `fs.writeFileSync()`.

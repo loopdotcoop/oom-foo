@@ -40,7 +40,7 @@ describe('The ${{classname}} class', function () {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Automatic constant statics.
+    //// ${{classname}} class: Automatic constant statics.
     let n = countKeyMatches(schema.stat, isConstant)
     it(`has ${n} constant static${1==n?'':'s'}`, function(){try{
         tryHardSet(Class, 'name', 'Changed!')
@@ -48,63 +48,66 @@ describe('The ${{classname}} class', function () {
         for (let key in schema.stat) {
             if (! isConstant(key) ) continue // only constants
             tryHardSet(stat, key, 'Changed!')
-            const valid = schema.stat[key]
-            eq(stat[key], valid.default
-              , 'stat.'+key+' is '+valid.default.toString())
-            is( isValid(valid, stat[key])
-              , 'stat.'+key+' is a valid '+valid.typeStr )
+            const def = schema.stat[key]
+            eq(stat[key], def.default
+              , 'stat.'+key+' is '+def.default.toString())
+            is( isValid(def, stat[key])
+              , 'stat.'+key+' is a valid '+def.typeStr )
         }
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Automatic read-only statics - initial values.
+    //// ${{classname}} class: Automatic read-only statics - initial values.
     n = countKeyMatches(schema.stat, isReadOnly)
     it(`has ${n} read-only static${1==n?'':'s'}`, function(){try{
+        Class.reset()
         for (let key in schema.stat) {
             if (! isReadOnly(key) ) continue // only read-only properties
-            stat[key] = goodVals[ schema.stat[key].typeStr ]
-            const valid = schema.stat[key]
-            eq(stat[key], valid.default
-              , 'stat.'+key+' is initially '+valid.default.toString())
-            is( isValid(valid, stat[key])
-              , 'stat.'+key+' is a valid '+valid.typeStr )
+            const def = schema.stat[key]
+            stat[key] = goodVals[ def.typeStr ]
+            eq(stat[key], def.default
+              , 'stat.'+key+' is initially '+def.default.toString())
+            is( isValid(def, stat[key])
+              , 'stat.'+key+' is a valid '+def.typeStr )
         }
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Automatic read-only statics - may change.
+    //// ${{classname}} class: Automatic read-only statics - may change.
     it('sees when read-only statics change', function(){try{
         for (let key in schema.stat) {
             if (! isReadOnly(key) ) continue // only read-only properties
-            const good = goodVals[ schema.stat[key].typeStr ]
-            schema.stat[key].definedIn.stat['_'+key] = good // note this line!
+            const def = schema.stat[key]
+            const good = goodVals[ def.typeStr ]
+            const shadowObj = def.perClass ? stat : def.definedIn.stat
+            shadowObj['_'+key] = good // `perClass` controls where a static’s ‘shadow’ value is stored
             eq(stat[key], good
               , 'stat.'+key+' has changed to '+good)
             //// Changing a read-only value via its underscore-prefixed ‘shadow’
             //// does not invoke any validation or type-checking. Therefore we
             //// don’t test that `badVals` are rejected.
             Class.reset()
-            eq(stat[key], schema.stat[key].default
-              , 'stat.'+key+' has been reset to '+schema.stat[key].default)
+            eq(stat[key], def.default
+              , 'stat.'+key+' has been reset to '+def.default)
         }
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Automatic read-write statics - initial values.
+    //// ${{classname}} class: Automatic read-write statics - initial values.
     n = countKeyMatches(schema.stat, isReadWrite)
     it(`has ${n} read-write static${1==n?'':'s'}`, function(){try{
         for (let key in schema.stat) {
             if (! isReadWrite(key) ) continue // only read-write properties
-            const valid = schema.stat[key]
-            eq(stat[key], valid.default
-              , 'stat.'+key+' is initially '+valid.default.toString())
-            is( isValid(valid, stat[key])
-              , 'stat.'+key+' is a valid '+valid.typeStr )
+            const def = schema.stat[key]
+            eq(stat[key], def.default
+              , 'stat.'+key+' is initially '+def.default.toString())
+            is( isValid(def, stat[key])
+              , 'stat.'+key+' is a valid '+def.typeStr )
         }
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Automatic read-write statics - can be changed.
+    //// ${{classname}} class: Automatic read-write statics - can be changed.
     it('allows read-write statics to be changed', function(){try{
         for (let key in schema.stat) {
             if (! isReadWrite(key) ) continue // only read-write properties
@@ -157,37 +160,38 @@ describe('An ${{classname}} instance', function () {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Automatic constant attributes.
+    //// ${{classname}} instance: Automatic constant attributes.
     let n = countKeyMatches(schema.attr, isConstant)
     it(`has ${n} constant attribute${1==n?'':'s'}`, function(){try{
         for (let key in schema.attr) {
             if (! isConstant(key) ) continue // only constants
             tryHardSet(attr, key, 'Changed!')
-            const valid = schema.attr[key]
-            eq(attr[key], valid.default
-              , 'attr.'+key+' is '+valid.default.toString())
-            is( isValid(valid, attr[key])
-              , 'attr.'+key+' is a valid '+valid.typeStr )
+            const def = schema.attr[key]
+            eq(attr[key], def.default
+              , 'attr.'+key+' is '+def.default.toString())
+            is( isValid(def, attr[key])
+              , 'attr.'+key+' is a valid '+def.typeStr )
         }
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Automatic read-only attributes - initial values.
+    //// ${{classname}} instance: Automatic read-only attributes - initial values.
     n = countKeyMatches(schema.attr, isReadOnly)
     it(`has ${n} read-only attribute${1==n?'':'s'}`, function(){try{
+        instance.reset()
         for (let key in schema.attr) {
             if (! isReadOnly(key) ) continue // only read-only properties
-            attr[key] = goodVals[ schema.attr[key].typeStr ]
-            const valid = schema.attr[key]
-            eq(attr[key], valid.default
-              , 'attr.'+key+' is initially '+valid.default.toString())
-            is( isValid(valid, attr[key])
-              , 'attr.'+key+' is a valid '+valid.typeStr )
+            const def = schema.attr[key]
+            attr[key] = goodVals[ def.typeStr ]
+            eq(attr[key], def.default
+              , 'attr.'+key+' is initially '+def.default.toString())
+            is( isValid(def, attr[key])
+              , 'attr.'+key+' is a valid '+def.typeStr )
         }
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Automatic read-only attributes - may change.
+    //// ${{classname}} instance: Automatic read-only attributes - may change.
     it('sees when read-only attributes change', function(){try{
         for (let key in schema.attr) {
             if (! isReadOnly(key) ) continue // only read-only properties
@@ -205,21 +209,21 @@ describe('An ${{classname}} instance', function () {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Automatic read-write attributes - initial values.
+    //// ${{classname}} instance: Automatic read-write attributes - initial values.
     n = countKeyMatches(schema.attr, isReadWrite)
     it(`has ${n} read-write attribute${1==n?'':'s'}`, function(){try{
         for (let key in schema.attr) {
             if (! isReadWrite(key) ) continue // only read-write properties
-            const valid = schema.attr[key]
-            eq(attr[key], valid.default
-              , 'attr.'+key+' is initially '+valid.default.toString())
-            is( isValid(valid, attr[key])
-              , 'attr.'+key+' is a valid '+valid.typeStr )
+            const def = schema.attr[key]
+            eq(attr[key], def.default
+              , 'attr.'+key+' is initially '+def.default.toString())
+            is( isValid(def, attr[key])
+              , 'attr.'+key+' is a valid '+def.typeStr )
         }
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Automatic read-write attributes - may change.
+    //// ${{classname}} instance: Automatic read-write attributes - may change.
     it('allows read-write attributes to be changed', function(){try{
         for (let key in schema.attr) {
             if (! isReadWrite(key) ) continue // only read-write properties

@@ -63,8 +63,10 @@
           for (var key in stat) {
             if (!isReadOnly(key))
               continue;
-            cache.good[key] = goodVals[schema.stat[key].typeStr];
-            schema.stat[key].definedIn.stat['_' + key] = cache.good[key];
+            var def = schema.stat[key];
+            cache.good[key] = goodVals[def.typeStr];
+            var shadowObj = def.perClass ? stat : def.definedIn.stat;
+            shadowObj['_' + key] = cache.good[key];
           }
           Vue.nextTick((function() {
             var error;
@@ -357,8 +359,10 @@ function simulateInput($input, val) {
           for (var key in stat) {
             if (!isReadOnly(key))
               continue;
-            cache.good[key] = goodVals[schema.stat[key].typeStr];
-            schema.stat[key].definedIn.stat['_' + key] = cache.good[key];
+            var def = schema.stat[key];
+            cache.good[key] = goodVals[def.typeStr];
+            var shadowObj = def.perClass ? stat : def.definedIn.stat;
+            shadowObj['_' + key] = cache.good[key];
           }
           Vue.nextTick((function() {
             var error;
@@ -644,8 +648,10 @@ function simulateInput($input, val) {
           for (var key in stat) {
             if (!isReadOnly(key))
               continue;
-            cache.good[key] = goodVals[schema.stat[key].typeStr];
-            schema.stat[key].definedIn.stat['_' + key] = cache.good[key];
+            var def = schema.stat[key];
+            cache.good[key] = goodVals[def.typeStr];
+            var shadowObj = def.perClass ? stat : def.definedIn.stat;
+            shadowObj['_' + key] = cache.good[key];
           }
           Vue.nextTick((function() {
             var error;

@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.18 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.19 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
 //// Windows 7:  IE 9, Safari 5.1
@@ -40,9 +40,6 @@ function testAfterMounted () {
     //// you’ve given your class special behaviour.
 
 
-    //// The current `inst_tally` depends on what previous test suites did.
-    // let initInstTally
-
     it('is a viable Vue component', function(){try{
         eq( $('#'+testID).length, 1
           , '#'+testID+' exists' )
@@ -53,7 +50,7 @@ function testAfterMounted () {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Automatic statics - initial values.
+    //// Oom class: Automatic statics - initial values.
     it('shows correct initial statics', function (done) {
         //// `Vue.nextTick()` because Vue hasn’t initialised the properties yet.
         Vue.nextTick((function(){let error;try{
@@ -70,13 +67,15 @@ function testAfterMounted () {
     }) // `bind(this)` to run the test in Mocha’s context)
 
 
-    //// Automatic read-only statics - shows changes.
+    //// Oom class: Automatic read-only statics - shows changes.
     it('shows that read-only statics have changed', function (done) {
         const cache = { good:{} }
         for (let key in stat) {
             if (! isReadOnly(key) ) continue // only read-only properties
-            cache.good[key] = goodVals[ schema.stat[key].typeStr ]
-            schema.stat[key].definedIn.stat['_'+key] = cache.good[key]
+            const def = schema.stat[key]
+            cache.good[key] = goodVals[ def.typeStr ]
+            const shadowObj = def.perClass ? stat : def.definedIn.stat
+            shadowObj['_'+key] = cache.good[key] // `perClass` controls where a static’s ‘shadow’ value is stored
         }
         Vue.nextTick((function(){let error;try{
             for (let key in stat) {
@@ -93,7 +92,7 @@ function testAfterMounted () {
     })
 
 
-    //// Automatic read-write statics - shows changes.
+    //// Oom class: Automatic read-write statics - shows changes.
     it('shows that read-write statics have changed', function (done) {
         const cache = { good:{} }
         for (let key in stat) {
@@ -113,7 +112,7 @@ function testAfterMounted () {
     })
 
 
-    //// Automatic read-write statics - valid input.
+    //// Oom class: Automatic read-write statics - valid input.
     it('updates read-write statics after UI input', function (done) {
         const cache = { $el:{}, good:{} }
         for (let key in stat) {
@@ -133,7 +132,7 @@ function testAfterMounted () {
     })
 
 
-    //// Automatic read-write statics - invalid input.
+    //// Oom class: Automatic read-write statics - invalid input.
     it('does not update read-write statics after invalid UI input', function (done) {
         const cache = { $el:{}, orig:{} }
         for (let key in stat) {
