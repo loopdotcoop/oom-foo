@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.19 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.20 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -35,6 +35,8 @@ describe('The Oom class', function () {
     //// Test whether a class conforms to its `stat` schema. You don’t need to
     //// modify these tests unless you’ve given your class special behaviour.
 
+
+    //// Oom class: The class itself.
     it('is a class with base methods', function(){try{
         eq(typeof Class, 'function'
           , '`typeof Oom` is a function')
@@ -164,6 +166,8 @@ describe('An Oom instance', function () {
     //// Test whether an instance conforms to its `attr` schema. You don’t need
     //// to modify these tests unless you’ve given your class special behaviour.
 
+
+    //// Oom instance: The instance itself.
     it('is an instance with base methods', function(){try{
         is(instance instanceof Class
           , 'is an instance of Oom')
@@ -300,6 +304,8 @@ describe('The Oom.Foo class', function () {
     //// Test whether a class conforms to its `stat` schema. You don’t need to
     //// modify these tests unless you’ve given your class special behaviour.
 
+
+    //// Oom.Foo class: The class itself.
     it('is a class with base methods', function(){try{
         eq(typeof Class, 'function'
           , '`typeof Oom.Foo` is a function')
@@ -429,6 +435,7 @@ describe('An Oom.Foo instance', function () {
     //// Test whether an instance conforms to its `attr` schema. You don’t need
     //// to modify these tests unless you’ve given your class special behaviour.
 
+    //// Oom.Foo instance: The instance itself.
     it('is an instance with base methods', function(){try{
         is(instance instanceof Class
           , 'is an instance of Oom.Foo')

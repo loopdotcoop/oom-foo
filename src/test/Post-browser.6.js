@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.19 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.20 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
 const { describe, it, eq, is, goodVals, badVals } = ROOT.testify()
 const { isConstant, isReadOnly, isReadWrite } = Oom.KIT
 describe('Oom.Foo.Post (browser)', () => {
-    const hid = 0 // `true` hides the Vue component, `false` makes it visible
+    const hid = true // `true` hides the Vue component, `false` makes it visible
 
 
 
@@ -23,7 +23,7 @@ describe('The Oom.Foo.Post.devMainVue component', function (done) {
           + `id="${testID}"><${testID}>Loading...</${testID}></div>`)
       , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })
 
-function testAfterMounted () {
+    function testAfterMounted () {
 
 
 
@@ -34,6 +34,7 @@ function testAfterMounted () {
     //// you’ve given your class special behaviour.
 
 
+    //// Oom.Foo.Post.devMainVue(): The component itself.
     it('is a viable Vue component', function(){try{
         eq( $('#'+testID).length, 1, '#'+testID+' exists' )
         eq( $('#'+testID+' .dev-main').length, 1
@@ -43,11 +44,10 @@ function testAfterMounted () {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Oom.Foo.Post class: Automatic statics - initial values.
+    //// Oom.Foo.Post.devMainVue(): Automatic statics - initial values.
+    //// `Vue.nextTick()` because Vue hasn’t initialised the properties yet.
     it('shows correct initial statics', function (done) {
-        //// `Vue.nextTick()` because Vue hasn’t initialised the properties yet.
         Vue.nextTick((function(){let error;try{
-            // initInstTally = stat.inst_tally
             for (let key in stat) {
                 const $el = $(`#${testID} .stat .Oom-${key} .val`)
                 const val = ( $el.find('.read-write')[0] )
@@ -60,7 +60,7 @@ function testAfterMounted () {
     }) // `bind(this)` to run the test in Mocha’s context)
 
 
-    //// Oom.Foo.Post class: Automatic read-only statics - shows changes.
+    //// Oom.Foo.Post.devMainVue(): Automatic read-only statics - shows changes.
     it('shows that read-only statics have changed', function (done) {
         const cache = { good:{} }
         for (let key in stat) {
@@ -85,7 +85,7 @@ function testAfterMounted () {
     })
 
 
-    //// Oom.Foo.Post class: Automatic read-write statics - shows changes.
+    //// Oom.Foo.Post.devMainVue(): Automatic read-write statics - shows changes.
     it('shows that read-write statics have changed', function (done) {
         const cache = { good:{} }
         for (let key in stat) {
@@ -105,7 +105,7 @@ function testAfterMounted () {
     })
 
 
-    //// Oom.Foo.Post class: Automatic read-write statics - valid input.
+    //// Oom.Foo.Post.devMainVue(): Automatic read-write statics - valid input.
     it('updates read-write statics after UI input', function (done) {
         const cache = { $el:{}, good:{} }
         for (let key in stat) {
@@ -125,7 +125,7 @@ function testAfterMounted () {
     })
 
 
-    //// Oom.Foo.Post class: Automatic read-write statics - invalid input.
+    //// Oom.Foo.Post.devMainVue(): Automatic read-write statics - invalid input.
     it('does not update read-write statics after invalid UI input', function (done) {
         const cache = { $el:{}, orig:{} }
         for (let key in stat) {
@@ -158,6 +158,7 @@ function testAfterMounted () {
     //// AUTOMATIC ATTRIBUTE TESTS
 
 
+    //// Oom.Foo.Post.devMainVue(): Automatic attributes - initial values.
     //// `Vue.nextTick()` because Vue hasn’t initialised the properties yet.
     it('shows correct initial attributes', function (done) {
         Vue.nextTick((function(){let error;try{
@@ -264,7 +265,7 @@ function testAfterMounted () {
 
 
 
-}//testAfterMounted()
+    }//testAfterMounted()
 })//describe('The Oom.Foo.Post.devMainVue component')
 
 

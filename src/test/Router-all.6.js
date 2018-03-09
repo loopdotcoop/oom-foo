@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.19 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.20 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
@@ -32,6 +32,8 @@ describe('The Oom.Foo.Router class', function () {
     //// Test whether a class conforms to its `stat` schema. You don’t need to
     //// modify these tests unless you’ve given your class special behaviour.
 
+
+    //// Oom.Foo.Router class: The class itself.
     it('is a class with base methods', function(){try{
         eq(typeof Class, 'function'
           , '`typeof Oom.Foo.Router` is a function')
@@ -150,6 +152,8 @@ describe('An Oom.Foo.Router instance', function () {
     //// Test whether an instance conforms to its `attr` schema. You don’t need
     //// to modify these tests unless you’ve given your class special behaviour.
 
+
+    //// Oom.Foo.Router instance: The instance itself.
     it('is an instance with base methods', function(){try{
         is(instance instanceof Class
           , 'is an instance of Oom.Foo.Router')
