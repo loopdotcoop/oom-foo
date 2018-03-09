@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.16 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.17 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
@@ -59,6 +59,7 @@
       n = countKeyMatches(schema.stat, isReadOnly);
       it(("has " + n + " read-only static" + (1 == n ? '' : 's')), function() {
         try {
+          Class.reset();
           for (var key in schema.stat) {
             if (!isReadOnly(key))
               continue;
@@ -117,6 +118,18 @@
             Class.reset();
             eq(stat[key], schema.stat[key].default, 'stat.' + key + ' has been reset to ' + schema.stat[key].default);
           }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      it('has read-only static `inst_tally`', function() {
+        try {
+          Class.reset();
+          eq(0, stat.inst_tally, 'stat.inst_tally is zero after a ‘hard reset’');
+          var instance = new Class();
+          eq(1, stat.inst_tally, 'stat.inst_tally is 1 after an instantiation');
+          Class.reset();
         } catch (e) {
           console.error(e.message);
           throw e;
@@ -215,6 +228,19 @@
             instance.reset();
             eq(attr[key], schema.attr[key].default, 'attr.' + key + ' has been reset to ' + schema.attr[key].default);
           }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      it('has read-only static `inst_index`', function() {
+        try {
+          Class.reset();
+          var instance0 = new Class();
+          eq(0, instance0.attr.inst_index, 'First instance after a hard reset has attr.inst_index 0');
+          var instance1 = new Class();
+          eq(1, instance1.attr.inst_index, 'Second instance after a hard reset has attr.inst_index 1');
+          Class.reset();
         } catch (e) {
           console.error(e.message);
           throw e;
@@ -697,4 +723,4 @@ function testify() {
 
 
 
-//// Made by Oomtility Make 1.2.16 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.17 //\\//\\ http://oomtility.loop.coop /////////

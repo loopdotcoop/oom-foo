@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.16 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.17 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -20,11 +20,6 @@ describe('Bases (all)', function () {
 let r; if (!(r=ROOT.Oom) || !(r=r.Foo) || !(r=r.stat) || !(r=r.LOADED_FIRST))
     throw Error('Can’t test: ROOT.Oom.Foo.stat.LOADED_FIRST does not exist')
 const LOADED_FIRST = ROOT.Oom.Foo.stat.LOADED_FIRST //@TODO generalise Foo
-
-
-//// `inst_tally` will be incremented each time an instance is created. We
-//// capture its initial value here, which should be zero.
-// let initInstTally = ROOT.Oom.stat.inst_tally
 
 
 
@@ -68,7 +63,7 @@ describe('The Oom class', function () {
     //// Automatic read-only statics - initial values.
     n = countKeyMatches(schema.stat, isReadOnly)
     it(`has ${n} read-only static${1==n?'':'s'}`, function(){try{
-        // stat._inst_tally = 0 // reset `inst_tally` @TODO avoid this
+        Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
         for (let key in schema.stat) {
             if (! isReadOnly(key) ) continue // only read-only properties
             stat[key] = goodVals[ schema.stat[key].typeStr ]
@@ -135,7 +130,18 @@ describe('The Oom class', function () {
 
 
     //// CUSTOM STATIC TESTS
-    //@TODO
+
+
+    //// Custom read-only statics - initial values.
+    it('has read-only static `inst_tally`', function(){try{
+        Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
+        eq( 0, stat.inst_tally
+          , 'stat.inst_tally is zero after a ‘hard reset’' )
+        const instance = new Class()
+        eq( 1, stat.inst_tally
+          , 'stat.inst_tally is 1 after an instantiation' )
+        Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
+    }catch(e){console.error(e.message);throw e}})
 
 
 
@@ -146,7 +152,6 @@ describe('The Oom class', function () {
 
 
 describe('An Oom instance', function () {
-    // initInstTally = ROOT.Oom.stat.inst_tally
     const Class = ROOT.Oom
         , schema = Class.schema, instance = new Class(), attr = instance.attr
 
@@ -251,6 +256,20 @@ describe('An Oom instance', function () {
 
 
     //// CUSTOM ATTRIBUTE TESTS
+
+
+    //// Custom read-only statics - initial values.
+    it('has read-only static `inst_index`', function(){try{
+        Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
+        const instance0 = new Class()
+        eq( 0, instance0.attr.inst_index
+          , 'First instance after a hard reset has attr.inst_index 0' )
+        const instance1 = new Class()
+        eq( 1, instance1.attr.inst_index
+          , 'Second instance after a hard reset has attr.inst_index 1' )
+        Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
+    }catch(e){console.error(e.message);throw e}})
+
     //@TODO
     //
     // tryHardSet(attr, 'UUID', 'Changed!')
@@ -258,10 +277,6 @@ describe('An Oom instance', function () {
     //   , '`attr.UUID` is a string')
     // is(/^[0-9A-Za-z]{6}$/.test(attr.UUID)
     //   , '`attr.UUID` conforms to /^[0-9A-Za-z]{6}$/')
-    // tryHardSet(attr, 'INST_INDEX', 99)
-    // eq(0, attr.INST_INDEX, 'attr.INST_INDEX is zero')
-    // eq(initInstTally+1, Class.stat.inst_tally
-    //   , 'stat.inst_tally has incremented to '+initInstTally)
     //@TODO more tests
 
 

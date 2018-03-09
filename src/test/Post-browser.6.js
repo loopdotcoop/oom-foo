@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.16 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.17 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
 const { describe, it, eq, is, goodVals, badVals } = ROOT.testify()
 const { isConstant, isReadOnly, isReadWrite } = Oom.KIT
 describe('Oom.Foo.Post (browser)', () => {
-    const hid = 0 // `true` hides the Vue component, `false` makes it visible
+    const hid = true // `true` hides the Vue component, `false` makes it visible
 
 
 

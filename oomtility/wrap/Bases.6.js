@@ -32,6 +32,14 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
 
     constructor (config={}) {
 
+        //// Update `attr.inst_index` - the first Oom instance is 0, the second
+        //// is 1, etc.  Also increment `stat.inst_tally`, this class’s static
+        //// tally of instantiations.
+        if (Oom === this.constructor) { // not being called by a child-class
+            this.attr._inst_index = Oom.stat.inst_tally // the '_' prefix is...
+            Oom.stat._inst_tally++ // ...the ‘shadow’ of a read-only static
+        }
+
 /*
         //// Define `attr`, a container for public instance-attributes. It’s a
         //// plain object, which Vue prefers.
@@ -39,13 +47,6 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
 
         //// attr.UUID: Oom instances have universally unique IDs.
         KIT.define( attr, { UUID: KIT.generateUUID() } )
-
-        //// attr.INST_INDEX: the first Oom instance is 0, the second is 1, etc.
-        //// Also increment this class’s (static) tally of instantiations.
-        if (Oom === this.constructor) { // not being called by a child-class
-            KIT.define( attr, { INST_INDEX: Oom.stat.inst_tally })
-            Oom.stat._inst_tally++ // underlying value of a read-only static
-        }
 */
     }
 
@@ -97,9 +98,9 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
               //     , default: 0
               //   }
 
-              , bar_baz: {
-                    remarks: 'Test read-only static'
-                  , default: 'initial value'
+              , inst_tally: {
+                    remarks: 'The number of Oom instantiations made so far'
+                  , default: 0
                 }
 
                 //// Public read-write statics.
@@ -113,12 +114,13 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
             }, attr: {
 
                 //// Public constant attributes.
+                UUID: 44
                 // UUID: KIT.generateUUID
-                FOO_BAR: 8080
+                // INST_INDEX: () => Oom.stat.inst_tally
 
                 //// Public read-only attributes.
                 //// Paired with underying underscore-prefixed attributes.
-              , foo_bar: 10000
+              , inst_index: 0 // set to `Oom.stat.inst_tally` by `constructor()`
 
                 //// Public read-write attributes.
               , hilite: {
@@ -134,6 +136,10 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
 
 } : ROOT.Oom
 KIT.name(Oom, 'Oom') // prevents `name` from being changed
+
+
+//// Expose `KIT` globally.
+Oom.KIT = KIT
 
 
 if (META.LOADED_FIRST) {
@@ -242,8 +248,9 @@ Oom.devMainVue = function (Class) { return {
 } }//Oom.devMainVue()
 
 
-//// Expose `KIT` globally.
-Oom.KIT = KIT
+Oom.devMainAFrame = function (Class) { return {
+
+} }//Oom.devMainAFrame()
 
 
 

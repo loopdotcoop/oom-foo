@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Bump'
-    , VERSION  = '1.2.16'
+    , VERSION  = '1.2.17'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , HELP =

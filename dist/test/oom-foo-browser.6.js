@@ -2,7 +2,7 @@
 
 
 
-//// Oom.Foo //// 1.2.16 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.17 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
 //// Windows 7:  IE 9, Safari 5.1
@@ -281,6 +281,46 @@ function testAfterMounted () {
 
 
 
+/*
+describe('The Oom.devMainAFrame() component', function (done) {
+    const
+        Class = ROOT.Oom
+      , testID = 'test-oom-devmainaframe' // also used for component tag
+      , stat = Class.stat
+      , schema = Class.schema
+      , instance = new Class()
+      , attr = instance.attr
+      , cmp = Vue.component( testID, Class.devMainAFrame(Class) )
+      , $container = $('.container').append(`<div class="row ${hid?'hid':''}" `
+          + `id="${testID}"><${testID}>Loading...</${testID}></div>`)
+      , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })
+
+function testAfterMounted () {
+
+
+
+
+    //// AUTOMATIC STATIC TESTS
+    //// Test whether the devMainAFrame component xxxxxx. You don’t need to modify these tests unless
+    //// you’ve given your class special behaviour.
+
+
+    it('is a viable Vue component', function(){try{
+        eq( $('#'+testID).length, 1
+          , '#'+testID+' exists' )
+        eq( $('#'+testID+' .dev-main').length, 1
+          , 'dev-main exists' )
+        eq( $('#'+testID+' .dev-main .member-table').length, 2
+          , 'Two member-tables exist (one for stat, one for attr)' )
+    }catch(e){console.error(e.message);throw e}})
+
+
+}//testAfterMounted()
+})//describe('The Oom.devMainAFrame() component')
+*/
+
+
+
 
 })//describe('Bases (browser)')
 
@@ -314,7 +354,7 @@ function simulateInput ($input, val) {
 
 
 
-//// Oom.Foo //// 1.2.16 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.17 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
@@ -597,7 +637,7 @@ function testAfterMounted () {
 
 
 
-//// Oom.Foo //// 1.2.16 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.17 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
@@ -876,4 +916,4 @@ function testAfterMounted () {
 
 
 
-//// Made by Oomtility Make 1.2.16 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.17 //\\//\\ http://oomtility.loop.coop /////////

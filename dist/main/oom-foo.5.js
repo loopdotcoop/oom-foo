@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.16 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.17 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
     NAME: 'Oom.Foo',
-    VERSION: '1.2.16',
+    VERSION: '1.2.17',
     HOMEPAGE: 'http://oom-foo.loop.coop/',
     REMARKS: 'Initial test of the oom-hub architecture',
     LOADED_FIRST: !ROOT.Oom
@@ -14,6 +14,10 @@
   var Oom = ROOT.Oom = META.LOADED_FIRST ? function() {
     function Oom() {
       var config = arguments[0] !== (void 0) ? arguments[0] : {};
+      if (Oom === this.constructor) {
+        this.attr._inst_index = Oom.stat.inst_tally;
+        Oom.stat._inst_tally++;
+      }
     }
     return ($traceurRuntime.createClass)(Oom, {reset: function() {
         var attrSchema = this.constructor.schema.attr;
@@ -44,9 +48,9 @@
             VERSION: META.VERSION,
             HOMEPAGE: 'http://oom.loop.coop/',
             REMARKS: 'Base class for all Oom classes',
-            bar_baz: {
-              remarks: 'Test read-only static',
-              default: 'initial value'
+            inst_tally: {
+              remarks: 'The number of Oom instantiations made so far',
+              default: 0
             },
             hilite: {
               remarks: 'General purpose, useful as a dev label or status',
@@ -55,8 +59,8 @@
             }
           },
           attr: {
-            FOO_BAR: 8080,
-            foo_bar: 10000,
+            UUID: 44,
+            inst_index: 0,
             hilite: {
               remarks: 'General purpose, useful as a dev label or status',
               default: '#445566',
@@ -72,6 +76,7 @@
     });
   }() : ROOT.Oom;
   KIT.name(Oom, 'Oom');
+  Oom.KIT = KIT;
   if (META.LOADED_FIRST) {
     Oom.stat = {};
     KIT.define(Oom.stat, true, Oom.schema.stat);
@@ -127,7 +132,9 @@
       }
     };
   };
-  Oom.KIT = KIT;
+  Oom.devMainAFrame = function(Class) {
+    return {};
+  };
   Oom.Foo = function($__super) {
     function $__1() {
       $traceurRuntime.superConstructor($__1).apply(this, arguments);
@@ -501,4 +508,4 @@
 
 
 
-//// Made by Oomtility Make 1.2.16 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.17 //\\//\\ http://oomtility.loop.coop /////////
