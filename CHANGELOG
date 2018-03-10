@@ -46,3 +46,4 @@
 1.2.18 With `Oom.mixin()` and the special ${{__LOCATION__}} template variable
 1.2.19 Refactored `KIT.define()` and added `perClass` schema boolean
 1.2.20 Full set of `Oom.Foo` unit tests
+1.2.21 `UUID` is set using a ‘constant attribute from function’

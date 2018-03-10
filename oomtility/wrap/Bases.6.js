@@ -32,6 +32,15 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
 
     constructor (config={}) {
 
+        //// If any constant attributes had functions for their schema defaults,
+        //// run those functions now to get the constant value.
+        const schema = this.constructor.schema
+        for (let key in schema.attr) {
+            if (! KIT.isConstant(key) ) continue // only deal with constants
+            const def = schema.attr[key]
+            if (def.isFn) KIT.define.constant.attr(this.attr, def)
+        }
+
         //// Update `attr.inst_index` - the first instance is 0, the second is 1
         //// etc.  Also increment `stat.inst_tally`, this class’s static tally
         //// of instantiations.
@@ -95,33 +104,37 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
 
         //// Create or replace the plain `Class.stat` object (which Vue will
         //// reactively watch) and add public statics to it.
-        this.stat = {}
+        const stat = this.stat = {}
         for (let key in this.schema.stat) {
             const def = this.schema.stat[key] // a single stat schema-definition
             if ( KIT.isConstant(key) )
-                KIT.define.constant.stat(this.stat, def)
+                KIT.define.constant.stat(stat, def)
             else if ( KIT.isReadOnly(key) )
-                KIT.define.readOnly.stat(this.stat, def)
+                KIT.define.readOnly.stat(stat, def)
             else if ( KIT.isReadWrite(key) )
-                KIT.define.readWrite.stat(this.stat, def)
+                KIT.define.readWrite.stat(stat, def)
             else
                 throw Error(ME+key+' is an invalid static name')
         }
 
         //// Create or replace the plain `inst.attr` object (which Vue will
         //// reactively watch) and add public attributes to it.
-        this.prototype.attr = {}
+        const attr = this.prototype.attr = {}
         for (let key in this.schema.attr) {
             const def = this.schema.attr[key] // a single attr schema-definition
             if ( KIT.isConstant(key) )
-                KIT.define.constant.attr(this.prototype.attr, def)
+                { if (! def.isFn) KIT.define.constant.attr(attr, def) }
             else if ( KIT.isReadOnly(key) )
-                KIT.define.readOnly.attr(this.prototype.attr, def)
+                KIT.define.readOnly.attr(attr, def)
             else if ( KIT.isReadWrite(key) )
-                KIT.define.readWrite.attr(this.prototype.attr, def)
+                KIT.define.readWrite.attr(attr, def)
             else
                 throw Error(ME+key+' is an invalid attribute name')
         }
+        //// Note: if any constant attributes had functions for their schema
+        //// defaults, we do not run those functions yet. They will be run in
+        //// Oom’s constructor - the function may return a different value for
+        //// each instance.
 
     }
 
@@ -177,8 +190,7 @@ if (META.LOADED_FIRST) {
         }, attr: {
 
             //// Public constant attributes.
-            UUID: 44
-            // UUID: KIT.generateUUID
+            UUID: KIT.generateUUID
             // INST_INDEX: () => Oom.stat.inst_tally
 
             //// Public read-only attributes.
@@ -448,6 +460,7 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
         return now
     }
 
+
     //// Functions in the `define` set are used to initialise the statics and
     //// attributes defined in a class’s schema. They are primarily used by
     //// `Oom.mixin()`. `def` should be a single property-definition from a
@@ -457,9 +470,20 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
         //// Initialise a constant, eg `FOO_BAR`.
         constant: {
             stat: (stat, def) => KIT.define.constant.any(stat, def)
-          , attr: (attr, def) => KIT.define.constant.any(attr, def)
-          , any:  (obj, def)  =>
-                Object.defineProperty(obj, def.name, { value:def.default
+          , attr: (attr, def) => {
+                if (def.isFn) { // a weak constant: wont survive `tryHardSet()`
+                    const value = def.default()
+                    Object.defineProperty(attr, def.name, {
+                        get: function ()  { return value }
+                      , set: function (value) { } // do nothing - it’s constant
+                      , configurable:true, enumerable:true })
+                } else { // a proper constant: will survive `tryHardSet()`
+                    KIT.define.constant.any(attr, def)
+                }
+            }
+          , any: (obj, def) =>
+                Object.defineProperty(obj, def.name, {
+                    value: def.isFn ? def.default() : def.default
                   , configurable:false, enumerable:true, writable:false })
         }
 
@@ -668,9 +692,10 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
                 // if (null != inDesc.definedInStr)
                 //     throw TypeError(PFX+`inDesc.definedInStr has already been set`)
                 outDesc.name = propName // for better `isValid()` error messages
-                outDesc.default = ('object' === typeof inDesc)
+                outDesc.default = 'object' === typeof inDesc
                   ? inDesc.default // full: `{ stat:{ OK:{ default:'Yep' } } }`
                   : inDesc // ...or allow shorthand: `{ stat:{ OK:'Yep' } }`
+                outDesc.isFn = 'function' === typeof outDesc.default
                 const strToObj = {
                     array   : Array
                   , boolean : Boolean

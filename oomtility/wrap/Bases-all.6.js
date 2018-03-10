@@ -11,7 +11,7 @@ ${{topline}}
 !function (ROOT) { 'use strict'
 ROOT.testify = testify // make `testify()` available to all test files
 if (false) return // change to `true` to ‘hard skip’ this test
-const { describe, it, eq, is, tryHardSet, goodVals, badVals } = ROOT.testify()
+const { describe, it, eq, is, trySoftSet, tryHardSet, goodVals, badVals } = ROOT.testify()
 const { countKeyMatches, isConstant, isReadOnly, isReadWrite, isValid } = Oom.KIT
 describe('Bases (all)', function () {
 
@@ -52,8 +52,8 @@ describe('The Oom class', function () {
         eq(Class.name, 'Oom', 'name is Oom')
         for (let key in schema.stat) {
             if (! isConstant(key) ) continue // only constants
-            tryHardSet(stat, key, 'Changed!')
             const def = schema.stat[key]
+            tryHardSet(stat, key, goodVals[ def.typeStr ])
             eq(stat[key], def.default
               , 'stat.'+key+' is '+def.default.toString())
             is( isValid(def, stat[key])
@@ -178,13 +178,31 @@ describe('An Oom instance', function () {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Oom instance: Automatic constant attributes.
-    let n = countKeyMatches(schema.attr, isConstant)
-    it(`has ${n} constant attribute${1==n?'':'s'}`, function(){try{
+    //// Oom instance: Automatic constant attributes from function.
+    let n = countKeyMatches(schema.attr
+      , key => isConstant(key) && schema.attr[key].isFn )
+    it(`has ${n} constant attribute${1==n?'':'s'} from function`, function(){try{
         for (let key in schema.attr) {
-            if (! isConstant(key) ) continue // only constants
-            tryHardSet(attr, key, 'Changed!')
             const def = schema.attr[key]
+            if (! isConstant(key) || ! def.isFn ) continue // only constants from functions
+            //// Constants from functions are too ‘weak’ to pass `tryHardSet()`.
+            const origValue = attr[key]
+            trySoftSet(attr, key, goodVals[ def.typeStr ])
+            eq(attr[key], origValue
+              , 'attr.'+key+' remains '+origValue.toString()+' after simple set')
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    //// Oom instance: Automatic constant attributes NOT from function.
+    n = countKeyMatches(schema.attr
+      , key => isConstant(key) && ! schema.attr[key].isFn )
+    it(`has ${n} constant attribute${1==n?'':'s'} NOT from function`, function(){try{
+        for (let key in schema.attr) {
+            const def = schema.attr[key]
+            if (! isConstant(key) || def.isFn ) continue // only constants NOT from functions
+            //// Constants NOT from functions are able to pass `tryHardSet()`.
+            tryHardSet(attr, key, goodVals[ def.typeStr ])
             eq(attr[key], def.default
               , 'attr.'+key+' is '+def.default.toString())
             is( isValid(def, attr[key])
@@ -321,8 +339,8 @@ describe('The Oom.${{classname}} class', function () {
         eq(Class.name, 'Oom.${{classname}}', 'name is Oom.${{classname}}')
         for (let key in schema.stat) {
             if (! isConstant(key) ) continue // only constants
-            tryHardSet(stat, key, 'Changed!')
             const def = schema.stat[key]
+            tryHardSet(stat, key, goodVals[ def.typeStr ])
             eq(stat[key], def.default
               , 'stat.'+key+' is '+def.default.toString())
             is( isValid(def, stat[key])
@@ -446,13 +464,31 @@ describe('An Oom.${{classname}} instance', function () {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Oom.${{classname}} instance: Automatic constant attributes.
-    let n = countKeyMatches(schema.attr, isConstant)
-    it(`has ${n} constant attribute${1==n?'':'s'}`, function(){try{
+    //// Oom.${{classname}} instance: Automatic constant attributes from function.
+    let n = countKeyMatches(schema.attr
+      , key => isConstant(key) && schema.attr[key].isFn )
+    it(`has ${n} constant attribute${1==n?'':'s'} from function`, function(){try{
         for (let key in schema.attr) {
-            if (! isConstant(key) ) continue // only constants
-            tryHardSet(attr, key, 'Changed!')
             const def = schema.attr[key]
+            if (! isConstant(key) || ! def.isFn ) continue // only constants from functions
+            //// Constants from functions are too ‘weak’ to pass `tryHardSet()`.
+            const origValue = attr[key]
+            trySoftSet(attr, key, goodVals[ def.typeStr ])
+            eq(attr[key], origValue
+              , 'attr.'+key+' remains '+origValue.toString()+' after simple set')
+        }
+    }catch(e){console.error(e.message);throw e}})
+
+
+    //// Oom.${{classname}} instance: Automatic constant attributes NOT from function.
+    n = countKeyMatches(schema.attr
+      , key => isConstant(key) && ! schema.attr[key].isFn )
+    it(`has ${n} constant attribute${1==n?'':'s'} NOT from function`, function(){try{
+        for (let key in schema.attr) {
+            const def = schema.attr[key]
+            if (! isConstant(key) || def.isFn ) continue // only constants NOT from functions
+            //// Constants NOT from functions are able to pass `tryHardSet()`.
+            tryHardSet(attr, key, goodVals[ def.typeStr ])
             eq(attr[key], def.default
               , 'attr.'+key+' is '+def.default.toString())
             is( isValid(def, attr[key])
@@ -585,10 +621,10 @@ function testify () {
       , it:       this.it       || mocha.it       // browser || Node.js
 
         //// Simulate an accidental attempt to modify an object’s properties.
-      // , trySoftSet: (obj, keylist, value) => {
-      //       keylist.split(',').forEach( key => {
-      //           try { obj[key] = value } catch(e) {} })
-      //   }
+      , trySoftSet: (obj, keylist, value) => {
+            keylist.split(',').forEach( key => {
+                try { obj[key] = value } catch(e) {} })
+        }
 
         //// Simulate a determined attempt to modify an object’s properties.
       , tryHardSet: (obj, keylist, value) => {

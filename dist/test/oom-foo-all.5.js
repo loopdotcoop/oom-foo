@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.20 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.21 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
@@ -11,6 +11,7 @@
       it = $__2.it,
       eq = $__2.eq,
       is = $__2.is,
+      trySoftSet = $__2.trySoftSet,
       tryHardSet = $__2.tryHardSet,
       goodVals = $__2.goodVals,
       badVals = $__2.badVals;
@@ -46,8 +47,8 @@
           for (var key in schema.stat) {
             if (!isConstant(key))
               continue;
-            tryHardSet(stat, key, 'Changed!');
             var def = schema.stat[key];
+            tryHardSet(stat, key, goodVals[def.typeStr]);
             eq(stat[key], def.default, 'stat.' + key + ' is ' + def.default.toString());
             is(isValid(def, stat[key]), 'stat.' + key + ' is a valid ' + def.typeStr);
           }
@@ -153,14 +154,34 @@
           throw e;
         }
       });
-      var n = countKeyMatches(schema.attr, isConstant);
-      it(("has " + n + " constant attribute" + (1 == n ? '' : 's')), function() {
+      var n = countKeyMatches(schema.attr, function(key) {
+        return isConstant(key) && schema.attr[key].isFn;
+      });
+      it(("has " + n + " constant attribute" + (1 == n ? '' : 's') + " from function"), function() {
         try {
           for (var key in schema.attr) {
-            if (!isConstant(key))
-              continue;
-            tryHardSet(attr, key, 'Changed!');
             var def = schema.attr[key];
+            if (!isConstant(key) || !def.isFn)
+              continue;
+            var origValue = attr[key];
+            trySoftSet(attr, key, goodVals[def.typeStr]);
+            eq(attr[key], origValue, 'attr.' + key + ' remains ' + origValue.toString() + ' after simple set');
+          }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      n = countKeyMatches(schema.attr, function(key) {
+        return isConstant(key) && !schema.attr[key].isFn;
+      });
+      it(("has " + n + " constant attribute" + (1 == n ? '' : 's') + " NOT from function"), function() {
+        try {
+          for (var key in schema.attr) {
+            var def = schema.attr[key];
+            if (!isConstant(key) || def.isFn)
+              continue;
+            tryHardSet(attr, key, goodVals[def.typeStr]);
             eq(attr[key], def.default, 'attr.' + key + ' is ' + def.default.toString());
             is(isValid(def, attr[key]), 'attr.' + key + ' is a valid ' + def.typeStr);
           }
@@ -270,8 +291,8 @@
           for (var key in schema.stat) {
             if (!isConstant(key))
               continue;
-            tryHardSet(stat, key, 'Changed!');
             var def = schema.stat[key];
+            tryHardSet(stat, key, goodVals[def.typeStr]);
             eq(stat[key], def.default, 'stat.' + key + ' is ' + def.default.toString());
             is(isValid(def, stat[key]), 'stat.' + key + ' is a valid ' + def.typeStr);
           }
@@ -377,14 +398,34 @@
           throw e;
         }
       });
-      var n = countKeyMatches(schema.attr, isConstant);
-      it(("has " + n + " constant attribute" + (1 == n ? '' : 's')), function() {
+      var n = countKeyMatches(schema.attr, function(key) {
+        return isConstant(key) && schema.attr[key].isFn;
+      });
+      it(("has " + n + " constant attribute" + (1 == n ? '' : 's') + " from function"), function() {
         try {
           for (var key in schema.attr) {
-            if (!isConstant(key))
-              continue;
-            tryHardSet(attr, key, 'Changed!');
             var def = schema.attr[key];
+            if (!isConstant(key) || !def.isFn)
+              continue;
+            var origValue = attr[key];
+            trySoftSet(attr, key, goodVals[def.typeStr]);
+            eq(attr[key], origValue, 'attr.' + key + ' remains ' + origValue.toString() + ' after simple set');
+          }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      n = countKeyMatches(schema.attr, function(key) {
+        return isConstant(key) && !schema.attr[key].isFn;
+      });
+      it(("has " + n + " constant attribute" + (1 == n ? '' : 's') + " NOT from function"), function() {
+        try {
+          for (var key in schema.attr) {
+            var def = schema.attr[key];
+            if (!isConstant(key) || def.isFn)
+              continue;
+            tryHardSet(attr, key, goodVals[def.typeStr]);
             eq(attr[key], def.default, 'attr.' + key + ' is ' + def.default.toString());
             is(isValid(def, attr[key]), 'attr.' + key + ' is a valid ' + def.typeStr);
           }
@@ -487,6 +528,13 @@ function testify() {
     is: chai.assert.isOk,
     describe: this.describe || mocha.describe,
     it: this.it || mocha.it,
+    trySoftSet: function(obj, keylist, value) {
+      keylist.split(',').forEach(function(key) {
+        try {
+          obj[key] = value;
+        } catch (e) {}
+      });
+    },
     tryHardSet: function(obj, keylist, value) {
       keylist.split(',').forEach(function(key) {
         var def = {
@@ -520,6 +568,7 @@ function testify() {
       it = $__2.it,
       eq = $__2.eq,
       is = $__2.is,
+      trySoftSet = $__2.trySoftSet,
       tryHardSet = $__2.tryHardSet,
       goodVals = $__2.goodVals,
       badVals = $__2.badVals;
@@ -551,8 +600,8 @@ function testify() {
           for (var key in schema.stat) {
             if (!isConstant(key))
               continue;
-            tryHardSet(stat, key, 'Changed!');
             var def = schema.stat[key];
+            tryHardSet(stat, key, goodVals[def.typeStr]);
             eq(stat[key], def.default, 'stat.' + key + ' is ' + def.default.toString());
             is(isValid(def, stat[key]), 'stat.' + key + ' is a valid ' + def.typeStr);
           }
@@ -646,14 +695,34 @@ function testify() {
           throw e;
         }
       });
-      var n = countKeyMatches(schema.attr, isConstant);
-      it(("has " + n + " constant attribute" + (1 == n ? '' : 's')), function() {
+      var n = countKeyMatches(schema.attr, function(key) {
+        return isConstant(key) && schema.attr[key].isFn;
+      });
+      it(("has " + n + " constant attribute" + (1 == n ? '' : 's') + " from function"), function() {
         try {
           for (var key in schema.attr) {
-            if (!isConstant(key))
-              continue;
-            tryHardSet(attr, key, 'Changed!');
             var def = schema.attr[key];
+            if (!isConstant(key) || !def.isFn)
+              continue;
+            var origValue = attr[key];
+            trySoftSet(attr, key, goodVals[def.typeStr]);
+            eq(attr[key], origValue, 'attr.' + key + ' remains ' + origValue.toString() + ' after simple set');
+          }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      n = countKeyMatches(schema.attr, function(key) {
+        return isConstant(key) && !schema.attr[key].isFn;
+      });
+      it(("has " + n + " constant attribute" + (1 == n ? '' : 's') + " NOT from function"), function() {
+        try {
+          for (var key in schema.attr) {
+            var def = schema.attr[key];
+            if (!isConstant(key) || def.isFn)
+              continue;
+            tryHardSet(attr, key, goodVals[def.typeStr]);
             eq(attr[key], def.default, 'attr.' + key + ' is ' + def.default.toString());
             is(isValid(def, attr[key]), 'attr.' + key + ' is a valid ' + def.typeStr);
           }
@@ -741,6 +810,7 @@ function testify() {
       it = $__2.it,
       eq = $__2.eq,
       is = $__2.is,
+      trySoftSet = $__2.trySoftSet,
       tryHardSet = $__2.tryHardSet,
       goodVals = $__2.goodVals,
       badVals = $__2.badVals;
@@ -772,8 +842,8 @@ function testify() {
           for (var key in schema.stat) {
             if (!isConstant(key))
               continue;
-            tryHardSet(stat, key, 'Changed!');
             var def = schema.stat[key];
+            tryHardSet(stat, key, goodVals[def.typeStr]);
             eq(stat[key], def.default, 'stat.' + key + ' is ' + def.default.toString());
             is(isValid(def, stat[key]), 'stat.' + key + ' is a valid ' + def.typeStr);
           }
@@ -867,14 +937,34 @@ function testify() {
           throw e;
         }
       });
-      var n = countKeyMatches(schema.attr, isConstant);
-      it(("has " + n + " constant attribute" + (1 == n ? '' : 's')), function() {
+      var n = countKeyMatches(schema.attr, function(key) {
+        return isConstant(key) && schema.attr[key].isFn;
+      });
+      it(("has " + n + " constant attribute" + (1 == n ? '' : 's') + " from function"), function() {
         try {
           for (var key in schema.attr) {
-            if (!isConstant(key))
-              continue;
-            tryHardSet(attr, key, 'Changed!');
             var def = schema.attr[key];
+            if (!isConstant(key) || !def.isFn)
+              continue;
+            var origValue = attr[key];
+            trySoftSet(attr, key, goodVals[def.typeStr]);
+            eq(attr[key], origValue, 'attr.' + key + ' remains ' + origValue.toString() + ' after simple set');
+          }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      n = countKeyMatches(schema.attr, function(key) {
+        return isConstant(key) && !schema.attr[key].isFn;
+      });
+      it(("has " + n + " constant attribute" + (1 == n ? '' : 's') + " NOT from function"), function() {
+        try {
+          for (var key in schema.attr) {
+            var def = schema.attr[key];
+            if (!isConstant(key) || def.isFn)
+              continue;
+            tryHardSet(attr, key, goodVals[def.typeStr]);
             eq(attr[key], def.default, 'attr.' + key + ' is ' + def.default.toString());
             is(isValid(def, attr[key]), 'attr.' + key + ' is a valid ' + def.typeStr);
           }
@@ -957,4 +1047,4 @@ function testify() {
 
 
 
-//// Made by Oomtility Make 1.2.20 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.21 //\\//\\ http://oomtility.loop.coop /////////

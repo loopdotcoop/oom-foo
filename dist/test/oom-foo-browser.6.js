@@ -2,7 +2,7 @@
 
 
 
-//// Oom.Foo //// 1.2.20 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.21 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
 //// Windows 7:  IE 9, Safari 5.1
@@ -616,7 +616,7 @@ function simulateInput ($input, val) {
 
 
 
-//// Oom.Foo //// 1.2.20 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.21 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
@@ -899,7 +899,7 @@ describe('The Oom.Foo.Post.devMainVue component', function (done) {
 
 
 
-//// Oom.Foo //// 1.2.20 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.21 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
@@ -1178,4 +1178,4 @@ describe('The Oom.Foo.Router.devMainVue component', function (done) {
 
 
 
-//// Made by Oomtility Make 1.2.20 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.21 //\\//\\ http://oomtility.loop.coop /////////

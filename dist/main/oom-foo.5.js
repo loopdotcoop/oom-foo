@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.20 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.21 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
     NAME: 'Oom.Foo',
-    VERSION: '1.2.20',
+    VERSION: '1.2.21',
     HOMEPAGE: 'http://oom-foo.loop.coop/',
     REMARKS: 'Initial test of the oom-hub architecture',
     LOADED_FIRST: !ROOT.Oom
@@ -14,6 +14,14 @@
   var Oom = ROOT.Oom = META.LOADED_FIRST ? function() {
     function Oom() {
       var config = arguments[0] !== (void 0) ? arguments[0] : {};
+      var schema = this.constructor.schema;
+      for (var key in schema.attr) {
+        if (!KIT.isConstant(key))
+          continue;
+        var def = schema.attr[key];
+        if (def.isFn)
+          KIT.define.constant.attr(this.attr, def);
+      }
       this.attr._inst_index = this.constructor.stat.inst_tally;
       this.constructor.stat._inst_tally++;
     }
@@ -49,27 +57,28 @@
         this.schema = {};
         this.schema.stat = Object.assign({}, existing.stat, normalised.stat);
         this.schema.attr = Object.assign({}, existing.attr, normalised.attr);
-        this.stat = {};
+        var stat = this.stat = {};
         for (var key in this.schema.stat) {
           var def = this.schema.stat[key];
           if (KIT.isConstant(key))
-            KIT.define.constant.stat(this.stat, def);
+            KIT.define.constant.stat(stat, def);
           else if (KIT.isReadOnly(key))
-            KIT.define.readOnly.stat(this.stat, def);
+            KIT.define.readOnly.stat(stat, def);
           else if (KIT.isReadWrite(key))
-            KIT.define.readWrite.stat(this.stat, def);
+            KIT.define.readWrite.stat(stat, def);
           else
             throw Error(ME + key + ' is an invalid static name');
         }
-        this.prototype.attr = {};
+        var attr = this.prototype.attr = {};
         for (var key$__3 in this.schema.attr) {
           var def$__4 = this.schema.attr[key$__3];
-          if (KIT.isConstant(key$__3))
-            KIT.define.constant.attr(this.prototype.attr, def$__4);
-          else if (KIT.isReadOnly(key$__3))
-            KIT.define.readOnly.attr(this.prototype.attr, def$__4);
+          if (KIT.isConstant(key$__3)) {
+            if (!def$__4.isFn)
+              KIT.define.constant.attr(attr, def$__4);
+          } else if (KIT.isReadOnly(key$__3))
+            KIT.define.readOnly.attr(attr, def$__4);
           else if (KIT.isReadWrite(key$__3))
-            KIT.define.readWrite.attr(this.prototype.attr, def$__4);
+            KIT.define.readWrite.attr(attr, def$__4);
           else
             throw Error(ME + key$__3 + ' is an invalid attribute name');
         }
@@ -101,7 +110,7 @@
         }
       },
       attr: {
-        UUID: 44,
+        UUID: KIT.generateUUID,
         inst_index: 0,
         hilite: {
           remarks: 'General purpose, useful as a dev label or status',
@@ -268,11 +277,23 @@
             return KIT.define.constant.any(stat, def);
           },
           attr: function(attr, def) {
-            return KIT.define.constant.any(attr, def);
+            if (def.isFn) {
+              var value = def.default();
+              Object.defineProperty(attr, def.name, {
+                get: function() {
+                  return value;
+                },
+                set: function(value) {},
+                configurable: true,
+                enumerable: true
+              });
+            } else {
+              KIT.define.constant.any(attr, def);
+            }
           },
           any: function(obj, def) {
             return Object.defineProperty(obj, def.name, {
-              value: def.default,
+              value: def.isFn ? def.default() : def.default,
               configurable: false,
               enumerable: true,
               writable: false
@@ -373,7 +394,8 @@
             var inDesc = schema[zone][propName];
             var outDesc = out[zone][propName] = {};
             outDesc.name = propName;
-            outDesc.default = ('object' === (typeof inDesc === 'undefined' ? 'undefined' : $traceurRuntime.typeof(inDesc))) ? inDesc.default : inDesc;
+            outDesc.default = 'object' === (typeof inDesc === 'undefined' ? 'undefined' : $traceurRuntime.typeof(inDesc)) ? inDesc.default : inDesc;
+            outDesc.isFn = 'function' === typeof outDesc.default;
             var strToObj = {
               array: Array,
               boolean: Boolean,
@@ -491,4 +513,4 @@
 
 
 
-//// Made by Oomtility Make 1.2.20 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.21 //\\//\\ http://oomtility.loop.coop /////////
