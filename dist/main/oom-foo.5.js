@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.21 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.22 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
     NAME: 'Oom.Foo',
-    VERSION: '1.2.21',
+    VERSION: '1.2.22',
     HOMEPAGE: 'http://oom-foo.loop.coop/',
     REMARKS: 'Initial test of the oom-hub architecture',
     LOADED_FIRST: !ROOT.Oom
@@ -20,10 +20,8 @@
           continue;
         var def = schema.attr[key];
         if (def.isFn)
-          KIT.define.constant.attr(this.attr, def);
+          KIT.define.constant.attr(this.attr, def, this);
       }
-      this.attr._inst_index = this.constructor.stat.inst_tally;
-      this.constructor.stat._inst_tally++;
     }
     return ($traceurRuntime.createClass)(Oom, {reset: function() {
         var attrSchema = this.constructor.schema.attr;
@@ -110,8 +108,18 @@
         }
       },
       attr: {
-        UUID: KIT.generateUUID,
-        inst_index: 0,
+        UUID: {
+          remarks: 'Every Oom instance gets a universally unique ID',
+          default: KIT.generateUUID,
+          type: 'string'
+        },
+        INST_INDEX: {
+          remarks: 'Every Oom instance gets an instance index, which ' + 'equals its class’s `inst_tally` at the moment of ' + 'instantiation. As a side effect of recording ' + '`INST_INDEX`, `inst_tally` is incremented',
+          default: function(instance) {
+            return (++instance.constructor.stat._inst_tally) - 1;
+          },
+          type: 'string'
+        },
         hilite: {
           remarks: 'General purpose, useful as a dev label or status',
           default: '#445566',
@@ -276,9 +284,9 @@
           stat: function(stat, def) {
             return KIT.define.constant.any(stat, def);
           },
-          attr: function(attr, def) {
+          attr: function(attr, def, instance) {
             if (def.isFn) {
-              var value = def.default();
+              var value = def.default(instance);
               Object.defineProperty(attr, def.name, {
                 get: function() {
                   return value;
@@ -293,7 +301,7 @@
           },
           any: function(obj, def) {
             return Object.defineProperty(obj, def.name, {
-              value: def.isFn ? def.default() : def.default,
+              value: def.default,
               configurable: false,
               enumerable: true,
               writable: false
@@ -513,4 +521,4 @@
 
 
 
-//// Made by Oomtility Make 1.2.21 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.22 //\\//\\ http://oomtility.loop.coop /////////

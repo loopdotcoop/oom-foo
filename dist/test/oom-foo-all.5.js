@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.21 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.22 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
@@ -132,7 +132,6 @@
           eq(stat.inst_tally, 0, 'stat.inst_tally is zero after a ‘hard reset’');
           var instance = new Class();
           eq(stat.inst_tally, 1, 'stat.inst_tally is 1 after an instantiation');
-          Class.reset();
         } catch (e) {
           console.error(e.message);
           throw e;
@@ -256,14 +255,13 @@
           throw e;
         }
       });
-      it('has read-only static `inst_index`', function() {
+      it('has constant attribute `INST_INDEX`', function() {
         try {
           Class.reset();
           var instance0 = new Class();
-          eq(instance0.attr.inst_index, 0, 'First instance after a hard reset has attr.inst_index 0');
+          eq(instance0.attr.INST_INDEX, 0, 'First instance after a hard reset has attr.INST_INDEX 0');
           var instance1 = new Class();
-          eq(instance1.attr.inst_index, 1, 'Second instance after a hard reset has attr.inst_index 1');
-          Class.reset();
+          eq(instance1.attr.INST_INDEX, 1, 'Second instance after a hard reset has attr.INST_INDEX 1');
         } catch (e) {
           console.error(e.message);
           throw e;
@@ -376,7 +374,6 @@
           eq(stat.inst_tally, 0, 'stat.inst_tally is zero after a ‘hard reset’');
           var instance = new Class();
           eq(stat.inst_tally, 1, 'stat.inst_tally is 1 after an instantiation');
-          Class.reset();
         } catch (e) {
           console.error(e.message);
           throw e;
@@ -500,14 +497,13 @@
           throw e;
         }
       });
-      it('has read-only static `inst_index`', function() {
+      it('has constant attribute `INST_INDEX`', function() {
         try {
           Class.reset();
           var instance0 = new Class();
-          eq(instance0.attr.inst_index, 0, 'First instance after a hard reset has attr.inst_index 0');
+          eq(instance0.attr.INST_INDEX, 0, 'First instance after a hard reset has attr.INST_INDEX 0');
           var instance1 = new Class();
-          eq(instance1.attr.inst_index, 1, 'Second instance after a hard reset has attr.inst_index 1');
-          Class.reset();
+          eq(instance1.attr.INST_INDEX, 1, 'Second instance after a hard reset has attr.INST_INDEX 1');
         } catch (e) {
           console.error(e.message);
           throw e;
@@ -798,6 +794,18 @@ function testify() {
           throw e;
         }
       });
+      it('has constant attribute `INST_INDEX`', function() {
+        try {
+          Class.reset();
+          var instance0 = new Class();
+          eq(instance0.attr.INST_INDEX, 0, 'First instance after a hard reset has attr.INST_INDEX 0');
+          var instance1 = new Class();
+          eq(instance1.attr.INST_INDEX, 1, 'Second instance after a hard reset has attr.INST_INDEX 1');
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
     });
   });
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
@@ -1040,6 +1048,18 @@ function testify() {
           throw e;
         }
       });
+      it('has constant attribute `INST_INDEX`', function() {
+        try {
+          Class.reset();
+          var instance0 = new Class();
+          eq(instance0.attr.INST_INDEX, 0, 'First instance after a hard reset has attr.INST_INDEX 0');
+          var instance1 = new Class();
+          eq(instance1.attr.INST_INDEX, 1, 'Second instance after a hard reset has attr.INST_INDEX 1');
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
     });
   });
 }('object' === (typeof global === 'undefined' ? 'undefined' : $traceurRuntime.typeof(global)) ? global : this);
@@ -1047,4 +1067,4 @@ function testify() {
 
 
 
-//// Made by Oomtility Make 1.2.21 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.22 //\\//\\ http://oomtility.loop.coop /////////

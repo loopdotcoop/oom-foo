@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.21 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.22 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -144,7 +144,6 @@ describe('The Oom class', function () {
         const instance = new Class()
         eq( stat.inst_tally, 1
           , 'stat.inst_tally is 1 after an instantiation' )
-        Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
     }catch(e){console.error(e.message);throw e}})
 
 
@@ -282,17 +281,17 @@ describe('An Oom instance', function () {
     //// CUSTOM ATTRIBUTE TESTS
 
 
-    //// Oom instance: Custom read-only statics - initial values.
-    it('has read-only static `inst_index`', function(){try{
+    //// Oom instance: Custom constant attributes.
+    it('has constant attribute `INST_INDEX`', function(){try{
         Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
         const instance0 = new Class()
-        eq( instance0.attr.inst_index, 0
-          , 'First instance after a hard reset has attr.inst_index 0' )
+        eq( instance0.attr.INST_INDEX, 0
+          , 'First instance after a hard reset has attr.INST_INDEX 0' )
         const instance1 = new Class()
-        eq( instance1.attr.inst_index, 1
-          , 'Second instance after a hard reset has attr.inst_index 1' )
-        Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
+        eq( instance1.attr.INST_INDEX, 1
+          , 'Second instance after a hard reset has attr.INST_INDEX 1' )
     }catch(e){console.error(e.message);throw e}})
+
 
     //@TODO
     //
@@ -431,7 +430,6 @@ describe('The Oom.Foo class', function () {
         const instance = new Class()
         eq( stat.inst_tally, 1
           , 'stat.inst_tally is 1 after an instantiation' )
-        Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
     }catch(e){console.error(e.message);throw e}})
 
 
@@ -568,16 +566,15 @@ describe('An Oom.Foo instance', function () {
     //// CUSTOM ATTRIBUTE TESTS
 
 
-    //// Oom.Foo instance: Custom read-only statics - initial values.
-    it('has read-only static `inst_index`', function(){try{
+    //// Oom.Foo instance: Custom constant attributes.
+    it('has constant attribute `INST_INDEX`', function(){try{
         Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
         const instance0 = new Class()
-        eq( instance0.attr.inst_index, 0
-          , 'First instance after a hard reset has attr.inst_index 0' )
+        eq( instance0.attr.INST_INDEX, 0
+          , 'First instance after a hard reset has attr.INST_INDEX 0' )
         const instance1 = new Class()
-        eq( instance1.attr.inst_index, 1
-          , 'Second instance after a hard reset has attr.inst_index 1' )
-        Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
+        eq( instance1.attr.INST_INDEX, 1
+          , 'Second instance after a hard reset has attr.INST_INDEX 1' )
     }catch(e){console.error(e.message);throw e}})
 
     //@TODO

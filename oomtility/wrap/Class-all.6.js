@@ -267,7 +267,18 @@ describe('An ${{classname}} instance', function () {
 
 
     //// CUSTOM ATTRIBUTE TESTS
-    //@TODO
+
+
+    //// ${{classname}} instance: Custom constant attributes.
+    it('has constant attribute `INST_INDEX`', function(){try{
+        Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
+        const instance0 = new Class()
+        eq( instance0.attr.INST_INDEX, 0
+          , 'First instance after a hard reset has attr.INST_INDEX 0' )
+        const instance1 = new Class()
+        eq( instance1.attr.INST_INDEX, 1
+          , 'Second instance after a hard reset has attr.INST_INDEX 1' )
+    }catch(e){console.error(e.message);throw e}})
 
 
 

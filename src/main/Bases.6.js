@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.21 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.22 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
 //// Metadata for Oom.Foo
 const META = {
     NAME:     'Oom.Foo'
-  , VERSION:  '1.2.21' // OOMBUMPABLE
+  , VERSION:  '1.2.22' // OOMBUMPABLE
   , HOMEPAGE: 'http://oom-foo.loop.coop/'
   , REMARKS:  'Initial test of the oom-hub architecture'
   , LOADED_FIRST: ! ROOT.Oom // true if the Oom class is defined by this module
@@ -38,27 +38,9 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
         for (let key in schema.attr) {
             if (! KIT.isConstant(key) ) continue // only deal with constants
             const def = schema.attr[key]
-            if (def.isFn) KIT.define.constant.attr(this.attr, def)
+            if (def.isFn) KIT.define.constant.attr(this.attr, def, this)
         }
 
-        //// Update `attr.inst_index` - the first instance is 0, the second is 1
-        //// etc.  Also increment `stat.inst_tally`, this class’s static tally
-        //// of instantiations.
-        this.attr._inst_index = this.constructor.stat.inst_tally // the '_' prefix is...
-        this.constructor.stat._inst_tally++ // ...the ‘shadow’ of a read-only static
-
-/*
-        if (Oom === this.constructor) { // not being called by a child-class
-          // ...
-        }
-
-        //// Define `attr`, a container for public instance-attributes. It’s a
-        //// plain object, which Vue prefers.
-        const attr = this.attr = {}
-
-        //// attr.UUID: Oom instances have universally unique IDs.
-        KIT.define( attr, { UUID: KIT.generateUUID() } )
-*/
     }
 
 
@@ -190,12 +172,23 @@ if (META.LOADED_FIRST) {
         }, attr: {
 
             //// Public constant attributes.
-            UUID: KIT.generateUUID
-            // INST_INDEX: () => Oom.stat.inst_tally
+            UUID: {
+                remarks: 'Every Oom instance gets a universally unique ID'
+              , default: KIT.generateUUID
+              , type:    'string'
+            }
+          , INST_INDEX: {
+                remarks: 'Every Oom instance gets an instance index, which '
+                       + 'equals its class’s `inst_tally` at the moment of '
+                       + 'instantiation. As a side effect of recording '
+                       + '`INST_INDEX`, `inst_tally` is incremented'
+              , default: instance => (++instance.constructor.stat._inst_tally)-1
+              , type:    'string'
+            }
 
             //// Public read-only attributes.
             //// Paired with underying underscore-prefixed ‘shadow’ attributes.
-          , inst_index: 0 // set to `Oom.stat.inst_tally` by `constructor()`
+            // ...
 
             //// Public read-write attributes.
             //// Paired with underying underscore-prefixed ‘shadow’ attributes.
@@ -470,9 +463,9 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
         //// Initialise a constant, eg `FOO_BAR`.
         constant: {
             stat: (stat, def) => KIT.define.constant.any(stat, def)
-          , attr: (attr, def) => {
+          , attr: (attr, def, instance) => {
                 if (def.isFn) { // a weak constant: wont survive `tryHardSet()`
-                    const value = def.default()
+                    const value = def.default(instance)
                     Object.defineProperty(attr, def.name, {
                         get: function ()  { return value }
                       , set: function (value) { } // do nothing - it’s constant
@@ -482,9 +475,18 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
                 }
             }
           , any: (obj, def) =>
-                Object.defineProperty(obj, def.name, {
-                    value: def.isFn ? def.default() : def.default
+                Object.defineProperty(obj, def.name, { value: def.default
                   , configurable:false, enumerable:true, writable:false })
+          //@TODO Fix the following - it would be neater and avoid `get/set()`, but it seems to make some constants writable at present:
+          // , attr: (attr, def, instance) => KIT.define.constant.any(attr, def, instance)
+          // , any: (obj, def, instance) => {
+          //       console.log('was', def.name, obj[def.name]);
+          //       Object.defineProperty(obj, def.name, {
+          //           value: def.isFn ? def.default(instance) : def.default
+          //         , configurable: def.isFn
+          //         , enumerable:true, writable:false })
+          //       console.log('set', def.name, 'to', obj[def.name], 'configurable?', def.isFn);
+          //   }
         }
 
         //// Initialise a read-only property, eg `foo_bar`.
