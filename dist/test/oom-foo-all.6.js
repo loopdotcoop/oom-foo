@@ -2,7 +2,7 @@
 
 
 
-//// Oom.Foo //// 1.2.22 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.23 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -15,7 +15,8 @@
 !function (ROOT) { 'use strict'
 ROOT.testify = testify // make `testify()` available to all test files
 if (false) return // change to `true` to ‘hard skip’ this test
-const { describe, it, eq, is, trySoftSet, tryHardSet, goodVals, badVals } = ROOT.testify()
+const { describe, it, eq, neq, is // chai and mocha
+      , trySoftSet, tryHardSet, goodVals, badVals } = ROOT.testify()
 const { countKeyMatches, isConstant, isReadOnly, isReadWrite, isValid } = Oom.KIT
 describe('Bases (all)', function () {
 
@@ -159,8 +160,9 @@ describe('The Oom class', function () {
 
 
 describe('An Oom instance', function () {
-    const Class = ROOT.Oom
-        , schema = Class.schema, instance = new Class(), attr = instance.attr
+    const Class = ROOT.Oom, schema = Class.schema
+        , instance = new Class(), attr = instance.attr
+        , unchanged = new Class()
 
 
 
@@ -237,10 +239,13 @@ describe('An Oom instance', function () {
             attr['_'+key] = good
             eq(attr[key], good
               , 'attr.'+key+' has changed to '+good)
+            neq(unchanged.attr[key], good
+              , 'unchanged.attr.'+key+' has NOT changed to '+good)
             //// Changing a read-only value via its underscore-prefixed ‘shadow’
             //// does not invoke any validation or type-checking. Therefore we
             //// don’t test that `badVals` are rejected.
             instance.reset()
+            unchanged.reset()
             eq(attr[key], schema.attr[key].default
               , 'attr.'+key+' has been reset to '+schema.attr[key].default)
         }
@@ -270,10 +275,13 @@ describe('An Oom instance', function () {
             attr[key] = good
             eq(attr[key], good
               , 'attr.'+key+' has changed to '+good)
+            neq(unchanged.attr[key], good
+              , 'unchanged.attr.'+key+' has NOT changed to '+good)
             attr[key] = bad
-            eq(attr[key], good
-              , 'attr.'+key+' has NOT changed to '+bad)
+            neq(unchanged.attr[key], bad
+              , 'unchanged.attr.'+key+' has NOT changed to '+bad)
             instance.reset()
+            unchanged.reset()
             eq(attr[key], schema.attr[key].default
               , 'attr.'+key+' has been reset to '+schema.attr[key].default)
         }
@@ -294,16 +302,13 @@ describe('An Oom instance', function () {
         const instance1 = new Class()
         eq( instance1.attr.INST_INDEX, 1
           , 'Second instance after a hard reset has attr.INST_INDEX 1' )
+        eq('string', typeof attr.UUID
+          , '`attr.UUID` is a string')
+        is(/^[0-9A-Za-z]{6}$/.test(attr.UUID)
+          , '`attr.UUID` conforms to /^[0-9A-Za-z]{6}$/')
+        neq( instance0.attr.UUID, instance1.attr.UUID
+          , 'Two instances have different UUIDs' )
     }catch(e){console.error(e.message);throw e}})
-
-
-    //@TODO
-    //
-    // tryHardSet(attr, 'UUID', 'Changed!')
-    // eq('string', typeof attr.UUID
-    //   , '`attr.UUID` is a string')
-    // is(/^[0-9A-Za-z]{6}$/.test(attr.UUID)
-    //   , '`attr.UUID` conforms to /^[0-9A-Za-z]{6}$/')
     //@TODO more tests
 
 
@@ -445,8 +450,9 @@ describe('The Oom.Foo class', function () {
 
 
 describe('An Oom.Foo instance', function () {
-    const Class = ROOT.Oom.Foo
-        , schema = Class.schema, instance = new Class(), attr = instance.attr
+    const Class = ROOT.Oom.Foo, schema = Class.schema
+        , instance = new Class(), attr = instance.attr
+        , unchanged = new Class()
 
 
 
@@ -522,10 +528,13 @@ describe('An Oom.Foo instance', function () {
             attr['_'+key] = good
             eq(attr[key], good
               , 'attr.'+key+' has changed to '+good)
+            neq(unchanged.attr[key], good
+              , 'unchanged.attr.'+key+' has NOT changed to '+good)
             //// Changing a read-only value via its underscore-prefixed ‘shadow’
             //// does not invoke any validation or type-checking. Therefore we
             //// don’t test that `badVals` are rejected.
             instance.reset()
+            unchanged.reset()
             eq(attr[key], schema.attr[key].default
               , 'attr.'+key+' has been reset to '+schema.attr[key].default)
         }
@@ -555,10 +564,15 @@ describe('An Oom.Foo instance', function () {
             attr[key] = good
             eq(attr[key], good
               , 'attr.'+key+' has changed to '+good)
+            neq(unchanged.attr[key], good
+              , 'unchanged.attr.'+key+' has NOT changed to '+good)
             attr[key] = bad
             eq(attr[key], good
               , 'attr.'+key+' has NOT changed to '+bad)
+            neq(unchanged.attr[key], bad
+              , 'unchanged.attr.'+key+' has NOT changed to '+bad)
             instance.reset()
+            unchanged.reset()
             eq(attr[key], schema.attr[key].default
               , 'attr.'+key+' has been reset to '+schema.attr[key].default)
         }
@@ -617,6 +631,7 @@ function testify () {
       , assert:   chai.assert
       , expect:   chai.expect
       , eq:       chai.assert.strictEqual
+      , neq:      chai.assert.notStrictEqual
       , is:       chai.assert.isOk
       , describe: this.describe || mocha.describe // browser || Node.js
       , it:       this.it       || mocha.it       // browser || Node.js
@@ -657,11 +672,12 @@ function testify () {
 
 
 
-//// Oom.Foo //// 1.2.22 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.23 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
-const { describe, it, eq, is, trySoftSet, tryHardSet, goodVals, badVals } = ROOT.testify()
+const { describe, it, eq, neq, is // chai and mocha
+      , trySoftSet, tryHardSet, goodVals, badVals } = ROOT.testify()
 const { countKeyMatches, isConstant, isReadOnly, isReadWrite, isValid } = Oom.KIT
 describe('Oom.Foo.Post (all)', function () {
 
@@ -801,8 +817,9 @@ describe('The Oom.Foo.Post class', function () {
 
 
 describe('An Oom.Foo.Post instance', function () {
-    const Class = ROOT.Oom.Foo.Post
-        , schema = Class.schema, instance = new Class(), attr = instance.attr
+    const Class = ROOT.Oom.Foo.Post, schema = Class.schema
+        , instance = new Class(), attr = instance.attr
+        , unchanged = new Class()
 
 
 
@@ -880,10 +897,13 @@ describe('An Oom.Foo.Post instance', function () {
             attr['_'+key] = good
             eq(attr[key], good
               , 'attr.'+key+' has changed to '+good)
+            neq(unchanged.attr[key], good
+              , 'unchanged.attr.'+key+' has NOT changed to '+good)
             //// Changing a read-only value via its underscore-prefixed ‘shadow’
             //// does not invoke any validation or type-checking. Therefore we
             //// don’t test that `badVals` are rejected.
             instance.reset()
+            unchanged.reset()
             eq(attr[key], schema.attr[key].default
               , 'attr.'+key+' has been reset to '+schema.attr[key].default)
         }
@@ -913,10 +933,15 @@ describe('An Oom.Foo.Post instance', function () {
             attr[key] = good
             eq(attr[key], good
               , 'attr.'+key+' has changed to '+good)
+            neq(unchanged.attr[key], good
+              , 'unchanged.attr.'+key+' has NOT changed to '+good)
             attr[key] = bad
             eq(attr[key], good
               , 'attr.'+key+' has NOT changed to '+bad)
+            neq(unchanged.attr[key], bad
+              , 'unchanged.attr.'+key+' has NOT changed to '+bad)
             instance.reset()
+            unchanged.reset()
             eq(attr[key], schema.attr[key].default
               , 'attr.'+key+' has been reset to '+schema.attr[key].default)
         }
@@ -957,11 +982,12 @@ describe('An Oom.Foo.Post instance', function () {
 
 
 
-//// Oom.Foo //// 1.2.22 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.23 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
-const { describe, it, eq, is, trySoftSet, tryHardSet, goodVals, badVals } = ROOT.testify()
+const { describe, it, eq, neq, is // chai and mocha
+      , trySoftSet, tryHardSet, goodVals, badVals } = ROOT.testify()
 const { countKeyMatches, isConstant, isReadOnly, isReadWrite, isValid } = Oom.KIT
 describe('Oom.Foo.Router (all)', function () {
 
@@ -1101,8 +1127,9 @@ describe('The Oom.Foo.Router class', function () {
 
 
 describe('An Oom.Foo.Router instance', function () {
-    const Class = ROOT.Oom.Foo.Router
-        , schema = Class.schema, instance = new Class(), attr = instance.attr
+    const Class = ROOT.Oom.Foo.Router, schema = Class.schema
+        , instance = new Class(), attr = instance.attr
+        , unchanged = new Class()
 
 
 
@@ -1180,10 +1207,13 @@ describe('An Oom.Foo.Router instance', function () {
             attr['_'+key] = good
             eq(attr[key], good
               , 'attr.'+key+' has changed to '+good)
+            neq(unchanged.attr[key], good
+              , 'unchanged.attr.'+key+' has NOT changed to '+good)
             //// Changing a read-only value via its underscore-prefixed ‘shadow’
             //// does not invoke any validation or type-checking. Therefore we
             //// don’t test that `badVals` are rejected.
             instance.reset()
+            unchanged.reset()
             eq(attr[key], schema.attr[key].default
               , 'attr.'+key+' has been reset to '+schema.attr[key].default)
         }
@@ -1213,10 +1243,15 @@ describe('An Oom.Foo.Router instance', function () {
             attr[key] = good
             eq(attr[key], good
               , 'attr.'+key+' has changed to '+good)
+            neq(unchanged.attr[key], good
+              , 'unchanged.attr.'+key+' has NOT changed to '+good)
             attr[key] = bad
             eq(attr[key], good
               , 'attr.'+key+' has NOT changed to '+bad)
+            neq(unchanged.attr[key], bad
+              , 'unchanged.attr.'+key+' has NOT changed to '+bad)
             instance.reset()
+            unchanged.reset()
             eq(attr[key], schema.attr[key].default
               , 'attr.'+key+' has been reset to '+schema.attr[key].default)
         }
@@ -1253,4 +1288,4 @@ describe('An Oom.Foo.Router instance', function () {
 
 
 
-//// Made by Oomtility Make 1.2.22 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.23 //\\//\\ http://oomtility.loop.coop /////////

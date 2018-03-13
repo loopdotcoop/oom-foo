@@ -48,3 +48,4 @@
 1.2.20 Full set of `Oom.Foo` unit tests
 1.2.21 `UUID` is set using a ‘constant attribute from function’
 1.2.22 `INST_INDEX` and `inst_tally` are set using a constant attr from function
+1.2.23 Defines `attr` in `constructor()`, not as `prototype.attr`

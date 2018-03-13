@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.22 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.23 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
     NAME: 'Oom.Foo',
-    VERSION: '1.2.22',
+    VERSION: '1.2.23',
     HOMEPAGE: 'http://oom-foo.loop.coop/',
     REMARKS: 'Initial test of the oom-hub architecture',
     LOADED_FIRST: !ROOT.Oom
@@ -14,13 +14,20 @@
   var Oom = ROOT.Oom = META.LOADED_FIRST ? function() {
     function Oom() {
       var config = arguments[0] !== (void 0) ? arguments[0] : {};
-      var schema = this.constructor.schema;
-      for (var key in schema.attr) {
-        if (!KIT.isConstant(key))
-          continue;
-        var def = schema.attr[key];
-        if (def.isFn)
-          KIT.define.constant.attr(this.attr, def, this);
+      var ME = 'Oom:constructor(): ';
+      var Class = this.constructor;
+      var attrSchema = Class.schema.attr;
+      var attr = this.attr = {};
+      for (var key in attrSchema) {
+        var def = attrSchema[key];
+        if (KIT.isConstant(key))
+          KIT.define.constant.attr(attr, def, this);
+        else if (KIT.isReadOnly(key))
+          KIT.define.readOnly.attr(attr, def, this);
+        else if (KIT.isReadWrite(key))
+          KIT.define.readWrite.attr(attr, def, this);
+        else
+          throw Error(ME + key + ' is an invalid attribute name');
       }
     }
     return ($traceurRuntime.createClass)(Oom, {reset: function() {
@@ -66,19 +73,6 @@
             KIT.define.readWrite.stat(stat, def);
           else
             throw Error(ME + key + ' is an invalid static name');
-        }
-        var attr = this.prototype.attr = {};
-        for (var key$__3 in this.schema.attr) {
-          var def$__4 = this.schema.attr[key$__3];
-          if (KIT.isConstant(key$__3)) {
-            if (!def$__4.isFn)
-              KIT.define.constant.attr(attr, def$__4);
-          } else if (KIT.isReadOnly(key$__3))
-            KIT.define.readOnly.attr(attr, def$__4);
-          else if (KIT.isReadWrite(key$__3))
-            KIT.define.readWrite.attr(attr, def$__4);
-          else
-            throw Error(ME + key$__3 + ' is an invalid attribute name');
         }
       }
     });
@@ -138,14 +132,15 @@
   Object.defineProperty(Oom, 'devMainVueTemplate', {get: function(innerHTML) {
       return innerHTML = "\n<div class=\"dev-main col-12\">\n  <member-table :schema=\"schema.stat\" :obj=\"stat\" objname=\"stat\" :do-hide=\"ui.hideData\"\n    :caption=\"stat.NAME+' static properties:'\"></member-table>\n  <member-table :schema=\"schema.attr\" :obj=\"attr\" objname=\"attr\" :do-hide=\"ui.hideData\"\n    :caption=\"stat.NAME+' attribute properties:'\"></member-table>\n</div>\n";
     }});
-  Oom.devMainVue = function(Class) {
+  Oom.devMainVue = function(instance) {
     return {
       template: Oom.devMainVueTemplate,
       data: function() {
+        var Class = instance.constructor;
         return {
           schema: Class.schema,
           stat: Class.stat,
-          attr: (new Class()).attr,
+          attr: instance.attr,
           ui: {
             hideData: false,
             hideInners: false
@@ -521,4 +516,4 @@
 
 
 
-//// Made by Oomtility Make 1.2.22 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.23 //\\//\\ http://oomtility.loop.coop /////////

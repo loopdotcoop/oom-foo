@@ -1,8 +1,9 @@
-//// Oom.Foo //// 1.2.22 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.23 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
-const { describe, it, eq, is, trySoftSet, tryHardSet, goodVals, badVals } = ROOT.testify()
+const { describe, it, eq, neq, is // chai and mocha
+      , trySoftSet, tryHardSet, goodVals, badVals } = ROOT.testify()
 const { countKeyMatches, isConstant, isReadOnly, isReadWrite, isValid } = Oom.KIT
 describe('Oom.Foo.Router (all)', function () {
 
@@ -142,8 +143,9 @@ describe('The Oom.Foo.Router class', function () {
 
 
 describe('An Oom.Foo.Router instance', function () {
-    const Class = ROOT.Oom.Foo.Router
-        , schema = Class.schema, instance = new Class(), attr = instance.attr
+    const Class = ROOT.Oom.Foo.Router, schema = Class.schema
+        , instance = new Class(), attr = instance.attr
+        , unchanged = new Class()
 
 
 
@@ -221,10 +223,13 @@ describe('An Oom.Foo.Router instance', function () {
             attr['_'+key] = good
             eq(attr[key], good
               , 'attr.'+key+' has changed to '+good)
+            neq(unchanged.attr[key], good
+              , 'unchanged.attr.'+key+' has NOT changed to '+good)
             //// Changing a read-only value via its underscore-prefixed ‘shadow’
             //// does not invoke any validation or type-checking. Therefore we
             //// don’t test that `badVals` are rejected.
             instance.reset()
+            unchanged.reset()
             eq(attr[key], schema.attr[key].default
               , 'attr.'+key+' has been reset to '+schema.attr[key].default)
         }
@@ -254,10 +259,15 @@ describe('An Oom.Foo.Router instance', function () {
             attr[key] = good
             eq(attr[key], good
               , 'attr.'+key+' has changed to '+good)
+            neq(unchanged.attr[key], good
+              , 'unchanged.attr.'+key+' has NOT changed to '+good)
             attr[key] = bad
             eq(attr[key], good
               , 'attr.'+key+' has NOT changed to '+bad)
+            neq(unchanged.attr[key], bad
+              , 'unchanged.attr.'+key+' has NOT changed to '+bad)
             instance.reset()
+            unchanged.reset()
             eq(attr[key], schema.attr[key].default
               , 'attr.'+key+' has been reset to '+schema.attr[key].default)
         }

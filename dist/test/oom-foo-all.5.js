@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.22 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.23 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
@@ -10,6 +10,7 @@
       describe = $__2.describe,
       it = $__2.it,
       eq = $__2.eq,
+      neq = $__2.neq,
       is = $__2.is,
       trySoftSet = $__2.trySoftSet,
       tryHardSet = $__2.tryHardSet,
@@ -142,7 +143,8 @@
       var Class = ROOT.Oom,
           schema = Class.schema,
           instance = new Class(),
-          attr = instance.attr;
+          attr = instance.attr,
+          unchanged = new Class();
       it('is an instance with base methods', function() {
         try {
           is(instance instanceof Class, 'is an instance of Oom');
@@ -213,7 +215,9 @@
             var good = goodVals[schema.attr[key].typeStr];
             attr['_' + key] = good;
             eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
+            neq(unchanged.attr[key], good, 'unchanged.attr.' + key + ' has NOT changed to ' + good);
             instance.reset();
+            unchanged.reset();
             eq(attr[key], schema.attr[key].default, 'attr.' + key + ' has been reset to ' + schema.attr[key].default);
           }
         } catch (e) {
@@ -245,9 +249,11 @@
             var bad = badVals[schema.attr[key].typeStr];
             attr[key] = good;
             eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
+            neq(unchanged.attr[key], good, 'unchanged.attr.' + key + ' has NOT changed to ' + good);
             attr[key] = bad;
-            eq(attr[key], good, 'attr.' + key + ' has NOT changed to ' + bad);
+            neq(unchanged.attr[key], bad, 'unchanged.attr.' + key + ' has NOT changed to ' + bad);
             instance.reset();
+            unchanged.reset();
             eq(attr[key], schema.attr[key].default, 'attr.' + key + ' has been reset to ' + schema.attr[key].default);
           }
         } catch (e) {
@@ -262,6 +268,9 @@
           eq(instance0.attr.INST_INDEX, 0, 'First instance after a hard reset has attr.INST_INDEX 0');
           var instance1 = new Class();
           eq(instance1.attr.INST_INDEX, 1, 'Second instance after a hard reset has attr.INST_INDEX 1');
+          eq('string', $traceurRuntime.typeof(attr.UUID), '`attr.UUID` is a string');
+          is(/^[0-9A-Za-z]{6}$/.test(attr.UUID), '`attr.UUID` conforms to /^[0-9A-Za-z]{6}$/');
+          neq(instance0.attr.UUID, instance1.attr.UUID, 'Two instances have different UUIDs');
         } catch (e) {
           console.error(e.message);
           throw e;
@@ -384,7 +393,8 @@
       var Class = ROOT.Oom.Foo,
           schema = Class.schema,
           instance = new Class(),
-          attr = instance.attr;
+          attr = instance.attr,
+          unchanged = new Class();
       it('is an instance with base methods', function() {
         try {
           is(instance instanceof Class, 'is an instance of Oom.Foo');
@@ -455,7 +465,9 @@
             var good = goodVals[schema.attr[key].typeStr];
             attr['_' + key] = good;
             eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
+            neq(unchanged.attr[key], good, 'unchanged.attr.' + key + ' has NOT changed to ' + good);
             instance.reset();
+            unchanged.reset();
             eq(attr[key], schema.attr[key].default, 'attr.' + key + ' has been reset to ' + schema.attr[key].default);
           }
         } catch (e) {
@@ -487,9 +499,12 @@
             var bad = badVals[schema.attr[key].typeStr];
             attr[key] = good;
             eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
+            neq(unchanged.attr[key], good, 'unchanged.attr.' + key + ' has NOT changed to ' + good);
             attr[key] = bad;
             eq(attr[key], good, 'attr.' + key + ' has NOT changed to ' + bad);
+            neq(unchanged.attr[key], bad, 'unchanged.attr.' + key + ' has NOT changed to ' + bad);
             instance.reset();
+            unchanged.reset();
             eq(attr[key], schema.attr[key].default, 'attr.' + key + ' has been reset to ' + schema.attr[key].default);
           }
         } catch (e) {
@@ -521,6 +536,7 @@ function testify() {
     assert: chai.assert,
     expect: chai.expect,
     eq: chai.assert.strictEqual,
+    neq: chai.assert.notStrictEqual,
     is: chai.assert.isOk,
     describe: this.describe || mocha.describe,
     it: this.it || mocha.it,
@@ -563,6 +579,7 @@ function testify() {
       describe = $__2.describe,
       it = $__2.it,
       eq = $__2.eq,
+      neq = $__2.neq,
       is = $__2.is,
       trySoftSet = $__2.trySoftSet,
       tryHardSet = $__2.tryHardSet,
@@ -680,7 +697,8 @@ function testify() {
       var Class = ROOT.Oom.Foo.Post,
           schema = Class.schema,
           instance = new Class(),
-          attr = instance.attr;
+          attr = instance.attr,
+          unchanged = new Class();
       it('is an instance with base methods', function() {
         try {
           is(instance instanceof Class, 'is an instance of Oom.Foo.Post');
@@ -752,7 +770,9 @@ function testify() {
             var good = goodVals[schema.attr[key].typeStr];
             attr['_' + key] = good;
             eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
+            neq(unchanged.attr[key], good, 'unchanged.attr.' + key + ' has NOT changed to ' + good);
             instance.reset();
+            unchanged.reset();
             eq(attr[key], schema.attr[key].default, 'attr.' + key + ' has been reset to ' + schema.attr[key].default);
           }
         } catch (e) {
@@ -784,9 +804,12 @@ function testify() {
             var bad = badVals[schema.attr[key].typeStr];
             attr[key] = good;
             eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
+            neq(unchanged.attr[key], good, 'unchanged.attr.' + key + ' has NOT changed to ' + good);
             attr[key] = bad;
             eq(attr[key], good, 'attr.' + key + ' has NOT changed to ' + bad);
+            neq(unchanged.attr[key], bad, 'unchanged.attr.' + key + ' has NOT changed to ' + bad);
             instance.reset();
+            unchanged.reset();
             eq(attr[key], schema.attr[key].default, 'attr.' + key + ' has been reset to ' + schema.attr[key].default);
           }
         } catch (e) {
@@ -817,6 +840,7 @@ function testify() {
       describe = $__2.describe,
       it = $__2.it,
       eq = $__2.eq,
+      neq = $__2.neq,
       is = $__2.is,
       trySoftSet = $__2.trySoftSet,
       tryHardSet = $__2.tryHardSet,
@@ -934,7 +958,8 @@ function testify() {
       var Class = ROOT.Oom.Foo.Router,
           schema = Class.schema,
           instance = new Class(),
-          attr = instance.attr;
+          attr = instance.attr,
+          unchanged = new Class();
       it('is an instance with base methods', function() {
         try {
           is(instance instanceof Class, 'is an instance of Oom.Foo.Router');
@@ -1006,7 +1031,9 @@ function testify() {
             var good = goodVals[schema.attr[key].typeStr];
             attr['_' + key] = good;
             eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
+            neq(unchanged.attr[key], good, 'unchanged.attr.' + key + ' has NOT changed to ' + good);
             instance.reset();
+            unchanged.reset();
             eq(attr[key], schema.attr[key].default, 'attr.' + key + ' has been reset to ' + schema.attr[key].default);
           }
         } catch (e) {
@@ -1038,9 +1065,12 @@ function testify() {
             var bad = badVals[schema.attr[key].typeStr];
             attr[key] = good;
             eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
+            neq(unchanged.attr[key], good, 'unchanged.attr.' + key + ' has NOT changed to ' + good);
             attr[key] = bad;
             eq(attr[key], good, 'attr.' + key + ' has NOT changed to ' + bad);
+            neq(unchanged.attr[key], bad, 'unchanged.attr.' + key + ' has NOT changed to ' + bad);
             instance.reset();
+            unchanged.reset();
             eq(attr[key], schema.attr[key].default, 'attr.' + key + ' has been reset to ' + schema.attr[key].default);
           }
         } catch (e) {
@@ -1067,4 +1097,4 @@ function testify() {
 
 
 
-//// Made by Oomtility Make 1.2.22 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.23 //\\//\\ http://oomtility.loop.coop /////////

@@ -2,7 +2,7 @@
 
 
 
-//// Oom.Foo //// 1.2.22 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.23 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 
 !function (ROOT) { 'use strict'
@@ -35,7 +35,7 @@ describe(`+ve Oom.Foo.Post class`, () => {
 
 
 
-//// Oom.Foo //// 1.2.22 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.23 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 
 !function (ROOT) { 'use strict'
@@ -64,4 +64,4 @@ describe(`+ve Oom.Foo.Router class`, () => {
 
 
 
-//// Made by Oomtility Make 1.2.22 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.23 //\\//\\ http://oomtility.loop.coop /////////

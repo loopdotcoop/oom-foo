@@ -2,14 +2,14 @@
 
 
 
-//// Oom.Foo //// 1.2.22 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.23 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
 //// Metadata for Oom.Foo
 const META = {
     NAME:     'Oom.Foo'
-  , VERSION:  '1.2.22' // OOMBUMPABLE
+  , VERSION:  '1.2.23' // OOMBUMPABLE
   , HOMEPAGE: 'http://oom-foo.loop.coop/'
   , REMARKS:  'Initial test of the oom-hub architecture'
   , LOADED_FIRST: ! ROOT.Oom // true if the Oom class is defined by this module
@@ -35,20 +35,29 @@ const KIT = assignKIT(META.LOADED_FIRST || ! ROOT.Oom.KIT ? {} :  ROOT.Oom.KIT)
 const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
 
     constructor (config={}) {
+        const ME = 'Oom:constructor(): '
+        const Class = this.constructor
+        const attrSchema = Class.schema.attr
 
-        //// If any constant attributes had functions for their schema defaults,
-        //// run those functions now to get the constant value.
-        const schema = this.constructor.schema
-        for (let key in schema.attr) {
-            if (! KIT.isConstant(key) ) continue // only deal with constants
-            const def = schema.attr[key]
-            if (def.isFn) KIT.define.constant.attr(this.attr, def, this)
+        //// Create the plain `inst.attr` object (which Vue will reactively
+        //// watch) and add public attributes to it.
+        const attr = this.attr = {}
+        for (let key in attrSchema) {
+            const def = attrSchema[key] // a single attribute schema-definition
+            if ( KIT.isConstant(key) )
+                KIT.define.constant.attr(attr, def, this)
+            else if ( KIT.isReadOnly(key) )
+                KIT.define.readOnly.attr(attr, def, this)
+            else if ( KIT.isReadWrite(key) )
+                KIT.define.readWrite.attr(attr, def, this)
+            else
+                throw Error(ME+key+' is an invalid attribute name')
         }
 
     }
 
 
-    //// Resets all statics to their initial default values.
+    //// Resets read-only and read-write statics to their default values.
     static reset () { //@TODO smarter reset, remove local shadow
         const statSchema = this.schema.stat // `this` is the current class
         for (let key in statSchema) {
@@ -63,7 +72,7 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
     }
 
 
-    //// Resets all attributes to their initial default values.
+    //// Resets read-only and read-write attributes to their default values.
     reset () { //@TODO smarter reset, remove local shadow
         const attrSchema = this.constructor.schema.attr // the current class
         for (let key in attrSchema) {
@@ -102,26 +111,6 @@ const Oom = ROOT.Oom = META.LOADED_FIRST ? class Oom {
             else
                 throw Error(ME+key+' is an invalid static name')
         }
-
-        //// Create or replace the plain `inst.attr` object (which Vue will
-        //// reactively watch) and add public attributes to it.
-        const attr = this.prototype.attr = {}
-        for (let key in this.schema.attr) {
-            const def = this.schema.attr[key] // a single attr schema-definition
-            if ( KIT.isConstant(key) )
-                { if (! def.isFn) KIT.define.constant.attr(attr, def) }
-            else if ( KIT.isReadOnly(key) )
-                KIT.define.readOnly.attr(attr, def)
-            else if ( KIT.isReadWrite(key) )
-                KIT.define.readWrite.attr(attr, def)
-            else
-                throw Error(ME+key+' is an invalid attribute name')
-        }
-        //// Note: if any constant attributes had functions for their schema
-        //// defaults, we do not run those functions yet. They will be run in
-        //// Oom’s constructor - the function may return a different value for
-        //// each instance.
-
     }
 
 } : ROOT.Oom
@@ -136,7 +125,6 @@ Oom.KIT = KIT
 
 if (META.LOADED_FIRST) {
 
-    ////@TODO comment
     //// Oom is the base class, so its schema is not xxxxx @TODO describe
     Oom.schema = {}
 
@@ -206,17 +194,8 @@ if (META.LOADED_FIRST) {
         }
 
     })//Oom.mixin()
-    //
-    // //// Create the plain `Class.stat` object (which Vue watches) and add public
-    // //// statics to it. Arg 2 of `KIT.define()` is `true` for statics.
-    // Oom.stat = {}
-    // KIT.define(Oom.stat, true, Oom.schema.stat)
-    //
-    // //// Create the plain `inst.attr` object (which Vue watches) and add public
-    // //// attributes to it. Arg 2 of `KIT.define()` is `false` for attributes.
-    // Oom.prototype.attr = {}
-    // KIT.define(Oom.prototype.attr, false, Oom.schema.attr)
-}
+
+}//if (META.LOADED_FIRST)
 
 
 
@@ -263,15 +242,18 @@ get: function (innerHTML) { return innerHTML = `
 `} })
 
 
-Oom.devMainVue = function (Class) { return {
+Oom.devMainVue = function (instance) { return {
     template: Oom.devMainVueTemplate
 
-  , data: function () { return {
-        schema: Class.schema
-      , stat: Class.stat
-      , attr: (new Class()).attr
-      , ui: { hideData:false, hideInners:false }
-    } }
+  , data: function () {
+        const Class = instance.constructor
+        return {
+            schema: Class.schema
+          , stat: Class.stat
+          , attr: instance.attr
+          , ui: { hideData:false, hideInners:false }
+        }
+    }
 
 /*
   , props: {
@@ -345,15 +327,6 @@ Oom.Foo.mixin({
   , attr: {}
 
 })//Oom.Foo.mixin()
-
-
-// //// Add public statics to `Oom.Foo.stat` (exposed to Vue etc).
-// Oom.Foo.stat = {}
-// KIT.define(Oom.Foo.stat, true, Oom.Foo.schema.stat)
-//
-// //// Add public attributes to `myOomFoo.attr` (exposed to Vue etc).
-// Oom.Foo.prototype.attr = {}
-// KIT.define(Oom.Foo.prototype.attr, false, Oom.Foo.schema.attr)
 
 
 
@@ -467,7 +440,7 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
         //// Initialise a constant, eg `FOO_BAR`.
         constant: {
             stat: (stat, def) => KIT.define.constant.any(stat, def)
-          , attr: (attr, def, instance) => {
+          , attr: function (attr, def, instance) {
                 if (def.isFn) { // a weak constant: wont survive `tryHardSet()`
                     const value = def.default(instance)
                     Object.defineProperty(attr, def.name, {
@@ -483,13 +456,13 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
                   , configurable:false, enumerable:true, writable:false })
           //@TODO Fix the following - it would be neater and avoid `get/set()`, but it seems to make some constants writable at present:
           // , attr: (attr, def, instance) => KIT.define.constant.any(attr, def, instance)
-          // , any: (obj, def, instance) => {
-          //       console.log('was', def.name, obj[def.name]);
+          // , any: function (obj, def, instance) {
+          //       // console.log('was', def.name, obj[def.name]);
           //       Object.defineProperty(obj, def.name, {
           //           value: def.isFn ? def.default(instance) : def.default
           //         , configurable: def.isFn
           //         , enumerable:true, writable:false })
-          //       console.log('set', def.name, 'to', obj[def.name], 'configurable?', def.isFn);
+          //       // console.log('set', def.name, 'to', obj[def.name], 'configurable?', def.isFn);
           //   }
         }
 
@@ -752,7 +725,7 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
 
 
 
-//// Oom.Foo //// 1.2.22 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.23 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
@@ -983,7 +956,7 @@ Oom.Foo.Post.mixin({
 
 
 
-//// Oom.Foo //// 1.2.22 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.23 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
@@ -1210,4 +1183,4 @@ Oom.Foo.Router.mixin({
 
 
 
-//// Made by Oomtility Make 1.2.22 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.23 //\\//\\ http://oomtility.loop.coop /////////

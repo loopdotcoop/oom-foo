@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.22 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.23 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
 //// Windows 7:  IE 9, Safari 5.1
@@ -24,7 +24,7 @@ describe('The Oom.devMainVue() component', function (done) {
       , schema = Class.schema
       , instance = new Class()
       , attr = instance.attr
-      , cmp = Vue.component( testID, Class.devMainVue(Class) )
+      , cmp = Vue.component( testID, Class.devMainVue(instance) )
       , $container = $('.container').append(`<div class="row ${hid?'hid':''}" `
           + `id="${testID}"><${testID}>Loading...</${testID}></div>`)
       , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })
@@ -326,7 +326,7 @@ describe('The Oom.Foo.devMainVue() component', function (done) {
       , schema = Class.schema
       , instance = new Class()
       , attr = instance.attr
-      , cmp = Vue.component( testID, Class.devMainVue(Class) )
+      , cmp = Vue.component( testID, Class.devMainVue(instance) )
       , $container = $('.container').append(`<div class="row ${hid?'hid':''}" `
           + `id="${testID}"><${testID}>Loading...</${testID}></div>`)
       , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })

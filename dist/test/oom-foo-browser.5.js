@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.22 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.23 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
@@ -25,7 +25,7 @@
           schema = Class.schema,
           instance = new Class(),
           attr = instance.attr,
-          cmp = Vue.component(testID, Class.devMainVue(Class)),
+          cmp = Vue.component(testID, Class.devMainVue(instance)),
           $container = $('.container').append(("<div class=\"row " + (hid ? 'hid' : '') + "\" ") + ("id=\"" + testID + "\"><" + testID + ">Loading...</" + testID + "></div>")),
           vue = new Vue({
             el: '#' + testID,
@@ -295,7 +295,7 @@
           schema = Class.schema,
           instance = new Class(),
           attr = instance.attr,
-          cmp = Vue.component(testID, Class.devMainVue(Class)),
+          cmp = Vue.component(testID, Class.devMainVue(instance)),
           $container = $('.container').append(("<div class=\"row " + (hid ? 'hid' : '') + "\" ") + ("id=\"" + testID + "\"><" + testID + ">Loading...</" + testID + "></div>")),
           vue = new Vue({
             el: '#' + testID,
@@ -591,7 +591,7 @@ function simulateInput($input, val) {
           schema = Class.schema,
           instance = new Class(),
           attr = instance.attr,
-          cmp = Vue.component(testID, Class.devMainVue(Class)),
+          cmp = Vue.component(testID, Class.devMainVue(instance)),
           $container = $('.container').append(("<div class=\"row " + (hid ? 'hid' : '') + "\" ") + ("id=\"" + testID + "\"><" + testID + ">Loading...</" + testID + "></div>")),
           vue = new Vue({
             el: '#' + testID,
@@ -880,7 +880,7 @@ function simulateInput($input, val) {
           schema = Class.schema,
           instance = new Class(),
           attr = instance.attr,
-          cmp = Vue.component(testID, Class.devMainVue(Class)),
+          cmp = Vue.component(testID, Class.devMainVue(instance)),
           $container = $('.container').append(("<div class=\"row " + (hid ? 'hid' : '') + "\" ") + ("id=\"" + testID + "\"><" + testID + ">Loading...</" + testID + "></div>")),
           vue = new Vue({
             el: '#' + testID,
@@ -1149,4 +1149,4 @@ function simulateInput($input, val) {
 
 
 
-//// Made by Oomtility Make 1.2.22 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.23 //\\//\\ http://oomtility.loop.coop /////////

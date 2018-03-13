@@ -18,7 +18,7 @@ describe('The ${{classname}}.devMainVue component', function (done) {
       , schema = Class.schema
       , instance = new Class()
       , attr = instance.attr
-      , cmp = Vue.component( testID, Class.devMainVue(Class) )
+      , cmp = Vue.component( testID, Class.devMainVue(instance) )
       , $container = $('.container').append(`<div class="row ${hid?'hid':''}" `
           + `id="${testID}"><${testID}>Loading...</${testID}></div>`)
       , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })
