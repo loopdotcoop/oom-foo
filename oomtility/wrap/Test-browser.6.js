@@ -1,19 +1,13 @@
-//// Oom.Foo //// 1.2.24 //// March 2018 //// http://oom-foo.loop.coop/ ////////
-
-!function (ROOT) { 'use strict'
-if (false) return // change to `true` to ‘hard skip’ this test
-const { describe, it, eq, is, goodVals, badVals } = ROOT.testify()
-const { isConstant, isReadOnly, isReadWrite } = Oom.KIT
-describe('Oom.Foo.Post (browser)', () => {
-    const hid = 0 // `true` hides the Vue component, `false` makes it visible
+describe('${{classname}} (browser)', () => {
+    const hid = true // `true` hides the Vue component, `false` makes it visible
 
 
 
 
-describe('The Oom.Foo.Post.devMainVue() component', function (done) {
+describe('The ${{classname}}.devMainVue() component', function (done) {
     const
-        Class = ROOT.Oom.Foo.Post
-      , testID = 'test-oom-foo-post-devmainvue' // also used for component tag
+        Class = ROOT.${{classname}}
+      , testID = 'test-${{classname.toLowerCase().replace(/\./g,'-')}}-devmainvue' // also used for component tag
       , stat = Class.stat
       , schema = Class.schema
       , instance = new Class()
@@ -34,7 +28,7 @@ describe('The Oom.Foo.Post.devMainVue() component', function (done) {
     //// modify these tests unless you’ve given your class special behaviour.
 
 
-    //// Oom.Foo.Post.devMainVue(): The component itself.
+    //// ${{classname}}.devMainVue(): The component itself.
     it('is a viable Vue component', function(){try{
         eq( $('#'+testID).length, 1
           , '#'+testID+' exists' )
@@ -45,7 +39,7 @@ describe('The Oom.Foo.Post.devMainVue() component', function (done) {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Oom.Foo.Post.devMainVue(): Automatic statics - initial values.
+    //// ${{classname}}.devMainVue(): Automatic statics - initial values.
     //// `Vue.nextTick()` because Vue hasn’t initialised the properties yet.
     it('shows correct initial statics', function (done) {
         Vue.nextTick((function(){let error;try{
@@ -61,7 +55,7 @@ describe('The Oom.Foo.Post.devMainVue() component', function (done) {
     }) // `bind(this)` to run the test in Mocha’s context)
 
 
-    //// Oom.Foo.Post.devMainVue(): Automatic read-only statics - shows changes.
+    //// ${{classname}}.devMainVue(): Automatic read-only statics - shows changes.
     it('shows that read-only statics have changed', function (done) {
         const cache = { good:{} }
         for (let key in stat) {
@@ -86,7 +80,7 @@ describe('The Oom.Foo.Post.devMainVue() component', function (done) {
     })
 
 
-    //// Oom.Foo.Post.devMainVue(): Automatic read-write statics - shows changes.
+    //// ${{classname}}.devMainVue(): Automatic read-write statics - shows changes.
     it('shows that read-write statics have changed', function (done) {
         const cache = { good:{} }
         for (let key in stat) {
@@ -106,7 +100,7 @@ describe('The Oom.Foo.Post.devMainVue() component', function (done) {
     })
 
 
-    //// Oom.Foo.Post.devMainVue(): Automatic read-write statics - valid input.
+    //// ${{classname}}.devMainVue(): Automatic read-write statics - valid input.
     it('updates read-write statics after UI input', function (done) {
         const cache = { $el:{}, good:{} }
         for (let key in stat) {
@@ -126,7 +120,7 @@ describe('The Oom.Foo.Post.devMainVue() component', function (done) {
     })
 
 
-    //// Oom.Foo.Post.devMainVue(): Automatic read-write statics - invalid input.
+    //// ${{classname}}.devMainVue(): Automatic read-write statics - invalid input.
     it('does not update read-write statics after invalid UI input', function (done) {
         const cache = { $el:{}, orig:{} }
         for (let key in stat) {
@@ -162,7 +156,7 @@ describe('The Oom.Foo.Post.devMainVue() component', function (done) {
     //// modify these tests unless you’ve given your class special behaviour.
 
 
-    //// Oom.Foo.Post.devMainVue(): Automatic attributes - initial values.
+    //// ${{classname}}.devMainVue(): Automatic attributes - initial values.
     //// `Vue.nextTick()` because Vue hasn’t initialised the properties yet.
     it('shows correct initial attributes', function (done) {
         Vue.nextTick((function(){let error;try{
@@ -178,7 +172,7 @@ describe('The Oom.Foo.Post.devMainVue() component', function (done) {
     }) // `bind(this)` to run the test in Mocha’s context)
 
 
-    //// Oom.Foo.Post.devMainVue(): Automatic read-only attributes - shows changes.
+    //// ${{classname}}.devMainVue(): Automatic read-only attributes - shows changes.
     it('shows that read-only attributes have changed', function (done) {
         const cache = { good:{} }
         for (let key in attr) {
@@ -201,7 +195,7 @@ describe('The Oom.Foo.Post.devMainVue() component', function (done) {
     })
 
 
-    //// Oom.Foo.Post.devMainVue(): Automatic read-write attributes - shows changes.
+    //// ${{classname}}.devMainVue(): Automatic read-write attributes - shows changes.
     it('shows that read-write attributes have changed', function (done) {
         const cache = { good:{} }
         for (let key in attr) {
@@ -221,7 +215,7 @@ describe('The Oom.Foo.Post.devMainVue() component', function (done) {
     })
 
 
-    //// Oom.Foo.Post.devMainVue(): Automatic read-write attributes - valid input.
+    //// ${{classname}}.devMainVue(): Automatic read-write attributes - valid input.
     it('updates read-write attributes after UI input', function (done) {
         const cache = { $el:{}, good:{} }
         for (let key in attr) {
@@ -241,7 +235,7 @@ describe('The Oom.Foo.Post.devMainVue() component', function (done) {
     })
 
 
-    //// Oom.Foo.Post.devMainVue(): Automatic read-write attributes - invalid input.
+    //// ${{classname}}.devMainVue(): Automatic read-write attributes - invalid input.
     it('does not update read-write attributes after invalid UI input', function (done) {
         const cache = { $el:{}, orig:{} }
         for (let key in attr) {
@@ -274,12 +268,9 @@ describe('The Oom.Foo.Post.devMainVue() component', function (done) {
 
 
     }//testAfterMounted()
-})//describe('The Oom.Foo.Post.devMainVue() component')
+})//describe('The ${{classname}}.devMainVue() component')
 
 
 
 
-})//describe('Oom.Foo.Post (browser)')
-
-
-}(window)
+})//describe('${{classname}} (browser)')

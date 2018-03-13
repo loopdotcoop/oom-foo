@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.23 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.24 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
@@ -10,7 +10,7 @@ describe('Oom.Foo.Router (browser)', () => {
 
 
 
-describe('The Oom.Foo.Router.devMainVue component', function (done) {
+describe('The Oom.Foo.Router.devMainVue() component', function (done) {
     const
         Class = ROOT.Oom.Foo.Router
       , testID = 'test-oom-foo-router-devmainvue' // also used for component tag
@@ -29,14 +29,15 @@ describe('The Oom.Foo.Router.devMainVue component', function (done) {
 
 
     //// AUTOMATIC STATIC TESTS
-    //// Test whether the devMainVue component produces a useful representation
-    //// of the class’s statics. You don’t need to modify these tests unless
-    //// you’ve given your class special behaviour.
+    //// Test whether the class’s devMainVue() component produces a complete
+    //// interactive representation of the class’s statics. You don’t need to
+    //// modify these tests unless you’ve given your class special behaviour.
 
 
     //// Oom.Foo.Router.devMainVue(): The component itself.
     it('is a viable Vue component', function(){try{
-        eq( $('#'+testID).length, 1, '#'+testID+' exists' )
+        eq( $('#'+testID).length, 1
+          , '#'+testID+' exists' )
         eq( $('#'+testID+' .dev-main').length, 1
           , 'dev-main exists' )
         eq( $('#'+testID+' .dev-main .member-table').length, 2
@@ -156,6 +157,9 @@ describe('The Oom.Foo.Router.devMainVue component', function (done) {
 
 
     //// AUTOMATIC ATTRIBUTE TESTS
+    //// Test whether the class’s devMainVue() component produces a complete
+    //// interactive representation of the class’s attributes. You don’t need to
+    //// modify these tests unless you’ve given your class special behaviour.
 
 
     //// Oom.Foo.Router.devMainVue(): Automatic attributes - initial values.
@@ -174,6 +178,7 @@ describe('The Oom.Foo.Router.devMainVue component', function (done) {
     }) // `bind(this)` to run the test in Mocha’s context)
 
 
+    //// Oom.Foo.Router.devMainVue(): Automatic read-only attributes - shows changes.
     it('shows that read-only attributes have changed', function (done) {
         const cache = { good:{} }
         for (let key in attr) {
@@ -196,6 +201,7 @@ describe('The Oom.Foo.Router.devMainVue component', function (done) {
     })
 
 
+    //// Oom.Foo.Router.devMainVue(): Automatic read-write attributes - shows changes.
     it('shows that read-write attributes have changed', function (done) {
         const cache = { good:{} }
         for (let key in attr) {
@@ -215,6 +221,7 @@ describe('The Oom.Foo.Router.devMainVue component', function (done) {
     })
 
 
+    //// Oom.Foo.Router.devMainVue(): Automatic read-write attributes - valid input.
     it('updates read-write attributes after UI input', function (done) {
         const cache = { $el:{}, good:{} }
         for (let key in attr) {
@@ -234,6 +241,7 @@ describe('The Oom.Foo.Router.devMainVue component', function (done) {
     })
 
 
+    //// Oom.Foo.Router.devMainVue(): Automatic read-write attributes - invalid input.
     it('does not update read-write attributes after invalid UI input', function (done) {
         const cache = { $el:{}, orig:{} }
         for (let key in attr) {
@@ -266,10 +274,12 @@ describe('The Oom.Foo.Router.devMainVue component', function (done) {
 
 
     }//testAfterMounted()
-})//describe('The Oom.Foo.Router.devMainVue component')
+})//describe('The Oom.Foo.Router.devMainVue() component')
 
 
 
 
 })//describe('Oom.Foo.Router (browser)')
+
+
 }(window)

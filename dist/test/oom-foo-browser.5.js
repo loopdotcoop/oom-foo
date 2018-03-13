@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.23 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.24 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
@@ -16,7 +16,7 @@
       isConstant = $__3.isConstant,
       isReadOnly = $__3.isReadOnly,
       isReadWrite = $__3.isReadWrite;
-  describe('Bases (browser)', function() {
+  describe('Oom (browser)', function() {
     var hid = true;
     describe('The Oom.devMainVue() component', function(done) {
       var Class = ROOT.Oom,
@@ -288,6 +288,9 @@
         });
       }
     });
+  });
+  describe('Oom.Foo (browser)', function() {
+    var hid = true;
     describe('The Oom.Foo.devMainVue() component', function(done) {
       var Class = ROOT.Oom.Foo,
           testID = 'test-oom-foo-devmainvue',
@@ -584,7 +587,7 @@ function simulateInput($input, val) {
       isReadWrite = $__3.isReadWrite;
   describe('Oom.Foo.Post (browser)', function() {
     var hid = true;
-    describe('The Oom.Foo.Post.devMainVue component', function(done) {
+    describe('The Oom.Foo.Post.devMainVue() component', function(done) {
       var Class = ROOT.Oom.Foo.Post,
           testID = 'test-oom-foo-post-devmainvue',
           stat = Class.stat,
@@ -873,7 +876,7 @@ function simulateInput($input, val) {
       isReadWrite = $__3.isReadWrite;
   describe('Oom.Foo.Router (browser)', function() {
     var hid = true;
-    describe('The Oom.Foo.Router.devMainVue component', function(done) {
+    describe('The Oom.Foo.Router.devMainVue() component', function(done) {
       var Class = ROOT.Oom.Foo.Router,
           testID = 'test-oom-foo-router-devmainvue',
           stat = Class.stat,
@@ -1149,4 +1152,4 @@ function simulateInput($input, val) {
 
 
 
-//// Made by Oomtility Make 1.2.23 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.24 //\\//\\ http://oomtility.loop.coop /////////

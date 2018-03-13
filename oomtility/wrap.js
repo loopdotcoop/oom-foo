@@ -26,7 +26,7 @@ const CONSTS = {
 }
 
 const NAME     = 'Oomtility Wrap'
-    , VERSION  = '1.2.23'
+    , VERSION  = '1.2.24'
     , HOMEPAGE = 'https://oomtility.loop.coop'
     , HELP =
 `
@@ -294,21 +294,26 @@ function doWrap (path) {
     out = out.concat(
         'const encoding = rxBinaryExt.test(path) ? \'binary\' : \'utf8\''
       , 'const flag = \'a\'' // 'a' appends to the end of the file
+      , 'let out = \'\'' // will be returned if `path` is null
+      , 'const write = str => out += null == path ? str'
+      , '  : fs.writeFileSync(path, str, { encoding, flag })'
     )
 
     //// Add file-append code for each chunk of 2500 lines (just one chunk will
     //// be used for files under about 200KB).
     for (let i = 0; i<wrapped.length; i += 2500) {
         out = out.concat(
-            'fs.writeFileSync(path, \'\''
+            'write(\'\''
           , wrapped.slice(i, i + 2500)
-          , '  , { encoding, flag } )'
+          , ')'
         )
     }
 
     //// Finish off the function.
-    out = out.concat('}\n\n\n\n')
-
+    out = out.concat(
+        '    return null == path ? out : null'
+      , '}\n\n\n\n'
+    )
 }
 
 

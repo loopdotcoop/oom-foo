@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.23 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.24 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
 //// Windows 7:  IE 9, Safari 5.1
@@ -10,7 +10,7 @@
 if (false) return $(mocha.run) // change to `true` to ‘hard skip’ this test
 const { describe, it, eq, is, goodVals, badVals } = ROOT.testify()
 const { isConstant, isReadOnly, isReadWrite } = Oom.KIT
-describe('Bases (browser)', () => {
+describe('Oom (browser)', () => {
     const hid = true // `true` hides the Vue component, `false` makes it visible
 
 
@@ -35,9 +35,9 @@ describe('The Oom.devMainVue() component', function (done) {
 
 
     //// AUTOMATIC STATIC TESTS
-    //// Test whether the devMainVue component produces a useful representation
-    //// of the class’s statics. You don’t need to modify these tests unless
-    //// you’ve given your class special behaviour.
+    //// Test whether the class’s devMainVue() component produces a complete
+    //// interactive representation of the class’s statics. You don’t need to
+    //// modify these tests unless you’ve given your class special behaviour.
 
 
     //// Oom.devMainVue(): The component itself.
@@ -104,7 +104,7 @@ describe('The Oom.devMainVue() component', function (done) {
             for (let key in stat) {
                 if (! isReadWrite(key) ) continue
                 const good = cache.good[key]+''
-                eq($(`#${testID} .stat .Oom-${key} .val .read-write`).val(),good
+                eq($(`#${testID} .stat .Oom-${key} .val .read-write`).val(), good
                   , '`#'+testID+' .stat .Oom-'+key+' .val` changed to '+good)
             }
             Class.reset()
@@ -163,6 +163,9 @@ describe('The Oom.devMainVue() component', function (done) {
 
 
     //// AUTOMATIC ATTRIBUTE TESTS
+    //// Test whether the class’s devMainVue() component produces a complete
+    //// interactive representation of the class’s attributes. You don’t need to
+    //// modify these tests unless you’ve given your class special behaviour.
 
 
     //// Oom.devMainVue(): Automatic attributes - initial values.
@@ -181,6 +184,7 @@ describe('The Oom.devMainVue() component', function (done) {
     }) // `bind(this)` to run the test in Mocha’s context)
 
 
+    //// Oom.devMainVue(): Automatic read-only attributes - shows changes.
     it('shows that read-only attributes have changed', function (done) {
         const cache = { good:{} }
         for (let key in attr) {
@@ -203,6 +207,7 @@ describe('The Oom.devMainVue() component', function (done) {
     })
 
 
+    //// Oom.devMainVue(): Automatic read-write attributes - shows changes.
     it('shows that read-write attributes have changed', function (done) {
         const cache = { good:{} }
         for (let key in attr) {
@@ -214,7 +219,7 @@ describe('The Oom.devMainVue() component', function (done) {
             for (let key in attr) {
                 if (! isReadWrite(key) ) continue
                 const good = cache.good[key]+''
-                eq($(`#${testID} .attr .Oom-${key} .val .read-write`).val(),good
+                eq($(`#${testID} .attr .Oom-${key} .val .read-write`).val(), good
                   , '`#'+testID+' .attr .Oom-'+key+' .val` changed to '+good)
             }
             instance.reset()
@@ -222,6 +227,7 @@ describe('The Oom.devMainVue() component', function (done) {
     })
 
 
+    //// Oom.devMainVue(): Automatic read-write attributes - valid input.
     it('updates read-write attributes after UI input', function (done) {
         const cache = { $el:{}, good:{} }
         for (let key in attr) {
@@ -241,6 +247,7 @@ describe('The Oom.devMainVue() component', function (done) {
     })
 
 
+    //// Oom.devMainVue(): Automatic read-write attributes - invalid input.
     it('does not update read-write attributes after invalid UI input', function (done) {
         const cache = { $el:{}, orig:{} }
         for (let key in attr) {
@@ -277,43 +284,14 @@ describe('The Oom.devMainVue() component', function (done) {
 
 
 
-/*
-describe('The Oom.devMainAFrame() component', function (done) {
-    const
-        Class = ROOT.Oom
-      , testID = 'test-oom-devmainaframe' // also used for component tag
-      , stat = Class.stat
-      , schema = Class.schema
-      , instance = new Class()
-      , attr = instance.attr
-      , cmp = Vue.component( testID, Class.devMainAFrame(Class) )
-      , $container = $('.container').append(`<div class="row ${hid?'hid':''}" `
-          + `id="${testID}"><${testID}>Loading...</${testID}></div>`)
-      , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })
 
-function testAfterMounted () {
+})//describe('Oom (browser)')
 
 
 
 
-    //// AUTOMATIC STATIC TESTS
-    //// Test whether the devMainAFrame component xxxxxx. You don’t need to modify these tests unless
-    //// you’ve given your class special behaviour.
-
-
-    it('is a viable Vue component', function(){try{
-        eq( $('#'+testID).length, 1
-          , '#'+testID+' exists' )
-        eq( $('#'+testID+' .dev-main').length, 1
-          , 'dev-main exists' )
-        eq( $('#'+testID+' .dev-main .member-table').length, 2
-          , 'Two member-tables exist (one for stat, one for attr)' )
-    }catch(e){console.error(e.message);throw e}})
-
-
-}//testAfterMounted()
-})//describe('The Oom.devMainAFrame() component')
-*/
+describe('Oom.Foo (browser)', () => {
+    const hid = true // `true` hides the Vue component, `false` makes it visible
 
 
 
@@ -337,9 +315,9 @@ describe('The Oom.Foo.devMainVue() component', function (done) {
 
 
     //// AUTOMATIC STATIC TESTS
-    //// Test whether the devMainVue component produces a useful representation
-    //// of the class’s statics. You don’t need to modify these tests unless
-    //// you’ve given your class special behaviour.
+    //// Test whether the class’s devMainVue() component produces a complete
+    //// interactive representation of the class’s statics. You don’t need to
+    //// modify these tests unless you’ve given your class special behaviour.
 
 
     //// Oom.Foo.devMainVue(): The component itself.
@@ -406,7 +384,7 @@ describe('The Oom.Foo.devMainVue() component', function (done) {
             for (let key in stat) {
                 if (! isReadWrite(key) ) continue
                 const good = cache.good[key]+''
-                eq($(`#${testID} .stat .Oom-${key} .val .read-write`).val(),good
+                eq($(`#${testID} .stat .Oom-${key} .val .read-write`).val(), good
                   , '`#'+testID+' .stat .Oom-'+key+' .val` changed to '+good)
             }
             Class.reset()
@@ -434,7 +412,7 @@ describe('The Oom.Foo.devMainVue() component', function (done) {
     })
 
 
-    //// Oom.devMainVue(): Automatic read-write statics - invalid input.
+    //// Oom.Foo.devMainVue(): Automatic read-write statics - invalid input.
     it('does not update read-write statics after invalid UI input', function (done) {
         const cache = { $el:{}, orig:{} }
         for (let key in stat) {
@@ -465,9 +443,12 @@ describe('The Oom.Foo.devMainVue() component', function (done) {
 
 
     //// AUTOMATIC ATTRIBUTE TESTS
+    //// Test whether the class’s devMainVue() component produces a complete
+    //// interactive representation of the class’s attributes. You don’t need to
+    //// modify these tests unless you’ve given your class special behaviour.
 
 
-    //// Oom.devMainVue(): Automatic attributes - initial values.
+    //// Oom.Foo.devMainVue(): Automatic attributes - initial values.
     //// `Vue.nextTick()` because Vue hasn’t initialised the properties yet.
     it('shows correct initial attributes', function (done) {
         Vue.nextTick((function(){let error;try{
@@ -483,6 +464,7 @@ describe('The Oom.Foo.devMainVue() component', function (done) {
     }) // `bind(this)` to run the test in Mocha’s context)
 
 
+    //// Oom.Foo.devMainVue(): Automatic read-only attributes - shows changes.
     it('shows that read-only attributes have changed', function (done) {
         const cache = { good:{} }
         for (let key in attr) {
@@ -505,6 +487,7 @@ describe('The Oom.Foo.devMainVue() component', function (done) {
     })
 
 
+    //// Oom.Foo.devMainVue(): Automatic read-write attributes - shows changes.
     it('shows that read-write attributes have changed', function (done) {
         const cache = { good:{} }
         for (let key in attr) {
@@ -516,7 +499,7 @@ describe('The Oom.Foo.devMainVue() component', function (done) {
             for (let key in attr) {
                 if (! isReadWrite(key) ) continue
                 const good = cache.good[key]+''
-                eq($(`#${testID} .attr .Oom-${key} .val .read-write`).val(),good
+                eq($(`#${testID} .attr .Oom-${key} .val .read-write`).val(), good
                   , '`#'+testID+' .attr .Oom-'+key+' .val` changed to '+good)
             }
             instance.reset()
@@ -524,6 +507,7 @@ describe('The Oom.Foo.devMainVue() component', function (done) {
     })
 
 
+    //// Oom.Foo.devMainVue(): Automatic read-write attributes - valid input.
     it('updates read-write attributes after UI input', function (done) {
         const cache = { $el:{}, good:{} }
         for (let key in attr) {
@@ -543,6 +527,7 @@ describe('The Oom.Foo.devMainVue() component', function (done) {
     })
 
 
+    //// Oom.Foo.devMainVue(): Automatic read-write attributes - invalid input.
     it('does not update read-write attributes after invalid UI input', function (done) {
         const cache = { $el:{}, orig:{} }
         for (let key in attr) {
@@ -580,8 +565,47 @@ describe('The Oom.Foo.devMainVue() component', function (done) {
 
 
 
-})//describe('Bases (browser)')
+})//describe('Oom.Foo (browser)')
 
+
+
+/*
+describe('The Oom.devMainAFrame() component', function (done) {
+    const
+        Class = ROOT.Oom
+      , testID = 'test-oom-devmainaframe' // also used for component tag
+      , stat = Class.stat
+      , schema = Class.schema
+      , instance = new Class()
+      , attr = instance.attr
+      , cmp = Vue.component( testID, Class.devMainAFrame(Class) )
+      , $container = $('.container').append(`<div class="row ${hid?'hid':''}" `
+          + `id="${testID}"><${testID}>Loading...</${testID}></div>`)
+      , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })
+
+function testAfterMounted () {
+
+
+
+
+    //// AUTOMATIC STATIC TESTS
+    //// Test whether the devMainAFrame component xxxxxx. You don’t need to modify these tests unless
+    //// you’ve given your class special behaviour.
+
+
+    it('is a viable Vue component', function(){try{
+        eq( $('#'+testID).length, 1
+          , '#'+testID+' exists' )
+        eq( $('#'+testID+' .dev-main').length, 1
+          , 'dev-main exists' )
+        eq( $('#'+testID+' .dev-main .member-table').length, 2
+          , 'Two member-tables exist (one for stat, one for attr)' )
+    }catch(e){console.error(e.message);throw e}})
+
+
+}//testAfterMounted()
+})//describe('The Oom.devMainAFrame() component')
+*/
 
 //// Calling `mocha.run()` here will run all of the test files, including the
 //// ones which haven’t loaded yet. Note that `mocha.run()` does not need to be

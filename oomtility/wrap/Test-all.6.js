@@ -1,16 +1,9 @@
-//// Oom.Foo //// 1.2.24 //// March 2018 //// http://oom-foo.loop.coop/ ////////
-
-!function (ROOT) { 'use strict'
-if (false) return // change to `true` to ‘hard skip’ this test
-const { describe, it, eq, neq, is // chai and mocha
-      , trySoftSet, tryHardSet, goodVals, badVals } = ROOT.testify()
-const { countKeyMatches, isConstant, isReadOnly, isReadWrite, isValid } = Oom.KIT
-describe('Oom.Foo.Post (all)', function () {
+describe('${{classname}} (all)', function () {
 
 
 
 
-//// Instantiates a typical Oom.Foo.Post instance for unit testing its methods.
+//// Instantiates a typical ${{classname}} instance for unit testing its methods.
 // Class.testInstanceFactory = () =>
 //     new Class({
 //         firstProp: 100
@@ -22,8 +15,8 @@ describe('Oom.Foo.Post (all)', function () {
 
 
 
-describe('The Oom.Foo.Post class', function () {
-    const Class = ROOT.Oom.Foo.Post
+describe('The ${{classname}} class', function () {
+    const Class = ROOT.${{classname}}
         , schema = Class.schema, stat = Class.stat
 
 
@@ -34,20 +27,20 @@ describe('The Oom.Foo.Post class', function () {
     //// modify these tests unless you’ve given your class special behaviour.
 
 
-    //// Oom.Foo.Post class: The class itself.
+    //// ${{classname}} class: The class itself.
     it('is a class with base methods', function(){try{
         eq(typeof Class, 'function'
-          , '`typeof Oom.Foo.Post` is a function')
+          , '`typeof ${{classname}}` is a function')
         eq(typeof Class.reset, 'function'
-          , 'Oom.Foo.Post.reset() is a static method')
+          , '${{classname}}.reset() is a static method')
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Oom.Foo.Post class: Automatic constant statics.
+    //// ${{classname}} class: Automatic constant statics.
     let n = countKeyMatches(schema.stat, isConstant)
     it(`has ${n} constant static${1==n?'':'s'}`, function(){try{
         tryHardSet(Class, 'name', 'Changed!')
-        eq(Class.name, 'Oom.Foo.Post', 'name is Oom.Foo.Post')
+        eq(Class.name, '${{classname}}', 'name is ${{classname}}')
         for (let key in schema.stat) {
             if (! isConstant(key) ) continue // only constants
             const def = schema.stat[key]
@@ -60,7 +53,7 @@ describe('The Oom.Foo.Post class', function () {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Oom.Foo.Post class: Automatic read-only statics - initial values.
+    //// ${{classname}} class: Automatic read-only statics - initial values.
     n = countKeyMatches(schema.stat, isReadOnly)
     it(`has ${n} read-only static${1==n?'':'s'}`, function(){try{
         Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
@@ -76,7 +69,7 @@ describe('The Oom.Foo.Post class', function () {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Oom.Foo.Post class: Automatic read-only statics - may change.
+    //// ${{classname}} class: Automatic read-only statics - may change.
     it('sees when read-only statics change', function(){try{
         for (let key in schema.stat) {
             if (! isReadOnly(key) ) continue // only read-only properties
@@ -96,7 +89,7 @@ describe('The Oom.Foo.Post class', function () {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Oom.Foo.Post class: Automatic read-write statics - initial values.
+    //// ${{classname}} class: Automatic read-write statics - initial values.
     n = countKeyMatches(schema.stat, isReadWrite)
     it(`has ${n} read-write static${1==n?'':'s'}`, function(){try{
         for (let key in schema.stat) {
@@ -110,7 +103,7 @@ describe('The Oom.Foo.Post class', function () {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Oom.Foo.Post class: Automatic read-write statics - can be changed.
+    //// ${{classname}} class: Automatic read-write statics - can be changed.
     it('allows read-write statics to be changed', function(){try{
         for (let key in schema.stat) {
             if (! isReadWrite(key) ) continue // only read-write properties
@@ -134,7 +127,7 @@ describe('The Oom.Foo.Post class', function () {
     //// CUSTOM STATIC TESTS
 
 
-    //// Oom.Foo.Post class: Custom read-only statics - initial values.
+    //// ${{classname}} class: Custom read-only statics - initial values.
     it('has read-only static `inst_tally`', function(){try{
         Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
         eq( stat.inst_tally, 0
@@ -150,13 +143,13 @@ describe('The Oom.Foo.Post class', function () {
 
 
 
-})//describe('The Oom.Foo.Post class')
+})//describe('The ${{classname}} class')
 
 
 
 
-describe('An Oom.Foo.Post instance', function () {
-    const Class = ROOT.Oom.Foo.Post, schema = Class.schema
+describe('An ${{classname}} instance', function () {
+    const Class = ROOT.${{classname}}, schema = Class.schema
         , instance = new Class(), attr = instance.attr
         , unchanged = new Class()
 
@@ -168,18 +161,18 @@ describe('An Oom.Foo.Post instance', function () {
     //// to modify these tests unless you’ve given your class special behaviour.
 
 
-    //// Oom.Foo.Post instance: The instance itself.
+    //// ${{classname}} instance: The instance itself.
     it('is an instance with base methods', function(){try{
         is(instance instanceof Class
-          , 'is an instance of Oom.Foo.Post')
+          , 'is an instance of ${{classname}}')
         eq(Class, instance.constructor
-          , '`constructor` is Oom.Foo.Post')
+          , '`constructor` is ${{classname}}')
         eq(typeof instance.reset, 'function'
-          , 'myOomFooPost.reset() is an instance method')
+          , 'my${{classname.replace(/\./g,'')}}.reset() is an instance method')
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Oom.Foo.Post instance: Automatic constant attributes from function.
+    //// ${{classname}} instance: Automatic constant attributes from function.
     let n = countKeyMatches(schema.attr
       , key => isConstant(key) && schema.attr[key].isFn )
     it(`has ${n} constant attribute${1==n?'':'s'} from function`, function(){try{
@@ -195,7 +188,7 @@ describe('An Oom.Foo.Post instance', function () {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Oom.Foo.Post instance: Automatic constant attributes NOT from function.
+    //// ${{classname}} instance: Automatic constant attributes NOT from function.
     n = countKeyMatches(schema.attr
       , key => isConstant(key) && ! schema.attr[key].isFn )
     it(`has ${n} constant attribute${1==n?'':'s'} NOT from function`, function(){try{
@@ -212,7 +205,7 @@ describe('An Oom.Foo.Post instance', function () {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Oom.Foo.Post instance: Automatic read-only attributes - initial values.
+    //// ${{classname}} instance: Automatic read-only attributes - initial values.
     n = countKeyMatches(schema.attr, isReadOnly)
     it(`has ${n} read-only attribute${1==n?'':'s'}`, function(){try{
         instance.reset()
@@ -228,7 +221,7 @@ describe('An Oom.Foo.Post instance', function () {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Oom.Foo.Post instance: Automatic read-only attributes - may change.
+    //// ${{classname}} instance: Automatic read-only attributes - may change.
     it('sees when read-only attributes change', function(){try{
         for (let key in schema.attr) {
             if (! isReadOnly(key) ) continue // only read-only properties
@@ -249,7 +242,7 @@ describe('An Oom.Foo.Post instance', function () {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Oom.Foo.Post instance: Automatic read-write attributes - initial values.
+    //// ${{classname}} instance: Automatic read-write attributes - initial values.
     n = countKeyMatches(schema.attr, isReadWrite)
     it(`has ${n} read-write attribute${1==n?'':'s'}`, function(){try{
         for (let key in schema.attr) {
@@ -263,7 +256,7 @@ describe('An Oom.Foo.Post instance', function () {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Oom.Foo.Post instance: Automatic read-write attributes - may change.
+    //// ${{classname}} instance: Automatic read-write attributes - may change.
     it('allows read-write attributes to be changed', function(){try{
         for (let key in schema.attr) {
             if (! isReadWrite(key) ) continue // only read-write properties
@@ -292,7 +285,7 @@ describe('An Oom.Foo.Post instance', function () {
     //// CUSTOM ATTRIBUTE TESTS
 
 
-    //// Oom.Foo.Post instance: Custom constant attributes.
+    //// ${{classname}} instance: Custom constant attributes.
     it('has constant attribute `INST_INDEX`', function(){try{
         Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
         const instance0 = new Class()
@@ -312,12 +305,9 @@ describe('An Oom.Foo.Post instance', function () {
 
 
 
-})//describe('An Oom.Foo.Post instance')
+})//describe('An ${{classname}} instance')
 
 
 
 
-})//describe('Oom.Foo.Post (all)')
-
-
-}( 'object' === typeof global ? global : this ) // `window` in a browser
+})//describe('${{classname}} (all)')

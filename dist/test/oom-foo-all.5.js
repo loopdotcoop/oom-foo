@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.23 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.24 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
@@ -22,11 +22,7 @@
       isReadOnly = $__3.isReadOnly,
       isReadWrite = $__3.isReadWrite,
       isValid = $__3.isValid;
-  describe('Bases (all)', function() {
-    var r;
-    if (!(r = ROOT.Oom) || !(r = r.Foo) || !(r = r.stat) || !(r = r.LOADED_FIRST))
-      throw Error('Can’t test: ROOT.Oom.Foo.stat.LOADED_FIRST does not exist');
-    var LOADED_FIRST = ROOT.Oom.Foo.stat.LOADED_FIRST;
+  describe('Oom (all)', function() {
     describe('The Oom class', function() {
       var Class = ROOT.Oom,
           schema = Class.schema,
@@ -130,7 +126,7 @@
       it('has read-only static `inst_tally`', function() {
         try {
           Class.reset();
-          eq(stat.inst_tally, 0, 'stat.inst_tally is zero after a ‘hard reset’');
+          eq(stat.inst_tally, 0, 'stat.inst_tally is zero after a ‘hard class reset’');
           var instance = new Class();
           eq(stat.inst_tally, 1, 'stat.inst_tally is 1 after an instantiation');
         } catch (e) {
@@ -194,6 +190,7 @@
       n = countKeyMatches(schema.attr, isReadOnly);
       it(("has " + n + " read-only attribute" + (1 == n ? '' : 's')), function() {
         try {
+          instance.reset();
           for (var key in schema.attr) {
             if (!isReadOnly(key))
               continue;
@@ -251,6 +248,7 @@
             eq(attr[key], good, 'attr.' + key + ' has changed to ' + good);
             neq(unchanged.attr[key], good, 'unchanged.attr.' + key + ' has NOT changed to ' + good);
             attr[key] = bad;
+            eq(attr[key], good, 'attr.' + key + ' has NOT changed to ' + bad);
             neq(unchanged.attr[key], bad, 'unchanged.attr.' + key + ' has NOT changed to ' + bad);
             instance.reset();
             unchanged.reset();
@@ -265,9 +263,9 @@
         try {
           Class.reset();
           var instance0 = new Class();
-          eq(instance0.attr.INST_INDEX, 0, 'First instance after a hard reset has attr.INST_INDEX 0');
           var instance1 = new Class();
-          eq(instance1.attr.INST_INDEX, 1, 'Second instance after a hard reset has attr.INST_INDEX 1');
+          eq(instance0.attr.INST_INDEX, 0, 'First instance after a ‘hard class reset’ has attr.INST_INDEX 0');
+          eq(instance1.attr.INST_INDEX, 1, 'Second instance after a ‘hard class reset’ has attr.INST_INDEX 1');
           eq('string', $traceurRuntime.typeof(attr.UUID), '`attr.UUID` is a string');
           is(/^[0-9A-Za-z]{6}$/.test(attr.UUID), '`attr.UUID` conforms to /^[0-9A-Za-z]{6}$/');
           neq(instance0.attr.UUID, instance1.attr.UUID, 'Two instances have different UUIDs');
@@ -277,6 +275,8 @@
         }
       });
     });
+  });
+  describe('Oom.Foo (all)', function() {
     describe('The Oom.Foo class', function() {
       var Class = ROOT.Oom.Foo,
           schema = Class.schema,
@@ -380,7 +380,7 @@
       it('has read-only static `inst_tally`', function() {
         try {
           Class.reset();
-          eq(stat.inst_tally, 0, 'stat.inst_tally is zero after a ‘hard reset’');
+          eq(stat.inst_tally, 0, 'stat.inst_tally is zero after a ‘hard class reset’');
           var instance = new Class();
           eq(stat.inst_tally, 1, 'stat.inst_tally is 1 after an instantiation');
         } catch (e) {
@@ -399,7 +399,7 @@
         try {
           is(instance instanceof Class, 'is an instance of Oom.Foo');
           eq(Class, instance.constructor, '`constructor` is Oom.Foo');
-          eq($traceurRuntime.typeof(instance.reset), 'function', 'myOom.Foo.reset() is an instance method');
+          eq($traceurRuntime.typeof(instance.reset), 'function', 'myOomFoo.reset() is an instance method');
         } catch (e) {
           console.error(e.message);
           throw e;
@@ -444,6 +444,7 @@
       n = countKeyMatches(schema.attr, isReadOnly);
       it(("has " + n + " read-only attribute" + (1 == n ? '' : 's')), function() {
         try {
+          instance.reset();
           for (var key in schema.attr) {
             if (!isReadOnly(key))
               continue;
@@ -516,9 +517,12 @@
         try {
           Class.reset();
           var instance0 = new Class();
-          eq(instance0.attr.INST_INDEX, 0, 'First instance after a hard reset has attr.INST_INDEX 0');
           var instance1 = new Class();
-          eq(instance1.attr.INST_INDEX, 1, 'Second instance after a hard reset has attr.INST_INDEX 1');
+          eq(instance0.attr.INST_INDEX, 0, 'First instance after a ‘hard class reset’ has attr.INST_INDEX 0');
+          eq(instance1.attr.INST_INDEX, 1, 'Second instance after a ‘hard class reset’ has attr.INST_INDEX 1');
+          eq('string', $traceurRuntime.typeof(attr.UUID), '`attr.UUID` is a string');
+          is(/^[0-9A-Za-z]{6}$/.test(attr.UUID), '`attr.UUID` conforms to /^[0-9A-Za-z]{6}$/');
+          neq(instance0.attr.UUID, instance1.attr.UUID, 'Two instances have different UUIDs');
         } catch (e) {
           console.error(e.message);
           throw e;
@@ -692,6 +696,17 @@ function testify() {
           throw e;
         }
       });
+      it('has read-only static `inst_tally`', function() {
+        try {
+          Class.reset();
+          eq(stat.inst_tally, 0, 'stat.inst_tally is zero after a ‘hard class reset’');
+          var instance = new Class();
+          eq(stat.inst_tally, 1, 'stat.inst_tally is 1 after an instantiation');
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
     });
     describe('An Oom.Foo.Post instance', function() {
       var Class = ROOT.Oom.Foo.Post,
@@ -821,9 +836,12 @@ function testify() {
         try {
           Class.reset();
           var instance0 = new Class();
-          eq(instance0.attr.INST_INDEX, 0, 'First instance after a hard reset has attr.INST_INDEX 0');
           var instance1 = new Class();
-          eq(instance1.attr.INST_INDEX, 1, 'Second instance after a hard reset has attr.INST_INDEX 1');
+          eq(instance0.attr.INST_INDEX, 0, 'First instance after a ‘hard class reset’ has attr.INST_INDEX 0');
+          eq(instance1.attr.INST_INDEX, 1, 'Second instance after a ‘hard class reset’ has attr.INST_INDEX 1');
+          eq('string', $traceurRuntime.typeof(attr.UUID), '`attr.UUID` is a string');
+          is(/^[0-9A-Za-z]{6}$/.test(attr.UUID), '`attr.UUID` conforms to /^[0-9A-Za-z]{6}$/');
+          neq(instance0.attr.UUID, instance1.attr.UUID, 'Two instances have different UUIDs');
         } catch (e) {
           console.error(e.message);
           throw e;
@@ -948,6 +966,17 @@ function testify() {
             Class.reset();
             eq(stat[key], schema.stat[key].default, 'stat.' + key + ' has been reset to ' + schema.stat[key].default);
           }
+        } catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      it('has read-only static `inst_tally`', function() {
+        try {
+          Class.reset();
+          eq(stat.inst_tally, 0, 'stat.inst_tally is zero after a ‘hard class reset’');
+          var instance = new Class();
+          eq(stat.inst_tally, 1, 'stat.inst_tally is 1 after an instantiation');
         } catch (e) {
           console.error(e.message);
           throw e;
@@ -1082,9 +1111,12 @@ function testify() {
         try {
           Class.reset();
           var instance0 = new Class();
-          eq(instance0.attr.INST_INDEX, 0, 'First instance after a hard reset has attr.INST_INDEX 0');
           var instance1 = new Class();
-          eq(instance1.attr.INST_INDEX, 1, 'Second instance after a hard reset has attr.INST_INDEX 1');
+          eq(instance0.attr.INST_INDEX, 0, 'First instance after a ‘hard class reset’ has attr.INST_INDEX 0');
+          eq(instance1.attr.INST_INDEX, 1, 'Second instance after a ‘hard class reset’ has attr.INST_INDEX 1');
+          eq('string', $traceurRuntime.typeof(attr.UUID), '`attr.UUID` is a string');
+          is(/^[0-9A-Za-z]{6}$/.test(attr.UUID), '`attr.UUID` conforms to /^[0-9A-Za-z]{6}$/');
+          neq(instance0.attr.UUID, instance1.attr.UUID, 'Two instances have different UUIDs');
         } catch (e) {
           console.error(e.message);
           throw e;
@@ -1097,4 +1129,4 @@ function testify() {
 
 
 
-//// Made by Oomtility Make 1.2.23 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.24 //\\//\\ http://oomtility.loop.coop /////////

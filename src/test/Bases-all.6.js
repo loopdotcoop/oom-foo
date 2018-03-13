@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.23 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.24 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -14,13 +14,19 @@ if (false) return // change to `true` to ‘hard skip’ this test
 const { describe, it, eq, neq, is // chai and mocha
       , trySoftSet, tryHardSet, goodVals, badVals } = ROOT.testify()
 const { countKeyMatches, isConstant, isReadOnly, isReadWrite, isValid } = Oom.KIT
-describe('Bases (all)', function () {
+describe('Oom (all)', function () {
 
 
-//// Establish whether the oom-foo module’s definition of Oom is being used.
-let r; if (!(r=ROOT.Oom) || !(r=r.Foo) || !(r=r.stat) || !(r=r.LOADED_FIRST))
-    throw Error('Can’t test: ROOT.Oom.Foo.stat.LOADED_FIRST does not exist')
-const LOADED_FIRST = ROOT.Oom.Foo.stat.LOADED_FIRST //@TODO generalise Foo
+
+
+//// Instantiates a typical Oom instance for unit testing its methods.
+// Class.testInstanceFactory = () =>
+//     new Class({
+//         firstProp: 100
+//       , secondProp: new Date
+//     },{
+//         /* @TODO hub API */
+//     })
 
 
 
@@ -54,7 +60,7 @@ describe('The Oom class', function () {
         for (let key in schema.stat) {
             if (! isConstant(key) ) continue // only constants
             const def = schema.stat[key]
-            tryHardSet(stat, key, goodVals[ def.typeStr ])
+            tryHardSet(stat, key, goodVals[ def.typeStr ]) // ...a hard-set
             eq(stat[key], def.default
               , 'stat.'+key+' is '+def.default.toString())
             is( isValid(def, stat[key])
@@ -141,11 +147,14 @@ describe('The Oom class', function () {
     it('has read-only static `inst_tally`', function(){try{
         Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
         eq( stat.inst_tally, 0
-          , 'stat.inst_tally is zero after a ‘hard reset’' )
+          , 'stat.inst_tally is zero after a ‘hard class reset’' )
         const instance = new Class()
         eq( stat.inst_tally, 1
           , 'stat.inst_tally is 1 after an instantiation' )
     }catch(e){console.error(e.message);throw e}})
+
+
+    //@TODO more custom static tests
 
 
 
@@ -215,6 +224,7 @@ describe('An Oom instance', function () {
     //// Oom instance: Automatic read-only attributes - initial values.
     n = countKeyMatches(schema.attr, isReadOnly)
     it(`has ${n} read-only attribute${1==n?'':'s'}`, function(){try{
+        instance.reset()
         for (let key in schema.attr) {
             if (! isReadOnly(key) ) continue // only read-only properties
             const def = schema.attr[key]
@@ -274,6 +284,8 @@ describe('An Oom instance', function () {
             neq(unchanged.attr[key], good
               , 'unchanged.attr.'+key+' has NOT changed to '+good)
             attr[key] = bad
+            eq(attr[key], good
+              , 'attr.'+key+' has NOT changed to '+bad)
             neq(unchanged.attr[key], bad
               , 'unchanged.attr.'+key+' has NOT changed to '+bad)
             instance.reset()
@@ -293,11 +305,11 @@ describe('An Oom instance', function () {
     it('has constant attribute `INST_INDEX`', function(){try{
         Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
         const instance0 = new Class()
-        eq( instance0.attr.INST_INDEX, 0
-          , 'First instance after a hard reset has attr.INST_INDEX 0' )
         const instance1 = new Class()
+        eq( instance0.attr.INST_INDEX, 0
+          , 'First instance after a ‘hard class reset’ has attr.INST_INDEX 0' )
         eq( instance1.attr.INST_INDEX, 1
-          , 'Second instance after a hard reset has attr.INST_INDEX 1' )
+          , 'Second instance after a ‘hard class reset’ has attr.INST_INDEX 1' )
         eq('string', typeof attr.UUID
           , '`attr.UUID` is a string')
         is(/^[0-9A-Za-z]{6}$/.test(attr.UUID)
@@ -305,12 +317,33 @@ describe('An Oom instance', function () {
         neq( instance0.attr.UUID, instance1.attr.UUID
           , 'Two instances have different UUIDs' )
     }catch(e){console.error(e.message);throw e}})
-    //@TODO more tests
 
 
 
 
 })//describe('An Oom instance')
+
+
+
+
+})//describe('Oom (all)')
+
+
+
+
+describe('Oom.Foo (all)', function () {
+
+
+
+
+//// Instantiates a typical Oom.Foo instance for unit testing its methods.
+// Class.testInstanceFactory = () =>
+//     new Class({
+//         firstProp: 100
+//       , secondProp: new Date
+//     },{
+//         /* @TODO hub API */
+//     })
 
 
 
@@ -344,7 +377,7 @@ describe('The Oom.Foo class', function () {
         for (let key in schema.stat) {
             if (! isConstant(key) ) continue // only constants
             const def = schema.stat[key]
-            tryHardSet(stat, key, goodVals[ def.typeStr ])
+            tryHardSet(stat, key, goodVals[ def.typeStr ]) // ...a hard-set
             eq(stat[key], def.default
               , 'stat.'+key+' is '+def.default.toString())
             is( isValid(def, stat[key])
@@ -431,11 +464,14 @@ describe('The Oom.Foo class', function () {
     it('has read-only static `inst_tally`', function(){try{
         Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
         eq( stat.inst_tally, 0
-          , 'stat.inst_tally is zero after a ‘hard reset’' )
+          , 'stat.inst_tally is zero after a ‘hard class reset’' )
         const instance = new Class()
         eq( stat.inst_tally, 1
           , 'stat.inst_tally is 1 after an instantiation' )
     }catch(e){console.error(e.message);throw e}})
+
+
+    //@TODO more custom static tests
 
 
 
@@ -457,6 +493,7 @@ describe('An Oom.Foo instance', function () {
     //// Test whether an instance conforms to its `attr` schema. You don’t need
     //// to modify these tests unless you’ve given your class special behaviour.
 
+
     //// Oom.Foo instance: The instance itself.
     it('is an instance with base methods', function(){try{
         is(instance instanceof Class
@@ -464,7 +501,7 @@ describe('An Oom.Foo instance', function () {
         eq(Class, instance.constructor
           , '`constructor` is Oom.Foo')
         eq(typeof instance.reset, 'function'
-          , 'myOom.Foo.reset() is an instance method')
+          , 'myOomFoo.reset() is an instance method')
     }catch(e){console.error(e.message);throw e}})
 
 
@@ -504,6 +541,7 @@ describe('An Oom.Foo instance', function () {
     //// Oom.Foo instance: Automatic read-only attributes - initial values.
     n = countKeyMatches(schema.attr, isReadOnly)
     it(`has ${n} read-only attribute${1==n?'':'s'}`, function(){try{
+        instance.reset()
         for (let key in schema.attr) {
             if (! isReadOnly(key) ) continue // only read-only properties
             const def = schema.attr[key]
@@ -584,21 +622,18 @@ describe('An Oom.Foo instance', function () {
     it('has constant attribute `INST_INDEX`', function(){try{
         Class.reset() // so that `stat._inst_tally = 0` @TODO hardReset()
         const instance0 = new Class()
-        eq( instance0.attr.INST_INDEX, 0
-          , 'First instance after a hard reset has attr.INST_INDEX 0' )
         const instance1 = new Class()
+        eq( instance0.attr.INST_INDEX, 0
+          , 'First instance after a ‘hard class reset’ has attr.INST_INDEX 0' )
         eq( instance1.attr.INST_INDEX, 1
-          , 'Second instance after a hard reset has attr.INST_INDEX 1' )
+          , 'Second instance after a ‘hard class reset’ has attr.INST_INDEX 1' )
+        eq('string', typeof attr.UUID
+          , '`attr.UUID` is a string')
+        is(/^[0-9A-Za-z]{6}$/.test(attr.UUID)
+          , '`attr.UUID` conforms to /^[0-9A-Za-z]{6}$/')
+        neq( instance0.attr.UUID, instance1.attr.UUID
+          , 'Two instances have different UUIDs' )
     }catch(e){console.error(e.message);throw e}})
-
-    //@TODO
-    //
-    // tryHardSet(attr, 'UUID', 'Changed!')
-    // eq('string', typeof attr.UUID
-    //   , '`attr.UUID` is a string')
-    // is(/^[0-9A-Za-z]{6}$/.test(attr.UUID)
-    //   , '`attr.UUID` conforms to /^[0-9A-Za-z]{6}$/')
-    //@TODO more tests
 
 
 
@@ -608,7 +643,10 @@ describe('An Oom.Foo instance', function () {
 
 
 
-})//describe('Bases (all)')
+})//describe('Oom.Foo (all)')
+
+
+
 }( 'object' === typeof global ? global : this ) // `window` in a browser
 
 
