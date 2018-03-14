@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.24 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.25 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
     NAME: 'Oom.Foo',
-    VERSION: '1.2.24',
+    VERSION: '1.2.25',
     HOMEPAGE: 'http://oom-foo.loop.coop/',
     REMARKS: 'Initial test of the oom-hub architecture',
     LOADED_FIRST: !ROOT.Oom
@@ -127,10 +127,10 @@
     });
   }
   Object.defineProperty(Oom, 'memberTableVueTemplate', {get: function(innerHTML) {
-      return innerHTML = "\n<div :class=\"'member-table '+objname\">\n  <table :class=\"{ hid:doHide }\">\n    <caption v-html=\"caption\"></caption>\n    <tr>\n      <th>Name</th>\n      <th>Value</th>\n      <th>Default</th>\n      <th>Type</th>\n      <th>Defined In</th>\n    </tr>\n    <tr v-for=\"val, key in obj\" v-bind:class=\"'Oom-'+key\">\n      <td class=\"key\">{{key}}</td>\n      <td class=\"val\">\n        <input v-if=\"isReadWrite(key)\"    class=\"read-write\" v-model=\"obj[key]\">\n        <span v-else-if=\"isReadOnly(key)\" class=\"read-only\">{{val}}</span>\n        <span v-else-if=\"isConstant(key)\" class=\"constant\">{{val}}</span>\n        <span v-else                      class=\"private\">{{val}}</span>\n      </td>\n      <td class=\"is-default\">{{schema[key] ? schema[key].default === val ? '√' : 'x' : '-'}}</td>\n      <td class=\"type\">{{schema[key] ? schema[key].typeStr : '-'}}</td>\n      <td class=\"defined-in\">{{schema[key] ? schema[key].definedInStr : '-'}}</td>\n    </tr>\n  </table>\n</div>\n";
+      return innerHTML = "\n<div :class=\"'member-table '+objname\">\n  <table :class=\"{ hid:doHide }\">\n    <caption v-html=\"caption\"></caption>\n    <tr>\n      <th>Name</th>\n      <th>Value</th>\n      <th>Defined In</th>\n      <th>Type</th>\n      <th>Default</th>\n    </tr>\n    <tr v-for=\"val, key in obj\" v-bind:class=\"'Oom-'+key\">\n      <td class=\"key\">{{key}}</td>\n      <td class=\"val\">\n        <input v-if=\"isReadWrite(key)\"    class=\"read-write\" v-model=\"obj[key]\">\n        <span v-else-if=\"isReadOnly(key)\" class=\"read-only\">{{val}}</span>\n        <span v-else-if=\"isConstant(key)\" class=\"constant\">{{val}}</span>\n        <span v-else                      class=\"private\">{{val}}</span>\n      </td>\n      <td class=\"defined-in\">{{schema[key] ? schema[key].definedInStr : '-'}}</td>\n      <td class=\"type\">{{schema[key] ? schema[key].typeStr : '-'}}</td>\n      <td class=\"is-default\">{{schema[key] ? schema[key].isFn ? 'fn' : schema[key].default === val ? '√' : 'x' : '-'}}</td>\n    </tr>\n  </table>\n</div>\n";
     }});
   Object.defineProperty(Oom, 'devMainVueTemplate', {get: function(innerHTML) {
-      return innerHTML = "\n<div class=\"dev-main col-12\">\n  <member-table :schema=\"schema.stat\" :obj=\"stat\" objname=\"stat\" :do-hide=\"ui.hideData\"\n    :caption=\"stat.NAME+' static properties:'\"></member-table>\n  <member-table :schema=\"schema.attr\" :obj=\"attr\" objname=\"attr\" :do-hide=\"ui.hideData\"\n    :caption=\"stat.NAME+' attribute properties:'\"></member-table>\n</div>\n";
+      return innerHTML = "\n<div class=\"dev-main col-12\">\n  <h4>{{stat.NAME}}<em>#{{attr.UUID}}</em></h4>\n  <member-table :schema=\"schema.stat\" :obj=\"stat\" objname=\"stat\"\n    :do-hide=\"ui.hideData\"\n    :caption=\"'<b style=color:'+stat.hilite+'>&#11044;</b> Static'\">\n  </member-table>\n  <member-table :schema=\"schema.attr\" :obj=\"attr\" objname=\"attr\"\n    :do-hide=\"ui.hideData\"\n    :caption=\"'<b style=color:'+attr.hilite+'>&#11044;</b> Attribute'\">\n  </member-table>\n</div>\n";
     }});
   Oom.devMainVue = function(instance) {
     return {
@@ -176,8 +176,21 @@
       }
     };
   };
-  Oom.devMainAFrame = function(Class) {
-    return {};
+  Object.defineProperty(Oom, 'devMainAFrameTemplate', {get: function(innerHTML) {
+      return innerHTML = "\n<a-box position=\"0 1.5 -1.5\" material=\"color:red\">\n  <a-animation mixin=\"rotate\"></a-animation>\n</a-box>\n";
+    }});
+  Oom.devMainAFrame = function(instance) {
+    return {
+      template: Oom.devMainAFrameTemplate,
+      data: function() {
+        var Class = instance.constructor;
+        return {
+          schema: Class.schema,
+          stat: Class.stat,
+          attr: instance.attr
+        };
+      }
+    };
   };
   Oom.Foo = function($__super) {
     function $__1() {
@@ -516,4 +529,4 @@
 
 
 
-//// Made by Oomtility Make 1.2.24 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.25 //\\//\\ http://oomtility.loop.coop /////////

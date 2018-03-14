@@ -2,14 +2,14 @@
 
 
 
-//// Oom.Foo //// 1.2.24 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.25 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
 //// Metadata for Oom.Foo
 const META = {
     NAME:     'Oom.Foo'
-  , VERSION:  '1.2.24' // OOMBUMPABLE
+  , VERSION:  '1.2.25' // OOMBUMPABLE
   , HOMEPAGE: 'http://oom-foo.loop.coop/'
   , REMARKS:  'Initial test of the oom-hub architecture'
   , LOADED_FIRST: ! ROOT.Oom // true if the Oom class is defined by this module
@@ -209,9 +209,9 @@ get: function (innerHTML) { return innerHTML = `
     <tr>
       <th>Name</th>
       <th>Value</th>
-      <th>Default</th>
-      <th>Type</th>
       <th>Defined In</th>
+      <th>Type</th>
+      <th>Default</th>
     </tr>
     <tr v-for="val, key in obj" v-bind:class="'Oom-'+key">
       <td class="key">{{key}}</td>
@@ -221,9 +221,9 @@ get: function (innerHTML) { return innerHTML = `
         <span v-else-if="isConstant(key)" class="constant">{{val}}</span>
         <span v-else                      class="private">{{val}}</span>
       </td>
-      <td class="is-default">{{schema[key] ? schema[key].default === val ? '√' : 'x' : '-'}}</td>
-      <td class="type">{{schema[key] ? schema[key].typeStr : '-'}}</td>
       <td class="defined-in">{{schema[key] ? schema[key].definedInStr : '-'}}</td>
+      <td class="type">{{schema[key] ? schema[key].typeStr : '-'}}</td>
+      <td class="is-default">{{schema[key] ? schema[key].isFn ? 'fn' : schema[key].default === val ? '√' : 'x' : '-'}}</td>
     </tr>
   </table>
 </div>
@@ -234,10 +234,15 @@ get: function (innerHTML) { return innerHTML = `
 Object.defineProperty(Oom, 'devMainVueTemplate', {
 get: function (innerHTML) { return innerHTML = `
 <div class="dev-main col-12">
-  <member-table :schema="schema.stat" :obj="stat" objname="stat" :do-hide="ui.hideData"
-    :caption="stat.NAME+' static properties:'"></member-table>
-  <member-table :schema="schema.attr" :obj="attr" objname="attr" :do-hide="ui.hideData"
-    :caption="stat.NAME+' attribute properties:'"></member-table>
+  <h4>{{stat.NAME}}<em>#{{attr.UUID}}</em></h4>
+  <member-table :schema="schema.stat" :obj="stat" objname="stat"
+    :do-hide="ui.hideData"
+    :caption="'<b style=color:'+stat.hilite+'>&#11044;</b> Static'">
+  </member-table>
+  <member-table :schema="schema.attr" :obj="attr" objname="attr"
+    :do-hide="ui.hideData"
+    :caption="'<b style=color:'+attr.hilite+'>&#11044;</b> Attribute'">
+  </member-table>
 </div>
 `} })
 
@@ -293,7 +298,26 @@ Oom.devMainVue = function (instance) { return {
 } }//Oom.devMainVue()
 
 
-Oom.devMainAFrame = function (Class) { return {
+////
+Object.defineProperty(Oom, 'devMainAFrameTemplate', {
+get: function (innerHTML) { return innerHTML = `
+<a-box position="0 1.5 -1.5" material="color:red">
+  <a-animation mixin="rotate"></a-animation>
+</a-box>
+`} })
+
+
+Oom.devMainAFrame = function (instance) { return {
+    template: Oom.devMainAFrameTemplate
+
+  , data: function () {
+        const Class = instance.constructor
+        return {
+            schema: Class.schema
+          , stat: Class.stat
+          , attr: instance.attr
+        }
+    }
 
 } }//Oom.devMainAFrame()
 
@@ -725,7 +749,7 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
 
 
 
-//// Oom.Foo //// 1.2.24 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.25 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
@@ -956,7 +980,7 @@ Oom.Foo.Post.mixin({
 
 
 
-//// Oom.Foo //// 1.2.24 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.25 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
@@ -1183,4 +1207,4 @@ Oom.Foo.Router.mixin({
 
 
 
-//// Made by Oomtility Make 1.2.24 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.25 //\\//\\ http://oomtility.loop.coop /////////

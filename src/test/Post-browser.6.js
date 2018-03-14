@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.24 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.25 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
-const { describe, it, eq, is, goodVals, badVals } = ROOT.testify()
+const { describe, it, eq, neq, is, goodVals, badVals } = ROOT.testify()
 const { isConstant, isReadOnly, isReadWrite } = Oom.KIT
 describe('Oom.Foo.Post (browser)', () => {
-    const hid = 0 // `true` hides the Vue component, `false` makes it visible
+    const hid = true // `true` hides the Vue component, `false` makes it visible
 
 
 
@@ -275,6 +275,66 @@ describe('The Oom.Foo.Post.devMainVue() component', function (done) {
 
     }//testAfterMounted()
 })//describe('The Oom.Foo.Post.devMainVue() component')
+
+
+
+
+describe('The Oom.Foo.Post.devMainAFrame() component', function (done) {
+    const
+        Class = ROOT.Oom.Foo.Post
+      , testID = 'test-oom-foo-post-devmainaframe' // also used for component tag
+      , stat = Class.stat
+      , schema = Class.schema
+      , instance = new Class()
+      , attr = instance.attr
+      , cmp = Vue.component( testID, Class.devMainAFrame(instance) )
+      , $container = $('a-scene').append(`<a-entity id="${testID}">`
+          + `<${testID}></${testID}></a-entity>`)
+      , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })
+
+    function testAfterMounted () {
+
+
+
+
+    //// AUTOMATIC STATIC TESTS
+    //// Test whether the devMainAFrame component xxxxxx. You don’t need to modify these tests unless
+    //// you’ve given your class special behaviour.
+
+
+    it('on the outside, is a viable Vue component', function(){try{
+        eq( $('#'+testID).length, 1
+          , '#'+testID+' exists' )
+        eq( $('#'+testID+' a-box').length, 1
+          , '#'+testID+' a-box exists' )
+    }catch(e){console.error(e.message);throw e}})
+
+
+    it('on the inside, is a viable A-Frame component', function(){try{
+        //@TODO
+    }catch(e){console.error(e.message);throw e}})
+
+
+    //// Oom.Foo.Post.devMainAFrame(): Automatic statics - initial values.
+    //// `Vue.nextTick()` because Vue hasn’t initialised the properties yet.
+    it('shows correct initial statics', function (done) {
+        Vue.nextTick((function(){let error;try{
+            const result = testPixel({ tol:30 // tolerance
+              , exp: { r:255, g:0, b:0, a:255 } }) // expected
+            eq( result.passes, 4
+              , `initial hilite ${result.pixelRGBA} is nearly ${result.expectedRGBA}`)
+            $('#'+testID).remove()
+        }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
+    }) // `bind(this)` to run the test in Mocha’s context)
+
+
+
+        // if (! sceneEl) return // probably not ready yet
+
+
+
+    }//testAfterMounted()
+})//describe('The Oom.Foo.Post.devMainAFrame() component')
 
 
 

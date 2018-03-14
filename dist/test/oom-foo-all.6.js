@@ -2,7 +2,7 @@
 
 
 
-//// Oom.Foo //// 1.2.24 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.25 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -670,6 +670,7 @@ function testify () {
       , expect:   chai.expect
       , eq:       chai.assert.strictEqual
       , neq:      chai.assert.notStrictEqual
+      // , deepeq:   chai.assert.deepEqual
       , is:       chai.assert.isOk
       , describe: this.describe || mocha.describe // browser || Node.js
       , it:       this.it       || mocha.it       // browser || Node.js
@@ -710,7 +711,7 @@ function testify () {
 
 
 
-//// Oom.Foo //// 1.2.24 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.25 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
@@ -1041,7 +1042,7 @@ describe('An Oom.Foo.Post instance', function () {
 
 
 
-//// Oom.Foo //// 1.2.24 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.25 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
@@ -1368,4 +1369,4 @@ describe('An Oom.Foo.Router instance', function () {
 
 
 
-//// Made by Oomtility Make 1.2.24 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.25 //\\//\\ http://oomtility.loop.coop /////////

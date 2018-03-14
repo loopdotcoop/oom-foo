@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.24 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.25 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
 //// Windows 7:  IE 9, Safari 5.1
@@ -8,7 +8,7 @@
 
 !function (ROOT) { 'use strict'
 if (false) return $(mocha.run) // change to `true` to ‘hard skip’ this test
-const { describe, it, eq, is, goodVals, badVals } = ROOT.testify()
+const { describe, it, eq, neq, is, goodVals, badVals } = ROOT.testify()
 const { isConstant, isReadOnly, isReadWrite } = Oom.KIT
 describe('Oom (browser)', () => {
     const hid = true // `true` hides the Vue component, `false` makes it visible
@@ -281,6 +281,66 @@ describe('The Oom.devMainVue() component', function (done) {
 
     }//testAfterMounted()
 })//describe('The Oom.devMainVue() component')
+
+
+
+
+describe('The Oom.devMainAFrame() component', function (done) {
+    const
+        Class = ROOT.Oom
+      , testID = 'test-oom-devmainaframe' // also used for component tag
+      , stat = Class.stat
+      , schema = Class.schema
+      , instance = new Class()
+      , attr = instance.attr
+      , cmp = Vue.component( testID, Class.devMainAFrame(instance) )
+      , $container = $('a-scene').append(`<a-entity id="${testID}">`
+          + `<${testID}></${testID}></a-entity>`)
+      , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })
+
+    function testAfterMounted () {
+
+
+
+
+    //// AUTOMATIC STATIC TESTS
+    //// Test whether the devMainAFrame component xxxxxx. You don’t need to modify these tests unless
+    //// you’ve given your class special behaviour.
+
+
+    it('on the outside, is a viable Vue component', function(){try{
+        eq( $('#'+testID).length, 1
+          , '#'+testID+' exists' )
+        eq( $('#'+testID+' a-box').length, 1
+          , '#'+testID+' a-box exists' )
+    }catch(e){console.error(e.message);throw e}})
+
+
+    it('on the inside, is a viable A-Frame component', function(){try{
+        //@TODO
+    }catch(e){console.error(e.message);throw e}})
+
+
+    //// Oom.devMainAFrame(): Automatic statics - initial values.
+    //// `Vue.nextTick()` because Vue hasn’t initialised the properties yet.
+    it('shows correct initial statics', function (done) {
+        Vue.nextTick((function(){let error;try{
+            const result = testPixel({ tol:30 // tolerance
+              , exp: { r:255, g:0, b:0, a:255 } }) // expected
+            eq( result.passes, 4
+              , `initial hilite ${result.pixelRGBA} is nearly ${result.expectedRGBA}`)
+            $('#'+testID).remove()
+        }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
+    }) // `bind(this)` to run the test in Mocha’s context)
+
+
+
+        // if (! sceneEl) return // probably not ready yet
+
+
+
+    }//testAfterMounted()
+})//describe('The Oom.devMainAFrame() component')
 
 
 
@@ -565,25 +625,20 @@ describe('The Oom.Foo.devMainVue() component', function (done) {
 
 
 
-})//describe('Oom.Foo (browser)')
-
-
-
-/*
-describe('The Oom.devMainAFrame() component', function (done) {
+describe('The Oom.Foo.devMainAFrame() component', function (done) {
     const
-        Class = ROOT.Oom
-      , testID = 'test-oom-devmainaframe' // also used for component tag
+        Class = ROOT.Oom.Foo
+      , testID = 'test-oom-foo-devmainaframe' // also used for component tag
       , stat = Class.stat
       , schema = Class.schema
       , instance = new Class()
       , attr = instance.attr
-      , cmp = Vue.component( testID, Class.devMainAFrame(Class) )
-      , $container = $('.container').append(`<div class="row ${hid?'hid':''}" `
-          + `id="${testID}"><${testID}>Loading...</${testID}></div>`)
+      , cmp = Vue.component( testID, Class.devMainAFrame(instance) )
+      , $container = $('a-scene').append(`<a-entity id="${testID}">`
+          + `<${testID}></${testID}></a-entity>`)
       , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })
 
-function testAfterMounted () {
+    function testAfterMounted () {
 
 
 
@@ -593,19 +648,48 @@ function testAfterMounted () {
     //// you’ve given your class special behaviour.
 
 
-    it('is a viable Vue component', function(){try{
+    it('on the outside, is a viable Vue component', function(){try{
         eq( $('#'+testID).length, 1
           , '#'+testID+' exists' )
-        eq( $('#'+testID+' .dev-main').length, 1
-          , 'dev-main exists' )
-        eq( $('#'+testID+' .dev-main .member-table').length, 2
-          , 'Two member-tables exist (one for stat, one for attr)' )
+        eq( $('#'+testID+' a-box').length, 1
+          , '#'+testID+' a-box exists' )
     }catch(e){console.error(e.message);throw e}})
 
 
-}//testAfterMounted()
-})//describe('The Oom.devMainAFrame() component')
-*/
+    it('on the inside, is a viable A-Frame component', function(){try{
+        //@TODO
+    }catch(e){console.error(e.message);throw e}})
+
+
+    //// Oom.Foo.devMainAFrame(): Automatic statics - initial values.
+    //// `Vue.nextTick()` because Vue hasn’t initialised the properties yet.
+    it('shows correct initial statics', function (done) {
+        Vue.nextTick((function(){let error;try{
+            const result = testPixel({ tol:30 // tolerance
+              , exp: { r:255, g:0, b:0, a:255 } }) // expected
+            eq( result.passes, 4
+              , `initial hilite ${result.pixelRGBA} is nearly ${result.expectedRGBA}`)
+            $('#'+testID).remove()
+        }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
+    }) // `bind(this)` to run the test in Mocha’s context)
+
+
+
+        // if (! sceneEl) return // probably not ready yet
+
+
+
+    }//testAfterMounted()
+})//describe('The Oom.Foo.devMainAFrame() component')
+
+
+
+
+})//describe('Oom.Foo (browser)')
+
+
+
+
 
 //// Calling `mocha.run()` here will run all of the test files, including the
 //// ones which haven’t loaded yet. Note that `mocha.run()` does not need to be
@@ -627,4 +711,56 @@ function simulateInput ($input, val) {
     const e = document.createEvent('HTMLEvents')
     e.initEvent('input', true, true)
     $input[0].dispatchEvent(e)
+}
+
+//// Test whether one pixel in an A-Frame scene is the expected colour.
+function testPixel (config) {
+
+    //// Apply defaults to `config`.
+    const c = Object.assign({}, {
+        x: 0.5 // position, center by default
+      , y: 0.5 // position, middle by default
+      , tol: 5 // tolerance, eg if expected is 245, allow 241 to 249
+      , exp: { // expected, 100% red by default
+            r: 255
+          , g: 0
+          , b: 0
+          , a: 255
+        }
+    }, config)
+
+    //// Get a reference to A-Frame’s ‘screenshot’ canvas.
+    const sceneEl = $('a-scene')[0]
+    const captureCanvas = sceneEl.components.screenshot.getCanvas('perspective')
+    const captureCtx = captureCanvas.getContext('2d')
+
+    //// Copy the screenshot canvas, and add it to our list of thumbnails.
+    const cloneCanvas = document.createElement('canvas');
+    const cloneCtx = cloneCanvas.getContext('2d');
+    cloneCanvas.width = captureCanvas.width;
+    cloneCanvas.height = captureCanvas.height;
+    cloneCtx.drawImage(captureCanvas, 0, 0);
+    $('#screenshots').append(cloneCanvas)
+
+    //// Get the RGBA colour value of the test pixel.
+    const pixel = Array.from(
+        captureCtx.getImageData(
+            ~~(captureCanvas.width*c.x), ~~(captureCanvas.height*c.y) // position
+          , 1, 1 // one pixel
+        ).data
+    )
+
+    //// The pixel should pass four times.
+    let passes = 0
+    passes += ( pixel[0] < (c.exp.r+c.tol) ) && ( pixel[0] > (c.exp.r-c.tol) )
+    passes += ( pixel[1] < (c.exp.g+c.tol) ) && ( pixel[1] > (c.exp.g-c.tol) )
+    passes += ( pixel[2] < (c.exp.b+c.tol) ) && ( pixel[2] > (c.exp.b-c.tol) )
+    passes += ( pixel[3] < (c.exp.a+c.tol) ) && ( pixel[3] > (c.exp.a-c.tol) )
+
+    //// Return the test results.
+    return {
+        passes
+      , pixelRGBA:    `rgba(${pixel[0]},${pixel[1]},${pixel[2]},${pixel[3]})`
+      , expectedRGBA: `rgba(${c.exp.r},${c.exp.g},${c.exp.b},${c.exp.a})`
+    }
 }

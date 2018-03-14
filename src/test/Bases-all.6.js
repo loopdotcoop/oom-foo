@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.24 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.25 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -666,6 +666,7 @@ function testify () {
       , expect:   chai.expect
       , eq:       chai.assert.strictEqual
       , neq:      chai.assert.notStrictEqual
+      // , deepeq:   chai.assert.deepEqual
       , is:       chai.assert.isOk
       , describe: this.describe || mocha.describe // browser || Node.js
       , it:       this.it       || mocha.it       // browser || Node.js

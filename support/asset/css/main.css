@@ -48,16 +48,22 @@ body {
 
 
 
-/* AFRAME SCENE IN DEMO */
+/* AFRAME SCENE IN TEST AND DEMO */
 
-#demo a-scene {
+a-scene {
+    width: 400px!important;
     height: 400px!important;
-    margin-bottom: 0.5em;
-    border-radius: 4px;
+    margin: 0.5em auto;
 }
-#demo a-scene .a-canvas {
+a-scene .a-canvas {
     background: #9900ff;
-    border-radius: 4px;
+    border-radius: 8px;
+}
+#screenshots canvas {
+    display: inline-block;
+    margin: 1em;
+    background: #9900ff;
+    border-radius: 3px;
 }
 
 
@@ -65,19 +71,23 @@ body {
 
 /* MEMBER-TABLES IN TEST AND DEMO */
 
-#demo .oom-component {
-    padding-top: 0.5em;
+.dev-main,
+.dev-main .member-table {
+    padding: 0.5em;
     margin-bottom: 0.5em;
     border-radius: 4px;
     background: rgba(0,64,128,0.1);
 }
-#demo >.oom-component {
-    font-size: 1.5em;
+.dev-main >.member-table {
+    font-size: 1em;
     line-height: 1.15;
 }
 .member-table table {
     width: 100%;
     margin-bottom: 0.5em;
+}
+.member-table th {
+    font-size: 0.7em;
 }
 .member-table td {
     padding: 0.2em 0.5em;
@@ -88,10 +98,19 @@ body {
 .member-table td:first-child {
     width: 0;
 }
-.member-table table caption {
-    font-size: 0.7em;
+.member-table td input {
+    width: 100%;
+}
+.member-table caption {
     padding: 0 0 0.2em 0;
     caption-side: top;
+}
+.member-table caption b {
+    display: inline-block;
+    transform: translate(-0.1em, -0.1em);
+}
+.member-table .is-default {
+    text-align: center;
 }
 
 

@@ -48,6 +48,7 @@ function testify () {
       , expect:   chai.expect
       , eq:       chai.assert.strictEqual
       , neq:      chai.assert.notStrictEqual
+      // , deepeq:   chai.assert.deepEqual
       , is:       chai.assert.isOk
       , describe: this.describe || mocha.describe // browser || Node.js
       , it:       this.it       || mocha.it       // browser || Node.js

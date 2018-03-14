@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.24 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.25 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
@@ -9,6 +9,7 @@
       describe = $__2.describe,
       it = $__2.it,
       eq = $__2.eq,
+      neq = $__2.neq,
       is = $__2.is,
       goodVals = $__2.goodVals,
       badVals = $__2.badVals;
@@ -279,6 +280,59 @@
                   continue;
                 eq(cache.$el[key].val(), cache.orig[key], "invalid <INPUT> change does not update attr." + key);
               }
+            } catch (e) {
+              error = e;
+              console.error(e.message);
+            }
+            done(error);
+          }).bind(this));
+        });
+      }
+    });
+    describe('The Oom.devMainAFrame() component', function(done) {
+      var Class = ROOT.Oom,
+          testID = 'test-oom-devmainaframe',
+          stat = Class.stat,
+          schema = Class.schema,
+          instance = new Class(),
+          attr = instance.attr,
+          cmp = Vue.component(testID, Class.devMainAFrame(instance)),
+          $container = $('a-scene').append(("<a-entity id=\"" + testID + "\">") + ("<" + testID + "></" + testID + "></a-entity>")),
+          vue = new Vue({
+            el: '#' + testID,
+            mounted: testAfterMounted
+          });
+      function testAfterMounted() {
+        it('on the outside, is a viable Vue component', function() {
+          try {
+            eq($('#' + testID).length, 1, '#' + testID + ' exists');
+            eq($('#' + testID + ' a-box').length, 1, '#' + testID + ' a-box exists');
+          } catch (e) {
+            console.error(e.message);
+            throw e;
+          }
+        });
+        it('on the inside, is a viable A-Frame component', function() {
+          try {} catch (e) {
+            console.error(e.message);
+            throw e;
+          }
+        });
+        it('shows correct initial statics', function(done) {
+          Vue.nextTick((function() {
+            var error;
+            try {
+              var result = testPixel({
+                tol: 30,
+                exp: {
+                  r: 255,
+                  g: 0,
+                  b: 0,
+                  a: 255
+                }
+              });
+              eq(result.passes, 4, ("initial hilite " + result.pixelRGBA + " is nearly " + result.expectedRGBA));
+              $('#' + testID).remove();
             } catch (e) {
               error = e;
               console.error(e.message);
@@ -561,6 +615,59 @@
         });
       }
     });
+    describe('The Oom.Foo.devMainAFrame() component', function(done) {
+      var Class = ROOT.Oom.Foo,
+          testID = 'test-oom-foo-devmainaframe',
+          stat = Class.stat,
+          schema = Class.schema,
+          instance = new Class(),
+          attr = instance.attr,
+          cmp = Vue.component(testID, Class.devMainAFrame(instance)),
+          $container = $('a-scene').append(("<a-entity id=\"" + testID + "\">") + ("<" + testID + "></" + testID + "></a-entity>")),
+          vue = new Vue({
+            el: '#' + testID,
+            mounted: testAfterMounted
+          });
+      function testAfterMounted() {
+        it('on the outside, is a viable Vue component', function() {
+          try {
+            eq($('#' + testID).length, 1, '#' + testID + ' exists');
+            eq($('#' + testID + ' a-box').length, 1, '#' + testID + ' a-box exists');
+          } catch (e) {
+            console.error(e.message);
+            throw e;
+          }
+        });
+        it('on the inside, is a viable A-Frame component', function() {
+          try {} catch (e) {
+            console.error(e.message);
+            throw e;
+          }
+        });
+        it('shows correct initial statics', function(done) {
+          Vue.nextTick((function() {
+            var error;
+            try {
+              var result = testPixel({
+                tol: 30,
+                exp: {
+                  r: 255,
+                  g: 0,
+                  b: 0,
+                  a: 255
+                }
+              });
+              eq(result.passes, 4, ("initial hilite " + result.pixelRGBA + " is nearly " + result.expectedRGBA));
+              $('#' + testID).remove();
+            } catch (e) {
+              error = e;
+              console.error(e.message);
+            }
+            done(error);
+          }).bind(this));
+        });
+      }
+    });
   });
   $(mocha.run);
 }(window);
@@ -570,6 +677,39 @@ function simulateInput($input, val) {
   e.initEvent('input', true, true);
   $input[0].dispatchEvent(e);
 }
+function testPixel(config) {
+  var c = Object.assign({}, {
+    x: 0.5,
+    y: 0.5,
+    tol: 5,
+    exp: {
+      r: 255,
+      g: 0,
+      b: 0,
+      a: 255
+    }
+  }, config);
+  var sceneEl = $('a-scene')[0];
+  var captureCanvas = sceneEl.components.screenshot.getCanvas('perspective');
+  var captureCtx = captureCanvas.getContext('2d');
+  var cloneCanvas = document.createElement('canvas');
+  var cloneCtx = cloneCanvas.getContext('2d');
+  cloneCanvas.width = captureCanvas.width;
+  cloneCanvas.height = captureCanvas.height;
+  cloneCtx.drawImage(captureCanvas, 0, 0);
+  $('#screenshots').append(cloneCanvas);
+  var pixel = Array.from(captureCtx.getImageData(~~(captureCanvas.width * c.x), ~~(captureCanvas.height * c.y), 1, 1).data);
+  var passes = 0;
+  passes += (pixel[0] < (c.exp.r + c.tol)) && (pixel[0] > (c.exp.r - c.tol));
+  passes += (pixel[1] < (c.exp.g + c.tol)) && (pixel[1] > (c.exp.g - c.tol));
+  passes += (pixel[2] < (c.exp.b + c.tol)) && (pixel[2] > (c.exp.b - c.tol));
+  passes += (pixel[3] < (c.exp.a + c.tol)) && (pixel[3] > (c.exp.a - c.tol));
+  return {
+    passes: passes,
+    pixelRGBA: ("rgba(" + pixel[0] + "," + pixel[1] + "," + pixel[2] + "," + pixel[3] + ")"),
+    expectedRGBA: ("rgba(" + c.exp.r + "," + c.exp.g + "," + c.exp.b + "," + c.exp.a + ")")
+  };
+}
 !function(ROOT) {
   'use strict';
   if (false)
@@ -578,6 +718,7 @@ function simulateInput($input, val) {
       describe = $__2.describe,
       it = $__2.it,
       eq = $__2.eq,
+      neq = $__2.neq,
       is = $__2.is,
       goodVals = $__2.goodVals,
       badVals = $__2.badVals;
@@ -857,6 +998,59 @@ function simulateInput($input, val) {
         });
       }
     });
+    describe('The Oom.Foo.Post.devMainAFrame() component', function(done) {
+      var Class = ROOT.Oom.Foo.Post,
+          testID = 'test-oom-foo-post-devmainaframe',
+          stat = Class.stat,
+          schema = Class.schema,
+          instance = new Class(),
+          attr = instance.attr,
+          cmp = Vue.component(testID, Class.devMainAFrame(instance)),
+          $container = $('a-scene').append(("<a-entity id=\"" + testID + "\">") + ("<" + testID + "></" + testID + "></a-entity>")),
+          vue = new Vue({
+            el: '#' + testID,
+            mounted: testAfterMounted
+          });
+      function testAfterMounted() {
+        it('on the outside, is a viable Vue component', function() {
+          try {
+            eq($('#' + testID).length, 1, '#' + testID + ' exists');
+            eq($('#' + testID + ' a-box').length, 1, '#' + testID + ' a-box exists');
+          } catch (e) {
+            console.error(e.message);
+            throw e;
+          }
+        });
+        it('on the inside, is a viable A-Frame component', function() {
+          try {} catch (e) {
+            console.error(e.message);
+            throw e;
+          }
+        });
+        it('shows correct initial statics', function(done) {
+          Vue.nextTick((function() {
+            var error;
+            try {
+              var result = testPixel({
+                tol: 30,
+                exp: {
+                  r: 255,
+                  g: 0,
+                  b: 0,
+                  a: 255
+                }
+              });
+              eq(result.passes, 4, ("initial hilite " + result.pixelRGBA + " is nearly " + result.expectedRGBA));
+              $('#' + testID).remove();
+            } catch (e) {
+              error = e;
+              console.error(e.message);
+            }
+            done(error);
+          }).bind(this));
+        });
+      }
+    });
   });
 }(window);
 !function(ROOT) {
@@ -867,6 +1061,7 @@ function simulateInput($input, val) {
       describe = $__2.describe,
       it = $__2.it,
       eq = $__2.eq,
+      neq = $__2.neq,
       is = $__2.is,
       goodVals = $__2.goodVals,
       badVals = $__2.badVals;
@@ -1146,10 +1341,63 @@ function simulateInput($input, val) {
         });
       }
     });
+    describe('The Oom.Foo.Router.devMainAFrame() component', function(done) {
+      var Class = ROOT.Oom.Foo.Router,
+          testID = 'test-oom-foo-router-devmainaframe',
+          stat = Class.stat,
+          schema = Class.schema,
+          instance = new Class(),
+          attr = instance.attr,
+          cmp = Vue.component(testID, Class.devMainAFrame(instance)),
+          $container = $('a-scene').append(("<a-entity id=\"" + testID + "\">") + ("<" + testID + "></" + testID + "></a-entity>")),
+          vue = new Vue({
+            el: '#' + testID,
+            mounted: testAfterMounted
+          });
+      function testAfterMounted() {
+        it('on the outside, is a viable Vue component', function() {
+          try {
+            eq($('#' + testID).length, 1, '#' + testID + ' exists');
+            eq($('#' + testID + ' a-box').length, 1, '#' + testID + ' a-box exists');
+          } catch (e) {
+            console.error(e.message);
+            throw e;
+          }
+        });
+        it('on the inside, is a viable A-Frame component', function() {
+          try {} catch (e) {
+            console.error(e.message);
+            throw e;
+          }
+        });
+        it('shows correct initial statics', function(done) {
+          Vue.nextTick((function() {
+            var error;
+            try {
+              var result = testPixel({
+                tol: 30,
+                exp: {
+                  r: 255,
+                  g: 0,
+                  b: 0,
+                  a: 255
+                }
+              });
+              eq(result.passes, 4, ("initial hilite " + result.pixelRGBA + " is nearly " + result.expectedRGBA));
+              $('#' + testID).remove();
+            } catch (e) {
+              error = e;
+              console.error(e.message);
+            }
+            done(error);
+          }).bind(this));
+        });
+      }
+    });
   });
 }(window);
 
 
 
 
-//// Made by Oomtility Make 1.2.24 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.25 //\\//\\ http://oomtility.loop.coop /////////
