@@ -1,17 +1,18 @@
 describe('${{classname}} (browser)', () => {
-    const hid = true // `true` hides the Vue component, `false` makes it visible
+    const
+        hid = true // `true` hides the components, `false` makes them visible
+      , Class = ROOT.${{classname}}
+      , stat = Class.stat
+      , schema = Class.schema
+      , instance = new Class()
+      , attr = instance.attr
 
 
 
 
 describe('The ${{classname}}.devMainVue() component', function (done) {
     const
-        Class = ROOT.${{classname}}
-      , testID = 'test-${{classname.toLowerCase().replace(/\./g,'-')}}-devmainvue' // also used for component tag
-      , stat = Class.stat
-      , schema = Class.schema
-      , instance = new Class()
-      , attr = instance.attr
+        testID = 'test-${{classname.toLowerCase().replace(/\./g,'-')}}-devmainvue' // also used for component tag
       , cmp = Vue.component( testID, Class.devMainVue(instance) )
       , $container = $('.container').append(`<div class="row ${hid?'hid':''}" `
           + `id="${testID}"><${testID}>Loading...</${testID}></div>`)
@@ -275,12 +276,7 @@ describe('The ${{classname}}.devMainVue() component', function (done) {
 
 describe('The ${{classname}}.devMainAFrame() component', function (done) {
     const
-        Class = ROOT.${{classname}}
-      , testID = 'test-${{classname.toLowerCase().replace(/\./g,'-')}}-devmainaframe' // also used for component tag
-      , stat = Class.stat
-      , schema = Class.schema
-      , instance = new Class()
-      , attr = instance.attr
+        testID = 'test-${{classname.toLowerCase().replace(/\./g,'-')}}-devmainaframe' // also used for component tag
       , cmp = Vue.component( testID, Class.devMainAFrame(instance) )
       , $container = $('a-scene').append(`<a-entity id="${testID}">`
           + `<${testID}></${testID}></a-entity>`)
@@ -299,8 +295,8 @@ describe('The ${{classname}}.devMainAFrame() component', function (done) {
     it('on the outside, is a viable Vue component', function(){try{
         eq( $('#'+testID).length, 1
           , '#'+testID+' exists' )
-        eq( $('#'+testID+' a-box').length, 1
-          , '#'+testID+' a-box exists' )
+        eq( $('#'+testID+' a-box').length, 2
+          , 'Two <a-box>s exists in #'+testID )
     }catch(e){console.error(e.message);throw e}})
 
 
@@ -311,19 +307,32 @@ describe('The ${{classname}}.devMainAFrame() component', function (done) {
 
     //// ${{classname}}.devMainAFrame(): Automatic statics - initial values.
     //// `Vue.nextTick()` because Vue hasn’t initialised the properties yet.
-    it('shows correct initial statics', function (done) {
+    it('static and attribute hilites can be changed', function (done) {
+        const { firstObj, firstHex, secondObj, secondHex } = generateRandomColors()
+        stat.hilite = firstHex
+        attr.hilite = secondHex
+        // Vue.nextTick(window.requestAnimationFrame(function(){let error;try{
         Vue.nextTick((function(){let error;try{
-            const result = testPixel({ tol:30 // tolerance
-              , exp: { r:255, g:0, b:0, a:255 } }) // expected
-            eq( result.passes, 4
-              , `initial hilite ${result.pixelRGBA} is nearly ${result.expectedRGBA}`)
-            $('#'+testID).remove()
+            $(`#${testID} >a-entity`).attr('position', '0 0 0')
+            let r = testPixels({ // results
+                tol: 50 // tolerance, allow for shaded side of boxes
+              , pos: [
+                    { x:0, y:0.5 } // middle of the left edge
+                  , { x:1, y:0.5 } // middle of the right edge
+                ]
+              , exp: [
+                    firstObj // eg `{ r:0, g:255, b:0, a:255 }` to expect green
+                  , secondObj // eg `{ r:0, g:0, b:255, a:255 }` to expect blue
+                ]
+            })
+            eq( r[0].passes, 4, `mid-left pixel ${r[0].actualRGBA} is near-`
+              + `enough expected hilite static ${r[0].expRGBA}`)
+            eq( r[1].passes, 4, `mid-right pixel ${r[1].actualRGBA} is near-`
+              + `enough expected hilite attribute ${r[1].expRGBA}`)
+            $(`#${testID} >a-entity`).attr('position', '0 10 0')
         }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
     }) // `bind(this)` to run the test in Mocha’s context)
 
-
-
-        // if (! sceneEl) return // probably not ready yet
 
 
 

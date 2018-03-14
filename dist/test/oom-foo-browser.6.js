@@ -15,19 +15,20 @@ if (false) return $(mocha.run) // change to `true` to ‘hard skip’ this test
 const { describe, it, eq, neq, is, goodVals, badVals } = ROOT.testify()
 const { isConstant, isReadOnly, isReadWrite } = Oom.KIT
 describe('Oom (browser)', () => {
-    const hid = true // `true` hides the Vue component, `false` makes it visible
+    const
+        hid = true // `true` hides the components, `false` makes them visible
+      , Class = ROOT.Oom
+      , stat = Class.stat
+      , schema = Class.schema
+      , instance = new Class()
+      , attr = instance.attr
 
 
 
 
 describe('The Oom.devMainVue() component', function (done) {
     const
-        Class = ROOT.Oom
-      , testID = 'test-oom-devmainvue' // also used for component tag
-      , stat = Class.stat
-      , schema = Class.schema
-      , instance = new Class()
-      , attr = instance.attr
+        testID = 'test-oom-devmainvue' // also used for component tag
       , cmp = Vue.component( testID, Class.devMainVue(instance) )
       , $container = $('.container').append(`<div class="row ${hid?'hid':''}" `
           + `id="${testID}"><${testID}>Loading...</${testID}></div>`)
@@ -291,12 +292,7 @@ describe('The Oom.devMainVue() component', function (done) {
 
 describe('The Oom.devMainAFrame() component', function (done) {
     const
-        Class = ROOT.Oom
-      , testID = 'test-oom-devmainaframe' // also used for component tag
-      , stat = Class.stat
-      , schema = Class.schema
-      , instance = new Class()
-      , attr = instance.attr
+        testID = 'test-oom-devmainaframe' // also used for component tag
       , cmp = Vue.component( testID, Class.devMainAFrame(instance) )
       , $container = $('a-scene').append(`<a-entity id="${testID}">`
           + `<${testID}></${testID}></a-entity>`)
@@ -315,8 +311,8 @@ describe('The Oom.devMainAFrame() component', function (done) {
     it('on the outside, is a viable Vue component', function(){try{
         eq( $('#'+testID).length, 1
           , '#'+testID+' exists' )
-        eq( $('#'+testID+' a-box').length, 1
-          , '#'+testID+' a-box exists' )
+        eq( $('#'+testID+' a-box').length, 2
+          , 'Two <a-box>s exists in #'+testID )
     }catch(e){console.error(e.message);throw e}})
 
 
@@ -327,19 +323,32 @@ describe('The Oom.devMainAFrame() component', function (done) {
 
     //// Oom.devMainAFrame(): Automatic statics - initial values.
     //// `Vue.nextTick()` because Vue hasn’t initialised the properties yet.
-    it('shows correct initial statics', function (done) {
+    it('static and attribute hilites can be changed', function (done) {
+        const { firstObj, firstHex, secondObj, secondHex } = generateRandomColors()
+        stat.hilite = firstHex
+        attr.hilite = secondHex
+        // Vue.nextTick(window.requestAnimationFrame(function(){let error;try{
         Vue.nextTick((function(){let error;try{
-            const result = testPixel({ tol:30 // tolerance
-              , exp: { r:255, g:0, b:0, a:255 } }) // expected
-            eq( result.passes, 4
-              , `initial hilite ${result.pixelRGBA} is nearly ${result.expectedRGBA}`)
-            $('#'+testID).remove()
+            $(`#${testID} >a-entity`).attr('position', '0 0 0')
+            let r = testPixels({ // results
+                tol: 50 // tolerance, allow for shaded side of boxes
+              , pos: [
+                    { x:0, y:0.5 } // middle of the left edge
+                  , { x:1, y:0.5 } // middle of the right edge
+                ]
+              , exp: [
+                    firstObj // eg `{ r:0, g:255, b:0, a:255 }` to expect green
+                  , secondObj // eg `{ r:0, g:0, b:255, a:255 }` to expect blue
+                ]
+            })
+            eq( r[0].passes, 4, `mid-left pixel ${r[0].actualRGBA} is near-`
+              + `enough expected hilite static ${r[0].expRGBA}`)
+            eq( r[1].passes, 4, `mid-right pixel ${r[1].actualRGBA} is near-`
+              + `enough expected hilite attribute ${r[1].expRGBA}`)
+            $(`#${testID} >a-entity`).attr('position', '0 10 0')
         }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
     }) // `bind(this)` to run the test in Mocha’s context)
 
-
-
-        // if (! sceneEl) return // probably not ready yet
 
 
 
@@ -355,19 +364,20 @@ describe('The Oom.devMainAFrame() component', function (done) {
 
 
 describe('Oom.Foo (browser)', () => {
-    const hid = true // `true` hides the Vue component, `false` makes it visible
+    const
+        hid = true // `true` hides the components, `false` makes them visible
+      , Class = ROOT.Oom.Foo
+      , stat = Class.stat
+      , schema = Class.schema
+      , instance = new Class()
+      , attr = instance.attr
 
 
 
 
 describe('The Oom.Foo.devMainVue() component', function (done) {
     const
-        Class = ROOT.Oom.Foo
-      , testID = 'test-oom-foo-devmainvue' // also used for component tag
-      , stat = Class.stat
-      , schema = Class.schema
-      , instance = new Class()
-      , attr = instance.attr
+        testID = 'test-oom-foo-devmainvue' // also used for component tag
       , cmp = Vue.component( testID, Class.devMainVue(instance) )
       , $container = $('.container').append(`<div class="row ${hid?'hid':''}" `
           + `id="${testID}"><${testID}>Loading...</${testID}></div>`)
@@ -631,12 +641,7 @@ describe('The Oom.Foo.devMainVue() component', function (done) {
 
 describe('The Oom.Foo.devMainAFrame() component', function (done) {
     const
-        Class = ROOT.Oom.Foo
-      , testID = 'test-oom-foo-devmainaframe' // also used for component tag
-      , stat = Class.stat
-      , schema = Class.schema
-      , instance = new Class()
-      , attr = instance.attr
+        testID = 'test-oom-foo-devmainaframe' // also used for component tag
       , cmp = Vue.component( testID, Class.devMainAFrame(instance) )
       , $container = $('a-scene').append(`<a-entity id="${testID}">`
           + `<${testID}></${testID}></a-entity>`)
@@ -655,8 +660,8 @@ describe('The Oom.Foo.devMainAFrame() component', function (done) {
     it('on the outside, is a viable Vue component', function(){try{
         eq( $('#'+testID).length, 1
           , '#'+testID+' exists' )
-        eq( $('#'+testID+' a-box').length, 1
-          , '#'+testID+' a-box exists' )
+        eq( $('#'+testID+' a-box').length, 2
+          , 'Two <a-box>s exists in #'+testID )
     }catch(e){console.error(e.message);throw e}})
 
 
@@ -667,19 +672,32 @@ describe('The Oom.Foo.devMainAFrame() component', function (done) {
 
     //// Oom.Foo.devMainAFrame(): Automatic statics - initial values.
     //// `Vue.nextTick()` because Vue hasn’t initialised the properties yet.
-    it('shows correct initial statics', function (done) {
+    it('static and attribute hilites can be changed', function (done) {
+        const { firstObj, firstHex, secondObj, secondHex } = generateRandomColors()
+        stat.hilite = firstHex
+        attr.hilite = secondHex
+        // Vue.nextTick(window.requestAnimationFrame(function(){let error;try{
         Vue.nextTick((function(){let error;try{
-            const result = testPixel({ tol:30 // tolerance
-              , exp: { r:255, g:0, b:0, a:255 } }) // expected
-            eq( result.passes, 4
-              , `initial hilite ${result.pixelRGBA} is nearly ${result.expectedRGBA}`)
-            $('#'+testID).remove()
+            $(`#${testID} >a-entity`).attr('position', '0 0 0')
+            let r = testPixels({ // results
+                tol: 50 // tolerance, allow for shaded side of boxes
+              , pos: [
+                    { x:0, y:0.5 } // middle of the left edge
+                  , { x:1, y:0.5 } // middle of the right edge
+                ]
+              , exp: [
+                    firstObj // eg `{ r:0, g:255, b:0, a:255 }` to expect green
+                  , secondObj // eg `{ r:0, g:0, b:255, a:255 }` to expect blue
+                ]
+            })
+            eq( r[0].passes, 4, `mid-left pixel ${r[0].actualRGBA} is near-`
+              + `enough expected hilite static ${r[0].expRGBA}`)
+            eq( r[1].passes, 4, `mid-right pixel ${r[1].actualRGBA} is near-`
+              + `enough expected hilite attribute ${r[1].expRGBA}`)
+            $(`#${testID} >a-entity`).attr('position', '0 10 0')
         }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
     }) // `bind(this)` to run the test in Mocha’s context)
 
-
-
-        // if (! sceneEl) return // probably not ready yet
 
 
 
@@ -717,20 +735,19 @@ function simulateInput ($input, val) {
     $input[0].dispatchEvent(e)
 }
 
-//// Test whether one pixel in an A-Frame scene is the expected colour.
-function testPixel (config) {
+
+//// Test whether one or more pixel in an A-Frame scene is the expected colour.
+function testPixels (config) {
 
     //// Apply defaults to `config`.
     const c = Object.assign({}, {
-        x: 0.5 // position, center by default
-      , y: 0.5 // position, middle by default
-      , tol: 5 // tolerance, eg if expected is 245, allow 241 to 249
-      , exp: { // expected, 100% red by default
-            r: 255
-          , g: 0
-          , b: 0
-          , a: 255
-        }
+        tol: 5 // tolerance, eg if expected is 245, allow 241 to 249
+      , pos: [ // positions
+            { x:0.5, y:0.5 } // center middle by default
+        ]
+      , exp: [ // expected
+            { r:255, g:0, b:0, a:255 } // 100% red by default
+        ]
     }, config)
 
     //// Get a reference to A-Frame’s ‘screenshot’ canvas.
@@ -746,26 +763,70 @@ function testPixel (config) {
     cloneCtx.drawImage(captureCanvas, 0, 0);
     $('#screenshots').append(cloneCanvas)
 
-    //// Get the RGBA colour value of the test pixel.
-    const pixel = Array.from(
-        captureCtx.getImageData(
-            ~~(captureCanvas.width*c.x), ~~(captureCanvas.height*c.y) // position
-          , 1, 1 // one pixel
-        ).data
-    )
+    //// Test the RGBA colour value of each specified pixel.
+    const r = []
+    for (let i=0; i<c.pos.length; i++) {
+        const { x, y } = c.pos[i]
+        const exp = c.exp[i]
+        const tol = c.tol
 
-    //// The pixel should pass four times.
-    let passes = 0
-    passes += ( pixel[0] < (c.exp.r+c.tol) ) && ( pixel[0] > (c.exp.r-c.tol) )
-    passes += ( pixel[1] < (c.exp.g+c.tol) ) && ( pixel[1] > (c.exp.g-c.tol) )
-    passes += ( pixel[2] < (c.exp.b+c.tol) ) && ( pixel[2] > (c.exp.b-c.tol) )
-    passes += ( pixel[3] < (c.exp.a+c.tol) ) && ( pixel[3] > (c.exp.a-c.tol) )
+        //// Prevent pixel outside canvas bounds, if `x` or `y` are set to `1`.
+        const xClamped =
+            0 > x  ? 0
+          : 1 <= x ? captureCanvas.width - 1
+          : captureCanvas.width * x
+        const yClamped =
+            0 > y  ? 0
+          : 1 <= y ? captureCanvas.height - 1
+          : captureCanvas.width * y
+
+        //// Get the colour at the specified position.
+        const actual = Array.from(
+            cloneCtx.getImageData(
+                ~~xClamped // x position
+              , ~~yClamped // x position
+              , 1, 1 // one pixel
+            ).data )
+
+        //// If `passes` is `4`, all four channels are within tolerance.
+        let passes = 0
+        passes += ( actual[0] < (exp.r+tol) ) && ( actual[0] > (exp.r-tol) )
+        passes += ( actual[1] < (exp.g+tol) ) && ( actual[1] > (exp.g-tol) )
+        passes += ( actual[2] < (exp.b+tol) ) && ( actual[2] > (exp.b-tol) )
+        passes += ( actual[3] < (exp.a+tol) ) && ( actual[3] > (exp.a-tol) )
+
+        //// Add to the test results array.
+        r[i] = {
+            passes
+          , actualRGBA: `rgba(${actual.join(',')})`
+          , expRGBA:    `rgba(${exp.r},${exp.g},${exp.b},${exp.a})`
+        }
+    }
 
     //// Return the test results.
+    return r
+}
+
+
+//// Xx.
+function generateRandomColors () {
+    const a = {
+        r: 0.5 > Math.random() ? 255 : 0
+      , g: 0.5 > Math.random() ? 255 : 0
+      , b: 0.5 > Math.random() ? 255 : 0
+      , a: 255
+    }
+    const b = {
+        r: 0.5 > Math.random() ? 255 : 0
+      , g: 0.5 > Math.random() ? 255 : 0
+      , b: 0.5 > Math.random() ? 255 : 0
+      , a: 255
+    }
     return {
-        passes
-      , pixelRGBA:    `rgba(${pixel[0]},${pixel[1]},${pixel[2]},${pixel[3]})`
-      , expectedRGBA: `rgba(${c.exp.r},${c.exp.g},${c.exp.b},${c.exp.a})`
+        firstObj:  a
+      , secondObj: b
+      , firstHex:  `#${0==a.r?'00':'ff'}${0==a.g?'00':'ff'}${0==a.b?'00':'ff'}`
+      , secondHex: `#${0==b.r?'00':'ff'}${0==b.g?'00':'ff'}${0==b.b?'00':'ff'}`
     }
 }
 
@@ -783,19 +844,20 @@ if (false) return // change to `true` to ‘hard skip’ this test
 const { describe, it, eq, neq, is, goodVals, badVals } = ROOT.testify()
 const { isConstant, isReadOnly, isReadWrite } = Oom.KIT
 describe('Oom.Foo.Post (browser)', () => {
-    const hid = true // `true` hides the Vue component, `false` makes it visible
+    const
+        hid = true // `true` hides the components, `false` makes them visible
+      , Class = ROOT.Oom.Foo.Post
+      , stat = Class.stat
+      , schema = Class.schema
+      , instance = new Class()
+      , attr = instance.attr
 
 
 
 
 describe('The Oom.Foo.Post.devMainVue() component', function (done) {
     const
-        Class = ROOT.Oom.Foo.Post
-      , testID = 'test-oom-foo-post-devmainvue' // also used for component tag
-      , stat = Class.stat
-      , schema = Class.schema
-      , instance = new Class()
-      , attr = instance.attr
+        testID = 'test-oom-foo-post-devmainvue' // also used for component tag
       , cmp = Vue.component( testID, Class.devMainVue(instance) )
       , $container = $('.container').append(`<div class="row ${hid?'hid':''}" `
           + `id="${testID}"><${testID}>Loading...</${testID}></div>`)
@@ -1059,12 +1121,7 @@ describe('The Oom.Foo.Post.devMainVue() component', function (done) {
 
 describe('The Oom.Foo.Post.devMainAFrame() component', function (done) {
     const
-        Class = ROOT.Oom.Foo.Post
-      , testID = 'test-oom-foo-post-devmainaframe' // also used for component tag
-      , stat = Class.stat
-      , schema = Class.schema
-      , instance = new Class()
-      , attr = instance.attr
+        testID = 'test-oom-foo-post-devmainaframe' // also used for component tag
       , cmp = Vue.component( testID, Class.devMainAFrame(instance) )
       , $container = $('a-scene').append(`<a-entity id="${testID}">`
           + `<${testID}></${testID}></a-entity>`)
@@ -1083,8 +1140,8 @@ describe('The Oom.Foo.Post.devMainAFrame() component', function (done) {
     it('on the outside, is a viable Vue component', function(){try{
         eq( $('#'+testID).length, 1
           , '#'+testID+' exists' )
-        eq( $('#'+testID+' a-box').length, 1
-          , '#'+testID+' a-box exists' )
+        eq( $('#'+testID+' a-box').length, 2
+          , 'Two <a-box>s exists in #'+testID )
     }catch(e){console.error(e.message);throw e}})
 
 
@@ -1095,19 +1152,32 @@ describe('The Oom.Foo.Post.devMainAFrame() component', function (done) {
 
     //// Oom.Foo.Post.devMainAFrame(): Automatic statics - initial values.
     //// `Vue.nextTick()` because Vue hasn’t initialised the properties yet.
-    it('shows correct initial statics', function (done) {
+    it('static and attribute hilites can be changed', function (done) {
+        const { firstObj, firstHex, secondObj, secondHex } = generateRandomColors()
+        stat.hilite = firstHex
+        attr.hilite = secondHex
+        // Vue.nextTick(window.requestAnimationFrame(function(){let error;try{
         Vue.nextTick((function(){let error;try{
-            const result = testPixel({ tol:30 // tolerance
-              , exp: { r:255, g:0, b:0, a:255 } }) // expected
-            eq( result.passes, 4
-              , `initial hilite ${result.pixelRGBA} is nearly ${result.expectedRGBA}`)
-            $('#'+testID).remove()
+            $(`#${testID} >a-entity`).attr('position', '0 0 0')
+            let r = testPixels({ // results
+                tol: 50 // tolerance, allow for shaded side of boxes
+              , pos: [
+                    { x:0, y:0.5 } // middle of the left edge
+                  , { x:1, y:0.5 } // middle of the right edge
+                ]
+              , exp: [
+                    firstObj // eg `{ r:0, g:255, b:0, a:255 }` to expect green
+                  , secondObj // eg `{ r:0, g:0, b:255, a:255 }` to expect blue
+                ]
+            })
+            eq( r[0].passes, 4, `mid-left pixel ${r[0].actualRGBA} is near-`
+              + `enough expected hilite static ${r[0].expRGBA}`)
+            eq( r[1].passes, 4, `mid-right pixel ${r[1].actualRGBA} is near-`
+              + `enough expected hilite attribute ${r[1].expRGBA}`)
+            $(`#${testID} >a-entity`).attr('position', '0 10 0')
         }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
     }) // `bind(this)` to run the test in Mocha’s context)
 
-
-
-        // if (! sceneEl) return // probably not ready yet
 
 
 
@@ -1136,19 +1206,20 @@ if (false) return // change to `true` to ‘hard skip’ this test
 const { describe, it, eq, neq, is, goodVals, badVals } = ROOT.testify()
 const { isConstant, isReadOnly, isReadWrite } = Oom.KIT
 describe('Oom.Foo.Router (browser)', () => {
-    const hid = true // `true` hides the Vue component, `false` makes it visible
+    const
+        hid = true // `true` hides the components, `false` makes them visible
+      , Class = ROOT.Oom.Foo.Router
+      , stat = Class.stat
+      , schema = Class.schema
+      , instance = new Class()
+      , attr = instance.attr
 
 
 
 
 describe('The Oom.Foo.Router.devMainVue() component', function (done) {
     const
-        Class = ROOT.Oom.Foo.Router
-      , testID = 'test-oom-foo-router-devmainvue' // also used for component tag
-      , stat = Class.stat
-      , schema = Class.schema
-      , instance = new Class()
-      , attr = instance.attr
+        testID = 'test-oom-foo-router-devmainvue' // also used for component tag
       , cmp = Vue.component( testID, Class.devMainVue(instance) )
       , $container = $('.container').append(`<div class="row ${hid?'hid':''}" `
           + `id="${testID}"><${testID}>Loading...</${testID}></div>`)
@@ -1412,12 +1483,7 @@ describe('The Oom.Foo.Router.devMainVue() component', function (done) {
 
 describe('The Oom.Foo.Router.devMainAFrame() component', function (done) {
     const
-        Class = ROOT.Oom.Foo.Router
-      , testID = 'test-oom-foo-router-devmainaframe' // also used for component tag
-      , stat = Class.stat
-      , schema = Class.schema
-      , instance = new Class()
-      , attr = instance.attr
+        testID = 'test-oom-foo-router-devmainaframe' // also used for component tag
       , cmp = Vue.component( testID, Class.devMainAFrame(instance) )
       , $container = $('a-scene').append(`<a-entity id="${testID}">`
           + `<${testID}></${testID}></a-entity>`)
@@ -1436,8 +1502,8 @@ describe('The Oom.Foo.Router.devMainAFrame() component', function (done) {
     it('on the outside, is a viable Vue component', function(){try{
         eq( $('#'+testID).length, 1
           , '#'+testID+' exists' )
-        eq( $('#'+testID+' a-box').length, 1
-          , '#'+testID+' a-box exists' )
+        eq( $('#'+testID+' a-box').length, 2
+          , 'Two <a-box>s exists in #'+testID )
     }catch(e){console.error(e.message);throw e}})
 
 
@@ -1448,19 +1514,32 @@ describe('The Oom.Foo.Router.devMainAFrame() component', function (done) {
 
     //// Oom.Foo.Router.devMainAFrame(): Automatic statics - initial values.
     //// `Vue.nextTick()` because Vue hasn’t initialised the properties yet.
-    it('shows correct initial statics', function (done) {
+    it('static and attribute hilites can be changed', function (done) {
+        const { firstObj, firstHex, secondObj, secondHex } = generateRandomColors()
+        stat.hilite = firstHex
+        attr.hilite = secondHex
+        // Vue.nextTick(window.requestAnimationFrame(function(){let error;try{
         Vue.nextTick((function(){let error;try{
-            const result = testPixel({ tol:30 // tolerance
-              , exp: { r:255, g:0, b:0, a:255 } }) // expected
-            eq( result.passes, 4
-              , `initial hilite ${result.pixelRGBA} is nearly ${result.expectedRGBA}`)
-            $('#'+testID).remove()
+            $(`#${testID} >a-entity`).attr('position', '0 0 0')
+            let r = testPixels({ // results
+                tol: 50 // tolerance, allow for shaded side of boxes
+              , pos: [
+                    { x:0, y:0.5 } // middle of the left edge
+                  , { x:1, y:0.5 } // middle of the right edge
+                ]
+              , exp: [
+                    firstObj // eg `{ r:0, g:255, b:0, a:255 }` to expect green
+                  , secondObj // eg `{ r:0, g:0, b:255, a:255 }` to expect blue
+                ]
+            })
+            eq( r[0].passes, 4, `mid-left pixel ${r[0].actualRGBA} is near-`
+              + `enough expected hilite static ${r[0].expRGBA}`)
+            eq( r[1].passes, 4, `mid-right pixel ${r[1].actualRGBA} is near-`
+              + `enough expected hilite attribute ${r[1].expRGBA}`)
+            $(`#${testID} >a-entity`).attr('position', '0 10 0')
         }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
     }) // `bind(this)` to run the test in Mocha’s context)
 
-
-
-        // if (! sceneEl) return // probably not ready yet
 
 
 

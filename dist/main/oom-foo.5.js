@@ -177,7 +177,7 @@
     };
   };
   Object.defineProperty(Oom, 'devMainAFrameTemplate', {get: function(innerHTML) {
-      return innerHTML = "\n<a-box position=\"0 1.5 -1.5\" material=\"color:red\">\n  <a-animation mixin=\"rotate\"></a-animation>\n</a-box>\n";
+      return innerHTML = "\n<a-entity position=\"0 10 0\">\n  <a-box position=\"-1 1.5 -1.5\" :material=\"'color:'+stat.hilite\">\n    <a-animation mixin=\"rotate\"></a-animation>\n  </a-box>\n  <a-box position=\"1 1.5 -1.5\" :material=\"'color:'+attr.hilite\">\n    <a-animation mixin=\"rotate\"></a-animation>\n  </a-box>\n</a-entity>\n";
     }});
   Oom.devMainAFrame = function(instance) {
     return {

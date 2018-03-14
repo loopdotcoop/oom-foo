@@ -51,3 +51,4 @@
 1.2.23 Defines `attr` in `constructor()`, not as `prototype.attr`
 1.2.24 Wrapped functions can return instead of write; central ‘wrap/Test-*.6.js’
 1.2.25 Initial A-Frame unit tests, using the ‘screengrab’ component
+1.2.26 Basic Class.hilite and myInst.hilite A-Frame tests

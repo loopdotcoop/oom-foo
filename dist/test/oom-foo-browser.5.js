@@ -18,14 +18,14 @@
       isReadOnly = $__3.isReadOnly,
       isReadWrite = $__3.isReadWrite;
   describe('Oom (browser)', function() {
-    var hid = true;
+    var hid = true,
+        Class = ROOT.Oom,
+        stat = Class.stat,
+        schema = Class.schema,
+        instance = new Class(),
+        attr = instance.attr;
     describe('The Oom.devMainVue() component', function(done) {
-      var Class = ROOT.Oom,
-          testID = 'test-oom-devmainvue',
-          stat = Class.stat,
-          schema = Class.schema,
-          instance = new Class(),
-          attr = instance.attr,
+      var testID = 'test-oom-devmainvue',
           cmp = Vue.component(testID, Class.devMainVue(instance)),
           $container = $('.container').append(("<div class=\"row " + (hid ? 'hid' : '') + "\" ") + ("id=\"" + testID + "\"><" + testID + ">Loading...</" + testID + "></div>")),
           vue = new Vue({
@@ -290,12 +290,7 @@
       }
     });
     describe('The Oom.devMainAFrame() component', function(done) {
-      var Class = ROOT.Oom,
-          testID = 'test-oom-devmainaframe',
-          stat = Class.stat,
-          schema = Class.schema,
-          instance = new Class(),
-          attr = instance.attr,
+      var testID = 'test-oom-devmainaframe',
           cmp = Vue.component(testID, Class.devMainAFrame(instance)),
           $container = $('a-scene').append(("<a-entity id=\"" + testID + "\">") + ("<" + testID + "></" + testID + "></a-entity>")),
           vue = new Vue({
@@ -306,7 +301,7 @@
         it('on the outside, is a viable Vue component', function() {
           try {
             eq($('#' + testID).length, 1, '#' + testID + ' exists');
-            eq($('#' + testID + ' a-box').length, 1, '#' + testID + ' a-box exists');
+            eq($('#' + testID + ' a-box').length, 2, 'Two <a-box>s exists in #' + testID);
           } catch (e) {
             console.error(e.message);
             throw e;
@@ -318,21 +313,32 @@
             throw e;
           }
         });
-        it('shows correct initial statics', function(done) {
+        it('static and attribute hilites can be changed', function(done) {
+          var $__4 = generateRandomColors(),
+              firstObj = $__4.firstObj,
+              firstHex = $__4.firstHex,
+              secondObj = $__4.secondObj,
+              secondHex = $__4.secondHex;
+          stat.hilite = firstHex;
+          attr.hilite = secondHex;
           Vue.nextTick((function() {
             var error;
             try {
-              var result = testPixel({
-                tol: 30,
-                exp: {
-                  r: 255,
-                  g: 0,
-                  b: 0,
-                  a: 255
-                }
+              $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
+              var r = testPixels({
+                tol: 50,
+                pos: [{
+                  x: 0,
+                  y: 0.5
+                }, {
+                  x: 1,
+                  y: 0.5
+                }],
+                exp: [firstObj, secondObj]
               });
-              eq(result.passes, 4, ("initial hilite " + result.pixelRGBA + " is nearly " + result.expectedRGBA));
-              $('#' + testID).remove();
+              eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
+              eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
+              $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
             } catch (e) {
               error = e;
               console.error(e.message);
@@ -344,14 +350,14 @@
     });
   });
   describe('Oom.Foo (browser)', function() {
-    var hid = true;
+    var hid = true,
+        Class = ROOT.Oom.Foo,
+        stat = Class.stat,
+        schema = Class.schema,
+        instance = new Class(),
+        attr = instance.attr;
     describe('The Oom.Foo.devMainVue() component', function(done) {
-      var Class = ROOT.Oom.Foo,
-          testID = 'test-oom-foo-devmainvue',
-          stat = Class.stat,
-          schema = Class.schema,
-          instance = new Class(),
-          attr = instance.attr,
+      var testID = 'test-oom-foo-devmainvue',
           cmp = Vue.component(testID, Class.devMainVue(instance)),
           $container = $('.container').append(("<div class=\"row " + (hid ? 'hid' : '') + "\" ") + ("id=\"" + testID + "\"><" + testID + ">Loading...</" + testID + "></div>")),
           vue = new Vue({
@@ -616,12 +622,7 @@
       }
     });
     describe('The Oom.Foo.devMainAFrame() component', function(done) {
-      var Class = ROOT.Oom.Foo,
-          testID = 'test-oom-foo-devmainaframe',
-          stat = Class.stat,
-          schema = Class.schema,
-          instance = new Class(),
-          attr = instance.attr,
+      var testID = 'test-oom-foo-devmainaframe',
           cmp = Vue.component(testID, Class.devMainAFrame(instance)),
           $container = $('a-scene').append(("<a-entity id=\"" + testID + "\">") + ("<" + testID + "></" + testID + "></a-entity>")),
           vue = new Vue({
@@ -632,7 +633,7 @@
         it('on the outside, is a viable Vue component', function() {
           try {
             eq($('#' + testID).length, 1, '#' + testID + ' exists');
-            eq($('#' + testID + ' a-box').length, 1, '#' + testID + ' a-box exists');
+            eq($('#' + testID + ' a-box').length, 2, 'Two <a-box>s exists in #' + testID);
           } catch (e) {
             console.error(e.message);
             throw e;
@@ -644,21 +645,32 @@
             throw e;
           }
         });
-        it('shows correct initial statics', function(done) {
+        it('static and attribute hilites can be changed', function(done) {
+          var $__4 = generateRandomColors(),
+              firstObj = $__4.firstObj,
+              firstHex = $__4.firstHex,
+              secondObj = $__4.secondObj,
+              secondHex = $__4.secondHex;
+          stat.hilite = firstHex;
+          attr.hilite = secondHex;
           Vue.nextTick((function() {
             var error;
             try {
-              var result = testPixel({
-                tol: 30,
-                exp: {
-                  r: 255,
-                  g: 0,
-                  b: 0,
-                  a: 255
-                }
+              $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
+              var r = testPixels({
+                tol: 50,
+                pos: [{
+                  x: 0,
+                  y: 0.5
+                }, {
+                  x: 1,
+                  y: 0.5
+                }],
+                exp: [firstObj, secondObj]
               });
-              eq(result.passes, 4, ("initial hilite " + result.pixelRGBA + " is nearly " + result.expectedRGBA));
-              $('#' + testID).remove();
+              eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
+              eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
+              $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
             } catch (e) {
               error = e;
               console.error(e.message);
@@ -677,17 +689,19 @@ function simulateInput($input, val) {
   e.initEvent('input', true, true);
   $input[0].dispatchEvent(e);
 }
-function testPixel(config) {
+function testPixels(config) {
   var c = Object.assign({}, {
-    x: 0.5,
-    y: 0.5,
     tol: 5,
-    exp: {
+    pos: [{
+      x: 0.5,
+      y: 0.5
+    }],
+    exp: [{
       r: 255,
       g: 0,
       b: 0,
       a: 255
-    }
+    }]
   }, config);
   var sceneEl = $('a-scene')[0];
   var captureCanvas = sceneEl.components.screenshot.getCanvas('perspective');
@@ -698,16 +712,47 @@ function testPixel(config) {
   cloneCanvas.height = captureCanvas.height;
   cloneCtx.drawImage(captureCanvas, 0, 0);
   $('#screenshots').append(cloneCanvas);
-  var pixel = Array.from(captureCtx.getImageData(~~(captureCanvas.width * c.x), ~~(captureCanvas.height * c.y), 1, 1).data);
-  var passes = 0;
-  passes += (pixel[0] < (c.exp.r + c.tol)) && (pixel[0] > (c.exp.r - c.tol));
-  passes += (pixel[1] < (c.exp.g + c.tol)) && (pixel[1] > (c.exp.g - c.tol));
-  passes += (pixel[2] < (c.exp.b + c.tol)) && (pixel[2] > (c.exp.b - c.tol));
-  passes += (pixel[3] < (c.exp.a + c.tol)) && (pixel[3] > (c.exp.a - c.tol));
+  var r = [];
+  for (var i = 0; i < c.pos.length; i++) {
+    var $__2 = c.pos[i],
+        x = $__2.x,
+        y = $__2.y;
+    var exp = c.exp[i];
+    var tol = c.tol;
+    var xClamped = 0 > x ? 0 : 1 <= x ? captureCanvas.width - 1 : captureCanvas.width * x;
+    var yClamped = 0 > y ? 0 : 1 <= y ? captureCanvas.height - 1 : captureCanvas.width * y;
+    var actual = Array.from(cloneCtx.getImageData(~~xClamped, ~~yClamped, 1, 1).data);
+    var passes = 0;
+    passes += (actual[0] < (exp.r + tol)) && (actual[0] > (exp.r - tol));
+    passes += (actual[1] < (exp.g + tol)) && (actual[1] > (exp.g - tol));
+    passes += (actual[2] < (exp.b + tol)) && (actual[2] > (exp.b - tol));
+    passes += (actual[3] < (exp.a + tol)) && (actual[3] > (exp.a - tol));
+    r[i] = {
+      passes: passes,
+      actualRGBA: ("rgba(" + actual.join(',') + ")"),
+      expRGBA: ("rgba(" + exp.r + "," + exp.g + "," + exp.b + "," + exp.a + ")")
+    };
+  }
+  return r;
+}
+function generateRandomColors() {
+  var a = {
+    r: 0.5 > Math.random() ? 255 : 0,
+    g: 0.5 > Math.random() ? 255 : 0,
+    b: 0.5 > Math.random() ? 255 : 0,
+    a: 255
+  };
+  var b = {
+    r: 0.5 > Math.random() ? 255 : 0,
+    g: 0.5 > Math.random() ? 255 : 0,
+    b: 0.5 > Math.random() ? 255 : 0,
+    a: 255
+  };
   return {
-    passes: passes,
-    pixelRGBA: ("rgba(" + pixel[0] + "," + pixel[1] + "," + pixel[2] + "," + pixel[3] + ")"),
-    expectedRGBA: ("rgba(" + c.exp.r + "," + c.exp.g + "," + c.exp.b + "," + c.exp.a + ")")
+    firstObj: a,
+    secondObj: b,
+    firstHex: ("#" + (0 == a.r ? '00' : 'ff') + (0 == a.g ? '00' : 'ff') + (0 == a.b ? '00' : 'ff')),
+    secondHex: ("#" + (0 == b.r ? '00' : 'ff') + (0 == b.g ? '00' : 'ff') + (0 == b.b ? '00' : 'ff'))
   };
 }
 !function(ROOT) {
@@ -727,14 +772,14 @@ function testPixel(config) {
       isReadOnly = $__3.isReadOnly,
       isReadWrite = $__3.isReadWrite;
   describe('Oom.Foo.Post (browser)', function() {
-    var hid = true;
+    var hid = true,
+        Class = ROOT.Oom.Foo.Post,
+        stat = Class.stat,
+        schema = Class.schema,
+        instance = new Class(),
+        attr = instance.attr;
     describe('The Oom.Foo.Post.devMainVue() component', function(done) {
-      var Class = ROOT.Oom.Foo.Post,
-          testID = 'test-oom-foo-post-devmainvue',
-          stat = Class.stat,
-          schema = Class.schema,
-          instance = new Class(),
-          attr = instance.attr,
+      var testID = 'test-oom-foo-post-devmainvue',
           cmp = Vue.component(testID, Class.devMainVue(instance)),
           $container = $('.container').append(("<div class=\"row " + (hid ? 'hid' : '') + "\" ") + ("id=\"" + testID + "\"><" + testID + ">Loading...</" + testID + "></div>")),
           vue = new Vue({
@@ -999,12 +1044,7 @@ function testPixel(config) {
       }
     });
     describe('The Oom.Foo.Post.devMainAFrame() component', function(done) {
-      var Class = ROOT.Oom.Foo.Post,
-          testID = 'test-oom-foo-post-devmainaframe',
-          stat = Class.stat,
-          schema = Class.schema,
-          instance = new Class(),
-          attr = instance.attr,
+      var testID = 'test-oom-foo-post-devmainaframe',
           cmp = Vue.component(testID, Class.devMainAFrame(instance)),
           $container = $('a-scene').append(("<a-entity id=\"" + testID + "\">") + ("<" + testID + "></" + testID + "></a-entity>")),
           vue = new Vue({
@@ -1015,7 +1055,7 @@ function testPixel(config) {
         it('on the outside, is a viable Vue component', function() {
           try {
             eq($('#' + testID).length, 1, '#' + testID + ' exists');
-            eq($('#' + testID + ' a-box').length, 1, '#' + testID + ' a-box exists');
+            eq($('#' + testID + ' a-box').length, 2, 'Two <a-box>s exists in #' + testID);
           } catch (e) {
             console.error(e.message);
             throw e;
@@ -1027,21 +1067,32 @@ function testPixel(config) {
             throw e;
           }
         });
-        it('shows correct initial statics', function(done) {
+        it('static and attribute hilites can be changed', function(done) {
+          var $__4 = generateRandomColors(),
+              firstObj = $__4.firstObj,
+              firstHex = $__4.firstHex,
+              secondObj = $__4.secondObj,
+              secondHex = $__4.secondHex;
+          stat.hilite = firstHex;
+          attr.hilite = secondHex;
           Vue.nextTick((function() {
             var error;
             try {
-              var result = testPixel({
-                tol: 30,
-                exp: {
-                  r: 255,
-                  g: 0,
-                  b: 0,
-                  a: 255
-                }
+              $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
+              var r = testPixels({
+                tol: 50,
+                pos: [{
+                  x: 0,
+                  y: 0.5
+                }, {
+                  x: 1,
+                  y: 0.5
+                }],
+                exp: [firstObj, secondObj]
               });
-              eq(result.passes, 4, ("initial hilite " + result.pixelRGBA + " is nearly " + result.expectedRGBA));
-              $('#' + testID).remove();
+              eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
+              eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
+              $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
             } catch (e) {
               error = e;
               console.error(e.message);
@@ -1070,14 +1121,14 @@ function testPixel(config) {
       isReadOnly = $__3.isReadOnly,
       isReadWrite = $__3.isReadWrite;
   describe('Oom.Foo.Router (browser)', function() {
-    var hid = true;
+    var hid = true,
+        Class = ROOT.Oom.Foo.Router,
+        stat = Class.stat,
+        schema = Class.schema,
+        instance = new Class(),
+        attr = instance.attr;
     describe('The Oom.Foo.Router.devMainVue() component', function(done) {
-      var Class = ROOT.Oom.Foo.Router,
-          testID = 'test-oom-foo-router-devmainvue',
-          stat = Class.stat,
-          schema = Class.schema,
-          instance = new Class(),
-          attr = instance.attr,
+      var testID = 'test-oom-foo-router-devmainvue',
           cmp = Vue.component(testID, Class.devMainVue(instance)),
           $container = $('.container').append(("<div class=\"row " + (hid ? 'hid' : '') + "\" ") + ("id=\"" + testID + "\"><" + testID + ">Loading...</" + testID + "></div>")),
           vue = new Vue({
@@ -1342,12 +1393,7 @@ function testPixel(config) {
       }
     });
     describe('The Oom.Foo.Router.devMainAFrame() component', function(done) {
-      var Class = ROOT.Oom.Foo.Router,
-          testID = 'test-oom-foo-router-devmainaframe',
-          stat = Class.stat,
-          schema = Class.schema,
-          instance = new Class(),
-          attr = instance.attr,
+      var testID = 'test-oom-foo-router-devmainaframe',
           cmp = Vue.component(testID, Class.devMainAFrame(instance)),
           $container = $('a-scene').append(("<a-entity id=\"" + testID + "\">") + ("<" + testID + "></" + testID + "></a-entity>")),
           vue = new Vue({
@@ -1358,7 +1404,7 @@ function testPixel(config) {
         it('on the outside, is a viable Vue component', function() {
           try {
             eq($('#' + testID).length, 1, '#' + testID + ' exists');
-            eq($('#' + testID + ' a-box').length, 1, '#' + testID + ' a-box exists');
+            eq($('#' + testID + ' a-box').length, 2, 'Two <a-box>s exists in #' + testID);
           } catch (e) {
             console.error(e.message);
             throw e;
@@ -1370,21 +1416,32 @@ function testPixel(config) {
             throw e;
           }
         });
-        it('shows correct initial statics', function(done) {
+        it('static and attribute hilites can be changed', function(done) {
+          var $__4 = generateRandomColors(),
+              firstObj = $__4.firstObj,
+              firstHex = $__4.firstHex,
+              secondObj = $__4.secondObj,
+              secondHex = $__4.secondHex;
+          stat.hilite = firstHex;
+          attr.hilite = secondHex;
           Vue.nextTick((function() {
             var error;
             try {
-              var result = testPixel({
-                tol: 30,
-                exp: {
-                  r: 255,
-                  g: 0,
-                  b: 0,
-                  a: 255
-                }
+              $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
+              var r = testPixels({
+                tol: 50,
+                pos: [{
+                  x: 0,
+                  y: 0.5
+                }, {
+                  x: 1,
+                  y: 0.5
+                }],
+                exp: [firstObj, secondObj]
               });
-              eq(result.passes, 4, ("initial hilite " + result.pixelRGBA + " is nearly " + result.expectedRGBA));
-              $('#' + testID).remove();
+              eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
+              eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
+              $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
             } catch (e) {
               error = e;
               console.error(e.message);

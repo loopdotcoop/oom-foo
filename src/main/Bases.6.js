@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.25 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.26 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
 //// Metadata for Oom.Foo
 const META = {
     NAME:     'Oom.Foo'
-  , VERSION:  '1.2.25' // OOMBUMPABLE
+  , VERSION:  '1.2.26' // OOMBUMPABLE
   , HOMEPAGE: 'http://oom-foo.loop.coop/'
   , REMARKS:  'Initial test of the oom-hub architecture'
   , LOADED_FIRST: ! ROOT.Oom // true if the Oom class is defined by this module
@@ -297,9 +297,14 @@ Oom.devMainVue = function (instance) { return {
 ////
 Object.defineProperty(Oom, 'devMainAFrameTemplate', {
 get: function (innerHTML) { return innerHTML = `
-<a-box position="0 1.5 -1.5" material="color:red">
-  <a-animation mixin="rotate"></a-animation>
-</a-box>
+<a-entity position="0 10 0">
+  <a-box position="-0.7 1.5 -1.5" :material="'color:'+stat.hilite">
+    <a-animation mixin="rotate"></a-animation>
+  </a-box>
+  <a-box position="0.7 1.5 -1.5" :material="'color:'+attr.hilite">
+    <a-animation mixin="rotate"></a-animation>
+  </a-box>
+</a-entity>
 `} })
 
 

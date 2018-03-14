@@ -301,9 +301,14 @@ Oom.devMainVue = function (instance) { return {
 ////
 Object.defineProperty(Oom, 'devMainAFrameTemplate', {
 get: function (innerHTML) { return innerHTML = `
-<a-box position="0 1.5 -1.5" material="color:red">
-  <a-animation mixin="rotate"></a-animation>
-</a-box>
+<a-entity position="0 10 0">
+  <a-box position="-1 1.5 -1.5" :material="'color:'+stat.hilite">
+    <a-animation mixin="rotate"></a-animation>
+  </a-box>
+  <a-box position="1 1.5 -1.5" :material="'color:'+attr.hilite">
+    <a-animation mixin="rotate"></a-animation>
+  </a-box>
+</a-entity>
 `} })
 
 

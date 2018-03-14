@@ -49,20 +49,19 @@ function simulateInput ($input, val) {
     $input[0].dispatchEvent(e)
 }
 
-//// Test whether one pixel in an A-Frame scene is the expected colour.
-function testPixel (config) {
+
+//// Test whether one or more pixel in an A-Frame scene is the expected colour.
+function testPixels (config) {
 
     //// Apply defaults to `config`.
     const c = Object.assign({}, {
-        x: 0.5 // position, center by default
-      , y: 0.5 // position, middle by default
-      , tol: 5 // tolerance, eg if expected is 245, allow 241 to 249
-      , exp: { // expected, 100% red by default
-            r: 255
-          , g: 0
-          , b: 0
-          , a: 255
-        }
+        tol: 5 // tolerance, eg if expected is 245, allow 241 to 249
+      , pos: [ // positions
+            { x:0.5, y:0.5 } // center middle by default
+        ]
+      , exp: [ // expected
+            { r:255, g:0, b:0, a:255 } // 100% red by default
+        ]
     }, config)
 
     //// Get a reference to A-Frame’s ‘screenshot’ canvas.
@@ -78,25 +77,69 @@ function testPixel (config) {
     cloneCtx.drawImage(captureCanvas, 0, 0);
     $('#screenshots').append(cloneCanvas)
 
-    //// Get the RGBA colour value of the test pixel.
-    const pixel = Array.from(
-        captureCtx.getImageData(
-            ~~(captureCanvas.width*c.x), ~~(captureCanvas.height*c.y) // position
-          , 1, 1 // one pixel
-        ).data
-    )
+    //// Test the RGBA colour value of each specified pixel.
+    const r = []
+    for (let i=0; i<c.pos.length; i++) {
+        const { x, y } = c.pos[i]
+        const exp = c.exp[i]
+        const tol = c.tol
 
-    //// The pixel should pass four times.
-    let passes = 0
-    passes += ( pixel[0] < (c.exp.r+c.tol) ) && ( pixel[0] > (c.exp.r-c.tol) )
-    passes += ( pixel[1] < (c.exp.g+c.tol) ) && ( pixel[1] > (c.exp.g-c.tol) )
-    passes += ( pixel[2] < (c.exp.b+c.tol) ) && ( pixel[2] > (c.exp.b-c.tol) )
-    passes += ( pixel[3] < (c.exp.a+c.tol) ) && ( pixel[3] > (c.exp.a-c.tol) )
+        //// Prevent pixel outside canvas bounds, if `x` or `y` are set to `1`.
+        const xClamped =
+            0 > x  ? 0
+          : 1 <= x ? captureCanvas.width - 1
+          : captureCanvas.width * x
+        const yClamped =
+            0 > y  ? 0
+          : 1 <= y ? captureCanvas.height - 1
+          : captureCanvas.width * y
+
+        //// Get the colour at the specified position.
+        const actual = Array.from(
+            cloneCtx.getImageData(
+                ~~xClamped // x position
+              , ~~yClamped // x position
+              , 1, 1 // one pixel
+            ).data )
+
+        //// If `passes` is `4`, all four channels are within tolerance.
+        let passes = 0
+        passes += ( actual[0] < (exp.r+tol) ) && ( actual[0] > (exp.r-tol) )
+        passes += ( actual[1] < (exp.g+tol) ) && ( actual[1] > (exp.g-tol) )
+        passes += ( actual[2] < (exp.b+tol) ) && ( actual[2] > (exp.b-tol) )
+        passes += ( actual[3] < (exp.a+tol) ) && ( actual[3] > (exp.a-tol) )
+
+        //// Add to the test results array.
+        r[i] = {
+            passes
+          , actualRGBA: `rgba(${actual.join(',')})`
+          , expRGBA:    `rgba(${exp.r},${exp.g},${exp.b},${exp.a})`
+        }
+    }
 
     //// Return the test results.
+    return r
+}
+
+
+//// Xx.
+function generateRandomColors () {
+    const a = {
+        r: 0.5 > Math.random() ? 255 : 0
+      , g: 0.5 > Math.random() ? 255 : 0
+      , b: 0.5 > Math.random() ? 255 : 0
+      , a: 255
+    }
+    const b = {
+        r: 0.5 > Math.random() ? 255 : 0
+      , g: 0.5 > Math.random() ? 255 : 0
+      , b: 0.5 > Math.random() ? 255 : 0
+      , a: 255
+    }
     return {
-        passes
-      , pixelRGBA:    `rgba(${pixel[0]},${pixel[1]},${pixel[2]},${pixel[3]})`
-      , expectedRGBA: `rgba(${c.exp.r},${c.exp.g},${c.exp.b},${c.exp.a})`
+        firstObj:  a
+      , secondObj: b
+      , firstHex:  `#${0==a.r?'00':'ff'}${0==a.g?'00':'ff'}${0==a.b?'00':'ff'}`
+      , secondHex: `#${0==b.r?'00':'ff'}${0==b.g?'00':'ff'}${0==b.b?'00':'ff'}`
     }
 }
