@@ -13,7 +13,7 @@ const rxBinaryExt = module.exports.rxBinaryExt =
     new RegExp( '\\.' + BINARY_EXTS.join('$|\\.') + '$', 'i')
 
 const NAME     = 'Oomtility Wrapped'
-    , VERSION  = '1.2.26'
+    , VERSION  = '1.2.27'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
 
@@ -189,6 +189,30 @@ function getHtmlTop (config) {
 
 <!-- A-Frame wants to be loaded in the <HEAD> -->
 <script src="${pathToSupport}asset/js/aframe-0.7.0.min.js"></script>
+
+<!-- Dispatch <a-entity oom-event> mouse events on the window -->
+<script>
+AFRAME.registerComponent('oom-event', {
+    init: function () {
+        var el = this.el // <a-entity>
+        var $body = document.querySelector('body')
+        var listener = function (evt) {
+            evt.preventDefault()
+            evt.stopPropagation()
+            // if ('mouseenter' === evt.type) $body.classList.add('hitzone')
+            // else if ('mouseleave' === evt.type) $body.classList.remove('hitzone')
+            window.dispatchEvent(
+                new CustomEvent('oom-event', { detail: { el:el, type:evt.type } })
+            )
+        }
+        el.addEventListener('mouseenter', listener)
+        el.addEventListener('mouseleave', listener)
+        el.addEventListener('mousedown' , listener)
+        el.addEventListener('mouseup'   , listener)
+        el.addEventListener('click'     , listener)
+    }
+})
+</script>
 
 
 </head>
@@ -444,6 +468,7 @@ fs.writeFileSync(path, ''
 <div id="screenshots" class="row"></div>
 
 <!-- The A-Frame scene -->
+<!-- The A-Frame scene -->
 <div id="a-frame" class="row">
   <a-scene embedded vr-mode-ui="enabled:false"
          screenshot="width:100; height:100">
@@ -456,6 +481,19 @@ fs.writeFileSync(path, ''
                repeat="indefinite"
       ></a-mixin>
     </a-assets>
+    <a-entity id="camera-wrap">
+      <!-- note that <a-camera userHeight="1.6"> does not work -->
+      <a-entity id="camera" camera="userHeight: 1.6" look-controls><!-- 1.6 is default -->
+        <a-entity id="cursor"
+          cursor="fuse:false; rayOrigin:mouse"
+          position="0 100 -1"
+          raycaster="objects: [oom-event]"
+          geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+          material="color: red; shader: flat">
+        </a-entity>
+      </a-entity>
+    </a-entity>
+
   </a-scene>
 </div>
 
@@ -815,6 +853,18 @@ module.exports.writeTestBrowser6Js(
   + '      , b: 0.5 > Math.random() ? 255 : 0\n'
   + '      , a: 255\n'
   + '    }\n'
+  + '    const c = {\n'
+  + '        r: 0.5 > Math.random() ? 80 : 130\n'
+  + '      , g: 0.5 > Math.random() ? 80 : 130\n'
+  + '      , b: 0.5 > Math.random() ? 80 : 130\n'
+  + '      , a: 255\n'
+  + '    }\n'
+  + '    const d = {\n'
+  + '        r: 0.5 > Math.random() ? 80 : 130\n'
+  + '      , g: 0.5 > Math.random() ? 80 : 130\n'
+  + '      , b: 0.5 > Math.random() ? 80 : 130\n'
+  + '      , a: 255\n'
+  + '    }\n'
   + '    return {\n'
   + '        firstObj:  a\n'
   + '      , secondObj: b\n'
@@ -822,6 +872,12 @@ module.exports.writeTestBrowser6Js(
   + '\':\'ff\'}`\n'
   + '      , secondHex: `#${0==b.r?\'00\':\'ff\'}${0==b.g?\'00\':\'ff\'}${0==b.b?\'00'
   + '\':\'ff\'}`\n'
+  + '      , thirdObj:  c\n'
+  + '      , fourthObj: d\n'
+  + '      , thirdHex:  `#${80==c.r?\'50\':\'82\'}${80==c.g?\'50\':\'82\'}${80==c.b?'
+  + '\'50\':\'82\'}`\n'
+  + '      , fourthHex: `#${80==d.r?\'50\':\'82\'}${80==d.g?\'50\':\'82\'}${80==d.b?'
+  + '\'50\':\'82\'}`\n'
   + '    }\n'
   + '}\n'
   + ''
@@ -1157,10 +1213,14 @@ write(''
   + 'Object.defineProperty(Oom, \'devMainAFrameTemplate\', {\n'
   + 'get: function (innerHTML) { return innerHTML = `\n'
   + '<a-entity position="0 10 0">\n'
-  + '  <a-box position="-1 1.5 -1.5" :material="\'color:\'+stat.hilite">\n'
+  + '  <a-box oom-event class="stat"\n'
+  + '         position="-0.7 1.5 -1.5" :material="\'shader:flat; color:\'+stat.hilite'
+  + '">\n'
   + '    <a-animation mixin="rotate"></a-animation>\n'
   + '  </a-box>\n'
-  + '  <a-box position="1 1.5 -1.5" :material="\'color:\'+attr.hilite">\n'
+  + '  <a-box oom-event class="attr"\n'
+  + '         position="0.7 1.5 -1.5" :material="\'shader:flat; color:\'+attr.hilite"'
+  + '>\n'
   + '    <a-animation mixin="rotate"></a-animation>\n'
   + '  </a-box>\n'
   + '</a-entity>\n'
@@ -3469,9 +3529,9 @@ write(''
   + '    }catch(e){console.error(e.message);throw e}})\n'
   + '\n'
   + '\n'
-  + '    //// '+(classname)+'.devMainAFrame(): Automatic statics - initial values.\n'
+  + '    //// '+(classname)+'.devMainAFrame(): `hilite` static and attribute - change.\n'
   + '    //// `Vue.nextTick()` because Vue hasn\u2019t initialised the properties yet.\n'
-  + '    it(\'static and attribute hilites can be changed\', function (done) {\n'
+  + '    it(\'changing `stat/attr.hilite` changes box color\', function (done) {\n'
   + '        const { firstObj, firstHex, secondObj, secondHex } = generateRandomColor'
   + 's()\n'
   + '        stat.hilite = firstHex\n'
@@ -3480,13 +3540,13 @@ write(''
   + '        Vue.nextTick((function(){let error;try{\n'
   + '            $(`#${testID} >a-entity`).attr(\'position\', \'0 0 0\')\n'
   + '            let r = testPixels({ // results\n'
-  + '                tol: 50 // tolerance, allow for shaded side of boxes\n'
+  + '                tol: 1 // tolerance, flat-shader, so no shaded side of box\n'
   + '              , pos: [\n'
   + '                    { x:0, y:0.5 } // middle of the left edge\n'
   + '                  , { x:1, y:0.5 } // middle of the right edge\n'
   + '                ]\n'
   + '              , exp: [\n'
-  + '                    firstObj // eg `{ r:0, g:255, b:0, a:255 }` to expect green\n'
+  + '                    firstObj  // eg `{ r:0, g:255, b:0, a:255 }` to expect green\n'
   + '                  , secondObj // eg `{ r:0, g:0, b:255, a:255 }` to expect blue\n'
   + '                ]\n'
   + '            })\n'
@@ -3498,6 +3558,53 @@ write(''
   + '        }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))\n'
   + '    }) // `bind(this)` to run the test in Mocha\u2019s context)\n'
   + '\n'
+  + '\n'
+  + '    //// '+(classname)+'.devMainAFrame(): boxes respond to click.\n'
+  + '    it(\'boxes can change `stat/attr.hilite` on click\', function (done) {\n'
+  + '        const { thirdObj, thirdHex, fourthObj, fourthHex } = generateRandomColor'
+  + 's()\n'
+  + '        const onOomEvent = function (evt) {\n'
+  + '            if (! evt.detail) return\n'
+  + '            const { el, type } = evt.detail\n'
+  + '            if (\'click\' !== type) return\n'
+  + '            if ( $(el).hasClass(\'stat\') )\n'
+  + '                stat.hilite = thirdHex\n'
+  + '            if ( $(el).hasClass(\'attr\') )\n'
+  + '                attr.hilite = fourthHex\n'
+  + '        }\n'
+  + '        $(window).on(\'oom-event\', onOomEvent)\n'
+  + '        const evt = new MouseEvent(\'click\')\n'
+  + '        $(\'#\'+testID+\' a-box.stat\')[0].dispatchEvent(evt)\n'
+  + '        $(\'#\'+testID+\' a-box.attr\')[0].dispatchEvent(evt)\n'
+  + '        $(window).off(\'oom-event\', onOomEvent)\n'
+  + '\n'
+  + '        Vue.nextTick((function(){let error;try{\n'
+  + '            $(`#${testID} >a-entity`).attr(\'position\', \'0 0 0\')\n'
+  + '            let r = testPixels({ // results\n'
+  + '                tol: 1 // tolerance, flat-shader, so no shaded side of box\n'
+  + '              , pos: [\n'
+  + '                    { x:0, y:0.5 } // middle of the left edge\n'
+  + '                  , { x:1, y:0.5 } // middle of the right edge\n'
+  + '                ]\n'
+  + '              , exp: [\n'
+  + '                    thirdObj  // eg `{ r:0, g:255, b:0, a:255 }` to expect green\n'
+  + '                  , fourthObj // eg `{ r:0, g:0, b:255, a:255 }` to expect blue\n'
+  + '                ]\n'
+  + '            })\n'
+  + '            eq( r[0].passes, 4, `mid-left pixel ${r[0].actualRGBA} is near-`\n'
+  + '              + `enough expected hilite static ${r[0].expRGBA}`)\n'
+  + '            eq( r[1].passes, 4, `mid-right pixel ${r[1].actualRGBA} is near-`\n'
+  + '              + `enough expected hilite attribute ${r[1].expRGBA}`)\n'
+  + '            eq( stat.hilite, thirdHex\n'
+  + '              , \'`stat.hilite` is now \'+thirdHex )\n'
+  + '            eq( attr.hilite, fourthHex\n'
+  + '              , \'`attr.hilite` is now \'+fourthHex )\n'
+  + '            $(`#${testID} >a-entity`).attr(\'position\', \'0 10 0\')\n'
+  + '        }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))\n'
+  + '    }) // `bind(this)` to run the test in Mocha\u2019s context)\n'
+  + '\n'
+  + '\n'
+  + '    //@NEXT change A-Frame material directly - Vue should see that\n'
   + '\n'
   + '\n'
   + '\n'
@@ -21464,7 +21571,7 @@ let out = ''
 const write = str => out += null == path ? str
   : fs.writeFileSync(path, str, { encoding, flag })
 write(''
-  + '//// ECMASwitch //// 1.2.26 //// March 2018 //// ecmaswitch.loop.coop/ /////////\n'
+  + '//// ECMASwitch //// 1.2.27 //// March 2018 //// ecmaswitch.loop.coop/ /////////\n'
   + '\n'
   + '!function (ROOT) { \'use strict\'\n'
   + '\n'
@@ -21472,7 +21579,7 @@ write(''
   + 'var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}\n'
   + 'var s, onAllLoadedFn\n'
   + 'ECMASwitch.NAME     = \'ECMASwitch\'\n'
-  + 'ECMASwitch.VERSION  = \'1.2.26\'\n'
+  + 'ECMASwitch.VERSION  = \'1.2.27\'\n'
   + 'ECMASwitch.HOMEPAGE = \'http://ecmaswitch.loop.coop/\'\n'
   + '\n'
   + '//// Polyfill `document` for non-browser contexts.\n'

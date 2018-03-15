@@ -92,6 +92,30 @@
 <!-- A-Frame wants to be loaded in the <HEAD> -->
 <script src="support/asset/js/aframe-0.7.0.min.js"></script>
 
+<!-- Dispatch <a-entity oom-event> mouse events on the window -->
+<script>
+AFRAME.registerComponent('oom-event', {
+    init: function () {
+        var el = this.el // <a-entity>
+        var $body = document.querySelector('body')
+        var listener = function (evt) {
+            evt.preventDefault()
+            evt.stopPropagation()
+            // if ('mouseenter' === evt.type) $body.classList.add('hitzone')
+            // else if ('mouseleave' === evt.type) $body.classList.remove('hitzone')
+            window.dispatchEvent(
+                new CustomEvent('oom-event', { detail: { el:el, type:evt.type } })
+            )
+        }
+        el.addEventListener('mouseenter', listener)
+        el.addEventListener('mouseleave', listener)
+        el.addEventListener('mousedown' , listener)
+        el.addEventListener('mouseup'   , listener)
+        el.addEventListener('click'     , listener)
+    }
+})
+</script>
+
 
 </head>
 <body>

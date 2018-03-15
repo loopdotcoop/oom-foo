@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.26 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.27 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
@@ -6,7 +6,7 @@ const { describe, it, eq, neq, is, goodVals, badVals } = ROOT.testify()
 const { isConstant, isReadOnly, isReadWrite } = Oom.KIT
 describe('Oom.Foo.Router (browser)', () => {
     const
-        hid = true // `true` hides the components, `false` makes them visible
+        hid = 0 // `true` hides the components, `false` makes them visible
       , Class = ROOT.Oom.Foo.Router
       , stat = Class.stat
       , schema = Class.schema
@@ -311,9 +311,9 @@ describe('The Oom.Foo.Router.devMainAFrame() component', function (done) {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Oom.Foo.Router.devMainAFrame(): Automatic statics - initial values.
+    //// Oom.Foo.Router.devMainAFrame(): `hilite` static and attribute - change.
     //// `Vue.nextTick()` because Vue hasn’t initialised the properties yet.
-    it('static and attribute hilites can be changed', function (done) {
+    it('changing `stat/attr.hilite` changes box color', function (done) {
         const { firstObj, firstHex, secondObj, secondHex } = generateRandomColors()
         stat.hilite = firstHex
         attr.hilite = secondHex
@@ -321,13 +321,13 @@ describe('The Oom.Foo.Router.devMainAFrame() component', function (done) {
         Vue.nextTick((function(){let error;try{
             $(`#${testID} >a-entity`).attr('position', '0 0 0')
             let r = testPixels({ // results
-                tol: 50 // tolerance, allow for shaded side of boxes
+                tol: 1 // tolerance, flat-shader, so no shaded side of box
               , pos: [
                     { x:0, y:0.5 } // middle of the left edge
                   , { x:1, y:0.5 } // middle of the right edge
                 ]
               , exp: [
-                    firstObj // eg `{ r:0, g:255, b:0, a:255 }` to expect green
+                    firstObj  // eg `{ r:0, g:255, b:0, a:255 }` to expect green
                   , secondObj // eg `{ r:0, g:0, b:255, a:255 }` to expect blue
                 ]
             })
@@ -339,6 +339,52 @@ describe('The Oom.Foo.Router.devMainAFrame() component', function (done) {
         }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
     }) // `bind(this)` to run the test in Mocha’s context)
 
+
+    //// Oom.Foo.Router.devMainAFrame(): boxes respond to click.
+    it('boxes can change `stat/attr.hilite` on click', function (done) {
+        const { thirdObj, thirdHex, fourthObj, fourthHex } = generateRandomColors()
+        const onOomEvent = function (evt) {
+            if (! evt.detail) return
+            const { el, type } = evt.detail
+            if ('click' !== type) return
+            if ( $(el).hasClass('stat') )
+                stat.hilite = thirdHex
+            if ( $(el).hasClass('attr') )
+                attr.hilite = fourthHex
+        }
+        $(window).on('oom-event', onOomEvent)
+        const evt = new MouseEvent('click')
+        $('#'+testID+' a-box.stat')[0].dispatchEvent(evt)
+        $('#'+testID+' a-box.attr')[0].dispatchEvent(evt)
+        $(window).off('oom-event', onOomEvent)
+
+        Vue.nextTick((function(){let error;try{
+            $(`#${testID} >a-entity`).attr('position', '0 0 0')
+            let r = testPixels({ // results
+                tol: 1 // tolerance, flat-shader, so no shaded side of box
+              , pos: [
+                    { x:0, y:0.5 } // middle of the left edge
+                  , { x:1, y:0.5 } // middle of the right edge
+                ]
+              , exp: [
+                    thirdObj  // eg `{ r:0, g:255, b:0, a:255 }` to expect green
+                  , fourthObj // eg `{ r:0, g:0, b:255, a:255 }` to expect blue
+                ]
+            })
+            eq( r[0].passes, 4, `mid-left pixel ${r[0].actualRGBA} is near-`
+              + `enough expected hilite static ${r[0].expRGBA}`)
+            eq( r[1].passes, 4, `mid-right pixel ${r[1].actualRGBA} is near-`
+              + `enough expected hilite attribute ${r[1].expRGBA}`)
+            eq( stat.hilite, thirdHex
+              , '`stat.hilite` is now '+thirdHex )
+            eq( attr.hilite, fourthHex
+              , '`attr.hilite` is now '+fourthHex )
+            // $(`#${testID} >a-entity`).attr('position', '0 10 0')
+        }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
+    }) // `bind(this)` to run the test in Mocha’s context)
+
+
+    //@NEXT change A-Frame material directly - Vue should see that
 
 
 

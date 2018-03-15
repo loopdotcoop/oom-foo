@@ -136,10 +136,26 @@ function generateRandomColors () {
       , b: 0.5 > Math.random() ? 255 : 0
       , a: 255
     }
+    const c = {
+        r: 0.5 > Math.random() ? 80 : 130
+      , g: 0.5 > Math.random() ? 80 : 130
+      , b: 0.5 > Math.random() ? 80 : 130
+      , a: 255
+    }
+    const d = {
+        r: 0.5 > Math.random() ? 80 : 130
+      , g: 0.5 > Math.random() ? 80 : 130
+      , b: 0.5 > Math.random() ? 80 : 130
+      , a: 255
+    }
     return {
         firstObj:  a
       , secondObj: b
       , firstHex:  `#${0==a.r?'00':'ff'}${0==a.g?'00':'ff'}${0==a.b?'00':'ff'}`
       , secondHex: `#${0==b.r?'00':'ff'}${0==b.g?'00':'ff'}${0==b.b?'00':'ff'}`
+      , thirdObj:  c
+      , fourthObj: d
+      , thirdHex:  `#${80==c.r?'50':'82'}${80==c.g?'50':'82'}${80==c.b?'50':'82'}`
+      , fourthHex: `#${80==d.r?'50':'82'}${80==d.g?'50':'82'}${80==d.b?'50':'82'}`
     }
 }

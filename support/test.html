@@ -92,6 +92,30 @@
 <!-- A-Frame wants to be loaded in the <HEAD> -->
 <script src="asset/js/aframe-0.7.0.min.js"></script>
 
+<!-- Dispatch <a-entity oom-event> mouse events on the window -->
+<script>
+AFRAME.registerComponent('oom-event', {
+    init: function () {
+        var el = this.el // <a-entity>
+        var $body = document.querySelector('body')
+        var listener = function (evt) {
+            evt.preventDefault()
+            evt.stopPropagation()
+            // if ('mouseenter' === evt.type) $body.classList.add('hitzone')
+            // else if ('mouseleave' === evt.type) $body.classList.remove('hitzone')
+            window.dispatchEvent(
+                new CustomEvent('oom-event', { detail: { el:el, type:evt.type } })
+            )
+        }
+        el.addEventListener('mouseenter', listener)
+        el.addEventListener('mouseleave', listener)
+        el.addEventListener('mousedown' , listener)
+        el.addEventListener('mouseup'   , listener)
+        el.addEventListener('click'     , listener)
+    }
+})
+</script>
+
 
 </head>
 <body>
@@ -145,6 +169,7 @@
 <div id="screenshots" class="row"></div>
 
 <!-- The A-Frame scene -->
+<!-- The A-Frame scene -->
 <div id="a-frame" class="row">
   <a-scene embedded vr-mode-ui="enabled:false"
          screenshot="width:100; height:100">
@@ -157,6 +182,19 @@
                repeat="indefinite"
       ></a-mixin>
     </a-assets>
+    <a-entity id="camera-wrap">
+      <!-- note that <a-camera userHeight="1.6"> does not work -->
+      <a-entity id="camera" camera="userHeight: 1.6" look-controls><!-- 1.6 is default -->
+        <a-entity id="cursor"
+          cursor="fuse:false; rayOrigin:mouse"
+          position="0 100 -1"
+          raycaster="objects: [oom-event]"
+          geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+          material="color: red; shader: flat">
+        </a-entity>
+      </a-entity>
+    </a-entity>
+
   </a-scene>
 </div>
 

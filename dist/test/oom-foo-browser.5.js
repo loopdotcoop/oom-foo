@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.25 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.26 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
@@ -313,7 +313,7 @@
             throw e;
           }
         });
-        it('static and attribute hilites can be changed', function(done) {
+        it('changing `stat/attr.hilite` changes box color', function(done) {
           var $__4 = generateRandomColors(),
               firstObj = $__4.firstObj,
               firstHex = $__4.firstHex,
@@ -326,7 +326,7 @@
             try {
               $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
               var r = testPixels({
-                tol: 50,
+                tol: 1,
                 pos: [{
                   x: 0,
                   y: 0.5
@@ -338,6 +338,57 @@
               });
               eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
               eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
+              $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
+            } catch (e) {
+              error = e;
+              console.error(e.message);
+            }
+            done(error);
+          }).bind(this));
+        });
+        it('boxes can change `stat/attr.hilite` on click', function(done) {
+          var $__4 = generateRandomColors(),
+              thirdObj = $__4.thirdObj,
+              thirdHex = $__4.thirdHex,
+              fourthObj = $__4.fourthObj,
+              fourthHex = $__4.fourthHex;
+          var onOomEvent = function(evt) {
+            if (!evt.detail)
+              return;
+            var $__5 = evt.detail,
+                el = $__5.el,
+                type = $__5.type;
+            if ('click' !== type)
+              return;
+            if ($(el).hasClass('stat'))
+              stat.hilite = thirdHex;
+            if ($(el).hasClass('attr'))
+              attr.hilite = fourthHex;
+          };
+          $(window).on('oom-event', onOomEvent);
+          var evt = new MouseEvent('click');
+          $('#' + testID + ' a-box.stat')[0].dispatchEvent(evt);
+          $('#' + testID + ' a-box.attr')[0].dispatchEvent(evt);
+          $(window).off('oom-event', onOomEvent);
+          Vue.nextTick((function() {
+            var error;
+            try {
+              $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
+              var r = testPixels({
+                tol: 1,
+                pos: [{
+                  x: 0,
+                  y: 0.5
+                }, {
+                  x: 1,
+                  y: 0.5
+                }],
+                exp: [thirdObj, fourthObj]
+              });
+              eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
+              eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
+              eq(stat.hilite, thirdHex, '`stat.hilite` is now ' + thirdHex);
+              eq(attr.hilite, fourthHex, '`attr.hilite` is now ' + fourthHex);
               $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
             } catch (e) {
               error = e;
@@ -645,7 +696,7 @@
             throw e;
           }
         });
-        it('static and attribute hilites can be changed', function(done) {
+        it('changing `stat/attr.hilite` changes box color', function(done) {
           var $__4 = generateRandomColors(),
               firstObj = $__4.firstObj,
               firstHex = $__4.firstHex,
@@ -658,7 +709,7 @@
             try {
               $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
               var r = testPixels({
-                tol: 50,
+                tol: 1,
                 pos: [{
                   x: 0,
                   y: 0.5
@@ -670,6 +721,57 @@
               });
               eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
               eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
+              $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
+            } catch (e) {
+              error = e;
+              console.error(e.message);
+            }
+            done(error);
+          }).bind(this));
+        });
+        it('boxes can change `stat/attr.hilite` on click', function(done) {
+          var $__4 = generateRandomColors(),
+              thirdObj = $__4.thirdObj,
+              thirdHex = $__4.thirdHex,
+              fourthObj = $__4.fourthObj,
+              fourthHex = $__4.fourthHex;
+          var onOomEvent = function(evt) {
+            if (!evt.detail)
+              return;
+            var $__5 = evt.detail,
+                el = $__5.el,
+                type = $__5.type;
+            if ('click' !== type)
+              return;
+            if ($(el).hasClass('stat'))
+              stat.hilite = thirdHex;
+            if ($(el).hasClass('attr'))
+              attr.hilite = fourthHex;
+          };
+          $(window).on('oom-event', onOomEvent);
+          var evt = new MouseEvent('click');
+          $('#' + testID + ' a-box.stat')[0].dispatchEvent(evt);
+          $('#' + testID + ' a-box.attr')[0].dispatchEvent(evt);
+          $(window).off('oom-event', onOomEvent);
+          Vue.nextTick((function() {
+            var error;
+            try {
+              $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
+              var r = testPixels({
+                tol: 1,
+                pos: [{
+                  x: 0,
+                  y: 0.5
+                }, {
+                  x: 1,
+                  y: 0.5
+                }],
+                exp: [thirdObj, fourthObj]
+              });
+              eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
+              eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
+              eq(stat.hilite, thirdHex, '`stat.hilite` is now ' + thirdHex);
+              eq(attr.hilite, fourthHex, '`attr.hilite` is now ' + fourthHex);
               $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
             } catch (e) {
               error = e;
@@ -748,11 +850,27 @@ function generateRandomColors() {
     b: 0.5 > Math.random() ? 255 : 0,
     a: 255
   };
+  var c = {
+    r: 0.5 > Math.random() ? 80 : 130,
+    g: 0.5 > Math.random() ? 80 : 130,
+    b: 0.5 > Math.random() ? 80 : 130,
+    a: 255
+  };
+  var d = {
+    r: 0.5 > Math.random() ? 80 : 130,
+    g: 0.5 > Math.random() ? 80 : 130,
+    b: 0.5 > Math.random() ? 80 : 130,
+    a: 255
+  };
   return {
     firstObj: a,
     secondObj: b,
     firstHex: ("#" + (0 == a.r ? '00' : 'ff') + (0 == a.g ? '00' : 'ff') + (0 == a.b ? '00' : 'ff')),
-    secondHex: ("#" + (0 == b.r ? '00' : 'ff') + (0 == b.g ? '00' : 'ff') + (0 == b.b ? '00' : 'ff'))
+    secondHex: ("#" + (0 == b.r ? '00' : 'ff') + (0 == b.g ? '00' : 'ff') + (0 == b.b ? '00' : 'ff')),
+    thirdObj: c,
+    fourthObj: d,
+    thirdHex: ("#" + (80 == c.r ? '50' : '82') + (80 == c.g ? '50' : '82') + (80 == c.b ? '50' : '82')),
+    fourthHex: ("#" + (80 == d.r ? '50' : '82') + (80 == d.g ? '50' : '82') + (80 == d.b ? '50' : '82'))
   };
 }
 !function(ROOT) {
@@ -1067,7 +1185,7 @@ function generateRandomColors() {
             throw e;
           }
         });
-        it('static and attribute hilites can be changed', function(done) {
+        it('changing `stat/attr.hilite` changes box color', function(done) {
           var $__4 = generateRandomColors(),
               firstObj = $__4.firstObj,
               firstHex = $__4.firstHex,
@@ -1080,7 +1198,7 @@ function generateRandomColors() {
             try {
               $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
               var r = testPixels({
-                tol: 50,
+                tol: 1,
                 pos: [{
                   x: 0,
                   y: 0.5
@@ -1092,6 +1210,57 @@ function generateRandomColors() {
               });
               eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
               eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
+              $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
+            } catch (e) {
+              error = e;
+              console.error(e.message);
+            }
+            done(error);
+          }).bind(this));
+        });
+        it('boxes can change `stat/attr.hilite` on click', function(done) {
+          var $__4 = generateRandomColors(),
+              thirdObj = $__4.thirdObj,
+              thirdHex = $__4.thirdHex,
+              fourthObj = $__4.fourthObj,
+              fourthHex = $__4.fourthHex;
+          var onOomEvent = function(evt) {
+            if (!evt.detail)
+              return;
+            var $__5 = evt.detail,
+                el = $__5.el,
+                type = $__5.type;
+            if ('click' !== type)
+              return;
+            if ($(el).hasClass('stat'))
+              stat.hilite = thirdHex;
+            if ($(el).hasClass('attr'))
+              attr.hilite = fourthHex;
+          };
+          $(window).on('oom-event', onOomEvent);
+          var evt = new MouseEvent('click');
+          $('#' + testID + ' a-box.stat')[0].dispatchEvent(evt);
+          $('#' + testID + ' a-box.attr')[0].dispatchEvent(evt);
+          $(window).off('oom-event', onOomEvent);
+          Vue.nextTick((function() {
+            var error;
+            try {
+              $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
+              var r = testPixels({
+                tol: 1,
+                pos: [{
+                  x: 0,
+                  y: 0.5
+                }, {
+                  x: 1,
+                  y: 0.5
+                }],
+                exp: [thirdObj, fourthObj]
+              });
+              eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
+              eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
+              eq(stat.hilite, thirdHex, '`stat.hilite` is now ' + thirdHex);
+              eq(attr.hilite, fourthHex, '`attr.hilite` is now ' + fourthHex);
               $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
             } catch (e) {
               error = e;
@@ -1416,7 +1585,7 @@ function generateRandomColors() {
             throw e;
           }
         });
-        it('static and attribute hilites can be changed', function(done) {
+        it('changing `stat/attr.hilite` changes box color', function(done) {
           var $__4 = generateRandomColors(),
               firstObj = $__4.firstObj,
               firstHex = $__4.firstHex,
@@ -1429,7 +1598,7 @@ function generateRandomColors() {
             try {
               $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
               var r = testPixels({
-                tol: 50,
+                tol: 1,
                 pos: [{
                   x: 0,
                   y: 0.5
@@ -1449,6 +1618,57 @@ function generateRandomColors() {
             done(error);
           }).bind(this));
         });
+        it('boxes can change `stat/attr.hilite` on click', function(done) {
+          var $__4 = generateRandomColors(),
+              thirdObj = $__4.thirdObj,
+              thirdHex = $__4.thirdHex,
+              fourthObj = $__4.fourthObj,
+              fourthHex = $__4.fourthHex;
+          var onOomEvent = function(evt) {
+            if (!evt.detail)
+              return;
+            var $__5 = evt.detail,
+                el = $__5.el,
+                type = $__5.type;
+            if ('click' !== type)
+              return;
+            if ($(el).hasClass('stat'))
+              stat.hilite = thirdHex;
+            if ($(el).hasClass('attr'))
+              attr.hilite = fourthHex;
+          };
+          $(window).on('oom-event', onOomEvent);
+          var evt = new MouseEvent('click');
+          $('#' + testID + ' a-box.stat')[0].dispatchEvent(evt);
+          $('#' + testID + ' a-box.attr')[0].dispatchEvent(evt);
+          $(window).off('oom-event', onOomEvent);
+          Vue.nextTick((function() {
+            var error;
+            try {
+              $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
+              var r = testPixels({
+                tol: 1,
+                pos: [{
+                  x: 0,
+                  y: 0.5
+                }, {
+                  x: 1,
+                  y: 0.5
+                }],
+                exp: [thirdObj, fourthObj]
+              });
+              eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
+              eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
+              eq(stat.hilite, thirdHex, '`stat.hilite` is now ' + thirdHex);
+              eq(attr.hilite, fourthHex, '`attr.hilite` is now ' + fourthHex);
+              $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
+            } catch (e) {
+              error = e;
+              console.error(e.message);
+            }
+            done(error);
+          }).bind(this));
+        });
       }
     });
   });
@@ -1457,4 +1677,4 @@ function generateRandomColors() {
 
 
 
-//// Made by Oomtility Make 1.2.25 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.26 //\\//\\ http://oomtility.loop.coop /////////

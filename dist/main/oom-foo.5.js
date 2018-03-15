@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.25 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.26 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
     NAME: 'Oom.Foo',
-    VERSION: '1.2.25',
+    VERSION: '1.2.26',
     HOMEPAGE: 'http://oom-foo.loop.coop/',
     REMARKS: 'Initial test of the oom-hub architecture',
     LOADED_FIRST: !ROOT.Oom
@@ -177,7 +177,7 @@
     };
   };
   Object.defineProperty(Oom, 'devMainAFrameTemplate', {get: function(innerHTML) {
-      return innerHTML = "\n<a-entity position=\"0 10 0\">\n  <a-box position=\"-1 1.5 -1.5\" :material=\"'color:'+stat.hilite\">\n    <a-animation mixin=\"rotate\"></a-animation>\n  </a-box>\n  <a-box position=\"1 1.5 -1.5\" :material=\"'color:'+attr.hilite\">\n    <a-animation mixin=\"rotate\"></a-animation>\n  </a-box>\n</a-entity>\n";
+      return innerHTML = "\n<a-entity position=\"0 10 0\">\n  <a-box oom-event class=\"stat\"\n         position=\"-0.7 1.5 -1.5\" :material=\"'shader:flat; color:'+stat.hilite\">\n    <a-animation mixin=\"rotate\"></a-animation>\n  </a-box>\n  <a-box oom-event class=\"attr\"\n         position=\"0.7 1.5 -1.5\" :material=\"'shader:flat; color:'+attr.hilite\">\n    <a-animation mixin=\"rotate\"></a-animation>\n  </a-box>\n</a-entity>\n";
     }});
   Oom.devMainAFrame = function(instance) {
     return {
@@ -529,4 +529,4 @@
 
 
 
-//// Made by Oomtility Make 1.2.25 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.26 //\\//\\ http://oomtility.loop.coop /////////
