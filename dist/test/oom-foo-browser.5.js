@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.26 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.28 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
@@ -26,7 +26,7 @@
         attr = instance.attr;
     describe('The Oom.devMainVue() component', function(done) {
       var testID = 'test-oom-devmainvue',
-          cmp = Vue.component(testID, Class.devMainVue(instance)),
+          vueComponent = Vue.component(testID, Class.devMainVue(instance)),
           $container = $('.container').append(("<div class=\"row " + (hid ? 'hid' : '') + "\" ") + ("id=\"" + testID + "\"><" + testID + ">Loading...</" + testID + "></div>")),
           vue = new Vue({
             el: '#' + testID,
@@ -289,19 +289,28 @@
         });
       }
     });
-    describe('The Oom.devMainAFrame() component', function(done) {
-      var testID = 'test-oom-devmainaframe',
-          cmp = Vue.component(testID, Class.devMainAFrame(instance)),
+    describe('The Oom.devThumbAFrame*() set', function(done) {
+      it('devThumbAFrame*() functions return expected objects', function() {
+        try {} catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      var pfx = 'oom',
+          aframeComponent = AFRAME.registerComponent((pfx + "-devthumb"), Class.devThumbAFrame(instance)),
+          aframePrimative = AFRAME.registerPrimitive(("a-" + pfx + "-devthumb"), Class.devThumbAFramePrimative(instance, (pfx + "-devthumb"))),
+          testID = ("test-" + pfx + "-devthumb"),
+          vueComponent = Vue.component(testID, Class.devThumbAFrameVue(instance)),
           $container = $('a-scene').append(("<a-entity id=\"" + testID + "\">") + ("<" + testID + "></" + testID + "></a-entity>")),
           vue = new Vue({
             el: '#' + testID,
             mounted: testAfterMounted
           });
       function testAfterMounted() {
-        it('on the outside, is a viable Vue component', function() {
+        it('devThumbAframeVue() creates a viable Vue component', function() {
           try {
             eq($('#' + testID).length, 1, '#' + testID + ' exists');
-            eq($('#' + testID + ' a-box').length, 2, 'Two <a-box>s exists in #' + testID);
+            eq($(("#" + testID + " a-" + pfx + "-devthumb")).length, 2, ("Two <a-" + pfx + "-devthumb>s exist in #" + testID));
           } catch (e) {
             console.error(e.message);
             throw e;
@@ -321,30 +330,32 @@
               secondHex = $__4.secondHex;
           stat.hilite = firstHex;
           attr.hilite = secondHex;
-          Vue.nextTick((function() {
-            var error;
-            try {
-              $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
-              var r = testPixels({
-                tol: 1,
-                pos: [{
-                  x: 0,
-                  y: 0.5
-                }, {
-                  x: 1,
-                  y: 0.5
-                }],
-                exp: [firstObj, secondObj]
-              });
-              eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
-              eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
-              $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
-            } catch (e) {
-              error = e;
-              console.error(e.message);
-            }
-            done(error);
-          }).bind(this));
+          Vue.nextTick(function() {
+            Vue.nextTick((function() {
+              var error;
+              try {
+                $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
+                var r = testPixels({
+                  tol: 1,
+                  pos: [{
+                    x: 0,
+                    y: 0.5
+                  }, {
+                    x: 1,
+                    y: 0.5
+                  }],
+                  exp: [firstObj, secondObj]
+                });
+                eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
+                eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
+                $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
+              } catch (e) {
+                error = e;
+                console.error(e.message);
+              }
+              done(error);
+            }).bind(this));
+          });
         });
         it('boxes can change `stat/attr.hilite` on click', function(done) {
           var $__4 = generateRandomColors(),
@@ -367,35 +378,37 @@
           };
           $(window).on('oom-event', onOomEvent);
           var evt = new MouseEvent('click');
-          $('#' + testID + ' a-box.stat')[0].dispatchEvent(evt);
-          $('#' + testID + ' a-box.attr')[0].dispatchEvent(evt);
+          $(("#" + testID + " a-" + pfx + "-devthumb.stat"))[0].dispatchEvent(evt);
+          $(("#" + testID + " a-" + pfx + "-devthumb.attr"))[0].dispatchEvent(evt);
           $(window).off('oom-event', onOomEvent);
-          Vue.nextTick((function() {
-            var error;
-            try {
-              $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
-              var r = testPixels({
-                tol: 1,
-                pos: [{
-                  x: 0,
-                  y: 0.5
-                }, {
-                  x: 1,
-                  y: 0.5
-                }],
-                exp: [thirdObj, fourthObj]
-              });
-              eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
-              eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
-              eq(stat.hilite, thirdHex, '`stat.hilite` is now ' + thirdHex);
-              eq(attr.hilite, fourthHex, '`attr.hilite` is now ' + fourthHex);
-              $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
-            } catch (e) {
-              error = e;
-              console.error(e.message);
-            }
-            done(error);
-          }).bind(this));
+          Vue.nextTick(function() {
+            Vue.nextTick((function() {
+              var error;
+              try {
+                $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
+                var r = testPixels({
+                  tol: 1,
+                  pos: [{
+                    x: 0,
+                    y: 0.5
+                  }, {
+                    x: 1,
+                    y: 0.5
+                  }],
+                  exp: [thirdObj, fourthObj]
+                });
+                eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
+                eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
+                eq(stat.hilite, thirdHex, '`stat.hilite` is now ' + thirdHex);
+                eq(attr.hilite, fourthHex, '`attr.hilite` is now ' + fourthHex);
+                $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
+              } catch (e) {
+                error = e;
+                console.error(e.message);
+              }
+              done(error);
+            }).bind(this));
+          });
         });
       }
     });
@@ -409,7 +422,7 @@
         attr = instance.attr;
     describe('The Oom.Foo.devMainVue() component', function(done) {
       var testID = 'test-oom-foo-devmainvue',
-          cmp = Vue.component(testID, Class.devMainVue(instance)),
+          vueComponent = Vue.component(testID, Class.devMainVue(instance)),
           $container = $('.container').append(("<div class=\"row " + (hid ? 'hid' : '') + "\" ") + ("id=\"" + testID + "\"><" + testID + ">Loading...</" + testID + "></div>")),
           vue = new Vue({
             el: '#' + testID,
@@ -672,19 +685,28 @@
         });
       }
     });
-    describe('The Oom.Foo.devMainAFrame() component', function(done) {
-      var testID = 'test-oom-foo-devmainaframe',
-          cmp = Vue.component(testID, Class.devMainAFrame(instance)),
+    describe('The Oom.Foo.devThumbAFrame*() set', function(done) {
+      it('devThumbAFrame*() functions return expected objects', function() {
+        try {} catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      var pfx = 'oom-foo',
+          aframeComponent = AFRAME.registerComponent((pfx + "-devthumb"), Class.devThumbAFrame(instance)),
+          aframePrimative = AFRAME.registerPrimitive(("a-" + pfx + "-devthumb"), Class.devThumbAFramePrimative(instance, (pfx + "-devthumb"))),
+          testID = ("test-" + pfx + "-devthumb"),
+          vueComponent = Vue.component(testID, Class.devThumbAFrameVue(instance)),
           $container = $('a-scene').append(("<a-entity id=\"" + testID + "\">") + ("<" + testID + "></" + testID + "></a-entity>")),
           vue = new Vue({
             el: '#' + testID,
             mounted: testAfterMounted
           });
       function testAfterMounted() {
-        it('on the outside, is a viable Vue component', function() {
+        it('devThumbAframeVue() creates a viable Vue component', function() {
           try {
             eq($('#' + testID).length, 1, '#' + testID + ' exists');
-            eq($('#' + testID + ' a-box').length, 2, 'Two <a-box>s exists in #' + testID);
+            eq($(("#" + testID + " a-" + pfx + "-devthumb")).length, 2, ("Two <a-" + pfx + "-devthumb>s exist in #" + testID));
           } catch (e) {
             console.error(e.message);
             throw e;
@@ -704,30 +726,32 @@
               secondHex = $__4.secondHex;
           stat.hilite = firstHex;
           attr.hilite = secondHex;
-          Vue.nextTick((function() {
-            var error;
-            try {
-              $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
-              var r = testPixels({
-                tol: 1,
-                pos: [{
-                  x: 0,
-                  y: 0.5
-                }, {
-                  x: 1,
-                  y: 0.5
-                }],
-                exp: [firstObj, secondObj]
-              });
-              eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
-              eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
-              $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
-            } catch (e) {
-              error = e;
-              console.error(e.message);
-            }
-            done(error);
-          }).bind(this));
+          Vue.nextTick(function() {
+            Vue.nextTick((function() {
+              var error;
+              try {
+                $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
+                var r = testPixels({
+                  tol: 1,
+                  pos: [{
+                    x: 0,
+                    y: 0.5
+                  }, {
+                    x: 1,
+                    y: 0.5
+                  }],
+                  exp: [firstObj, secondObj]
+                });
+                eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
+                eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
+                $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
+              } catch (e) {
+                error = e;
+                console.error(e.message);
+              }
+              done(error);
+            }).bind(this));
+          });
         });
         it('boxes can change `stat/attr.hilite` on click', function(done) {
           var $__4 = generateRandomColors(),
@@ -750,35 +774,37 @@
           };
           $(window).on('oom-event', onOomEvent);
           var evt = new MouseEvent('click');
-          $('#' + testID + ' a-box.stat')[0].dispatchEvent(evt);
-          $('#' + testID + ' a-box.attr')[0].dispatchEvent(evt);
+          $(("#" + testID + " a-" + pfx + "-devthumb.stat"))[0].dispatchEvent(evt);
+          $(("#" + testID + " a-" + pfx + "-devthumb.attr"))[0].dispatchEvent(evt);
           $(window).off('oom-event', onOomEvent);
-          Vue.nextTick((function() {
-            var error;
-            try {
-              $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
-              var r = testPixels({
-                tol: 1,
-                pos: [{
-                  x: 0,
-                  y: 0.5
-                }, {
-                  x: 1,
-                  y: 0.5
-                }],
-                exp: [thirdObj, fourthObj]
-              });
-              eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
-              eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
-              eq(stat.hilite, thirdHex, '`stat.hilite` is now ' + thirdHex);
-              eq(attr.hilite, fourthHex, '`attr.hilite` is now ' + fourthHex);
-              $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
-            } catch (e) {
-              error = e;
-              console.error(e.message);
-            }
-            done(error);
-          }).bind(this));
+          Vue.nextTick(function() {
+            Vue.nextTick((function() {
+              var error;
+              try {
+                $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
+                var r = testPixels({
+                  tol: 1,
+                  pos: [{
+                    x: 0,
+                    y: 0.5
+                  }, {
+                    x: 1,
+                    y: 0.5
+                  }],
+                  exp: [thirdObj, fourthObj]
+                });
+                eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
+                eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
+                eq(stat.hilite, thirdHex, '`stat.hilite` is now ' + thirdHex);
+                eq(attr.hilite, fourthHex, '`attr.hilite` is now ' + fourthHex);
+                $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
+              } catch (e) {
+                error = e;
+                console.error(e.message);
+              }
+              done(error);
+            }).bind(this));
+          });
         });
       }
     });
@@ -898,7 +924,7 @@ function generateRandomColors() {
         attr = instance.attr;
     describe('The Oom.Foo.Post.devMainVue() component', function(done) {
       var testID = 'test-oom-foo-post-devmainvue',
-          cmp = Vue.component(testID, Class.devMainVue(instance)),
+          vueComponent = Vue.component(testID, Class.devMainVue(instance)),
           $container = $('.container').append(("<div class=\"row " + (hid ? 'hid' : '') + "\" ") + ("id=\"" + testID + "\"><" + testID + ">Loading...</" + testID + "></div>")),
           vue = new Vue({
             el: '#' + testID,
@@ -1161,19 +1187,28 @@ function generateRandomColors() {
         });
       }
     });
-    describe('The Oom.Foo.Post.devMainAFrame() component', function(done) {
-      var testID = 'test-oom-foo-post-devmainaframe',
-          cmp = Vue.component(testID, Class.devMainAFrame(instance)),
+    describe('The Oom.Foo.Post.devThumbAFrame*() set', function(done) {
+      it('devThumbAFrame*() functions return expected objects', function() {
+        try {} catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      var pfx = 'oom-foo-post',
+          aframeComponent = AFRAME.registerComponent((pfx + "-devthumb"), Class.devThumbAFrame(instance)),
+          aframePrimative = AFRAME.registerPrimitive(("a-" + pfx + "-devthumb"), Class.devThumbAFramePrimative(instance, (pfx + "-devthumb"))),
+          testID = ("test-" + pfx + "-devthumb"),
+          vueComponent = Vue.component(testID, Class.devThumbAFrameVue(instance)),
           $container = $('a-scene').append(("<a-entity id=\"" + testID + "\">") + ("<" + testID + "></" + testID + "></a-entity>")),
           vue = new Vue({
             el: '#' + testID,
             mounted: testAfterMounted
           });
       function testAfterMounted() {
-        it('on the outside, is a viable Vue component', function() {
+        it('devThumbAframeVue() creates a viable Vue component', function() {
           try {
             eq($('#' + testID).length, 1, '#' + testID + ' exists');
-            eq($('#' + testID + ' a-box').length, 2, 'Two <a-box>s exists in #' + testID);
+            eq($(("#" + testID + " a-" + pfx + "-devthumb")).length, 2, ("Two <a-" + pfx + "-devthumb>s exist in #" + testID));
           } catch (e) {
             console.error(e.message);
             throw e;
@@ -1193,30 +1228,32 @@ function generateRandomColors() {
               secondHex = $__4.secondHex;
           stat.hilite = firstHex;
           attr.hilite = secondHex;
-          Vue.nextTick((function() {
-            var error;
-            try {
-              $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
-              var r = testPixels({
-                tol: 1,
-                pos: [{
-                  x: 0,
-                  y: 0.5
-                }, {
-                  x: 1,
-                  y: 0.5
-                }],
-                exp: [firstObj, secondObj]
-              });
-              eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
-              eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
-              $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
-            } catch (e) {
-              error = e;
-              console.error(e.message);
-            }
-            done(error);
-          }).bind(this));
+          Vue.nextTick(function() {
+            Vue.nextTick((function() {
+              var error;
+              try {
+                $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
+                var r = testPixels({
+                  tol: 1,
+                  pos: [{
+                    x: 0,
+                    y: 0.5
+                  }, {
+                    x: 1,
+                    y: 0.5
+                  }],
+                  exp: [firstObj, secondObj]
+                });
+                eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
+                eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
+                $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
+              } catch (e) {
+                error = e;
+                console.error(e.message);
+              }
+              done(error);
+            }).bind(this));
+          });
         });
         it('boxes can change `stat/attr.hilite` on click', function(done) {
           var $__4 = generateRandomColors(),
@@ -1239,35 +1276,37 @@ function generateRandomColors() {
           };
           $(window).on('oom-event', onOomEvent);
           var evt = new MouseEvent('click');
-          $('#' + testID + ' a-box.stat')[0].dispatchEvent(evt);
-          $('#' + testID + ' a-box.attr')[0].dispatchEvent(evt);
+          $(("#" + testID + " a-" + pfx + "-devthumb.stat"))[0].dispatchEvent(evt);
+          $(("#" + testID + " a-" + pfx + "-devthumb.attr"))[0].dispatchEvent(evt);
           $(window).off('oom-event', onOomEvent);
-          Vue.nextTick((function() {
-            var error;
-            try {
-              $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
-              var r = testPixels({
-                tol: 1,
-                pos: [{
-                  x: 0,
-                  y: 0.5
-                }, {
-                  x: 1,
-                  y: 0.5
-                }],
-                exp: [thirdObj, fourthObj]
-              });
-              eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
-              eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
-              eq(stat.hilite, thirdHex, '`stat.hilite` is now ' + thirdHex);
-              eq(attr.hilite, fourthHex, '`attr.hilite` is now ' + fourthHex);
-              $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
-            } catch (e) {
-              error = e;
-              console.error(e.message);
-            }
-            done(error);
-          }).bind(this));
+          Vue.nextTick(function() {
+            Vue.nextTick((function() {
+              var error;
+              try {
+                $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
+                var r = testPixels({
+                  tol: 1,
+                  pos: [{
+                    x: 0,
+                    y: 0.5
+                  }, {
+                    x: 1,
+                    y: 0.5
+                  }],
+                  exp: [thirdObj, fourthObj]
+                });
+                eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
+                eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
+                eq(stat.hilite, thirdHex, '`stat.hilite` is now ' + thirdHex);
+                eq(attr.hilite, fourthHex, '`attr.hilite` is now ' + fourthHex);
+                $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
+              } catch (e) {
+                error = e;
+                console.error(e.message);
+              }
+              done(error);
+            }).bind(this));
+          });
         });
       }
     });
@@ -1298,7 +1337,7 @@ function generateRandomColors() {
         attr = instance.attr;
     describe('The Oom.Foo.Router.devMainVue() component', function(done) {
       var testID = 'test-oom-foo-router-devmainvue',
-          cmp = Vue.component(testID, Class.devMainVue(instance)),
+          vueComponent = Vue.component(testID, Class.devMainVue(instance)),
           $container = $('.container').append(("<div class=\"row " + (hid ? 'hid' : '') + "\" ") + ("id=\"" + testID + "\"><" + testID + ">Loading...</" + testID + "></div>")),
           vue = new Vue({
             el: '#' + testID,
@@ -1561,19 +1600,28 @@ function generateRandomColors() {
         });
       }
     });
-    describe('The Oom.Foo.Router.devMainAFrame() component', function(done) {
-      var testID = 'test-oom-foo-router-devmainaframe',
-          cmp = Vue.component(testID, Class.devMainAFrame(instance)),
+    describe('The Oom.Foo.Router.devThumbAFrame*() set', function(done) {
+      it('devThumbAFrame*() functions return expected objects', function() {
+        try {} catch (e) {
+          console.error(e.message);
+          throw e;
+        }
+      });
+      var pfx = 'oom-foo-router',
+          aframeComponent = AFRAME.registerComponent((pfx + "-devthumb"), Class.devThumbAFrame(instance)),
+          aframePrimative = AFRAME.registerPrimitive(("a-" + pfx + "-devthumb"), Class.devThumbAFramePrimative(instance, (pfx + "-devthumb"))),
+          testID = ("test-" + pfx + "-devthumb"),
+          vueComponent = Vue.component(testID, Class.devThumbAFrameVue(instance)),
           $container = $('a-scene').append(("<a-entity id=\"" + testID + "\">") + ("<" + testID + "></" + testID + "></a-entity>")),
           vue = new Vue({
             el: '#' + testID,
             mounted: testAfterMounted
           });
       function testAfterMounted() {
-        it('on the outside, is a viable Vue component', function() {
+        it('devThumbAframeVue() creates a viable Vue component', function() {
           try {
             eq($('#' + testID).length, 1, '#' + testID + ' exists');
-            eq($('#' + testID + ' a-box').length, 2, 'Two <a-box>s exists in #' + testID);
+            eq($(("#" + testID + " a-" + pfx + "-devthumb")).length, 2, ("Two <a-" + pfx + "-devthumb>s exist in #" + testID));
           } catch (e) {
             console.error(e.message);
             throw e;
@@ -1593,30 +1641,32 @@ function generateRandomColors() {
               secondHex = $__4.secondHex;
           stat.hilite = firstHex;
           attr.hilite = secondHex;
-          Vue.nextTick((function() {
-            var error;
-            try {
-              $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
-              var r = testPixels({
-                tol: 1,
-                pos: [{
-                  x: 0,
-                  y: 0.5
-                }, {
-                  x: 1,
-                  y: 0.5
-                }],
-                exp: [firstObj, secondObj]
-              });
-              eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
-              eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
-              $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
-            } catch (e) {
-              error = e;
-              console.error(e.message);
-            }
-            done(error);
-          }).bind(this));
+          Vue.nextTick(function() {
+            Vue.nextTick((function() {
+              var error;
+              try {
+                $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
+                var r = testPixels({
+                  tol: 1,
+                  pos: [{
+                    x: 0,
+                    y: 0.5
+                  }, {
+                    x: 1,
+                    y: 0.5
+                  }],
+                  exp: [firstObj, secondObj]
+                });
+                eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
+                eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
+                $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
+              } catch (e) {
+                error = e;
+                console.error(e.message);
+              }
+              done(error);
+            }).bind(this));
+          });
         });
         it('boxes can change `stat/attr.hilite` on click', function(done) {
           var $__4 = generateRandomColors(),
@@ -1639,35 +1689,37 @@ function generateRandomColors() {
           };
           $(window).on('oom-event', onOomEvent);
           var evt = new MouseEvent('click');
-          $('#' + testID + ' a-box.stat')[0].dispatchEvent(evt);
-          $('#' + testID + ' a-box.attr')[0].dispatchEvent(evt);
+          $(("#" + testID + " a-" + pfx + "-devthumb.stat"))[0].dispatchEvent(evt);
+          $(("#" + testID + " a-" + pfx + "-devthumb.attr"))[0].dispatchEvent(evt);
           $(window).off('oom-event', onOomEvent);
-          Vue.nextTick((function() {
-            var error;
-            try {
-              $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
-              var r = testPixels({
-                tol: 1,
-                pos: [{
-                  x: 0,
-                  y: 0.5
-                }, {
-                  x: 1,
-                  y: 0.5
-                }],
-                exp: [thirdObj, fourthObj]
-              });
-              eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
-              eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
-              eq(stat.hilite, thirdHex, '`stat.hilite` is now ' + thirdHex);
-              eq(attr.hilite, fourthHex, '`attr.hilite` is now ' + fourthHex);
-              $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
-            } catch (e) {
-              error = e;
-              console.error(e.message);
-            }
-            done(error);
-          }).bind(this));
+          Vue.nextTick(function() {
+            Vue.nextTick((function() {
+              var error;
+              try {
+                $(("#" + testID + " >a-entity")).attr('position', '0 0 0');
+                var r = testPixels({
+                  tol: 1,
+                  pos: [{
+                    x: 0,
+                    y: 0.5
+                  }, {
+                    x: 1,
+                    y: 0.5
+                  }],
+                  exp: [thirdObj, fourthObj]
+                });
+                eq(r[0].passes, 4, ("mid-left pixel " + r[0].actualRGBA + " is near-") + ("enough expected hilite static " + r[0].expRGBA));
+                eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
+                eq(stat.hilite, thirdHex, '`stat.hilite` is now ' + thirdHex);
+                eq(attr.hilite, fourthHex, '`attr.hilite` is now ' + fourthHex);
+                $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
+              } catch (e) {
+                error = e;
+                console.error(e.message);
+              }
+              done(error);
+            }).bind(this));
+          });
         });
       }
     });
@@ -1677,4 +1729,4 @@ function generateRandomColors() {
 
 
 
-//// Made by Oomtility Make 1.2.26 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.28 //\\//\\ http://oomtility.loop.coop /////////

@@ -2,7 +2,7 @@
 
 
 
-//// Oom.Foo //// 1.2.26 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.28 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 //// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
 //// Windows 7:  IE 9, Safari 5.1
@@ -29,7 +29,7 @@ describe('Oom (browser)', () => {
 describe('The Oom.devMainVue() component', function (done) {
     const
         testID = 'test-oom-devmainvue' // also used for component tag
-      , cmp = Vue.component( testID, Class.devMainVue(instance) )
+      , vueComponent = Vue.component( testID, Class.devMainVue(instance) )
       , $container = $('.container').append(`<div class="row ${hid?'hid':''}" `
           + `id="${testID}"><${testID}>Loading...</${testID}></div>`)
       , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })
@@ -290,10 +290,18 @@ describe('The Oom.devMainVue() component', function (done) {
 
 
 
-describe('The Oom.devMainAFrame() component', function (done) {
+describe('The Oom.devThumbAFrame*() set', function (done) {
+
+    it('devThumbAFrame*() functions return expected objects', function(){try{
+        //@TODO
+    }catch(e){console.error(e.message);throw e}})
+
     const
-        testID = 'test-oom-devmainaframe' // also used for component tag
-      , cmp = Vue.component( testID, Class.devMainAFrame(instance) )
+        pfx = 'oom'
+      , aframeComponent = AFRAME.registerComponent(`${pfx}-devthumb`, Class.devThumbAFrame(instance) )
+      , aframePrimative = AFRAME.registerPrimitive(`a-${pfx}-devthumb`, Class.devThumbAFramePrimative(instance, `${pfx}-devthumb`) )
+      , testID = `test-${pfx}-devthumb` // also used for component tag
+      , vueComponent = Vue.component( testID, Class.devThumbAFrameVue(instance) )
       , $container = $('a-scene').append(`<a-entity id="${testID}">`
           + `<${testID}></${testID}></a-entity>`)
       , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })
@@ -304,15 +312,15 @@ describe('The Oom.devMainAFrame() component', function (done) {
 
 
     //// AUTOMATIC STATIC TESTS
-    //// Test whether the devMainAFrame component xxxxxx. You don’t need to modify these tests unless
+    //// Test whether the devThumbAFrameVue component xxxxxx. You don’t need to modify these tests unless
     //// you’ve given your class special behaviour.
 
 
-    it('on the outside, is a viable Vue component', function(){try{
+    it('devThumbAframeVue() creates a viable Vue component', function(){try{
         eq( $('#'+testID).length, 1
           , '#'+testID+' exists' )
-        eq( $('#'+testID+' a-box').length, 2
-          , 'Two <a-box>s exists in #'+testID )
+        eq( $(`#${testID} a-${pfx}-devthumb`).length, 2
+          , `Two <a-${pfx}-devthumb>s exist in #${testID}` )
     }catch(e){console.error(e.message);throw e}})
 
 
@@ -321,13 +329,14 @@ describe('The Oom.devMainAFrame() component', function (done) {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Oom.devMainAFrame(): `hilite` static and attribute - change.
+    //// Oom.devThumbAFrameVue(): `hilite` static and attribute - change.
     //// `Vue.nextTick()` because Vue hasn’t initialised the properties yet.
     it('changing `stat/attr.hilite` changes box color', function (done) {
         const { firstObj, firstHex, secondObj, secondHex } = generateRandomColors()
         stat.hilite = firstHex
         attr.hilite = secondHex
         // Vue.nextTick(window.requestAnimationFrame(function(){let error;try{
+        Vue.nextTick(function(){//@TODO be smarter than this two-tick trick
         Vue.nextTick((function(){let error;try{
             $(`#${testID} >a-entity`).attr('position', '0 0 0')
             let r = testPixels({ // results
@@ -347,10 +356,11 @@ describe('The Oom.devMainAFrame() component', function (done) {
               + `enough expected hilite attribute ${r[1].expRGBA}`)
             $(`#${testID} >a-entity`).attr('position', '0 10 0')
         }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
+        })
     }) // `bind(this)` to run the test in Mocha’s context)
 
 
-    //// Oom.devMainAFrame(): boxes respond to click.
+    //// Oom.devThumbAFrameVue(): boxes respond to click.
     it('boxes can change `stat/attr.hilite` on click', function (done) {
         const { thirdObj, thirdHex, fourthObj, fourthHex } = generateRandomColors()
         const onOomEvent = function (evt) {
@@ -364,10 +374,11 @@ describe('The Oom.devMainAFrame() component', function (done) {
         }
         $(window).on('oom-event', onOomEvent)
         const evt = new MouseEvent('click')
-        $('#'+testID+' a-box.stat')[0].dispatchEvent(evt)
-        $('#'+testID+' a-box.attr')[0].dispatchEvent(evt)
+        $(`#${testID} a-${pfx}-devthumb.stat`)[0].dispatchEvent(evt)
+        $(`#${testID} a-${pfx}-devthumb.attr`)[0].dispatchEvent(evt)
         $(window).off('oom-event', onOomEvent)
 
+        Vue.nextTick(function(){//@TODO be smarter than this two-tick trick
         Vue.nextTick((function(){let error;try{
             $(`#${testID} >a-entity`).attr('position', '0 0 0')
             let r = testPixels({ // results
@@ -391,6 +402,7 @@ describe('The Oom.devMainAFrame() component', function (done) {
               , '`attr.hilite` is now '+fourthHex )
             $(`#${testID} >a-entity`).attr('position', '0 10 0')
         }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
+        })
     }) // `bind(this)` to run the test in Mocha’s context)
 
 
@@ -399,7 +411,7 @@ describe('The Oom.devMainAFrame() component', function (done) {
 
 
     }//testAfterMounted()
-})//describe('The Oom.devMainAFrame() component')
+})//describe('The Oom.devThumbAFrameVue() component')
 
 
 
@@ -424,7 +436,7 @@ describe('Oom.Foo (browser)', () => {
 describe('The Oom.Foo.devMainVue() component', function (done) {
     const
         testID = 'test-oom-foo-devmainvue' // also used for component tag
-      , cmp = Vue.component( testID, Class.devMainVue(instance) )
+      , vueComponent = Vue.component( testID, Class.devMainVue(instance) )
       , $container = $('.container').append(`<div class="row ${hid?'hid':''}" `
           + `id="${testID}"><${testID}>Loading...</${testID}></div>`)
       , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })
@@ -685,10 +697,18 @@ describe('The Oom.Foo.devMainVue() component', function (done) {
 
 
 
-describe('The Oom.Foo.devMainAFrame() component', function (done) {
+describe('The Oom.Foo.devThumbAFrame*() set', function (done) {
+
+    it('devThumbAFrame*() functions return expected objects', function(){try{
+        //@TODO
+    }catch(e){console.error(e.message);throw e}})
+
     const
-        testID = 'test-oom-foo-devmainaframe' // also used for component tag
-      , cmp = Vue.component( testID, Class.devMainAFrame(instance) )
+        pfx = 'oom-foo'
+      , aframeComponent = AFRAME.registerComponent(`${pfx}-devthumb`, Class.devThumbAFrame(instance) )
+      , aframePrimative = AFRAME.registerPrimitive(`a-${pfx}-devthumb`, Class.devThumbAFramePrimative(instance, `${pfx}-devthumb`) )
+      , testID = `test-${pfx}-devthumb` // also used for component tag
+      , vueComponent = Vue.component( testID, Class.devThumbAFrameVue(instance) )
       , $container = $('a-scene').append(`<a-entity id="${testID}">`
           + `<${testID}></${testID}></a-entity>`)
       , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })
@@ -699,15 +719,15 @@ describe('The Oom.Foo.devMainAFrame() component', function (done) {
 
 
     //// AUTOMATIC STATIC TESTS
-    //// Test whether the devMainAFrame component xxxxxx. You don’t need to modify these tests unless
+    //// Test whether the devThumbAFrameVue component xxxxxx. You don’t need to modify these tests unless
     //// you’ve given your class special behaviour.
 
 
-    it('on the outside, is a viable Vue component', function(){try{
+    it('devThumbAframeVue() creates a viable Vue component', function(){try{
         eq( $('#'+testID).length, 1
           , '#'+testID+' exists' )
-        eq( $('#'+testID+' a-box').length, 2
-          , 'Two <a-box>s exists in #'+testID )
+        eq( $(`#${testID} a-${pfx}-devthumb`).length, 2
+          , `Two <a-${pfx}-devthumb>s exist in #${testID}` )
     }catch(e){console.error(e.message);throw e}})
 
 
@@ -716,13 +736,14 @@ describe('The Oom.Foo.devMainAFrame() component', function (done) {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Oom.Foo.devMainAFrame(): `hilite` static and attribute - change.
+    //// Oom.Foo.devThumbAFrameVue(): `hilite` static and attribute - change.
     //// `Vue.nextTick()` because Vue hasn’t initialised the properties yet.
     it('changing `stat/attr.hilite` changes box color', function (done) {
         const { firstObj, firstHex, secondObj, secondHex } = generateRandomColors()
         stat.hilite = firstHex
         attr.hilite = secondHex
         // Vue.nextTick(window.requestAnimationFrame(function(){let error;try{
+        Vue.nextTick(function(){//@TODO be smarter than this two-tick trick
         Vue.nextTick((function(){let error;try{
             $(`#${testID} >a-entity`).attr('position', '0 0 0')
             let r = testPixels({ // results
@@ -742,10 +763,11 @@ describe('The Oom.Foo.devMainAFrame() component', function (done) {
               + `enough expected hilite attribute ${r[1].expRGBA}`)
             $(`#${testID} >a-entity`).attr('position', '0 10 0')
         }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
+        })
     }) // `bind(this)` to run the test in Mocha’s context)
 
 
-    //// Oom.Foo.devMainAFrame(): boxes respond to click.
+    //// Oom.Foo.devThumbAFrameVue(): boxes respond to click.
     it('boxes can change `stat/attr.hilite` on click', function (done) {
         const { thirdObj, thirdHex, fourthObj, fourthHex } = generateRandomColors()
         const onOomEvent = function (evt) {
@@ -759,10 +781,11 @@ describe('The Oom.Foo.devMainAFrame() component', function (done) {
         }
         $(window).on('oom-event', onOomEvent)
         const evt = new MouseEvent('click')
-        $('#'+testID+' a-box.stat')[0].dispatchEvent(evt)
-        $('#'+testID+' a-box.attr')[0].dispatchEvent(evt)
+        $(`#${testID} a-${pfx}-devthumb.stat`)[0].dispatchEvent(evt)
+        $(`#${testID} a-${pfx}-devthumb.attr`)[0].dispatchEvent(evt)
         $(window).off('oom-event', onOomEvent)
 
+        Vue.nextTick(function(){//@TODO be smarter than this two-tick trick
         Vue.nextTick((function(){let error;try{
             $(`#${testID} >a-entity`).attr('position', '0 0 0')
             let r = testPixels({ // results
@@ -786,6 +809,7 @@ describe('The Oom.Foo.devMainAFrame() component', function (done) {
               , '`attr.hilite` is now '+fourthHex )
             $(`#${testID} >a-entity`).attr('position', '0 10 0')
         }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
+        })
     }) // `bind(this)` to run the test in Mocha’s context)
 
 
@@ -794,7 +818,7 @@ describe('The Oom.Foo.devMainAFrame() component', function (done) {
 
 
     }//testAfterMounted()
-})//describe('The Oom.Foo.devMainAFrame() component')
+})//describe('The Oom.Foo.devThumbAFrameVue() component')
 
 
 
@@ -945,7 +969,7 @@ function generateRandomColors () {
 
 
 
-//// Oom.Foo //// 1.2.26 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.28 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
@@ -966,7 +990,7 @@ describe('Oom.Foo.Post (browser)', () => {
 describe('The Oom.Foo.Post.devMainVue() component', function (done) {
     const
         testID = 'test-oom-foo-post-devmainvue' // also used for component tag
-      , cmp = Vue.component( testID, Class.devMainVue(instance) )
+      , vueComponent = Vue.component( testID, Class.devMainVue(instance) )
       , $container = $('.container').append(`<div class="row ${hid?'hid':''}" `
           + `id="${testID}"><${testID}>Loading...</${testID}></div>`)
       , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })
@@ -1227,10 +1251,18 @@ describe('The Oom.Foo.Post.devMainVue() component', function (done) {
 
 
 
-describe('The Oom.Foo.Post.devMainAFrame() component', function (done) {
+describe('The Oom.Foo.Post.devThumbAFrame*() set', function (done) {
+
+    it('devThumbAFrame*() functions return expected objects', function(){try{
+        //@TODO
+    }catch(e){console.error(e.message);throw e}})
+
     const
-        testID = 'test-oom-foo-post-devmainaframe' // also used for component tag
-      , cmp = Vue.component( testID, Class.devMainAFrame(instance) )
+        pfx = 'oom-foo-post'
+      , aframeComponent = AFRAME.registerComponent(`${pfx}-devthumb`, Class.devThumbAFrame(instance) )
+      , aframePrimative = AFRAME.registerPrimitive(`a-${pfx}-devthumb`, Class.devThumbAFramePrimative(instance, `${pfx}-devthumb`) )
+      , testID = `test-${pfx}-devthumb` // also used for component tag
+      , vueComponent = Vue.component( testID, Class.devThumbAFrameVue(instance) )
       , $container = $('a-scene').append(`<a-entity id="${testID}">`
           + `<${testID}></${testID}></a-entity>`)
       , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })
@@ -1241,15 +1273,15 @@ describe('The Oom.Foo.Post.devMainAFrame() component', function (done) {
 
 
     //// AUTOMATIC STATIC TESTS
-    //// Test whether the devMainAFrame component xxxxxx. You don’t need to modify these tests unless
+    //// Test whether the devThumbAFrameVue component xxxxxx. You don’t need to modify these tests unless
     //// you’ve given your class special behaviour.
 
 
-    it('on the outside, is a viable Vue component', function(){try{
+    it('devThumbAframeVue() creates a viable Vue component', function(){try{
         eq( $('#'+testID).length, 1
           , '#'+testID+' exists' )
-        eq( $('#'+testID+' a-box').length, 2
-          , 'Two <a-box>s exists in #'+testID )
+        eq( $(`#${testID} a-${pfx}-devthumb`).length, 2
+          , `Two <a-${pfx}-devthumb>s exist in #${testID}` )
     }catch(e){console.error(e.message);throw e}})
 
 
@@ -1258,13 +1290,14 @@ describe('The Oom.Foo.Post.devMainAFrame() component', function (done) {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Oom.Foo.Post.devMainAFrame(): `hilite` static and attribute - change.
+    //// Oom.Foo.Post.devThumbAFrameVue(): `hilite` static and attribute - change.
     //// `Vue.nextTick()` because Vue hasn’t initialised the properties yet.
     it('changing `stat/attr.hilite` changes box color', function (done) {
         const { firstObj, firstHex, secondObj, secondHex } = generateRandomColors()
         stat.hilite = firstHex
         attr.hilite = secondHex
         // Vue.nextTick(window.requestAnimationFrame(function(){let error;try{
+        Vue.nextTick(function(){//@TODO be smarter than this two-tick trick
         Vue.nextTick((function(){let error;try{
             $(`#${testID} >a-entity`).attr('position', '0 0 0')
             let r = testPixels({ // results
@@ -1284,10 +1317,11 @@ describe('The Oom.Foo.Post.devMainAFrame() component', function (done) {
               + `enough expected hilite attribute ${r[1].expRGBA}`)
             $(`#${testID} >a-entity`).attr('position', '0 10 0')
         }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
+        })
     }) // `bind(this)` to run the test in Mocha’s context)
 
 
-    //// Oom.Foo.Post.devMainAFrame(): boxes respond to click.
+    //// Oom.Foo.Post.devThumbAFrameVue(): boxes respond to click.
     it('boxes can change `stat/attr.hilite` on click', function (done) {
         const { thirdObj, thirdHex, fourthObj, fourthHex } = generateRandomColors()
         const onOomEvent = function (evt) {
@@ -1301,10 +1335,11 @@ describe('The Oom.Foo.Post.devMainAFrame() component', function (done) {
         }
         $(window).on('oom-event', onOomEvent)
         const evt = new MouseEvent('click')
-        $('#'+testID+' a-box.stat')[0].dispatchEvent(evt)
-        $('#'+testID+' a-box.attr')[0].dispatchEvent(evt)
+        $(`#${testID} a-${pfx}-devthumb.stat`)[0].dispatchEvent(evt)
+        $(`#${testID} a-${pfx}-devthumb.attr`)[0].dispatchEvent(evt)
         $(window).off('oom-event', onOomEvent)
 
+        Vue.nextTick(function(){//@TODO be smarter than this two-tick trick
         Vue.nextTick((function(){let error;try{
             $(`#${testID} >a-entity`).attr('position', '0 0 0')
             let r = testPixels({ // results
@@ -1328,6 +1363,7 @@ describe('The Oom.Foo.Post.devMainAFrame() component', function (done) {
               , '`attr.hilite` is now '+fourthHex )
             $(`#${testID} >a-entity`).attr('position', '0 10 0')
         }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
+        })
     }) // `bind(this)` to run the test in Mocha’s context)
 
 
@@ -1336,7 +1372,7 @@ describe('The Oom.Foo.Post.devMainAFrame() component', function (done) {
 
 
     }//testAfterMounted()
-})//describe('The Oom.Foo.Post.devMainAFrame() component')
+})//describe('The Oom.Foo.Post.devThumbAFrameVue() component')
 
 
 
@@ -1353,7 +1389,7 @@ describe('The Oom.Foo.Post.devMainAFrame() component', function (done) {
 
 
 
-//// Oom.Foo //// 1.2.26 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.28 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
@@ -1374,7 +1410,7 @@ describe('Oom.Foo.Router (browser)', () => {
 describe('The Oom.Foo.Router.devMainVue() component', function (done) {
     const
         testID = 'test-oom-foo-router-devmainvue' // also used for component tag
-      , cmp = Vue.component( testID, Class.devMainVue(instance) )
+      , vueComponent = Vue.component( testID, Class.devMainVue(instance) )
       , $container = $('.container').append(`<div class="row ${hid?'hid':''}" `
           + `id="${testID}"><${testID}>Loading...</${testID}></div>`)
       , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })
@@ -1635,10 +1671,18 @@ describe('The Oom.Foo.Router.devMainVue() component', function (done) {
 
 
 
-describe('The Oom.Foo.Router.devMainAFrame() component', function (done) {
+describe('The Oom.Foo.Router.devThumbAFrame*() set', function (done) {
+
+    it('devThumbAFrame*() functions return expected objects', function(){try{
+        //@TODO
+    }catch(e){console.error(e.message);throw e}})
+
     const
-        testID = 'test-oom-foo-router-devmainaframe' // also used for component tag
-      , cmp = Vue.component( testID, Class.devMainAFrame(instance) )
+        pfx = 'oom-foo-router'
+      , aframeComponent = AFRAME.registerComponent(`${pfx}-devthumb`, Class.devThumbAFrame(instance) )
+      , aframePrimative = AFRAME.registerPrimitive(`a-${pfx}-devthumb`, Class.devThumbAFramePrimative(instance, `${pfx}-devthumb`) )
+      , testID = `test-${pfx}-devthumb` // also used for component tag
+      , vueComponent = Vue.component( testID, Class.devThumbAFrameVue(instance) )
       , $container = $('a-scene').append(`<a-entity id="${testID}">`
           + `<${testID}></${testID}></a-entity>`)
       , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })
@@ -1649,15 +1693,15 @@ describe('The Oom.Foo.Router.devMainAFrame() component', function (done) {
 
 
     //// AUTOMATIC STATIC TESTS
-    //// Test whether the devMainAFrame component xxxxxx. You don’t need to modify these tests unless
+    //// Test whether the devThumbAFrameVue component xxxxxx. You don’t need to modify these tests unless
     //// you’ve given your class special behaviour.
 
 
-    it('on the outside, is a viable Vue component', function(){try{
+    it('devThumbAframeVue() creates a viable Vue component', function(){try{
         eq( $('#'+testID).length, 1
           , '#'+testID+' exists' )
-        eq( $('#'+testID+' a-box').length, 2
-          , 'Two <a-box>s exists in #'+testID )
+        eq( $(`#${testID} a-${pfx}-devthumb`).length, 2
+          , `Two <a-${pfx}-devthumb>s exist in #${testID}` )
     }catch(e){console.error(e.message);throw e}})
 
 
@@ -1666,13 +1710,14 @@ describe('The Oom.Foo.Router.devMainAFrame() component', function (done) {
     }catch(e){console.error(e.message);throw e}})
 
 
-    //// Oom.Foo.Router.devMainAFrame(): `hilite` static and attribute - change.
+    //// Oom.Foo.Router.devThumbAFrameVue(): `hilite` static and attribute - change.
     //// `Vue.nextTick()` because Vue hasn’t initialised the properties yet.
     it('changing `stat/attr.hilite` changes box color', function (done) {
         const { firstObj, firstHex, secondObj, secondHex } = generateRandomColors()
         stat.hilite = firstHex
         attr.hilite = secondHex
         // Vue.nextTick(window.requestAnimationFrame(function(){let error;try{
+        Vue.nextTick(function(){//@TODO be smarter than this two-tick trick
         Vue.nextTick((function(){let error;try{
             $(`#${testID} >a-entity`).attr('position', '0 0 0')
             let r = testPixels({ // results
@@ -1692,10 +1737,11 @@ describe('The Oom.Foo.Router.devMainAFrame() component', function (done) {
               + `enough expected hilite attribute ${r[1].expRGBA}`)
             $(`#${testID} >a-entity`).attr('position', '0 10 0')
         }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
+        })
     }) // `bind(this)` to run the test in Mocha’s context)
 
 
-    //// Oom.Foo.Router.devMainAFrame(): boxes respond to click.
+    //// Oom.Foo.Router.devThumbAFrameVue(): boxes respond to click.
     it('boxes can change `stat/attr.hilite` on click', function (done) {
         const { thirdObj, thirdHex, fourthObj, fourthHex } = generateRandomColors()
         const onOomEvent = function (evt) {
@@ -1709,10 +1755,11 @@ describe('The Oom.Foo.Router.devMainAFrame() component', function (done) {
         }
         $(window).on('oom-event', onOomEvent)
         const evt = new MouseEvent('click')
-        $('#'+testID+' a-box.stat')[0].dispatchEvent(evt)
-        $('#'+testID+' a-box.attr')[0].dispatchEvent(evt)
+        $(`#${testID} a-${pfx}-devthumb.stat`)[0].dispatchEvent(evt)
+        $(`#${testID} a-${pfx}-devthumb.attr`)[0].dispatchEvent(evt)
         $(window).off('oom-event', onOomEvent)
 
+        Vue.nextTick(function(){//@TODO be smarter than this two-tick trick
         Vue.nextTick((function(){let error;try{
             $(`#${testID} >a-entity`).attr('position', '0 0 0')
             let r = testPixels({ // results
@@ -1736,6 +1783,7 @@ describe('The Oom.Foo.Router.devMainAFrame() component', function (done) {
               , '`attr.hilite` is now '+fourthHex )
             $(`#${testID} >a-entity`).attr('position', '0 10 0')
         }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
+        })
     }) // `bind(this)` to run the test in Mocha’s context)
 
 
@@ -1744,7 +1792,7 @@ describe('The Oom.Foo.Router.devMainAFrame() component', function (done) {
 
 
     }//testAfterMounted()
-})//describe('The Oom.Foo.Router.devMainAFrame() component')
+})//describe('The Oom.Foo.Router.devThumbAFrameVue() component')
 
 
 
@@ -1757,4 +1805,4 @@ describe('The Oom.Foo.Router.devMainAFrame() component', function (done) {
 
 
 
-//// Made by Oomtility Make 1.2.26 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.28 //\\//\\ http://oomtility.loop.coop /////////

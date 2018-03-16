@@ -2,14 +2,14 @@
 
 
 
-//// Oom.Foo //// 1.2.26 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.28 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
 //// Metadata for Oom.Foo
 const META = {
     NAME:     'Oom.Foo'
-  , VERSION:  '1.2.26' // OOMBUMPABLE
+  , VERSION:  '1.2.28' // OOMBUMPABLE
   , HOMEPAGE: 'http://oom-foo.loop.coop/'
   , REMARKS:  'Initial test of the oom-hub architecture'
   , LOADED_FIRST: ! ROOT.Oom // true if the Oom class is defined by this module
@@ -299,9 +299,23 @@ Oom.devMainVue = function (instance) { return {
 
 
 ////
-Object.defineProperty(Oom, 'devMainAFrameTemplate', {
-get: function (innerHTML) { return innerHTML = `
+Oom.devThumbAFrameVueTemplate = function (instance, innerHTML) {
+    const pfx = instance.constructor.name.toLowerCase().replace(/\./g, '-')
+    return innerHTML = `
 <a-entity position="0 10 0">
+  <a-${pfx}-devthumb oom-event class="stat"
+            position="-0.7 1.5 -1.5"
+            :hilite="stat.hilite">
+    <a-animation mixin="rotate"></a-animation>
+  </a-${pfx}-devthumb>
+  <a-${pfx}-devthumb oom-event class="attr"
+            position="0.7 1.5 -1.5"
+            :hilite="attr.hilite">
+    <a-animation mixin="rotate"></a-animation>
+  </a-${pfx}-devthumb>
+</a-entity>
+<!--
+            :material="'shader:flat; color:'+attr.hilite">
   <a-box oom-event class="stat"
          position="-0.7 1.5 -1.5" :material="'shader:flat; color:'+stat.hilite">
     <a-animation mixin="rotate"></a-animation>
@@ -310,13 +324,12 @@ get: function (innerHTML) { return innerHTML = `
          position="0.7 1.5 -1.5" :material="'shader:flat; color:'+attr.hilite">
     <a-animation mixin="rotate"></a-animation>
   </a-box>
-</a-entity>
-`} })
+-->
+`}//Oom.devThumbAFrameVueTemplate()
 
 
-Oom.devMainAFrame = function (instance) { return {
-    template: Oom.devMainAFrameTemplate
-
+Oom.devThumbAFrameVue = function (instance) { return {
+    template: Oom.devThumbAFrameVueTemplate(instance)
   , data: function () {
         const Class = instance.constructor
         return {
@@ -326,7 +339,55 @@ Oom.devMainAFrame = function (instance) { return {
         }
     }
 
-} }//Oom.devMainAFrame()
+} }//Oom.devThumbAFrameVue()
+
+
+//// Returns on object used for registering an A-Frame component version of Oom.
+Oom.devThumbAFrame = function (instanceXXX) { return {
+    schema: KIT.oomSchemaToAFrameSchema(ROOT.Oom.schema)
+  , init: function () {
+        this.el.setAttribute('material', 'shader:flat; color:pink')
+    }
+  , update: function (oldData) {
+        for (let key in AFRAME.utils.diff(oldData, this.data) )
+            if (oldData[key] !== this.data[key]) // did change
+                this.updateAttribute(key)
+    }
+  , tick: function () { }
+  , remove: function () {}
+  , pause: function () {}
+  , play: function () {}
+
+  , updateAttribute: function (key) {
+        const attributes = {
+            hilite: v => this.el.setAttribute('material', { color:v })
+        }
+        if (! attributes[key])
+            return console.warn(`${key} not recognised`)
+        attributes[key](this.data[key])
+        console.log(key, this.data[key])
+    }
+
+} }//Oom.devThumbAFrame()
+
+
+////
+//// See https://github.com/aframevr/aframe/blob/master/docs/introduction/html-and-primitives.md#registering-a-primitive
+Oom.devThumbAFramePrimative = function (instance, aframeComponentName) {
+    return AFRAME.utils.extendDeep(
+        {} // return a fresh object
+      , AFRAME.primitives.getMeshMixin() // for creating mesh-based primitives
+      , {
+            defaultComponents: { // preset default components
+                [aframeComponentName]: { hilite:'#ff0000' }
+              , geometry: { primitive: 'box' }
+            }
+          , mappings: { // from HTML attributes to component properties
+                hilite: aframeComponentName+'.hilite'
+            }
+        }
+    )//extendDeep()
+}//Oom.devThumbAFramePrimative()
 
 
 
@@ -744,6 +805,14 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
         return out
     }//normaliseSchema()
 
+
+    ////
+  , oomSchemaToAFrameSchema: oomSchema => {
+        return {
+            hilite: { type:'color', default:'#ff00ff' }
+        }
+    }
+
 }, previousKIT) }//assignKIT()
 
 
@@ -756,7 +825,7 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
 
 
 
-//// Oom.Foo //// 1.2.26 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.28 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
@@ -987,7 +1056,7 @@ Oom.Foo.Post.mixin({
 
 
 
-//// Oom.Foo //// 1.2.26 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.28 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
@@ -1214,4 +1283,4 @@ Oom.Foo.Router.mixin({
 
 
 
-//// Made by Oomtility Make 1.2.26 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.28 //\\//\\ http://oomtility.loop.coop /////////
