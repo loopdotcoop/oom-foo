@@ -282,10 +282,10 @@ describe('The ${{classname}}.devThumbAFrame*() set', function (done) {
 
     const
         pfx = '${{classname.toLowerCase().replace(/\./g,"-")}}'
-      , aframeComponent = AFRAME.registerComponent(`${pfx}-devthumb`, Class.devThumbAFrame(instance) )
-      , aframePrimative = AFRAME.registerPrimitive(`a-${pfx}-devthumb`, Class.devThumbAFramePrimative(instance, `${pfx}-devthumb`) )
       , testID = `test-${pfx}-devthumb` // also used for component tag
       , vueComponent = Vue.component( testID, Class.devThumbAFrameVue(instance) )
+      , aframeComponent = AFRAME.registerComponent(`${pfx}-devthumb`, Class.devThumbAFrame(instance) )
+      , aframePrimative = AFRAME.registerPrimitive(`a-${pfx}-devthumb`, Class.devThumbAFramePrimative(instance, `${pfx}-devthumb`) )
       , $container = $('a-scene').append(`<a-entity id="${testID}">`
           + `<${testID}></${testID}></a-entity>`)
       , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })

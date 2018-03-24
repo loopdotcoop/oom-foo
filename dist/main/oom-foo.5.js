@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.28 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.29 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
     NAME: 'Oom.Foo',
-    VERSION: '1.2.28',
+    VERSION: '1.2.29',
     HOMEPAGE: 'http://oom-foo.loop.coop/',
     REMARKS: 'Initial test of the oom-hub architecture',
     LOADED_FIRST: !ROOT.Oom
@@ -216,7 +216,6 @@
         if (!attributes[key])
           return console.warn((key + " not recognised"));
         attributes[key](this.data[key]);
-        console.log(key, this.data[key]);
       }
     };
   };
@@ -580,4 +579,4 @@
 
 
 
-//// Made by Oomtility Make 1.2.28 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.29 //\\//\\ http://oomtility.loop.coop /////////

@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.2.28 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.29 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 
 //// Metadata for Oom.Foo
 const META = {
     NAME:     'Oom.Foo'
-  , VERSION:  '1.2.28' // OOMBUMPABLE
+  , VERSION:  '1.2.29' // OOMBUMPABLE
   , HOMEPAGE: 'http://oom-foo.loop.coop/'
   , REMARKS:  'Initial test of the oom-hub architecture'
   , LOADED_FIRST: ! ROOT.Oom // true if the Oom class is defined by this module
@@ -361,7 +361,7 @@ Oom.devThumbAFrame = function (instanceXXX) { return {
         if (! attributes[key])
             return console.warn(`${key} not recognised`)
         attributes[key](this.data[key])
-        console.log(key, this.data[key])
+        // console.log(key, this.data[key])
     }
 
 } }//Oom.devThumbAFrame()

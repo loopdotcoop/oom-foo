@@ -122,40 +122,27 @@ function testPixels (config) {
 }
 
 
-//// Xx.
+//// Returns four different random colours, as an object like:
+//// { firstObj:{r:0,g:0,b:128}, firstHex:'#000080', ..., fourthHex:'#ff80ff' }
 function generateRandomColors () {
-    const a = {
-        r: 0.5 > Math.random() ? 255 : 0
-      , g: 0.5 > Math.random() ? 255 : 0
-      , b: 0.5 > Math.random() ? 255 : 0
-      , a: 255
+    const colors = []
+    for (let i=1; i<26; i++) { // `1` to avoid black
+        const color = ( '00'+i.toString(3) ).slice(-3) // '000' to '222'
+        colors.push([
+            2 == color[0] ? 255 : 1 == color[0] ? 128 : 0 // r
+          , 2 == color[1] ? 255 : 1 == color[1] ? 128 : 0 // g
+          , 2 == color[2] ? 255 : 1 == color[2] ? 128 : 0 // b
+          , '#' + color.replace(/0/g,'00').replace(/1/g,'80').replace(/2/g,'ff')
+        ])
     }
-    const b = {
-        r: 0.5 > Math.random() ? 255 : 0
-      , g: 0.5 > Math.random() ? 255 : 0
-      , b: 0.5 > Math.random() ? 255 : 0
-      , a: 255
-    }
-    const c = {
-        r: 0.5 > Math.random() ? 80 : 130
-      , g: 0.5 > Math.random() ? 80 : 130
-      , b: 0.5 > Math.random() ? 80 : 130
-      , a: 255
-    }
-    const d = {
-        r: 0.5 > Math.random() ? 80 : 130
-      , g: 0.5 > Math.random() ? 80 : 130
-      , b: 0.5 > Math.random() ? 80 : 130
-      , a: 255
-    }
-    return {
-        firstObj:  a
-      , secondObj: b
-      , firstHex:  `#${0==a.r?'00':'ff'}${0==a.g?'00':'ff'}${0==a.b?'00':'ff'}`
-      , secondHex: `#${0==b.r?'00':'ff'}${0==b.g?'00':'ff'}${0==b.b?'00':'ff'}`
-      , thirdObj:  c
-      , fourthObj: d
-      , thirdHex:  `#${80==c.r?'50':'82'}${80==c.g?'50':'82'}${80==c.b?'50':'82'}`
-      , fourthHex: `#${80==d.r?'50':'82'}${80==d.g?'50':'82'}${80==d.b?'50':'82'}`
-    }
+    const out = {}
+    ;['first','second','third','fourth'].forEach( (prefix,i) => {
+        const from =   ~~( i * colors.length / 4 )
+        const to = ~~( (i+1) * colors.length / 4 )
+        const index = ~~( Math.random() * (to - from) ) + from
+        const [ r, g, b, hex ] = colors[index]
+        out[prefix+'Hex'] = hex
+        out[prefix+'Obj'] = { r, g, b, a:255 }
+    })
+    return out
 }

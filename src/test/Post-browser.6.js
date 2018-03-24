@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.28 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.29 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
@@ -288,10 +288,10 @@ describe('The Oom.Foo.Post.devThumbAFrame*() set', function (done) {
 
     const
         pfx = 'oom-foo-post'
-      , aframeComponent = AFRAME.registerComponent(`${pfx}-devthumb`, Class.devThumbAFrame(instance) )
-      , aframePrimative = AFRAME.registerPrimitive(`a-${pfx}-devthumb`, Class.devThumbAFramePrimative(instance, `${pfx}-devthumb`) )
       , testID = `test-${pfx}-devthumb` // also used for component tag
       , vueComponent = Vue.component( testID, Class.devThumbAFrameVue(instance) )
+      , aframeComponent = AFRAME.registerComponent(`${pfx}-devthumb`, Class.devThumbAFrame(instance) )
+      , aframePrimative = AFRAME.registerPrimitive(`a-${pfx}-devthumb`, Class.devThumbAFramePrimative(instance, `${pfx}-devthumb`) )
       , $container = $('a-scene').append(`<a-entity id="${testID}">`
           + `<${testID}></${testID}></a-entity>`)
       , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })

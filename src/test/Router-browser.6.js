@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.28 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.29 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
@@ -6,7 +6,7 @@ const { describe, it, eq, neq, is, goodVals, badVals } = ROOT.testify()
 const { isConstant, isReadOnly, isReadWrite } = Oom.KIT
 describe('Oom.Foo.Router (browser)', () => {
     const
-        hid = true // `true` hides the components, `false` makes them visible
+        hid = 0 // `true` hides the components, `false` makes them visible
       , Class = ROOT.Oom.Foo.Router
       , stat = Class.stat
       , schema = Class.schema
@@ -288,10 +288,10 @@ describe('The Oom.Foo.Router.devThumbAFrame*() set', function (done) {
 
     const
         pfx = 'oom-foo-router'
-      , aframeComponent = AFRAME.registerComponent(`${pfx}-devthumb`, Class.devThumbAFrame(instance) )
-      , aframePrimative = AFRAME.registerPrimitive(`a-${pfx}-devthumb`, Class.devThumbAFramePrimative(instance, `${pfx}-devthumb`) )
       , testID = `test-${pfx}-devthumb` // also used for component tag
       , vueComponent = Vue.component( testID, Class.devThumbAFrameVue(instance) )
+      , aframeComponent = AFRAME.registerComponent(`${pfx}-devthumb`, Class.devThumbAFrame(instance) )
+      , aframePrimative = AFRAME.registerPrimitive(`a-${pfx}-devthumb`, Class.devThumbAFramePrimative(instance, `${pfx}-devthumb`) )
       , $container = $('a-scene').append(`<a-entity id="${testID}">`
           + `<${testID}></${testID}></a-entity>`)
       , vue = new Vue({ el:'#'+testID, mounted:testAfterMounted })
@@ -390,7 +390,7 @@ describe('The Oom.Foo.Router.devThumbAFrame*() set', function (done) {
               , '`stat.hilite` is now '+thirdHex )
             eq( attr.hilite, fourthHex
               , '`attr.hilite` is now '+fourthHex )
-            $(`#${testID} >a-entity`).attr('position', '0 10 0')
+            // $(`#${testID} >a-entity`).attr('position', '0 10 0')
         }catch(e){error=e;console.error(e.message)}done(error)}).bind(this))
         })
     }) // `bind(this)` to run the test in Mocha’s context)

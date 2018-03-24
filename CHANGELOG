@@ -53,4 +53,5 @@
 1.2.25 Initial A-Frame unit tests, using the ‘screengrab’ component
 1.2.26 Basic Class.hilite and myInst.hilite A-Frame tests
 1.2.27 Test that stat/attr.hilite change on Oom.devMainAFrame’s a-box click
-1.2.28 The `Oom.devThumbAFrame*()` set use A-Frame components and primatives
+1.2.28 The `Oom.devThumbAFrame*()` set use A-Frame components and primitives
+1.2.29 Better `generateRandomColors()` in ‘test/Bases-browser.6.js’

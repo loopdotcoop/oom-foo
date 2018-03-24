@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.2.28 //// March 2018 //// http://oom-foo.loop.coop/ ////////
+//// Oom.Foo //// 1.2.29 //// March 2018 //// http://oom-foo.loop.coop/ ////////
 
 "use strict";
 !function(ROOT) {
@@ -297,10 +297,10 @@
         }
       });
       var pfx = 'oom',
-          aframeComponent = AFRAME.registerComponent((pfx + "-devthumb"), Class.devThumbAFrame(instance)),
-          aframePrimative = AFRAME.registerPrimitive(("a-" + pfx + "-devthumb"), Class.devThumbAFramePrimative(instance, (pfx + "-devthumb"))),
           testID = ("test-" + pfx + "-devthumb"),
           vueComponent = Vue.component(testID, Class.devThumbAFrameVue(instance)),
+          aframeComponent = AFRAME.registerComponent((pfx + "-devthumb"), Class.devThumbAFrame(instance)),
+          aframePrimative = AFRAME.registerPrimitive(("a-" + pfx + "-devthumb"), Class.devThumbAFramePrimative(instance, (pfx + "-devthumb"))),
           $container = $('a-scene').append(("<a-entity id=\"" + testID + "\">") + ("<" + testID + "></" + testID + "></a-entity>")),
           vue = new Vue({
             el: '#' + testID,
@@ -693,10 +693,10 @@
         }
       });
       var pfx = 'oom-foo',
-          aframeComponent = AFRAME.registerComponent((pfx + "-devthumb"), Class.devThumbAFrame(instance)),
-          aframePrimative = AFRAME.registerPrimitive(("a-" + pfx + "-devthumb"), Class.devThumbAFramePrimative(instance, (pfx + "-devthumb"))),
           testID = ("test-" + pfx + "-devthumb"),
           vueComponent = Vue.component(testID, Class.devThumbAFrameVue(instance)),
+          aframeComponent = AFRAME.registerComponent((pfx + "-devthumb"), Class.devThumbAFrame(instance)),
+          aframePrimative = AFRAME.registerPrimitive(("a-" + pfx + "-devthumb"), Class.devThumbAFramePrimative(instance, (pfx + "-devthumb"))),
           $container = $('a-scene').append(("<a-entity id=\"" + testID + "\">") + ("<" + testID + "></" + testID + "></a-entity>")),
           vue = new Vue({
             el: '#' + testID,
@@ -864,40 +864,33 @@ function testPixels(config) {
   return r;
 }
 function generateRandomColors() {
-  var a = {
-    r: 0.5 > Math.random() ? 255 : 0,
-    g: 0.5 > Math.random() ? 255 : 0,
-    b: 0.5 > Math.random() ? 255 : 0,
-    a: 255
-  };
-  var b = {
-    r: 0.5 > Math.random() ? 255 : 0,
-    g: 0.5 > Math.random() ? 255 : 0,
-    b: 0.5 > Math.random() ? 255 : 0,
-    a: 255
-  };
-  var c = {
-    r: 0.5 > Math.random() ? 80 : 130,
-    g: 0.5 > Math.random() ? 80 : 130,
-    b: 0.5 > Math.random() ? 80 : 130,
-    a: 255
-  };
-  var d = {
-    r: 0.5 > Math.random() ? 80 : 130,
-    g: 0.5 > Math.random() ? 80 : 130,
-    b: 0.5 > Math.random() ? 80 : 130,
-    a: 255
-  };
-  return {
-    firstObj: a,
-    secondObj: b,
-    firstHex: ("#" + (0 == a.r ? '00' : 'ff') + (0 == a.g ? '00' : 'ff') + (0 == a.b ? '00' : 'ff')),
-    secondHex: ("#" + (0 == b.r ? '00' : 'ff') + (0 == b.g ? '00' : 'ff') + (0 == b.b ? '00' : 'ff')),
-    thirdObj: c,
-    fourthObj: d,
-    thirdHex: ("#" + (80 == c.r ? '50' : '82') + (80 == c.g ? '50' : '82') + (80 == c.b ? '50' : '82')),
-    fourthHex: ("#" + (80 == d.r ? '50' : '82') + (80 == d.g ? '50' : '82') + (80 == d.b ? '50' : '82'))
-  };
+  var colors = [];
+  for (var i = 1; i < 26; i++) {
+    var color = ('00' + i.toString(3)).slice(-3);
+    colors.push([2 == color[0] ? 255 : 1 == color[0] ? 128 : 0, 2 == color[1] ? 255 : 1 == color[1] ? 128 : 0, 2 == color[2] ? 255 : 1 == color[2] ? 128 : 0, '#' + color.replace(/0/g, '00').replace(/1/g, '80').replace(/2/g, 'ff')]);
+  }
+  var out = {};
+  ;
+  ['first', 'second', 'third', 'fourth'].forEach(function(prefix, i) {
+    var $__3,
+        $__4;
+    var from = ~~(i * colors.length / 4);
+    var to = ~~((i + 1) * colors.length / 4);
+    var index = ~~(Math.random() * (to - from)) + from;
+    var $__2 = colors[index],
+        r = ($__3 = $__2[Symbol.iterator](), ($__4 = $__3.next()).done ? void 0 : $__4.value),
+        g = ($__4 = $__3.next()).done ? void 0 : $__4.value,
+        b = ($__4 = $__3.next()).done ? void 0 : $__4.value,
+        hex = ($__4 = $__3.next()).done ? void 0 : $__4.value;
+    out[prefix + 'Hex'] = hex;
+    out[prefix + 'Obj'] = {
+      r: r,
+      g: g,
+      b: b,
+      a: 255
+    };
+  });
+  return out;
 }
 !function(ROOT) {
   'use strict';
@@ -1195,10 +1188,10 @@ function generateRandomColors() {
         }
       });
       var pfx = 'oom-foo-post',
-          aframeComponent = AFRAME.registerComponent((pfx + "-devthumb"), Class.devThumbAFrame(instance)),
-          aframePrimative = AFRAME.registerPrimitive(("a-" + pfx + "-devthumb"), Class.devThumbAFramePrimative(instance, (pfx + "-devthumb"))),
           testID = ("test-" + pfx + "-devthumb"),
           vueComponent = Vue.component(testID, Class.devThumbAFrameVue(instance)),
+          aframeComponent = AFRAME.registerComponent((pfx + "-devthumb"), Class.devThumbAFrame(instance)),
+          aframePrimative = AFRAME.registerPrimitive(("a-" + pfx + "-devthumb"), Class.devThumbAFramePrimative(instance, (pfx + "-devthumb"))),
           $container = $('a-scene').append(("<a-entity id=\"" + testID + "\">") + ("<" + testID + "></" + testID + "></a-entity>")),
           vue = new Vue({
             el: '#' + testID,
@@ -1608,10 +1601,10 @@ function generateRandomColors() {
         }
       });
       var pfx = 'oom-foo-router',
-          aframeComponent = AFRAME.registerComponent((pfx + "-devthumb"), Class.devThumbAFrame(instance)),
-          aframePrimative = AFRAME.registerPrimitive(("a-" + pfx + "-devthumb"), Class.devThumbAFramePrimative(instance, (pfx + "-devthumb"))),
           testID = ("test-" + pfx + "-devthumb"),
           vueComponent = Vue.component(testID, Class.devThumbAFrameVue(instance)),
+          aframeComponent = AFRAME.registerComponent((pfx + "-devthumb"), Class.devThumbAFrame(instance)),
+          aframePrimative = AFRAME.registerPrimitive(("a-" + pfx + "-devthumb"), Class.devThumbAFramePrimative(instance, (pfx + "-devthumb"))),
           $container = $('a-scene').append(("<a-entity id=\"" + testID + "\">") + ("<" + testID + "></" + testID + "></a-entity>")),
           vue = new Vue({
             el: '#' + testID,
@@ -1729,4 +1722,4 @@ function generateRandomColors() {
 
 
 
-//// Made by Oomtility Make 1.2.28 //\\//\\ http://oomtility.loop.coop /////////
+//// Made by Oomtility Make 1.2.29 //\\//\\ http://oomtility.loop.coop /////////

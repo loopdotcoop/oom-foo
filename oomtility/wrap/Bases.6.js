@@ -361,7 +361,7 @@ Oom.devThumbAFrame = function (instanceXXX) { return {
         if (! attributes[key])
             return console.warn(`${key} not recognised`)
         attributes[key](this.data[key])
-        console.log(key, this.data[key])
+        // console.log(key, this.data[key])
     }
 
 } }//Oom.devThumbAFrame()
