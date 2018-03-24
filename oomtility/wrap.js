@@ -26,7 +26,7 @@ const CONSTS = {
 }
 
 const NAME     = 'Oomtility Wrap'
-    , VERSION  = '1.2.29'
+    , VERSION  = '1.3.0'
     , HOMEPAGE = 'https://oomtility.loop.coop'
     , HELP =
 `
@@ -445,9 +445,14 @@ function getLineLengthReduction (line, pos, len) {
 }
 
 
-//// Similar to `lcToTc()` in ‘init.js’. 'foo/bar-baz.txt' to 'writeBarBazTxt'.
-//// Identical to pathToFnName() in auto.js @TODO D.R.Y.
+//// Similar to `lcToTc()`. 'foo/bar-baz.txt' to 'getBarBazTxt'.
+//// Note that we may have several README.md files - they get special treatment.
+//// Identical to pathToFnName() in auto.js and init.js @TODO D.R.Y.
 function pathToFnName (path) {
+    if ( 'oomtility/wrap/' === path.slice(0,15) )
+        path = path.slice(15)
+    if ( '/README.md' === path.slice(-10) ) // eg 'wp/README.md'
+        path = path.replace(/\//g, '-') // eg 'wp-README.md'
     return 'write' + (
         path.split('/').pop().split(/[- .]/g).map(
             w => w ? w[0].toUpperCase() + w.substr(1) : ''
