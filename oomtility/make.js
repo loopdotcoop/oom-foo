@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Make'
-    , VERSION  = '1.3.2'
+    , VERSION  = '1.3.3'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Made by ${NAME} ${VERSION} //\\\\//\\\\ `
@@ -48,7 +48,8 @@ Create Files
    - ‘dist/test/project-node.6.js’           (cannot be run in a browser)
    - ‘dist/test/project-all.6.js’            (can run anywhere)
 7. Transpile the ‘browser’ and ‘all’ files to ES5
-8. Generate ‘.json’ and ‘.min.json’ files in ‘dist/schema/’
+8. Generate ‘project.7.php’ in ‘dist/php/’
+9. Generate ‘.json’ and ‘.min.json’ files in ‘dist/schema/’
 
 Edit Files
 ----------
@@ -286,6 +287,49 @@ if (! es6Only) {
 
 
 
+//// CREATE FILES: PHP
+
+
+//// Delete the current contents of ‘dist/php/’.
+fs.readdirSync('dist/php').forEach( name => {
+    if ('.' != name[0]) fs.unlinkSync('dist/php/' + name)
+})
+
+//// 8. Generate ‘project.7.php’ in ‘dist/php/’
+if (! es6Only) {
+    let php = []
+    php.push(`<?php //\\\\//\\\\ dist/main/${projectLC}.6.js`)
+    php.push(`$classes = Array();`)
+    require(process.cwd()+`/dist/main/${projectLC}.6.js`)
+    getOomClassList(global.Oom).forEach( Class => php.push(
+        // `$schema = json_decode('${
+        //      JSON.stringify(Class.schema, replacer, 2)
+        //  }');\n`
+        `$classes['${Class.name}'] = new class {\n`
+      + `    public static $schema = null;\n`
+      + `    public static function init () {\n`
+      + `        if (null === self::$schema) {\n`
+      + `            self::$schema = json_decode('${
+        JSON.stringify(Class.schema, replacer, 2)
+                     }');\n`
+      + `        }\n`
+      + `        //@TODO init the stat and attr objects\n`
+      + `    }\n`
+      + `};\n`
+      + `$classes['${Class.name}']::init();\n`
+    ) )
+    php = php.join('\n\n\n\n') + BYLINE + '?>'
+    writeFileSyncAndTally( `dist/php/${projectLC}.7.php`, php )
+    function replacer (key, value) {
+        if ('function' === typeof value)
+            value = '@TODO' //@TODO deal with class refs and functions
+        return value
+    }
+}
+
+
+
+
 //// CREATE FILES: SCHEMA
 
 
@@ -294,7 +338,7 @@ fs.readdirSync('dist/schema').forEach( name => {
     if ('.' != name[0]) fs.unlinkSync('dist/schema/' + name)
 })
 
-//// 8. Generate ‘.json’ and ‘.min.json’ files in ‘dist/schema/’
+//// 9. Generate ‘.json’ and ‘.min.json’ files in ‘dist/schema/’
 if (! es6Only) {
     let json = []
     json.push(`{\n"SOURCE":"//\\\\//\\\\ dist/main/${projectLC}.6.js",`)
@@ -302,14 +346,16 @@ if (! es6Only) {
     getOomClassList(global.Oom).forEach( Class => json.push(
         `"${Class.name}":${JSON.stringify(Class.schema, replacer, 2)},`) )
     json = json.join('\n\n\n\n')
-    json += `\n\n\n\n"BYLINE":"\n${BYLINE.slice(4)}" }\n`
+    json += `\n\n\n\n"BYLINE":"${BYLINE.slice(4,-1)}" }\n` // remove `BYLINE` newlines
     writeFileSyncAndTally( `dist/schema/${projectLC}.json`, json )
     function replacer (key, value) {
         if ('function' === typeof value)
             value = '@TODO' //@TODO deal with class refs and functions
         return value
     }
+    //@TODO .min.json
 }
+
 
 
 

@@ -13,7 +13,7 @@ const rxBinaryExt = module.exports.rxBinaryExt =
     new RegExp( '\\.' + BINARY_EXTS.join('$|\\.') + '$', 'i')
 
 const NAME     = 'Oomtility Wrapped'
-    , VERSION  = '1.3.2'
+    , VERSION  = '1.3.3'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
 
@@ -21641,7 +21641,7 @@ let out = ''
 const write = str => out += null == path ? str
   : fs.writeFileSync(path, str, { encoding, flag })
 write(''
-  + '//// ECMASwitch //// 1.3.2 //// March 2018 //// ecmaswitch.loop.coop/ /////////\n'
+  + '//// ECMASwitch //// 1.3.3 //// March 2018 //// ecmaswitch.loop.coop/ /////////\n'
   + '\n'
   + '!function (ROOT) { \'use strict\'\n'
   + '\n'
@@ -21649,7 +21649,7 @@ write(''
   + 'var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}\n'
   + 'var s, onAllLoadedFn\n'
   + 'ECMASwitch.NAME     = \'ECMASwitch\'\n'
-  + 'ECMASwitch.VERSION  = \'1.3.2\'\n'
+  + 'ECMASwitch.VERSION  = \'1.3.3\'\n'
   + 'ECMASwitch.HOMEPAGE = \'http://ecmaswitch.loop.coop/\'\n'
   + '\n'
   + '//// Polyfill `document` for non-browser contexts.\n'
@@ -60492,7 +60492,17 @@ write(''
   + 'Version: '+(version)+' */ // OOMBUMPABLE\n'
   + '\n'
   + '\n'
-  + 'echo \'ok!\';\n'
+  + '$debug = isset($_SERVER[\'SERVER_NAME\'])&&\'localhost\' == $_SERVER[\'SERVER_NA'
+  + 'ME\'];\n'
+  + 'if ($debug) { error_reporting(E_ALL); ini_set(\'display_errors\', 1); }\n'
+  + '\n'
+  + '$classesPath = dirname(__FILE__) . \'/../../dist/php/oom-foo.7.php\';\n'
+  + 'include($classesPath);\n'
+  + '\n'
+  + 'echo \'<pre>\' . print_r($classes[\'Oom.Foo.Post\']::$schema,1) . \'ok</pre>\';\n'
+  + '\n'
+  + '\n'
+  + '?>\n'
   + ''
 )
     return null == path ? out : null

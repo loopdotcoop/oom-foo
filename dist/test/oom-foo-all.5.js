@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.3.2 //// March 2018 //// http://oom-foo.loop.coop/ /////////
+//// Oom.Foo //// 1.3.3 //// March 2018 //// http://oom-foo.loop.coop/ /////////
 
 "use strict";
 !function(ROOT) {
@@ -1129,4 +1129,4 @@ function testify() {
 
 
 
-//// Made by Oomtility Make 1.3.1 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.3.3 //\\//\\ http://oomtility.loop.coop //////////

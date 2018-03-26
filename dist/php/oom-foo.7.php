@@ -1,9 +1,16 @@
-{
-"SOURCE":"//\\//\\ dist/main/oom-foo.6.js",
+<?php //\\//\\ dist/main/oom-foo.6.js
 
 
 
-"Oom.Foo":{
+$classes = Array();
+
+
+
+$classes['Oom.Foo'] = new class {
+    public static $schema = null;
+    public static function init () {
+        if (null === self::$schema) {
+            self::$schema = json_decode('{
   "stat": {
     "NAME": {
       "name": "NAME",
@@ -123,11 +130,21 @@
       "perClass": true
     }
   }
-},
+}');
+        }
+        //@TODO init the stat and attr objects
+    }
+};
+$classes['Oom.Foo']::init();
 
 
 
-"Oom.Foo.Post":{
+
+$classes['Oom.Foo.Post'] = new class {
+    public static $schema = null;
+    public static function init () {
+        if (null === self::$schema) {
+            self::$schema = json_decode('{
   "stat": {
     "NAME": {
       "name": "NAME",
@@ -297,11 +314,21 @@
       "perClass": true
     }
   }
-},
+}');
+        }
+        //@TODO init the stat and attr objects
+    }
+};
+$classes['Oom.Foo.Post']::init();
 
 
 
-"Oom.Foo.Router":{
+
+$classes['Oom.Foo.Router'] = new class {
+    public static $schema = null;
+    public static function init () {
+        if (null === self::$schema) {
+            self::$schema = json_decode('{
   "stat": {
     "NAME": {
       "name": "NAME",
@@ -471,8 +498,15 @@
       "perClass": true
     }
   }
-},
+}');
+        }
+        //@TODO init the stat and attr objects
+    }
+};
+$classes['Oom.Foo.Router']::init();
 
 
 
-"BYLINE":"//// Made by Oomtility Make 1.3.3 //\\//\\ http://oomtility.loop.coop //////////" }
+
+//// Made by Oomtility Make 1.3.3 //\\//\\ http://oomtility.loop.coop //////////
+?>
