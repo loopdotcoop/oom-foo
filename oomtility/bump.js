@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Bump'
-    , VERSION  = '1.3.1'
+    , VERSION  = '1.3.2'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , HELP =
@@ -41,8 +41,8 @@ Standard Files
 2. README.md      Update date on lines containing ‘OOMBUMPABLE’
 3. package.json   Bump version in the "version" field
 
-Files In ‘src/’ and ‘wp/’
--------------------------
+Files In ‘src/’
+---------------
 1. Bump version on lines containing ‘OOMBUMPABLE’
 2. Update date on lines containing ‘OOMBUMPABLE’
 3. Bump version in topline (must be the first line)
@@ -220,40 +220,6 @@ function readdirSyncRecurse (except, path) {
     return out
 }
 let srcPaths = readdirSyncRecurse([], 'src')
-
-//// Make the replacements.
-srcPaths.forEach( path => {
-    let out = []
-    ;(fs.readFileSync(path)+'').split('\n').forEach( (line, i) => {
-
-        if ( /OOMBUMPABLE/.test(line) ) {
-
-            //// 1. Bump version on lines containing ‘OOMBUMPABLE’
-            line = line.replace(rxProjectV, newV)
-
-            //// 2. Update date on lines containing ‘OOMBUMPABLE’
-            line = line.replace(rxProjectYYYYMMDD, newYYYYMMDD)
-            line = line.replace(rxProjectMthYYYY, newMthYYYY)
-        }
-
-        //// 3. Bump version in topline (must be the first line)
-        //// 4. Update date in topline (must be the first line)
-        if (0 === i && topline === line)
-            line = newTopline
-
-        out.push(line)
-    })
-
-    fs.writeFileSync( path, out.join('\n') )
-})
-
-
-
-
-//// FILES IN ‘WP/’
-
-
-srcPaths = readdirSyncRecurse([], 'wp')
 
 //// Make the replacements.
 srcPaths.forEach( path => {

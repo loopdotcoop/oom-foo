@@ -70,9 +70,8 @@ The ${{title}} frontend may optionally be connected to a WordPress backend.
   Enter '${{projectLC.replace(/-/g,"\u005f")}}' as the ‘Database name’.  
 2. Link WordPress to the ${{projectLC}} repo:  
   `$ cd path/to/${{projectLC}}` (cd to the ${{projectLC}} repo directory)  
-  `$ ln -s $PWD'/wp/wp-config.php' ~/Sites/wp`  
-  `$ ln -s $PWD'/wp/plugin' ~/Sites/wp/wp-content/plugins/${{projectLC}}`  
-  `$ ln -s $PWD'/wp/plugin/wp-plugin-entrypoint.php' wp/plugin/${{projectLC}}.php`
+  `$ ln -s $PWD'/support/wp/wp-config.php' ~/Sites/wp`  
+  `$ ln -s $PWD'/support/wp/wp-plugin.php' ~/Sites/wp/wp-content/plugins/${{projectLC}}-wp-plugin.php`  
 3. Init the site:  
   ``$ open http://localhost/~`whoami`/wp`` should show the ‘Welcome’ page  
   Enter '${{projectLC}}' as the ‘Database name’.  

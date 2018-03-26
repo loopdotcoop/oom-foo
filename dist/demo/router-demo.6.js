@@ -2,7 +2,7 @@
 
 
 
-//// Oom.Foo //// 1.3.1 //// March 2018 //// http://oom-foo.loop.coop/ /////////
+//// Oom.Foo //// 1.3.2 //// March 2018 //// http://oom-foo.loop.coop/ /////////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')

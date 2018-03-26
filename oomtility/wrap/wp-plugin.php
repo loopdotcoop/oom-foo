@@ -11,3 +11,6 @@ Author URI: https://richplastow.com/
 License: MIT
 Text Domain: ${{projectLC}}
 Version: ${{version}} */ // OOMBUMPABLE
+
+
+echo 'ok!';

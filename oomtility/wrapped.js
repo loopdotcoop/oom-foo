@@ -13,7 +13,7 @@ const rxBinaryExt = module.exports.rxBinaryExt =
     new RegExp( '\\.' + BINARY_EXTS.join('$|\\.') + '$', 'i')
 
 const NAME     = 'Oomtility Wrapped'
-    , VERSION  = '1.3.1'
+    , VERSION  = '1.3.2'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
 
@@ -21641,7 +21641,7 @@ let out = ''
 const write = str => out += null == path ? str
   : fs.writeFileSync(path, str, { encoding, flag })
 write(''
-  + '//// ECMASwitch //// 1.3.1 //// March 2018 //// ecmaswitch.loop.coop/ /////////\n'
+  + '//// ECMASwitch //// 1.3.2 //// March 2018 //// ecmaswitch.loop.coop/ /////////\n'
   + '\n'
   + '!function (ROOT) { \'use strict\'\n'
   + '\n'
@@ -21649,7 +21649,7 @@ write(''
   + 'var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}\n'
   + 'var s, onAllLoadedFn\n'
   + 'ECMASwitch.NAME     = \'ECMASwitch\'\n'
-  + 'ECMASwitch.VERSION  = \'1.3.1\'\n'
+  + 'ECMASwitch.VERSION  = \'1.3.2\'\n'
   + 'ECMASwitch.HOMEPAGE = \'http://ecmaswitch.loop.coop/\'\n'
   + '\n'
   + '//// Polyfill `document` for non-browser contexts.\n'
@@ -60304,9 +60304,9 @@ write(''
   + '  Enter \''+(projectLC.replace(/-/g,"\u005f"))+'\' as the \u2018Database name\u2019.  \n'
   + '2. Link WordPress to the '+(projectLC)+' repo:  \n'
   + '  `$ cd path/to/'+(projectLC)+'` (cd to the '+(projectLC)+' repo directory)  \n'
-  + '  `$ ln -s $PWD\'/wp/wp-config.php\' ~/Sites/wp`  \n'
-  + '  `$ ln -s $PWD\'/wp/plugin\' ~/Sites/wp/wp-content/plugins/'+(projectLC)+'`  \n'
-  + '  `$ ln -s $PWD\'/wp/plugin/wp-plugin-entrypoint.php\' wp/plugin/'+(projectLC)+'.php`\n'
+  + '  `$ ln -s $PWD\'/support/wp/wp-config.php\' ~/Sites/wp`  \n'
+  + '  `$ ln -s $PWD\'/support/wp/wp-plugin.php\' ~/Sites/wp/wp-content/plugins/'+(projectLC)+'-wp-'
+  + 'plugin.php`  \n'
   + '3. Init the site:  \n'
   + '  ``$ open http://localhost/~`whoami`/wp`` should show the \u2018Welcome\u2019 pag'
   + 'e  \n'
@@ -60462,8 +60462,8 @@ write(''
 
 
 
-//// An Oomtility Wrap of wp-plugin-entrypoint.php \\//\\// https://oomtility.loop.coop ////
-module.exports.writeWpPluginEntrypointPhp = function (config, path) {
+//// An Oomtility Wrap of wp-plugin.php \\//\\// https://oomtility.loop.coop ////
+module.exports.writeWpPluginPhp = function (config, path) {
 const {
     title
   , projectLC
@@ -60490,6 +60490,9 @@ write(''
   + 'License: MIT\n'
   + 'Text Domain: '+(projectLC)+'\n'
   + 'Version: '+(version)+' */ // OOMBUMPABLE\n'
+  + '\n'
+  + '\n'
+  + 'echo \'ok!\';\n'
   + ''
 )
     return null == path ? out : null
