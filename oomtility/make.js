@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Make'
-    , VERSION  = '1.3.0'
+    , VERSION  = '1.3.1'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Made by ${NAME} ${VERSION} //\\\\//\\\\ `
@@ -11,9 +11,8 @@ const NAME     = 'Oomtility Make'
 ${NAME} ${VERSION}
 ${'='.repeat( (NAME+VERSION).length+1 )}
 
-This Node.js script reads source files from ‘src/’ (all ES6), and rebuilds the
-distribution files in ‘dist/’ (ES6, ES5 and minified ES5). It also updates the
-‘dynamic’ sections of various ‘support/’ files.
+This Node.js script reads source files from ‘src/’ and rebuilds the distribution
+files in ‘dist/’. It also updates certain sections of various ‘support/’ files.
 
 Installation
 ------------
@@ -49,6 +48,7 @@ Create Files
    - ‘dist/test/project-node.6.js’           (cannot be run in a browser)
    - ‘dist/test/project-all.6.js’            (can run anywhere)
 7. Transpile the ‘browser’ and ‘all’ files to ES5
+8. Generate ‘.json’ and ‘.min.json’ files in ‘dist/schema/’
 
 Edit Files
 ----------
@@ -216,7 +216,6 @@ if (! es6Only)
 
 
 
-
 //// CREATE FILES: TEST
 
 
@@ -284,6 +283,33 @@ if (! es6Only) {
     )
 }
 
+
+
+
+//// CREATE FILES: SCHEMA
+
+
+//// Delete the current contents of ‘dist/schema/’.
+fs.readdirSync('dist/schema').forEach( name => {
+    if ('.' != name[0]) fs.unlinkSync('dist/schema/' + name)
+})
+
+//// 8. Generate ‘.json’ and ‘.min.json’ files in ‘dist/schema/’
+if (! es6Only) {
+    let json = []
+    json.push(`{\n"SOURCE":"//\\\\//\\\\ dist/main/${projectLC}.6.js",`)
+    require(process.cwd()+`/dist/main/${projectLC}.6.js`)
+    getOomClassList(global.Oom).forEach( Class => json.push(
+        `"${Class.name}":${JSON.stringify(Class.schema, replacer, 2)},`) )
+    json = json.join('\n\n\n\n')
+    json += `\n\n\n\n"BYLINE":"\n${BYLINE.slice(4)}" }\n`
+    writeFileSyncAndTally( `dist/schema/${projectLC}.json`, json )
+    function replacer (key, value) {
+        if ('function' === typeof value)
+            value = '@TODO' //@TODO deal with class refs and functions
+        return value
+    }
+}
 
 
 
@@ -373,5 +399,27 @@ function traceurFix (es5) {
     )
 }
 
+
+//// Convert the `global.Oom` object produced by ‘dist/main/project.6.js’ into a
+//// flat list of subclasses. A class must be type 'function', must be named in
+//// the form 'AbCd3f', and must have a static `schema` property.
+function getOomClassList (obj, found={}) {
+    let list = []
+    for (let name in obj) {
+        const Class = obj[name]
+        if (
+            ('function' === typeof Class)
+         && ('string' === typeof Class.name)
+         && (! found[Class.name]) // prevent infinite recursion
+         && ( /^Oom\./.test(Class.name) )
+         && ('object' === typeof Class.schema)
+        ) {
+            found[Class.name] = true // prevent infinite recursion
+            list.push(Class)
+            list = list.concat( getOomClassList(Class, found) )
+        }
+    }
+    return list
+}
 
 }()

@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.3.0 //// March 2018 //// http://oom-foo.loop.coop/ /////////
+//// Oom.Foo //// 1.3.1 //// March 2018 //// http://oom-foo.loop.coop/ /////////
 
 "use strict";
 !function(ROOT) {
@@ -1722,4 +1722,4 @@ function generateRandomColors() {
 
 
 
-//// Made by Oomtility Make 1.3.0 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.3.1 //\\//\\ http://oomtility.loop.coop //////////

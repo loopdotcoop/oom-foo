@@ -31,7 +31,7 @@ The ${{title}} frontend may optionally be connected to a WordPress backend.
   `Include /private/etc/apache2/extra/httpd-userdir.conf` (allows for home dirs)
 6. `$ sudo nano /etc/apache2/extra/httpd-userdir.conf` and uncomment this line:  
   `Include /private/etc/apache2/users/*.conf`
-7. After `$ sudo apachectl start` (perhaps after a restart):  
+7. After `$ sudo apachectl start` (perhaps after rebooting your computer):  
   `$ echo '<?php phpinfo(); ?>' > ~/Sites/index.php`  
   ``$ open http://localhost/~`whoami` `` should show the PHP info page
 8. Install mysql-5.7.21-1-macos10.13-x86_64.dmg (339MB) from [here](https://dev.mysql.com/downloads/mysql/).  
@@ -48,7 +48,7 @@ The ${{title}} frontend may optionally be connected to a WordPress backend.
   `mysql> \q` to quit — the new password is 'root'  
   `$ fg` and `ctrl-c` to quit safe-mode MySQL
 11. In ‘System Preferences > MySQL’, deselect ‘Automatically start … Startup’  
-12. Fix the 2002 MySQL Socket error:
+12. Fix the 2002 MySQL Socket error:  
   `$ sudo mkdir /var/mysql; sudo ln -s /tmp/mysql.sock /var/mysql/mysql.sock`
 13. Download phpMyAdmin-4.7.9-english.tar.gz (5.7MB) from [here](https://www.phpmyadmin.net/downloads/), and then:  
   `$ tar xzf ~/Downloads/phpMyAdmin-4.7.9-english.tar.gz -C ~/Sites`  
@@ -64,34 +64,41 @@ The ${{title}} frontend may optionally be connected to a WordPress backend.
 
 #### Setting up ${{title}} for WordPress:
 
-1. Start the MySQL server and create a database.
+1. Start the MySQL server and create a database:  
   `$ sudo /usr/local/mysql/support-files/mysql.server start`  
   ``$ open http://localhost/~`whoami`/phpmyadmin/server_databases.php`` (password is 'root')  
   Enter '${{projectLC.replace(/-/g,"\u005f")}}' as the ‘Database name’.  
-2. Link WordPress to the ${{projectLC}} repo, and then initialise the site:  
+2. Link WordPress to the ${{projectLC}} repo:  
   `$ cd path/to/${{projectLC}}` (cd to the ${{projectLC}} repo directory)  
   `$ ln -s $PWD'/wp/wp-config.php' ~/Sites/wp`  
   `$ ln -s $PWD'/wp/plugin' ~/Sites/wp/wp-content/plugins/${{projectLC}}`  
-  `$ ln -s $PWD'/wp/plugin/wp-plugin-entrypoint.php' wp/plugin/${{projectLC}}.php`  
+  `$ ln -s $PWD'/wp/plugin/wp-plugin-entrypoint.php' wp/plugin/${{projectLC}}.php`
+3. Init the site:  
   ``$ open http://localhost/~`whoami`/wp`` should show the ‘Welcome’ page  
   Enter '${{projectLC}}' as the ‘Database name’.  
   Enter 'root' as the ‘Username’ and ‘Password’, and check ‘Confirm use …’.  
-  Enter a real email you have access to for the ‘Your Email’.  
-  Click through to confirm and log in to wp-admin.  
+  Click through to confirm, and log in to wp-admin.  
   Note: at this point, none of the files in ‘~/Sites/wp/’ have changed.  
   The ‘${{projectLC.replace(/-/g,"\u005f")}}’ database’s ‘wp_options’ table is populated with 128 rows.  
   Also, the ‘root’ user, default comment and posts, and the ‘Uncategorized’ category.  
+4. Enable pretty permalinks:
+  ``$ open http://localhost/~`whoami`/wp/wp-admin/options-permalink..php``  
+  Check the ‘Post name’ radio button.  
+  Click ‘Save Changes’.  
+  Copy-paste the suggested ‘.htaccess’ content into ‘~/Sites/wp/.htaccess’.
+5. Activate the ${{title}} plugin:
+  ``$ open http://localhost/~`whoami`/wp/wp-admin/plugins.php``  
+  Click ‘Activate’ under ‘${{title}}’.
+  The ‘active_plugins’ field in the database’s ‘wp_options’ table will be updated.
 
 
 #### Before each dev session:
 
 1. Start Apache and MySQL:  
-  `$ sudo apachectl start`  
-  `$ sudo /usr/local/mysql/support-files/mysql.server start`
+  `$ sudo apachectl start; sudo /usr/local/mysql/support-files/mysql.server start`
 
 
 #### After each dev session:
 
 1. Stop Apache and MySQL:  
-  `$ sudo apachectl stop`  
-  `$ sudo /usr/local/mysql/support-files/mysql.server stop`
+  `$ sudo apachectl stop; sudo /usr/local/mysql/support-files/mysql.server stop`

@@ -10,4 +10,4 @@ Author: Rich Plastow for Loop.Coop
 Author URI: https://richplastow.com/
 License: MIT
 Text Domain: oom-foo
-Version: 1.3.0 */ // OOMBUMPABLE
+Version: 1.3.1 */ // OOMBUMPABLE

@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.3.0 //// March 2018 //// http://oom-foo.loop.coop/ /////////
+//// Oom.Foo //// 1.3.1 //// March 2018 //// http://oom-foo.loop.coop/ /////////
 
 //// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
 //// Windows 7:  IE 9, Safari 5.1
