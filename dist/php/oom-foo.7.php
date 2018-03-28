@@ -2,11 +2,11 @@
 
 
 
-$classes = Array();
+$oomClasses = Array();
 
 
 
-$classes['Oom.Foo'] = new class {
+$oomClasses['Oom.Foo'] = new class {
     public static $schema = null;
     public static function init () {
         if (null === self::$schema) {
@@ -24,7 +24,7 @@ $classes['Oom.Foo'] = new class {
     },
     "VERSION": {
       "name": "VERSION",
-      "default": "1.3.3",
+      "default": "1.3.4",
       "isFn": false,
       "type": "@TODO",
       "typeStr": "String",
@@ -135,12 +135,12 @@ $classes['Oom.Foo'] = new class {
         //@TODO init the stat and attr objects
     }
 };
-$classes['Oom.Foo']::init();
+$oomClasses['Oom.Foo']::init();
 
 
 
 
-$classes['Oom.Foo.Post'] = new class {
+$oomClasses['Oom.Foo.Post'] = new class {
     public static $schema = null;
     public static function init () {
         if (null === self::$schema) {
@@ -158,7 +158,7 @@ $classes['Oom.Foo.Post'] = new class {
     },
     "VERSION": {
       "name": "VERSION",
-      "default": "1.3.3",
+      "default": "1.3.4",
       "isFn": false,
       "type": "@TODO",
       "typeStr": "String",
@@ -319,12 +319,12 @@ $classes['Oom.Foo.Post'] = new class {
         //@TODO init the stat and attr objects
     }
 };
-$classes['Oom.Foo.Post']::init();
+$oomClasses['Oom.Foo.Post']::init();
 
 
 
 
-$classes['Oom.Foo.Router'] = new class {
+$oomClasses['Oom.Foo.Router'] = new class {
     public static $schema = null;
     public static function init () {
         if (null === self::$schema) {
@@ -342,7 +342,7 @@ $classes['Oom.Foo.Router'] = new class {
     },
     "VERSION": {
       "name": "VERSION",
-      "default": "1.3.3",
+      "default": "1.3.4",
       "isFn": false,
       "type": "@TODO",
       "typeStr": "String",
@@ -503,10 +503,10 @@ $classes['Oom.Foo.Router'] = new class {
         //@TODO init the stat and attr objects
     }
 };
-$classes['Oom.Foo.Router']::init();
+$oomClasses['Oom.Foo.Router']::init();
 
 
 
 
-//// Made by Oomtility Make 1.3.3 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.3.4 //\\//\\ http://oomtility.loop.coop //////////
 ?>

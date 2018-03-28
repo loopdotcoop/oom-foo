@@ -1,6 +1,6 @@
 {
   "name": "oom-foo",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "description": "Initial test of the oom-hub architecture",
   "main": "dist/main/oom-foo.min.5.js",
   "directories": {

@@ -1,16 +1,16 @@
 <?php
 /**
- * @package ${{title}}
+ * @package Oom.Foo
  */
 /*
-Plugin Name: ${{title}}
-Plugin URI: ${{repo}}/tree/master/wp/
-Description: ${{description}}
+Plugin Name: Oom.Foo
+Plugin URI: https://github.com/loopdotcoop/oom-foo/tree/master/wp/
+Description: Initial test of the oom-hub architecture
 Author: Rich Plastow for Loop.Coop
 Author URI: https://richplastow.com/
 License: MIT
-Text Domain: ${{projectLC}}
-Version: ${{version}} */ // OOMBUMPABLE
+Text Domain: oom-foo
+Version: 1.3.4 */ // OOMBUMPABLE
 
 
 $debug = // show debug info on localhost when this PHP file is run directly.

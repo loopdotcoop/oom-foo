@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Make'
-    , VERSION  = '1.3.3'
+    , VERSION  = '1.3.4'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Made by ${NAME} ${VERSION} //\\\\//\\\\ `
@@ -299,13 +299,13 @@ fs.readdirSync('dist/php').forEach( name => {
 if (! es6Only) {
     let php = []
     php.push(`<?php //\\\\//\\\\ dist/main/${projectLC}.6.js`)
-    php.push(`$classes = Array();`)
+    php.push(`$oomClasses = Array();`)
     require(process.cwd()+`/dist/main/${projectLC}.6.js`)
     getOomClassList(global.Oom).forEach( Class => php.push(
         // `$schema = json_decode('${
         //      JSON.stringify(Class.schema, replacer, 2)
         //  }');\n`
-        `$classes['${Class.name}'] = new class {\n`
+        `$oomClasses['${Class.name}'] = new class {\n`
       + `    public static $schema = null;\n`
       + `    public static function init () {\n`
       + `        if (null === self::$schema) {\n`
@@ -316,7 +316,7 @@ if (! es6Only) {
       + `        //@TODO init the stat and attr objects\n`
       + `    }\n`
       + `};\n`
-      + `$classes['${Class.name}']::init();\n`
+      + `$oomClasses['${Class.name}']::init();\n`
     ) )
     php = php.join('\n\n\n\n') + BYLINE + '?>'
     writeFileSyncAndTally( `dist/php/${projectLC}.7.php`, php )

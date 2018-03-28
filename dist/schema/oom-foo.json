@@ -17,7 +17,7 @@
     },
     "VERSION": {
       "name": "VERSION",
-      "default": "1.3.3",
+      "default": "1.3.4",
       "isFn": false,
       "type": "@TODO",
       "typeStr": "String",
@@ -141,7 +141,7 @@
     },
     "VERSION": {
       "name": "VERSION",
-      "default": "1.3.3",
+      "default": "1.3.4",
       "isFn": false,
       "type": "@TODO",
       "typeStr": "String",
@@ -315,7 +315,7 @@
     },
     "VERSION": {
       "name": "VERSION",
-      "default": "1.3.3",
+      "default": "1.3.4",
       "isFn": false,
       "type": "@TODO",
       "typeStr": "String",
@@ -475,4 +475,4 @@
 
 
 
-"BYLINE":"//// Made by Oomtility Make 1.3.3 //\\//\\ http://oomtility.loop.coop //////////" }
+"BYLINE":"//// Made by Oomtility Make 1.3.4 //\\//\\ http://oomtility.loop.coop //////////" }

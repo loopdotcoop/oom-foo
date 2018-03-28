@@ -71,7 +71,7 @@ The Oom.Foo frontend may optionally be connected to a WordPress backend.
 2. Link WordPress to the oom-foo repo:  
   `$ cd path/to/oom-foo` (cd to the oom-foo repo directory)  
   `$ ln -s $PWD'/support/wp/wp-config.php' ~/Sites/wp`  
-  `$ ln -s $PWD'/support/wp/wp-plugin.php' ~/Sites/wp/wp-content/plugins/oom-foo-wp-plugin.php`  
+  `$ ln -s $PWD'/support/wp/plugin' ~/Sites/wp/wp-content/plugins/oom-foo`  
 3. Init the site:  
   ``$ open http://localhost/~`whoami`/wp`` should show the ‘Welcome’ page  
   Enter 'oom-foo' as the ‘Database name’.  
