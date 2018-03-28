@@ -25,7 +25,7 @@ $oomClasses['Oom.Foo'] = new class {
     },
     "VERSION": {
       "name": "VERSION",
-      "default": "1.3.5",
+      "default": "1.3.6",
       "isFn": false,
       "type": "@TODO",
       "typeStr": "String",
@@ -165,7 +165,7 @@ $oomClasses['Oom.Foo.Post'] = new class {
     },
     "VERSION": {
       "name": "VERSION",
-      "default": "1.3.5",
+      "default": "1.3.6",
       "isFn": false,
       "type": "@TODO",
       "typeStr": "String",
@@ -360,7 +360,7 @@ $oomClasses['Oom.Foo.Router'] = new class {
     },
     "VERSION": {
       "name": "VERSION",
-      "default": "1.3.5",
+      "default": "1.3.6",
       "isFn": false,
       "type": "@TODO",
       "typeStr": "String",
@@ -536,5 +536,5 @@ $oomClasses['Oom.Foo.Router']::init();
 
 
 
-//// Made by Oomtility Make 1.3.4 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.3.6 //\\//\\ http://oomtility.loop.coop //////////
 ?>

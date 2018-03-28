@@ -3,7 +3,7 @@
 The ${{title}} frontend may optionally be connected to a WordPress backend.
 
 
-#### Setting up a clean install of macOS 10.13 High Sierra (from [Neil Gee’s article](https://coolestguidesontheplanet.com/install-apache-mysql-php-and-phpmyadmin-on-macos-high-sierra-10-13/)):
+#### Setting up an AMP stack for the first time on macOS 10.13 High Sierra (from [Neil Gee’s article](https://coolestguidesontheplanet.com/install-apache-mysql-php-and-phpmyadmin-on-macos-high-sierra-10-13/))
 
 1. Apache should already be installed:  
   `$ httpd -v` should output `Server version: Apache/2.4.28 (Unix)` or similar.
@@ -57,18 +57,68 @@ The ${{title}} frontend may optionally be connected to a WordPress backend.
   ``$ open http://localhost/~`whoami`/phpmyadmin/setup/``  
   Click ‘new server’, the ‘Authentication’ tab.  
   Enter 'root' next to ‘Password for config auth’.  
-14. Download the WordPress .tar.gz (8.2MB) from [here](https://wordpress.org/download/), and then:  
+
+
+#### Setting up WordPress for the first time
+
+1. Download the WordPress .tar.gz (8.2MB) from [here](https://wordpress.org/download/), and then:  
   `$ tar xzf ~/Downloads/wordpress-4.9.4.tar.gz -C ~/Sites`  
   `$ ln -s ~/Sites/wordpress ~/Sites/wp`  
-15. Download, install and activate the CMB2 plugin:  
+2. Download, install and activate the CMB2 plugin:  
   `$ open https://downloads.wordpress.org/plugin/cmb2.zip`  
   `$ tar xzf ~/Downloads/cmb2.zip -C ~/Sites/wp/wp-content/plugins`  
   ``$ open http://localhost/~`whoami`/wp/wp-admin/plugins.php``  
   Click ‘Activate’ under ‘CMB2’.  
   The ‘active_plugins’ field in the database’s ‘wp_options’ table will be updated.
+3. Download, install and activate the Basic Auth plugin:  
+  `$ git clone --depth=1 --branch=master https://github.com/WP-API/Basic-Auth.git ~/Sites/wp/wp-content/plugins/Basic-Auth`  
+  `$ rm -rf ~/Sites/wp/wp-content/plugins/Basic-Auth/.git`  
+  ``$ open http://localhost/~`whoami`/wp/wp-admin/plugins.php``  
+  Click ‘Activate’ under ‘JSON Basic Authentication’.  
+  Note that Basic-Auth _is not secure_ and should only be used for dev, or over HTTPS.  
+
+<!--
+From http://www.efficiencyofmovement.com/set-postman-wordpress-wp-rest-api/
+3. Download, install and activate the OAuth1 plugin:  
+  `$ git clone --depth=1 --branch=master https://github.com/WP-API/OAuth1.git ~/Sites/wp/wp-content/plugins/OAuth1`  
+  `$ rm -rf ~/Sites/wp/wp-content/plugins/OAuth1/.git`  
+  ``$ open http://localhost/~`whoami`/wp/wp-admin/plugins.php``  
+  Click ‘Activate’ under ‘OAuth2’.  
+  Note that OAuth1 _does not_ require HTTPS, but OAuth2 _does_.  
+4. Create a new OAuth1 Application and Consumer.
+  ``$ open http://localhost/~`whoami`/wp/wp-admin/users.php?page=rest-oauth1-apps``  
+  Click ‘Add New’, and enter:
+    - ‘Postman’ for the ‘Consumer Name’  
+    - ‘Testing WP API’ for the ‘Description’  
+    - ‘oauth1-postman’ for the ‘Callback’  
+  Make a note of the ‘Client Key’ and ‘Client Secret’.
+5. Begin authorizing Postman:  
+  Create a new ‘Request’, called ‘Oom Test’  
+  ‘http://localhost/~<your-macos-user>/wp/oauth1/request’ in ‘Enter Request URL’
+  Click the ‘Authorization’ tab  
+  Under ‘Type’ select ‘OAuth 1.0’  
+  Under ‘Add authorization data to’ select ‘Request Headers’  
+  Paste the WordPress ‘Client Key’ into ‘Consumer Key’  
+  Paste the WordPress ‘Client Secret’ into ‘Consumer Secret’  
+  Click ‘Send’
+  Make a note of the response, something like:  
+  `oauth_token=y5JaJxbAOUGnjfmMB1u5ar2c&oauth_token_secret`  
+  `=sFyOC8jeboPDInDSt9xrGHWSX1TJHF5vRYAUwFsKMYlPDhh8&oauth_callback_confirmed=true`  
+6. Combine the ‘Client Key’, ‘oauth_token’ and ‘oauth_token_secret’ into a URL,
+  and visit it in a browser you are logged into WordPress on:  
+  `$ CK=xx`  replace xx with your ‘Client Key’  
+  `$ OT=xx`  replace xx with your ‘oauth_token’  
+  `$ OTS=xx`  replace xx with your ‘oauth_token_secret’  
+  ``$ open http://localhost/~`whoami`'/wp/wp-login.php?action=oauth1_authorize&oauth_consumer_key='$CK'&oauth_token='$OT'&oauth_token_secret='$OTS``
+7. Finish authorizing Postman:
+  You should see a page titled ‘Connect Postman’  
+  Click the ‘Authorize’ button  
+  Make a note of the verification token, something like:  
+  `RGCn6nBwWGvccef30siifLYw`  
+-->
 
 
-#### Setting up ${{title}} for WordPress:
+#### Setting up ${{title}} for WordPress
 
 1. Start the MySQL server and create a database:  
   `$ sudo /usr/local/mysql/support-files/mysql.server start`  
@@ -97,13 +147,13 @@ The ${{title}} frontend may optionally be connected to a WordPress backend.
   The ‘active_plugins’ field in the database’s ‘wp_options’ table will be updated.
 
 
-#### Before each dev session:
+#### Before each dev session
 
 1. Start Apache and MySQL:  
   `$ sudo apachectl start; sudo /usr/local/mysql/support-files/mysql.server start`
 
 
-#### After each dev session:
+#### After each dev session
 
 1. Stop Apache and MySQL:  
   `$ sudo apachectl stop; sudo /usr/local/mysql/support-files/mysql.server stop`

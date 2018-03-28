@@ -10,7 +10,7 @@ Author: Rich Plastow for Loop.Coop
 Author URI: https://richplastow.com/
 License: MIT
 Text Domain: oom-foo
-Version: 1.3.5
+Version: 1.3.6
 */
 
 
@@ -35,12 +35,18 @@ if ($debug) {
 
 if (! $debug) {
 
+
+
+
+    //// SETUP
+
+
     //// Flush CPT rewrite rules when the plugin is activated or deactivated.
     //// https://codex.wordpress.org/Function_Reference/flush_rewrite_rules
     register_deactivation_hook( __FILE__, 'flush_rewrite_rules' );
     register_activation_hook( __FILE__, 'oom_foo_on_activation' );
     function oom_foo_flush_rewrites() {
-    	oom_foo_register_cpts();
+    	oom_foo_register_cpts_and_cmb2s();
     	flush_rewrite_rules();
     }
 
@@ -66,11 +72,16 @@ if (! $debug) {
     }
 
 
+
+
+    //// CPTs AND CMB2s
+
+
     //// Initialise CPTs when CMB2 is ready.
-    add_action('cmb2_init', 'oom_foo_register_cpts');
+    add_action('cmb2_init', 'oom_foo_register_cpts_and_cmb2s');
 
     //// Define CPTs and CMB2s.
-    function oom_foo_register_cpts () {
+    function oom_foo_register_cpts_and_cmb2s () {
         global $oomClasses;
 
         //// Step through each Oom class.
@@ -83,16 +94,17 @@ if (! $debug) {
 
             //// Define the class’s CPT (custom post type).
             register_post_type($nameLCU, array(
-                'public'      => true
-              , 'has_archive' => false
-              , 'labels'      => array( 'name' => $nameUCD )
-              , 'supports'    => array('title', 'author') //@TODO only if defined in `inst`
+                'public'       => true
+              , 'has_archive'  => false
+              , 'labels'       => array( 'name' => $nameUCD )
+              , 'supports'     => array('title', 'author') //@TODO only if defined in `inst`
+              , 'show_in_rest' => true
             ) );
 
             //// Define the class’s CMB2s (custom meta boxes).
             $box = new_cmb2_box( array(
-                'id'           => $nameLCU . '_my_group'
-              , 'title'        => __('My Group')
+                'id'           => $nameLCU . '_my_group' //@TODO schema should allow fields to be grouped
+              , 'title'        => __('My Group') //@TODO schema should allow fields to be grouped
               , 'object_types' => array($nameLCU)
               , 'context'      => 'normal'
               , 'priority'     => 'high'
@@ -102,16 +114,60 @@ if (! $debug) {
             foreach ($schema['attr'] as $attrname => $desc) {
                 $attrnameLCU = strtolower($attrname); // lowercase - and will already be underscored
                 $box->add_field( array(
-                    'id'   => $nameLCU . '_' . $attrnameLCU
+                    'id'   => $attrnameLCU
                   , 'name' => $attrname . ' (' . $desc['typeStr'] . ')'
                   , 'desc' => $desc['remarks']
                   , 'type' => schemaTypeToCmb2Type( $desc['typeStr'] )
                 ) );
-            }
+            }//foreach attr
+
+        }//foreach class
+
+    }//oom_foo_register_cpts_and_cmb2s()
 
 
-        }//foreach
+
+
+    //// REST API
+
+    //// Retrieves custom meta for use in the REST API.
+    function oom_foo_get_cm($object, $field_name, $request, $object_type) {
+        return get_post_meta($object['id'], $field_name, true);
     }
+
+    //// Writes custom meta for use in the REST API.
+    function oom_foo_update_cm($value, $object, $field_name, $request, $object_type) {
+        return update_post_meta($object['id'], $field_name, $value);
+    }
+
+    //// Register custom meta with REST API when REST API is ready.
+    add_action('rest_api_init', 'oom_foo_register_rest_cm');
+
+    //// Register custom meta with REST API.
+    function oom_foo_register_rest_cm () {
+        global $oomClasses;
+
+        //// Step through each Oom class.
+        foreach ($oomClasses as $classname => $class) {
+
+            //// Get info about the class.
+            $schema = $class::$schema;
+            $nameUCD = $schema['stat']['NAME']['default']; // uppercase dotted
+            $nameLCU = strtolower( str_replace('.', '_', $nameUCD) ); // lowercase underscored
+
+            foreach ($schema['attr'] as $attrname => $desc) {
+                $attrnameLCU = strtolower($attrname); // lowercase - and will already be underscored
+                register_rest_field($nameLCU, $attrnameLCU, array(
+                    'get_callback'    => 'oom_foo_get_cm'
+                  , 'update_callback' => 'oom_foo_update_cm'
+                  , 'schema'          => null
+                ) );
+            }//foreach attr
+
+        }//foreach class
+
+    }//oom_foo_register_rest_cm()
+
 
 }//if (! $debug)
 
