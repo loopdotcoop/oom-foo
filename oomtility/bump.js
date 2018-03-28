@@ -37,9 +37,10 @@ $ oombump --set 0.44.99       # Set the version to 0.44.99
 
 Standard Files
 --------------
-1. README.md      Bump version on lines containing ‘OOMBUMPABLE’
-2. README.md      Update date on lines containing ‘OOMBUMPABLE’
-3. package.json   Bump version in the "version" field
+1. README.md                        Bump version on lines containing OOMBUMPABLE
+2. README.md                        Update date on lines containing OOMBUMPABLE
+3. package.json                     Bump version in the "version" field
+4. support/wp/plugin/wp-plugin.php  Bump version after ‘Version: ’
 
 Files In ‘src/’
 ---------------
@@ -174,10 +175,10 @@ let out = []
 ;(fs.readFileSync('README.md')+'').split('\n').forEach( line => {
     if ( /OOMBUMPABLE/.test(line) ) {
 
-        //// 1. README.md      Bump version on lines containing ‘OOMBUMPABLE’
+        //// 1. README.md  Bump version on lines containing OOMBUMPABLE
         line = line.replace(rxProjectV, newV)
 
-        //// 2. README.md      Update date on lines containing ‘OOMBUMPABLE’
+        //// 2. README.md  Update date on lines containing OOMBUMPABLE
         line = line.replace(rxProjectYYYYMMDD, newYYYYMMDD)
         line = line.replace(rxProjectMthYYYY, newMthYYYY)
     }
@@ -185,17 +186,23 @@ let out = []
 })
 fs.writeFileSync( 'README.md', out.join('\n') )
 
+//// 3. package.json  Bump version in the "version" field
 out = []
 ;(fs.readFileSync('package.json')+'').split('\n').forEach( line => {
-    if ( new RegExp(`^\\s*"version":\\s*"${projectV}",?$`,'g').test(line) ) {
-
-        //// 3. package.json   Bump version in the "version" field
+    if ( new RegExp(`^\\s*"version":\\s*"${projectV}",?$`,'g').test(line) )
         line = line.replace(rxProjectV, newV)
-
-    }
     out.push(line)
 })
 fs.writeFileSync( 'package.json', out.join('\n') )
+
+//// 4. support/wp/plugin/wp-plugin.php  Bump version after ‘Version: ’
+out = []
+;(fs.readFileSync('support/wp/plugin/wp-plugin.php')+'').split('\n').forEach( line => {
+    if ( new RegExp(`^Version:\\s*${projectV}\\s*$`,'g').test(line) )
+        line = line.replace(rxProjectV, newV)
+    out.push(line)
+})
+fs.writeFileSync( 'support/wp/plugin/wp-plugin.php', out.join('\n') )
 
 
 

@@ -8,6 +8,7 @@ const CONSTS = {
   , title:       0
   , projectTC:   0
   , projectLC:   0
+  , projectLCU:  0 // lowercase underscored, eg 'oom_foo'
   , classname:   0
   , extendname:  0
   , nameLC:      0

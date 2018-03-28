@@ -153,6 +153,7 @@ while ( opt = process.argv.shift() ) {
 
 //// Set constants.
 const projectLC = process.cwd().split('/').pop() // lowercase, eg 'oom-foo'
+const projectLCU = projectLC.replace(/-/g, '_') // lc underscored, eg 'oom_foo'
 const rxProjectLC = /^oom-[-a-z]{1,8}$|^[a-z]{1,8}oom$/
 if (! rxProjectLC.test(projectLC) ) return console.warn(
     `Project '${projectLC}' fails `+rxProjectLC)
@@ -544,8 +545,9 @@ function addFile (path) {
         topline
       , isApp: true//@TODO remove from all oomtility
       , isTop: true
-      , projectLC                       // eg 'oom-foo'
       , projectTC                       // eg 'Oom.Foo'
+      , projectLC                       // eg 'oom-foo'
+      , projectLCU                      // eg 'oom_foo'
       , classname:   projectTC.slice(4) // eg 'Foo'
       , name:        projectLC
       , date:        projectDate

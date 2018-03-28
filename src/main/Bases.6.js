@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.3.4 //// March 2018 //// http://oom-foo.loop.coop/ /////////
+//// Oom.Foo //// 1.3.5 //// March 2018 //// http://oom-foo.loop.coop/ /////////
 
 !function (ROOT) { 'use strict'
 
 //// Metadata for Oom.Foo
 const META = {
     NAME:     'Oom.Foo'
-  , VERSION:  '1.3.4' // OOMBUMPABLE
+  , VERSION:  '1.3.5' // OOMBUMPABLE
   , HOMEPAGE: 'http://oom-foo.loop.coop/'
   , REMARKS:  'Initial test of the oom-hub architecture'
   , LOADED_FIRST: ! ROOT.Oom // true if the Oom class is defined by this module
@@ -171,7 +171,7 @@ if (META.LOADED_FIRST) {
                        + 'instantiation. As a side effect of recording '
                        + '`INST_INDEX`, `inst_tally` is incremented'
               , default: instance => (++instance.constructor.stat._inst_tally)-1
-              , type:    'string'
+              , type:    'nnint'
             }
 
             //// Public read-only attributes.
@@ -481,7 +481,7 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
                 //     return Array.isArray(value)
                 case 'color': // A-Frame: 'color'
                     return /^#[0-9a-fA-F]{6}$/.test(value)
-                case 'int': // A-Frame: 'int'
+                case 'nnint': // A-Frame: 'int', but not negative numbers
                     return Number.isInteger(value)
                 case 'null': // not a Vue or A-Frame type
                     return null === value
@@ -775,7 +775,7 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
                 const validStr = {
                     undefined: 1 //@TODO add more of these, following:
                   , color    : 1 //aframe.io/docs/master/core/component.html#property-types
-                  , int      : 1
+                  , nnint    : 1
                   , null     : 1
                 }
                 if (! inDesc.hasOwnProperty('type') )
@@ -783,7 +783,7 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
                 else if (strToObj[inDesc.type])
                     outDesc.type = strToObj[inDesc.type] // 'number' -> Number
                 else if (validStr[inDesc.type])
-                    outDesc.type = inDesc.type // 'int' -> 'int'
+                    outDesc.type = inDesc.type // 'nnint' -> 'nnint'
                 else {
                     if ('function' !== typeof inDesc.type)
                         throw TypeError(PFX+`inDesc.type is not a string or a function`)
@@ -795,7 +795,8 @@ function assignKIT (previousKIT={}) { return Object.assign({}, {
                 outDesc.definedIn = Class
                 outDesc.definedInStr = Class.name
                 outDesc.perClass = null == inDesc.perClass ? true : inDesc.perClass
-                if (inDesc.remarks) outDesc.remarks = inDesc.remarks
+                outDesc.remarks = inDesc.remarks ||
+                  'A' + ( /^[aeiou]/.test(outDesc.typeStr) ? 'n ' : ' ' ) + outDesc.typeStr //@TODO test
             }
         }
         return out

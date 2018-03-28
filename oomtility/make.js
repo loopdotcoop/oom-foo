@@ -311,7 +311,7 @@ if (! es6Only) {
       + `        if (null === self::$schema) {\n`
       + `            self::$schema = json_decode('${
         JSON.stringify(Class.schema, replacer, 2)
-                     }');\n`
+                     }', true);\n`
       + `        }\n`
       + `        //@TODO init the stat and attr objects\n`
       + `    }\n`

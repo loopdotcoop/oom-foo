@@ -1,11 +1,11 @@
-//// Oom.Foo //// 1.3.4 //// March 2018 //// http://oom-foo.loop.coop/ /////////
+//// Oom.Foo //// 1.3.5 //// March 2018 //// http://oom-foo.loop.coop/ /////////
 
 "use strict";
 !function(ROOT) {
   'use strict';
   var META = {
     NAME: 'Oom.Foo',
-    VERSION: '1.3.4',
+    VERSION: '1.3.5',
     HOMEPAGE: 'http://oom-foo.loop.coop/',
     REMARKS: 'Initial test of the oom-hub architecture',
     LOADED_FIRST: !ROOT.Oom
@@ -112,7 +112,7 @@
           default: function(instance) {
             return (++instance.constructor.stat._inst_tally) - 1;
           },
-          type: 'string'
+          type: 'nnint'
         },
         hilite: {
           remarks: 'General purpose, useful as a dev label or status',
@@ -302,7 +302,7 @@
               return valid.type === (typeof value === 'undefined' ? 'undefined' : $traceurRuntime.typeof(value));
             case 'color':
               return /^#[0-9a-fA-F]{6}$/.test(value);
-            case 'int':
+            case 'nnint':
               return Number.isInteger(value);
             case 'null':
               return null === value;
@@ -468,7 +468,7 @@
             var validStr = {
               undefined: 1,
               color: 1,
-              int: 1,
+              nnint: 1,
               null: 1
             };
             if (!inDesc.hasOwnProperty('type'))
@@ -488,8 +488,7 @@
             outDesc.definedIn = Class;
             outDesc.definedInStr = Class.name;
             outDesc.perClass = null == inDesc.perClass ? true : inDesc.perClass;
-            if (inDesc.remarks)
-              outDesc.remarks = inDesc.remarks;
+            outDesc.remarks = inDesc.remarks || 'A' + (/^[aeiou]/.test(outDesc.typeStr) ? 'n ' : ' ') + outDesc.typeStr;
           }
         }
         return out;

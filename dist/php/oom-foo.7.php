@@ -20,17 +20,19 @@ $oomClasses['Oom.Foo'] = new class {
       "typeStr": "String",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A String"
     },
     "VERSION": {
       "name": "VERSION",
-      "default": "1.3.4",
+      "default": "1.3.5",
       "isFn": false,
       "type": "@TODO",
       "typeStr": "String",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A String"
     },
     "HOMEPAGE": {
       "name": "HOMEPAGE",
@@ -40,7 +42,8 @@ $oomClasses['Oom.Foo'] = new class {
       "typeStr": "String",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A String"
     },
     "REMARKS": {
       "name": "REMARKS",
@@ -50,7 +53,8 @@ $oomClasses['Oom.Foo'] = new class {
       "typeStr": "String",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A String"
     },
     "inst_tally": {
       "name": "inst_tally",
@@ -82,7 +86,8 @@ $oomClasses['Oom.Foo'] = new class {
       "typeStr": "Boolean",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A Boolean"
     }
   },
   "attr": {
@@ -101,8 +106,8 @@ $oomClasses['Oom.Foo'] = new class {
       "name": "INST_INDEX",
       "default": "@TODO",
       "isFn": true,
-      "type": "@TODO",
-      "typeStr": "String",
+      "type": "nnint",
+      "typeStr": "nnint",
       "definedIn": "@TODO",
       "definedInStr": "Oom",
       "perClass": true,
@@ -127,10 +132,11 @@ $oomClasses['Oom.Foo'] = new class {
       "typeStr": "Number",
       "definedIn": "@TODO",
       "definedInStr": "Oom",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A Number"
     }
   }
-}');
+}', true);
         }
         //@TODO init the stat and attr objects
     }
@@ -154,17 +160,19 @@ $oomClasses['Oom.Foo.Post'] = new class {
       "typeStr": "String",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo.Post",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A String"
     },
     "VERSION": {
       "name": "VERSION",
-      "default": "1.3.4",
+      "default": "1.3.5",
       "isFn": false,
       "type": "@TODO",
       "typeStr": "String",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A String"
     },
     "HOMEPAGE": {
       "name": "HOMEPAGE",
@@ -174,7 +182,8 @@ $oomClasses['Oom.Foo.Post'] = new class {
       "typeStr": "String",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A String"
     },
     "REMARKS": {
       "name": "REMARKS",
@@ -184,7 +193,8 @@ $oomClasses['Oom.Foo.Post'] = new class {
       "typeStr": "String",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo.Post",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A String"
     },
     "inst_tally": {
       "name": "inst_tally",
@@ -216,7 +226,8 @@ $oomClasses['Oom.Foo.Post'] = new class {
       "typeStr": "Boolean",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A Boolean"
     },
     "prop_d": {
       "name": "prop_d",
@@ -226,7 +237,8 @@ $oomClasses['Oom.Foo.Post'] = new class {
       "typeStr": "Number",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo.Post",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A Number"
     },
     "propG": {
       "name": "propG",
@@ -236,7 +248,8 @@ $oomClasses['Oom.Foo.Post'] = new class {
       "typeStr": "Number",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo.Post",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A Number"
     }
   },
   "attr": {
@@ -255,8 +268,8 @@ $oomClasses['Oom.Foo.Post'] = new class {
       "name": "INST_INDEX",
       "default": "@TODO",
       "isFn": true,
-      "type": "@TODO",
-      "typeStr": "String",
+      "type": "nnint",
+      "typeStr": "nnint",
       "definedIn": "@TODO",
       "definedInStr": "Oom",
       "perClass": true,
@@ -281,7 +294,8 @@ $oomClasses['Oom.Foo.Post'] = new class {
       "typeStr": "Number",
       "definedIn": "@TODO",
       "definedInStr": "Oom",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A Number"
     },
     "OK": {
       "name": "OK",
@@ -291,7 +305,8 @@ $oomClasses['Oom.Foo.Post'] = new class {
       "typeStr": "Number",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo.Post",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A Number"
     },
     "prop_d": {
       "name": "prop_d",
@@ -301,7 +316,8 @@ $oomClasses['Oom.Foo.Post'] = new class {
       "typeStr": "Number",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo.Post",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A Number"
     },
     "propG": {
       "name": "propG",
@@ -311,10 +327,11 @@ $oomClasses['Oom.Foo.Post'] = new class {
       "typeStr": "Number",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo.Post",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A Number"
     }
   }
-}');
+}', true);
         }
         //@TODO init the stat and attr objects
     }
@@ -338,17 +355,19 @@ $oomClasses['Oom.Foo.Router'] = new class {
       "typeStr": "String",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo.Router",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A String"
     },
     "VERSION": {
       "name": "VERSION",
-      "default": "1.3.4",
+      "default": "1.3.5",
       "isFn": false,
       "type": "@TODO",
       "typeStr": "String",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A String"
     },
     "HOMEPAGE": {
       "name": "HOMEPAGE",
@@ -358,7 +377,8 @@ $oomClasses['Oom.Foo.Router'] = new class {
       "typeStr": "String",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A String"
     },
     "REMARKS": {
       "name": "REMARKS",
@@ -368,7 +388,8 @@ $oomClasses['Oom.Foo.Router'] = new class {
       "typeStr": "String",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo.Router",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A String"
     },
     "inst_tally": {
       "name": "inst_tally",
@@ -400,7 +421,8 @@ $oomClasses['Oom.Foo.Router'] = new class {
       "typeStr": "Boolean",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A Boolean"
     },
     "prop_d": {
       "name": "prop_d",
@@ -410,7 +432,8 @@ $oomClasses['Oom.Foo.Router'] = new class {
       "typeStr": "Number",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo.Router",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A Number"
     },
     "propG": {
       "name": "propG",
@@ -420,7 +443,8 @@ $oomClasses['Oom.Foo.Router'] = new class {
       "typeStr": "Number",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo.Router",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A Number"
     }
   },
   "attr": {
@@ -439,8 +463,8 @@ $oomClasses['Oom.Foo.Router'] = new class {
       "name": "INST_INDEX",
       "default": "@TODO",
       "isFn": true,
-      "type": "@TODO",
-      "typeStr": "String",
+      "type": "nnint",
+      "typeStr": "nnint",
       "definedIn": "@TODO",
       "definedInStr": "Oom",
       "perClass": true,
@@ -465,7 +489,8 @@ $oomClasses['Oom.Foo.Router'] = new class {
       "typeStr": "Number",
       "definedIn": "@TODO",
       "definedInStr": "Oom",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A Number"
     },
     "OK": {
       "name": "OK",
@@ -475,7 +500,8 @@ $oomClasses['Oom.Foo.Router'] = new class {
       "typeStr": "Number",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo.Router",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A Number"
     },
     "prop_d": {
       "name": "prop_d",
@@ -485,7 +511,8 @@ $oomClasses['Oom.Foo.Router'] = new class {
       "typeStr": "Number",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo.Router",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A Number"
     },
     "propG": {
       "name": "propG",
@@ -495,10 +522,11 @@ $oomClasses['Oom.Foo.Router'] = new class {
       "typeStr": "Number",
       "definedIn": "@TODO",
       "definedInStr": "Oom.Foo.Router",
-      "perClass": true
+      "perClass": true,
+      "remarks": "A Number"
     }
   }
-}');
+}', true);
         }
         //@TODO init the stat and attr objects
     }

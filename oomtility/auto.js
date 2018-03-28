@@ -97,7 +97,7 @@ const [
   , x4          // four slashes
   , projectURL  // project URL, eg ‘http://oom-foo.loop.coop/’
 ] = topline.split(' ')
-const projectLC = process.cwd().split('/').pop() // lowercase, eg 'foo-bar'
+const projectLC  = process.cwd().split('/').pop() // lowercase, eg 'oom-foo'
 if ( projectLC.toLowerCase() != projectLC) return console.warn(
     `Project '${projectLC}' contains uppercase letters`)
 if ( projectTC.toLowerCase().replace(/\./g,'-') != projectLC) return console.warn(

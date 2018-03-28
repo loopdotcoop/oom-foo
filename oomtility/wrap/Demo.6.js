@@ -313,7 +313,7 @@ function wrapApiGettersAndSetters (obj) {
 
 function apiToAframeSchema (api) {
     return {
-        firstprop:  { type:'int', default:3 }
+        firstprop:  { type:'nnint', default:3 }
       , secondprop: { type:'string' }
     }
 }

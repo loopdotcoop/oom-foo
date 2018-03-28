@@ -60,6 +60,12 @@ The ${{title}} frontend may optionally be connected to a WordPress backend.
 14. Download the WordPress .tar.gz (8.2MB) from [here](https://wordpress.org/download/), and then:  
   `$ tar xzf ~/Downloads/wordpress-4.9.4.tar.gz -C ~/Sites`  
   `$ ln -s ~/Sites/wordpress ~/Sites/wp`  
+15. Download, install and activate the CMB2 plugin:  
+  `$ open https://downloads.wordpress.org/plugin/cmb2.zip`  
+  `$ tar xzf ~/Downloads/cmb2.zip -C ~/Sites/wp/wp-content/plugins`  
+  ``$ open http://localhost/~`whoami`/wp/wp-admin/plugins.php``  
+  Click ‘Activate’ under ‘CMB2’.  
+  The ‘active_plugins’ field in the database’s ‘wp_options’ table will be updated.
 
 
 #### Setting up ${{title}} for WordPress:
@@ -85,9 +91,9 @@ The ${{title}} frontend may optionally be connected to a WordPress backend.
   Check the ‘Post name’ radio button.  
   Click ‘Save Changes’.  
   Copy-paste the suggested ‘.htaccess’ content into ‘~/Sites/wp/.htaccess’.
-5. Activate the ${{title}} plugin:
+5. Activate the ${{title}} plugin:  
   ``$ open http://localhost/~`whoami`/wp/wp-admin/plugins.php``  
-  Click ‘Activate’ under ‘${{title}}’.
+  Click ‘Activate’ under ‘${{title}}’.  
   The ‘active_plugins’ field in the database’s ‘wp_options’ table will be updated.
 
 

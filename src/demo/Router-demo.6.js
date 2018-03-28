@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.3.4 //// March 2018 //// http://oom-foo.loop.coop/ /////////
+//// Oom.Foo //// 1.3.5 //// March 2018 //// http://oom-foo.loop.coop/ /////////
 
 !function (ROOT) { 'use strict'
 if ('function' !== typeof jQuery) throw Error('jQuery not found')
@@ -313,7 +313,7 @@ function wrapApiGettersAndSetters (obj) {
 
 function apiToAframeSchema (api) {
     return {
-        firstprop:  { type:'int', default:3 }
+        firstprop:  { type:'nnint', default:3 }
       , secondprop: { type:'string' }
     }
 }
