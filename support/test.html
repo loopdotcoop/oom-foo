@@ -162,6 +162,15 @@ AFRAME.registerComponent('oom-event', {
 <!-- CONTENT -->
 
 
+<!-- Specify a WordPress server and credentials for WP API tests -->
+<input id="wp-base" style="width:100%; margin-bottom:0.5em"
+value="http://localhost/~rich/wp/"></input>
+<script>document.getElementById('wp-base').addEventListener('input',function(){
+    // console.log(this.value)
+})</script>
+<input id="wp-username" style="width:40%" value="root"></input>
+<input id="wp-password" style="width:40%" value="root"></input>
+
 <!-- Container for test-output -->
 <div id="mocha" class="row"></div>
 
@@ -219,6 +228,12 @@ AFRAME.registerComponent('oom-event', {
       , '../dist/test/oom-foo-browser.6.js'
       , null
     ]
+  , [
+        '../dist/test/oom-foo-wp.5.js'
+      , '../dist/test/oom-foo-wp.5.js' // no need to minify a test
+      , '../dist/test/oom-foo-wp.6.js'
+      , null
+    ]
 
 //// BEGIN DYNAMIC SECTION /////////////////////////////////////////////////////
 //// This dynamic section is initialised by ‘oomtility/init.js’, and then //////
@@ -230,6 +245,9 @@ AFRAME.registerComponent('oom-event', {
     , [ null, null, null, '../src/test/Bases-browser.6.js' ]
     , [ null, null, null, '../src/test/Post-browser.6.js' ]
     , [ null, null, null, '../src/test/Router-browser.6.js' ]
+    , [ null, null, null, '../src/test/Bases-wp.6.js' ]
+    , [ null, null, null, '../src/test/Post-wp.6.js' ]
+    , [ null, null, null, '../src/test/Router-wp.6.js' ]
 
 //// END DYNAMIC SECTION ///////////////////////////////////////////////////////
 

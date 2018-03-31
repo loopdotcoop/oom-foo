@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.3.6 //// March 2018 //// http://oom-foo.loop.coop/ /////////
+//// Oom.Foo //// 1.3.7 //// March 2018 //// http://oom-foo.loop.coop/ /////////
 
 
 !function (ROOT) { 'use strict'

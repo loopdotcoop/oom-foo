@@ -2,8 +2,8 @@
 
 #### Initial test of the oom-hub architecture
 
-+ __Last update:__  2018/03/28 <!-- OOMBUMPABLE -->
-+ __Version:__      1.3.6 <!-- OOMBUMPABLE -->
++ __Last update:__  2018/03/31 <!-- OOMBUMPABLE -->
++ __Version:__      1.3.7 <!-- OOMBUMPABLE -->
 
 [Homepage](http://oom-foo.loop.coop/) &nbsp;
 [Repo](https://github.com/loopdotcoop/oom-foo) &nbsp;

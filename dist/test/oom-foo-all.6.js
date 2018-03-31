@@ -2,7 +2,7 @@
 
 
 
-//// Oom.Foo //// 1.3.6 //// March 2018 //// http://oom-foo.loop.coop/ /////////
+//// Oom.Foo //// 1.3.7 //// March 2018 //// http://oom-foo.loop.coop/ /////////
 
 //// Node.js:    7.2.0
 //// Rhino:      @TODO get Rhino working
@@ -711,7 +711,7 @@ function testify () {
 
 
 
-//// Oom.Foo //// 1.3.6 //// March 2018 //// http://oom-foo.loop.coop/ /////////
+//// Oom.Foo //// 1.3.7 //// March 2018 //// http://oom-foo.loop.coop/ /////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
@@ -1042,7 +1042,7 @@ describe('An Oom.Foo.Post instance', function () {
 
 
 
-//// Oom.Foo //// 1.3.6 //// March 2018 //// http://oom-foo.loop.coop/ /////////
+//// Oom.Foo //// 1.3.7 //// March 2018 //// http://oom-foo.loop.coop/ /////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
@@ -1369,4 +1369,4 @@ describe('An Oom.Foo.Router instance', function () {
 
 
 
-//// Made by Oomtility Make 1.3.6 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.3.7 //\\//\\ http://oomtility.loop.coop //////////

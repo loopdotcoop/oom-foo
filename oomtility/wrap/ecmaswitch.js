@@ -1,4 +1,4 @@
-//// ECMASwitch //// 1.3.6 //// March 2018 //// ecmaswitch.loop.coop/ /////////
+//// ECMASwitch //// 1.3.7 //// March 2018 //// ecmaswitch.loop.coop/ /////////
 
 !function (ROOT) { 'use strict'
 
@@ -6,7 +6,7 @@
 var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}
 var s, onAllLoadedFn
 ECMASwitch.NAME     = 'ECMASwitch'
-ECMASwitch.VERSION  = '1.3.6'
+ECMASwitch.VERSION  = '1.3.7'
 ECMASwitch.HOMEPAGE = 'http://ecmaswitch.loop.coop/'
 
 //// Polyfill `document` for non-browser contexts.
@@ -77,7 +77,7 @@ ECMASwitch.load = function (path, names, onAllLoaded) {
     for (var i=0; i<names.length; i++) if (names[i][f]) s.push( names[i][f] )
     s.unshift(path + 'support/asset/js/polyfill.min.js') //@TODO only load for legacy browsers
     s.unshift(path + 'support/asset/js/vue-2.5.13.min.js') // load second
-    s.unshift(path + 'support/asset/js/jquery-3.3.1.slim.min.js') // load first
+    s.unshift(path + 'support/asset/js/jquery-3.3.1.min.js') // load first
     d.write(B + s.join(E + B) + E)
 }
 

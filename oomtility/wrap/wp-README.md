@@ -76,6 +76,11 @@ The ${{title}} frontend may optionally be connected to a WordPress backend.
   ``$ open http://localhost/~`whoami`/wp/wp-admin/plugins.php``  
   Click ‘Activate’ under ‘JSON Basic Authentication’.  
   Note that Basic-Auth _is not secure_ and should only be used for dev, or over HTTPS.  
+4. For servers in ‘CGI’ or ‘FastCGI’ modes (eg Dreamhost):  
+  Install and activate the ‘Application Passwords’ plugin via the plugins page  
+  Click ‘Activate’ under ‘Application Passwords’.  
+  In .htaccess after `RewriteEngine On`, add:  
+  `RewriteRule .* - [E=REMOTE_USER:%{HTTP:Authorization}]`
 
 <!--
 From http://www.efficiencyofmovement.com/set-postman-wordpress-wp-rest-api/
@@ -123,18 +128,18 @@ From http://www.efficiencyofmovement.com/set-postman-wordpress-wp-rest-api/
 1. Start the MySQL server and create a database:  
   `$ sudo /usr/local/mysql/support-files/mysql.server start`  
   ``$ open http://localhost/~`whoami`/phpmyadmin/server_databases.php`` (password is 'root')  
-  Enter '${{projectLC.replace(/-/g,"\u005f")}}' as the ‘Database name’.  
+  Enter '${{projectLCU}}' as the ‘Database name’.  
 2. Link WordPress to the ${{projectLC}} repo:  
   `$ cd path/to/${{projectLC}}` (cd to the ${{projectLC}} repo directory)  
   `$ ln -s $PWD'/support/wp/wp-config.php' ~/Sites/wp`  
   `$ ln -s $PWD'/support/wp/plugin' ~/Sites/wp/wp-content/plugins/${{projectLC}}`  
 3. Init the site:  
   ``$ open http://localhost/~`whoami`/wp`` should show the ‘Welcome’ page  
-  Enter '${{projectLC}}' as the ‘Database name’.  
+  Enter '${{projectLCU}}' as the ‘Database name’.  
   Enter 'root' as the ‘Username’ and ‘Password’, and check ‘Confirm use …’.  
   Click through to confirm, and log in to wp-admin.  
   Note: at this point, none of the files in ‘~/Sites/wp/’ have changed.  
-  The ‘${{projectLC.replace(/-/g,"\u005f")}}’ database’s ‘wp_options’ table is populated with 128 rows.  
+  The ‘${{projectLCU}}’ database’s ‘wp_options’ table is populated with 128 rows.  
   Also, the ‘root’ user, default comment and posts, and the ‘Uncategorized’ category.  
 4. Enable pretty permalinks:
   ``$ open http://localhost/~`whoami`/wp/wp-admin/options-permalink..php``  

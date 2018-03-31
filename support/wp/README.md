@@ -76,6 +76,11 @@ The Oom.Foo frontend may optionally be connected to a WordPress backend.
   ``$ open http://localhost/~`whoami`/wp/wp-admin/plugins.php``  
   Click ‘Activate’ under ‘JSON Basic Authentication’.  
   Note that Basic-Auth _is not secure_ and should only be used for dev, or over HTTPS.  
+4. For servers in ‘CGI’ or ‘FastCGI’ modes (eg Dreamhost):  
+  Install and activate the ‘Application Passwords’ plugin via the plugins page  
+  Click ‘Activate’ under ‘Application Passwords’.  
+  In .htaccess after `RewriteEngine On`, add:  
+  `RewriteRule .* - [E=REMOTE_USER:%{HTTP:Authorization}]`
 
 <!--
 From http://www.efficiencyofmovement.com/set-postman-wordpress-wp-rest-api/
@@ -130,7 +135,7 @@ From http://www.efficiencyofmovement.com/set-postman-wordpress-wp-rest-api/
   `$ ln -s $PWD'/support/wp/plugin' ~/Sites/wp/wp-content/plugins/oom-foo`  
 3. Init the site:  
   ``$ open http://localhost/~`whoami`/wp`` should show the ‘Welcome’ page  
-  Enter 'oom-foo' as the ‘Database name’.  
+  Enter 'oom_foo' as the ‘Database name’.  
   Enter 'root' as the ‘Username’ and ‘Password’, and check ‘Confirm use …’.  
   Click through to confirm, and log in to wp-admin.  
   Note: at this point, none of the files in ‘~/Sites/wp/’ have changed.  

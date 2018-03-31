@@ -1,7 +1,7 @@
 !function () { 'use strict'
 
 const NAME     = 'Oomtility Auto'
-    , VERSION  = '1.3.6'
+    , VERSION  = '1.3.7'
     , HOMEPAGE = 'http://oomtility.loop.coop'
 
     , BYLINE   = (`\n\n\n\n//// Initialised by ${NAME} ${VERSION}\n`
@@ -35,12 +35,14 @@ Generate Or Remove Files
 2.  src/test/Base.Sub-all.6.js              Basic unit tests you’ll add to
 3.  src/test/Base.Sub-browser.6.js          As above, for browsers only
 4.  src/test/Base.Sub-node.6.js             As above, for Node.js only
-5.  src/demo/Base.Sub-demo.6.js             Usage example script
-6.  support/demo-base.sub.html              Usage example page (lowercase)
-7.  src/main/Base.Sub.foo.6.js              Source file for foo() method
-8.  src/test/Base.Sub.foo-all.6.js          Basic unit tests you’ll add to
-9.  src/test/Base.Sub.foo-browser.6.js      As above, for browsers only
-10. src/test/Base.Sub.foo-node.6.js         As above, for Node.js only
+5.  src/test/Base.Sub-wp.6.js               As above, for WordPress integration
+6.  src/demo/Base.Sub-demo.6.js             Usage example script
+7.  support/demo-base.sub.html              Usage example page (lowercase)
+8.  src/main/Base.Sub.foo.6.js              Source file for foo() method
+9.  src/test/Base.Sub.foo-all.6.js          Basic unit tests you’ll add to
+10. src/test/Base.Sub.foo-browser.6.js      As above, for browsers only
+11. src/test/Base.Sub.foo-node.6.js         As above, for Node.js only
+12. src/test/Base.Sub.foo-wp.6.js           As above, for WordPress integration
 
 Edit Files
 ----------
@@ -190,7 +192,15 @@ classes.forEach( name => { generateOrRemove(
 ) })
 
 
-//// 5.  src/demo/Base.Sub-demo.6.js             Usage example script
+//// 5.  src/test/Base.Sub-wp.6.js               As above, for WordPress integration
+classes.forEach( name => { generateOrRemove(
+    name
+  , `src/test/${name}-wp.6.js`
+  , generateClassWp
+) })
+
+
+//// 6.  src/demo/Base.Sub-demo.6.js             Usage example script
 classes.forEach( name => { generateOrRemove(
     name
   , `src/demo/${name}-demo.6.js`
@@ -198,7 +208,7 @@ classes.forEach( name => { generateOrRemove(
 ) })
 
 
-//// 6.  support/demo-base.sub.html              Usage example page (lowercase)
+//// 7.  support/demo-base.sub.html              Usage example page (lowercase)
 classes.forEach( name => { generateOrRemove(
     name
   , `support/demo-${name.toLowerCase().replace(/\./g,'-')}.html`
@@ -206,7 +216,7 @@ classes.forEach( name => { generateOrRemove(
 ) })
 
 
-//// 7.  src/main/Base.Sub.foo.6.js              Source file for foo() method
+//// 8.  src/main/Base.Sub.foo.6.js              Source file for foo() method
 
 methods.forEach( name => { generateOrRemove(
     name
@@ -215,7 +225,7 @@ methods.forEach( name => { generateOrRemove(
 ) }) // note that we prefix a top-level method’s filename with ‘App.’@TODO fix
 
 
-//// 8.  src/test/Base.Sub.foo-all.6.js          Basic unit tests you’ll add to
+//// 9.  src/test/Base.Sub.foo-all.6.js          Basic unit tests you’ll add to
 methods.forEach( name => { generateOrRemove(
     name
   , `src/test/${-1===name.indexOf('.')?'App.':''}${name}-all.6.js`//@TODO fix
@@ -223,7 +233,7 @@ methods.forEach( name => { generateOrRemove(
 ) })
 
 
-//// 9.  src/test/Base.Sub.foo-browser.6.js      As above, for browsers only
+//// 10. src/test/Base.Sub.foo-browser.6.js      As above, for browsers only
 
 methods.forEach( name => { generateOrRemove(
     name
@@ -232,12 +242,21 @@ methods.forEach( name => { generateOrRemove(
 ) })
 
 
-//// 10. src/test/Base.Sub.foo-node.6.js         As above, for Node.js only
+//// 11. src/test/Base.Sub.foo-node.6.js         As above, for Node.js only
 
 methods.forEach( name => { generateOrRemove(
     name
   , `src/test/${-1===name.indexOf('.')?'App.':''}${name}-node.6.js`//@TODO fix
   , generateMethodNode
+) })
+
+
+//// 12. src/test/Base.Sub.foo-wp.6.js           As above, for WordPress integration
+
+methods.forEach( name => { generateOrRemove(
+    name
+  , `src/test/${-1===name.indexOf('.')?'App.':''}${name}-wp.6.js`//@TODO fix
+  , generateMethodWp
 ) })
 
 
@@ -317,6 +336,13 @@ function generateClassNode (name, path) {
 
 
 ////
+function generateClassWp (name, path) {
+    const fn = ( wrapped[ pathToFnName(path) ] || wrapped.writeClassWp6Js )
+    fn( getClassConfig(name), path )
+}
+
+
+////
 function generateDemoScript (name, path) {
     const fn = ( wrapped[ pathToFnName(path) ] || wrapped.writeDemo6Js )
     fn( getDemoConfig(name), path )
@@ -354,6 +380,13 @@ function generateMethodBrowser (name, path) {
 ////
 function generateMethodNode (name, path) {
     const fn = ( wrapped[ pathToFnName(path) ] || wrapped.writeMethodNode6Js )
+    fn( getMethodConfig(name), path )
+}
+
+
+////
+function generateMethodWp (name, path) {
+    const fn = ( wrapped[ pathToFnName(path) ] || wrapped.writeMethodWp6Js )
     fn( getMethodConfig(name), path )
 }
 
