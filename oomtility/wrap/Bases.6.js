@@ -401,7 +401,7 @@ Oom.${{classname}} = class extends Oom {
 
 
 //// Define this class’s static and instance properties.
-Oom.Foo.mixin({
+Oom.${{classname}}.mixin({
     title: 'The Oom.${{classname}} Schema'
   , remarks: 'Defines metadata for this module'
   , location: '${{__LOCATION__}}'
@@ -414,7 +414,7 @@ Oom.Foo.mixin({
     //// Public instance properties (known as ‘attributes’ in Oom).
   , attr: {}
 
-})//Oom.Foo.mixin()
+})//Oom.${{classname}}.mixin()
 
 
 

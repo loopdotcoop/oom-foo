@@ -1,4 +1,4 @@
-//// Oom.Foo //// 1.3.7 //// March 2018 //// http://oom-foo.loop.coop/ /////////
+//// Oom.Foo //// 1.3.8 //// May 2018 //// http://oom-foo.loop.coop/ ///////////
 
 "use strict";
 !function(ROOT) {
@@ -1322,7 +1322,7 @@ function generateRandomColors() {
       isReadOnly = $__3.isReadOnly,
       isReadWrite = $__3.isReadWrite;
   describe('Oom.Foo.Router (browser)', function() {
-    var hid = true,
+    var hid = 0,
         Class = ROOT.Oom.Foo.Router,
         stat = Class.stat,
         schema = Class.schema,
@@ -1705,7 +1705,6 @@ function generateRandomColors() {
                 eq(r[1].passes, 4, ("mid-right pixel " + r[1].actualRGBA + " is near-") + ("enough expected hilite attribute " + r[1].expRGBA));
                 eq(stat.hilite, thirdHex, '`stat.hilite` is now ' + thirdHex);
                 eq(attr.hilite, fourthHex, '`attr.hilite` is now ' + fourthHex);
-                $(("#" + testID + " >a-entity")).attr('position', '0 10 0');
               } catch (e) {
                 error = e;
                 console.error(e.message);
@@ -1722,4 +1721,4 @@ function generateRandomColors() {
 
 
 
-//// Made by Oomtility Make 1.3.7 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.3.8 //\\//\\ http://oomtility.loop.coop //////////

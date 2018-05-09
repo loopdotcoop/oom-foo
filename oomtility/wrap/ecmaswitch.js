@@ -1,4 +1,4 @@
-//// ECMASwitch //// 1.3.7 //// March 2018 //// ecmaswitch.loop.coop/ /////////
+//// ECMASwitch //// 1.3.8 //// March 2018 //// ecmaswitch.loop.coop/ /////////
 
 !function (ROOT) { 'use strict'
 
@@ -6,7 +6,7 @@
 var ECMASwitch = ROOT.ECMASwitch = ROOT.ECMASwitch || {}
 var s, onAllLoadedFn
 ECMASwitch.NAME     = 'ECMASwitch'
-ECMASwitch.VERSION  = '1.3.7'
+ECMASwitch.VERSION  = '1.3.8'
 ECMASwitch.HOMEPAGE = 'http://ecmaswitch.loop.coop/'
 
 //// Polyfill `document` for non-browser contexts.

@@ -236,7 +236,7 @@ ${{classname}}.mixin({
 
     }
 
-})//Oom.Foo.mixin()
+})//${{classname}}.mixin()
 
 // //// Create the plain `Class.stat` object (which Vue watches) and add public
 // //// statics to it. Arg 2 of `KIT.define()` is `true` for statics.

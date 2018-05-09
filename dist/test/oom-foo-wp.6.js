@@ -2,7 +2,7 @@
 
 
 
-//// Oom.Foo //// 1.3.7 //// March 2018 //// http://oom-foo.loop.coop/ /////////
+//// Oom.Foo //// 1.3.8 //// May 2018 //// http://oom-foo.loop.coop/ ///////////
 
 //// Windows XP: Firefox 6, Chrome 15 (and probably lower), Opera 12.10
 //// Windows 7:  IE 9, Safari 5.1
@@ -146,7 +146,7 @@ describe('B.R.E.A.D. Oom.Foo instances', function () {
 
 
 
-//// Oom.Foo //// 1.3.7 //// March 2018 //// http://oom-foo.loop.coop/ /////////
+//// Oom.Foo //// 1.3.8 //// May 2018 //// http://oom-foo.loop.coop/ ///////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
@@ -280,7 +280,7 @@ describe('B.R.E.A.D. Oom.Foo.Post instances', function () {
 
 
 
-//// Oom.Foo //// 1.3.7 //// March 2018 //// http://oom-foo.loop.coop/ /////////
+//// Oom.Foo //// 1.3.8 //// May 2018 //// http://oom-foo.loop.coop/ ///////////
 
 !function (ROOT) { 'use strict'
 if (false) return // change to `true` to ‘hard skip’ this test
@@ -410,4 +410,4 @@ describe('B.R.E.A.D. Oom.Foo.Router instances', function () {
 
 
 
-//// Made by Oomtility Make 1.3.7 //\\//\\ http://oomtility.loop.coop //////////
+//// Made by Oomtility Make 1.3.8 //\\//\\ http://oomtility.loop.coop //////////

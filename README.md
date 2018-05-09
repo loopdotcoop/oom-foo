@@ -2,8 +2,8 @@
 
 #### Initial test of the oom-hub architecture
 
-+ __Last update:__  2018/03/31 <!-- OOMBUMPABLE -->
-+ __Version:__      1.3.7 <!-- OOMBUMPABLE -->
++ __Last update:__  2018/05/09 <!-- OOMBUMPABLE -->
++ __Version:__      1.3.8 <!-- OOMBUMPABLE -->
 
 [Homepage](http://oom-foo.loop.coop/) &nbsp;
 [Repo](https://github.com/loopdotcoop/oom-foo) &nbsp;
@@ -48,7 +48,7 @@ Web Audio
 Designed, developed and authored by Rich Plastow for Loop.Coop.
 
 + __Website:__
-  [richplastow.com](https://richplastow.com/) &nbsp;
+  [richplastow.com](http://richplastow.com/) &nbsp;
   [loop.coop](https://loop.coop/)
 + __GitHub:__
   [richplastow](https://github.com/richplastow) &nbsp;

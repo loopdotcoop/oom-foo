@@ -141,7 +141,7 @@ From http://www.efficiencyofmovement.com/set-postman-wordpress-wp-rest-api/
   Note: at this point, none of the files in ‘~/Sites/wp/’ have changed.  
   The ‘oom_foo’ database’s ‘wp_options’ table is populated with 128 rows.  
   Also, the ‘root’ user, default comment and posts, and the ‘Uncategorized’ category.  
-4. Enable pretty permalinks:
+4. Enable pretty permalinks:  
   ``$ open http://localhost/~`whoami`/wp/wp-admin/options-permalink..php``  
   Check the ‘Post name’ radio button.  
   Click ‘Save Changes’.  
